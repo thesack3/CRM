@@ -1,0 +1,28 @@
+.ProjectDetailView{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100vw;
+    height: 100vh;
+    background-color: #c8c8c8;
+    padding: 0 20px;
+}
+
+.backButton{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 200px;
+    height: 50px;
+    background-color: #cfcfcf;
+    color: black;
+    border-radius: 10px;
+    margin-bottom: 20px;
+
+}
+.backButton:hover{
+    background-color: #eb0085;
+    color: white;
+    scale: 1.05;
+}

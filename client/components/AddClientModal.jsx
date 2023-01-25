@@ -2,7 +2,7 @@ import { useState } from "react"
 import {FaUser} from 'react-icons/fa'
 import {useMutation} from '@apollo/client'
 import { Button,  Modal} from 'react-bootstrap'
-import {ADD_CLIENT} from '../mutations/clientMutations'
+import {ADD_CLIENT, ADD_LEAD} from '../mutations/clientMutations'
 import { GET_CLIENTS } from "../queries/clientQueries"
 import styles from '../components/AddClients.module.css'
 

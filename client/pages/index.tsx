@@ -1,15 +1,17 @@
 import Head from 'next/head'
-import  Header  from '../components/Header.jsx'
+import Header  from '../components/Header.jsx'
 import Image from 'next/image'
 import { Inter } from '@next/font/google'
-import styles from '@/styles/Home.module.css'
-import Clients from '../components/Clients'
-import Projects from '../components/Projects'
-import AddClientModal from '../components/AddClientModal'
-import mainStyles from '../pages/mainStyles.module.css'
-import NotFound from '../pages/404'
+import styles from '@/styles/Home.module.css';
+import Clients from '../components/Clients';
+import Projects from '../components/Projects';
+import AddClientModal from '../components/AddClientModal';
+import DataTable from '../components/DataTable/DataTable';
+import mainStyles from '../pages/mainStyles.module.css';
+import NotFound from '../pages/404';
 import 'bootstrap/dist/css/bootstrap.min.css';
-const inter = Inter({ subsets: ['latin'] })
+
+const inter = Inter({ subsets: ['latin'] });
 
 export default function Home() {
   return (
@@ -28,7 +30,13 @@ export default function Home() {
       <main className={mainStyles.main}>
 
         <AddClientModal/>
+ 
+
+        <div className={mainStyles.dataTable}>
+          <DataTable/>
+        </div>
         <Projects/>
+        
         <Clients/>
       
 

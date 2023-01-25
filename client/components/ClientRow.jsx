@@ -30,9 +30,9 @@ export default function ClientRow({client}) {
         <td> { client.email} </td>
         <td> { client.phone} </td>
         <td> 
-            <button className='btn btn-danger brn-sm'> 
+            <button className={styles.button} > 
 
-                <FaTrash onClick={deleteClient}/>
+                <FaTrash s onClick={deleteClient}/>
 
             </button>
             
