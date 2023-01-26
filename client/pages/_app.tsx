@@ -42,7 +42,7 @@ const client = new ApolloClient({
 
 export default function App({ Component, pageProps }: AppProps) {
   
-  const [loggedIn, setLoggedIn] = useState(true);
+  const [loggedIn, setLoggedIn] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -66,15 +66,14 @@ export default function App({ Component, pageProps }: AppProps) {
 
   return (
   <>
-   <ApolloProvider client={client}>
+     <ApolloProvider client={client}>
 
     {loggedIn ? <Component {...pageProps} /> : <LoginPage />}
 
 
-
-  </ApolloProvider>
+     </ApolloProvider>
   
-  </>  )
+   </>  )
   
   
 }

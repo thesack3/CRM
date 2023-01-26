@@ -130,9 +130,7 @@ const LeadSchema = new mongoose.Schema({
     HomeClosingDate:{
         type: String,
     },
-    ZipCode:{
-        type: String,
-    },
+    
     
 });
 

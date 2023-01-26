@@ -7,7 +7,8 @@ export default function Header() {
   return (
     <nav className={styles.header}>
         
-       <Image src={'/RemaxLogo.jpeg'} width={100} height={50}/>
+       {/* <Image src={'/RemaxLogo.jpeg'} width={100} height={50}/>
+        */}
         </nav>
   )
 }

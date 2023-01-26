@@ -4,6 +4,8 @@ import styles from './Clients.module.css'
 import ClientRow from './ClientRow'
 import Spinner from './Spinner'
 import{ GET_CLIENTS} from '../queries/clientQueries'
+import { DataGridPro } from '@mui/x-data-grid-pro';
+
 
 
 export default function Clients() {
