@@ -1,19 +1,53 @@
- //Mongoose models
+ //Dependencies
   const Project = require('../models/Project');
   const Client = require('../models/Client');
-
+  const nodemailer = require('nodemailer');
+  const jwt = require('jsonwebtoken');
+  const bcrypt = require('bcrypt');
+  const Lead = require('../models/Lead');
  const { 
-     GraphQLObjectType,
-     GraphQLID,
-     GraphQLString,
-     GraphQLSchema,
-    GraphQLList,
-    GraphQLInputObjectType,
-    GraphQLNonNull,
-    GraphQLEnumType} = require('graphql');
 
-//Project  Type
+            GraphQLObjectType,
+            GraphQLID,
+            GraphQLString,
+            GraphQLSchema,
+            GraphQLList,
+            GraphQLInputObjectType,
+            GraphQLNonNull,
+            GraphQLEnumType,
+            GraphQLBoolean
+            
+        } = require('graphql');
+const User = require('../models/User');
+
+
+
+
+// === GRAPHQL TYPES ========================================
+
+
+//User Type
+const UserType = new GraphQLObjectType({
+    name: 'User',
+    fields: () => ({
+        id:{ type: GraphQLID},
+        email:{ type: GraphQLString},
+        password :{ type: GraphQLString},
+        verificationToken:{ type:  GraphQLBoolean},
+        emailVerified:{ type: GraphQLBoolean},
+        // passwordResetToken : { type: GraphQLString },
+        // passwordResetExpires : { type: GraphQLString },
+        // tokens : { type: GraphQLString },
+        // profile : { type: GraphQLString },
+        // role : { type: GraphQLString },
+        // createdAt : { type:GraphQLString },
+        // updatedAt : { type: GraphQLString },
+    })
+});
+
+// Project Type
  const ProjectType = new GraphQLObjectType({
+
     name: 'Project',
     fields: () => ({
         id:{ type: GraphQLID}, 
@@ -32,8 +66,7 @@
     })
  });
 
- //Client Type
-
+ // Client Type
  const ClientType = new GraphQLObjectType({
     name: 'Client',
     fields: () => ({
@@ -45,8 +78,7 @@
     })
  });
 
-//Lead Type
-
+// Lead Type
 const LeadType = new GraphQLObjectType({
     name: 'Lead',
     fields: () => ({
@@ -101,11 +133,28 @@ const LeadType = new GraphQLObjectType({
  });
 
 
- //Queries
+ //Graphql Input Types: 
 
+ // Queries
  const RootQuery = new GraphQLObjectType({
     name: 'RootQueryType',
     fields: {
+        user: {
+            type: UserType,
+            args: {id: { type: GraphQLID } },
+            resolve(parent, args){
+                return User.findById(args.id);
+
+            }
+        },
+        users:{
+            type: new GraphQLList(UserType),
+            resolve(parent, args){
+                return User.find();
+            }
+        },
+    
+    
         projects:{
             type: new GraphQLList(ProjectType),
             resolve(parent, args){
@@ -137,11 +186,12 @@ const LeadType = new GraphQLObjectType({
             }
         },
         leads:{
-            type: LeadType, 
-            args: {id: { type: GraphQLID } },
+            type: new GraphQLList(LeadType), 
             resolve(parent, args){
                 return Lead.find();
-            } },
+            } 
+        },
+
         lead: {
             type: LeadType,
             args: {id: { type: GraphQLID } },
@@ -153,17 +203,119 @@ const LeadType = new GraphQLObjectType({
  })
 
 
-
+// Mutations
 const mutation = new GraphQLObjectType({
     name: 'Mutation',
     fields:{
+        //Email Verification Register User
+        registerUser:{
+            type: UserType,
+            args:{
+                email:{ type: GraphQLNonNull(GraphQLString) },
+                password :{ type: GraphQLNonNull(GraphQLString) },
+               
+            
+            },
+            async resolve(parent, args) {
+              
+
+                const existingUser = await User.findOne({ email: args.email });
+
+                if(existingUser){
+                    throw new Error('User already exists');
+                }
+                if(args.password.length < 6){
+                    throw new Error('Password must be at least 6 characters');
+                }
+                
+                
+                const hashedPassword = await bcrypt.hash(args.password, 10);
+
+                console.log( args.password)
+                console.log(hashedPassword)
+                const unhashedPassword = await bcrypt.compare(args.password, hashedPassword);
+                console.log(unhashedPassword)
+
+                //CREATE UNIQUE JSON WEB TOKEN FOR USER TO VERIFY EMAIL
+                const user = new User({
+                    email : args.email,
+                    password : hashedPassword,
+                });
+
+                const token = jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET);
+
+            
+                //USE NODEMAILER TO SEND EMAIL WITH TOKEN TO USER
+
+                const transporter = nodemailer.createTransport({
+                    host: 	"smtp.porkbun.com",
+                    port: 587,
+                    secure: false,
+                    auth: {
+                        user: process.env.EMAIL,
+                        pass: process.env.PASSWORD
+                    }
+                });
+                const mailOptions = {   
+
+                    from: process.env.EMAIL,
+                    to: user.email,
+                    subject: 'Account Verification Token',
+                    text: 'Hello,\n\n' + 'Please verify your account by clicking the link:' + process.env.BASE_URL +'\/verify\/'+ '.\n',
+                 //   html: 'Hello,<br><br>' + 'Please verify your account by clicking the link: <a href="' + process.env.BASE_URL +'\/verify\/' + token + '">here</a>.<br>'
+                    html: 'Hello,<br><br>' + 'Please verify your account by clicking the link: <a href="' + process.env.BASE_URL +'\/verify\/' + '">here</a>.<br>'
+               
+                };
+
+
+                transporter.sendMail(mailOptions, function (err, info) {
+                    if (err) { 
+                        console.log(err)
+                    }else{
+                        console.log('A verification email has been sent to ' + user.email + '.');
+                    }
+                   
+                }); 
+
+                return user.save();
+            }},
+
+
+            //Verify Email
+            verifyEmail:{
+                type: UserType,
+                args:{
+                    token: { type: GraphQLNonNull(GraphQLString) },
+                },
+                async resolve(parent, args) {
+
+                  if (!args.token) return res.status(400).send({ type: 'not-verified', msg: 'We were unable to find a valid token. Your token my have expired.' });
+ß
+                  try{
+                    //VERIFY EMAIL BY DECODING ITS JWT TOKEN
+                    const decoded = jwt.verify(args.token, process.env.TOKEN_SECRET);
+                    const user = await User.findOne({ _id: decoded._id, emailVerificationToken: args.token });
+                    if (!user) return res.status(400).send({ msg: 'We were unable to find a user for this token.' });
+                    if (user.emailVerified) return res.status(400).send({ type: 'already-verified', msg: 'This user has already been verified.' });
+
+                    user.emailVerified = true;
+                    user.emailVerificationToken = undefined;
+                    await user.save();
+                    res.status(200).send("The account has been verified. Please log in.");
+                  }catch(err){
+                    res.status(500).send({ msg: err.message });
+                  }
+
+                }},
+
         // Add a client
+
         addClient:{
             type: ClientType,
             args:{
-                name:{    type: GraphQLNonNull(GraphQLString) },
-                email:{   type: GraphQLNonNull(GraphQLString) },
-                phone:{   type: GraphQLNonNull(GraphQLString) },
+                name: {    type: GraphQLNonNull(GraphQLString) },
+                email:{   type: GraphQLNonNull(GraphQLString)  },
+                phone:{   type: GraphQLNonNull(GraphQLString)  },
             },
             resolve(parent, args) {
                 const client = new Client({
@@ -182,63 +334,63 @@ const mutation = new GraphQLObjectType({
             args:{
                 
                 firstName:{ type: GraphQLNonNull(GraphQLString)}, 
-                lastName:{ type: GraphQLNonNull(GraphQLString)}, 
-                description:{ type: GraphQLNonNull(GraphQLString)}, 
-                email:{ type: GraphQLNonNull(GraphQLString)}, 
-                phone:{ type: GraphQLNonNull(GraphQLString)}, 
-                phoneStatus:{ type: GraphQLNonNull(GraphQLString)}, 
-                emailInvalid:{ type: GraphQLNonNull(GraphQLString)}, 
-                GloballyOptedOutOfEmail:{ type: GraphQLNonNull(GraphQLString)}, 
-                GloballyOptedOutOfBuyerAgentEmail:{ type: GraphQLNonNull(GraphQLString)}, 
-                GloballyOptedOutOfListingAgentEmail:{ type: GraphQLNonNull(GraphQLString)}, 
-                GloballyOptedOutOfLenderEmail:{ type: GraphQLNonNull(GraphQLString)}, 
-                GloballyOptedOutOfAlerts:{ type: GraphQLNonNull(GraphQLString)}, 
-                OptInDate:{ type: GraphQLNonNull(GraphQLString)}, 
-                BuyerAgentCategory:{ type: GraphQLNonNull(GraphQLString)}, 
-                ListingAgentCategory:{ type: GraphQLNonNull(GraphQLString)}, 
-                LenderCategory:{ type: GraphQLNonNull(GraphQLString)}, 
-                BuyerAgent:{ type: GraphQLNonNull(GraphQLString)}, 
-                ListingAgent:{ type: GraphQLNonNull(GraphQLString)}, 
-                Lender:{ type: GraphQLNonNull(GraphQLString)}, 
-                OriginalSource:{ type: GraphQLNonNull(GraphQLString)}, 
-                OrignialCampaign:{ type: GraphQLNonNull(GraphQLString)}, 
-                LastAgentNote:{ type: GraphQLNonNull(GraphQLString)}, 
-                eAlerts:{ type: GraphQLNonNull(GraphQLString)}, 
-                VisitTotal:{ type: GraphQLNonNull(GraphQLString)}, 
-                listingviewcount:{ type: GraphQLNonNull(GraphQLString)}, 
-                AvgListingPrice:{ type: GraphQLNonNull(GraphQLString)}, 
-                NextCallDue:{ type: GraphQLNonNull(GraphQLString)}, 
-                LastAgentCallDate:{ type: GraphQLNonNull(GraphQLString)}, 
-                LastLenderCallDate:{ type: GraphQLNonNull(GraphQLString)}, 
-                FirstVisitDate:{ type: GraphQLNonNull(GraphQLString)}, 
-                LastVisitdate:{ type: GraphQLNonNull(GraphQLString)}, 
-                RegisterDate:{ type: GraphQLNonNull(GraphQLString)}, 
-                LeadType:{ type: GraphQLNonNull(GraphQLString)}, 
-                AgentSelected:{ type: GraphQLNonNull(GraphQLString)}, 
-                LenderOptIn:{ type: GraphQLNonNull(GraphQLString)}, 
-                Address:{ type: GraphQLNonNull(GraphQLString)}, 
-                City:{ type: GraphQLNonNull(GraphQLString)}, 
-                State:{ type: GraphQLNonNull(GraphQLString)},
-                ZipCode:{ type: GraphQLNonNull(GraphQLString)},
-                Tags:{ type: GraphQLNonNull(GraphQLString)},
-                Link:{ type: GraphQLNonNull(GraphQLString)},
-                Birthday:{ type: GraphQLNonNull(GraphQLString)},
-                HomeClosingDate:{ type: GraphQLNonNull(GraphQLString)}, 
+                email:{ type:GraphQLNonNull(GraphQLString) }, 
+                lastName:{ type: GraphQLString}, 
+                description:{ type: GraphQLString}, 
+                phone:{ type: GraphQLString}, 
+                phoneStatus:{ type: GraphQLString}, 
+                emailInvalid:{ type: GraphQLString}, 
+                GloballyOptedOutOfEmail:{ type: GraphQLString}, 
+                GloballyOptedOutOfBuyerAgentEmail:{ type: GraphQLString}, 
+                GloballyOptedOutOfListingAgentEmail:{ type: GraphQLString}, 
+                GloballyOptedOutOfLenderEmail:{ type: GraphQLString}, 
+                GloballyOptedOutOfAlerts:{ type: GraphQLString}, 
+                OptInDate:{ type: GraphQLString}, 
+                BuyerAgentCategory:{ type: GraphQLString}, 
+                ListingAgentCategory:{ type: GraphQLString}, 
+                LenderCategory:{ type: GraphQLString}, 
+                BuyerAgent:{ type: GraphQLString}, 
+                ListingAgent:{ type: GraphQLString}, 
+                Lender:{ type: GraphQLString}, 
+                OriginalSource:{ type: GraphQLString}, 
+                OrignialCampaign:{ type: GraphQLString}, 
+                LastAgentNote:{ type: GraphQLString}, 
+                eAlerts:{ type: GraphQLString}, 
+                VisitTotal:{ type: GraphQLString}, 
+                listingviewcount:{ type: GraphQLString}, 
+                AvgListingPrice:{ type: GraphQLString}, 
+                NextCallDue:{ type: GraphQLString}, 
+                LastAgentCallDate:{ type: GraphQLString}, 
+                LastLenderCallDate:{ type: GraphQLString}, 
+                FirstVisitDate:{ type: GraphQLString}, 
+                LastVisitdate:{ type: GraphQLString}, 
+                RegisterDate:{ type: GraphQLString}, 
+                LeadType:{ type: GraphQLString}, 
+                AgentSelected:{ type: GraphQLString}, 
+                LenderOptIn:{ type: GraphQLString}, 
+                Address:{ type: GraphQLString}, 
+                City:{ type: GraphQLString}, 
+                State:{ type: GraphQLString},
+                ZipCode:{ type: GraphQLString},
+                Tags:{ type: GraphQLString},
+                Link:{ type: GraphQLString},
+                Birthday:{ type: GraphQLString},
+                HomeClosingDate:{ type: GraphQLString}, 
             
             },
             resolve(parent, args) {
-                const client = new Client({
-                    name: args.name,
+                const lead = new Lead({
+                    firstName: args.firstName,
                     email : args.email, 
-                    phone: args.phone
+                    // phone: args.phone
                 });
-                return client.save();
+                return lead.save();
 
                 //Client.create(//fields) //could do it this way as well
-            }},
-       
-                
+            }},      
+
         //Delete a client
+
         deleteClient:{
             type: ClientType,
             args:{
@@ -291,9 +443,7 @@ const mutation = new GraphQLObjectType({
            }
 
         },
-
         //Update a project
-
         updateProject:{ 
             type: ProjectType,
              args:{ 
@@ -325,6 +475,8 @@ const mutation = new GraphQLObjectType({
                      }
                     }
                   }
+
+
                 });
 
 
@@ -332,3 +484,14 @@ const mutation = new GraphQLObjectType({
     query: RootQuery,
     mutation
  })
+
+
+
+
+
+
+
+
+
+
+

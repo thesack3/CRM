@@ -1,137 +1,279 @@
+
+//==
+
+
 const mongoose = require('mongoose');
 
 const LeadSchema = new mongoose.Schema({
-    firstName:{
+    firstName: {
         type: String,
+        required: true
     },
-    lastName:{
+    lastName: {
         type: String,
+        required: false
     },
-    description:{
+    email: {
         type: String,
+        required: true
     },
-    email:{
+    phone: {
         type: String,
+        required: false
     },
-    phone:{
+    phoneStatus: {
         type: String,
+        required: false
     },
-    phoneStatus:{
+    emailInvalid: {
         type: String,
+        required: false
     },
-    emailInvalid:{
+    GloballyOptedOutOfEmail: {
         type: String,
+        required: false
     },
-    GloballyOptedOutOfEmail:{
+    GloballyOptedOutOfBuyerAgentEmail: {
         type: String,
+        required: false
     },
-    GloballyOptedOutOfBuyerAgentEmail:{
+    GloballyOptedOutOfListingAgentEmail: {
         type: String,
+        required: false
     },
-    GloballyOptedOutOfListingAgentEmail:{
+    GloballyOptedOutOfLenderEmail: {
         type: String,
+        required: false
     },
-    GloballyOptedOutOfLenderEmail:{
+    GloballyOptedOutOfAlerts: {
         type: String,
+        required: false
     },
-    GloballyOptedOutOfAlerts:{
+    OptInDate: {
         type: String,
+        required: false
     },
-    OptInDate:{
+    BuyerAgentCategory: {
         type: String,
+        required: false
     },
-    BuyerAgentCategory:{
+    ListingAgentCategory: {
         type: String,
+        required: false
     },
-    ListingAgentCategory:{
+    LenderCategory: {
         type: String,
+        required: false
     },
-    LenderCategory:{
+    BuyerAgent: {
         type: String,
+        required: false
     },
-    BuyerAgent:{
+    ListingAgent: {
         type: String,
+        required: false
     },
-    ListingAgent:{
+    Lender: {
         type: String,
+        required: false
     },
-    Lender:{
+    OriginalSource: {
         type: String,
+        required: false
     },
-    OriginalSource:{
+    OrignialCampaign: {
         type: String,
+        required: false
     },
-    OrignialCampaign:{
+    LastAgentNote: {
         type: String,
+        required: false
     },
-    LastAgentNote:{
+    eAlerts: {
         type: String,
+        required: false
     },
-    eAlerts:{
+    VisitTotal: {
         type: String,
+        required: false
     },
-    VisitTotal:{
+    listingviewcount: {
         type: String,
+        required: false
     },
-    listingviewcount:{
+    AvgListingPrice: {
         type: String,
+        required: false
     },
-    AvgListingPrice:{
+    NextCallDue: {
         type: String,
+        required: false
     },
-    NextCallDue:{
+    LastAgentCallDate: {
         type: String,
+        required: false
     },
-    LastAgentCallDate:{
+    LastLenderCallDate: {
         type: String,
+        required: false
     },
-    LastLenderCallDate:{
+    FirstVisitDate: {
         type: String,
+        required: false
     },
-    FirstVisitDate:{
+    LastVisitdate: {
         type: String,
+        required: false
     },
-    LastVisitdate:{
+    RegisterDate: {
         type: String,
+        required: false
     },
-    RegisterDate:{
+    LeadType: {
         type: String,
+        required: false
     },
-    LeadType:{
+    AgentSelected: {
         type: String,
+        required: false
     },
-    AgentSelected:{
-        type: String,
-    },
-    LenderOptIn:{
-        type: String,
-    },
-    Address:{
-        type: String,
-    },
-    City:{
-        type: String,
-    },
-    State:{
-        type: String,
-    },
-    ZipCode:{
-        type: String,
-    },
-    Tags:{
-        type: String,
-    },
-    Link:{
-        type: String,
-    },
-    Birthday:{
-        type: String,
-    },
-    HomeClosingDate:{
-        type: String,
-    },
-    
-    
-});
 
-module.exports = mongoose.model('Lead', LeadSchema);
+
+// const LeadSchema = new mongoose.Schema({
+//     firstName:{
+//         type: String,
+        
+//     },
+//     lastName:{
+//         type: String,
+        
+//     },
+//     description:{
+//         type: String,
+//     },
+//     email:{
+//         type: String,
+//     },
+//     phone:{
+//         type: String,
+//     },
+//     phoneStatus:{
+//         type: String,
+//     },
+//     emailInvalid:{
+//         type: String,
+//     },
+//     GloballyOptedOutOfEmail:{
+//         type: String,
+//     },
+//     GloballyOptedOutOfBuyerAgentEmail:{
+//         type: String,
+//     },
+//     GloballyOptedOutOfListingAgentEmail:{
+//         type: String,
+//     },
+//     GloballyOptedOutOfLenderEmail:{
+//         type: String,
+//     },
+//     GloballyOptedOutOfAlerts:{
+//         type: String,
+//     },
+//     OptInDate:{
+//         type: String,
+//     },
+//     BuyerAgentCategory:{
+//         type: String,
+//     },
+//     ListingAgentCategory:{
+//         type: String,
+//     },
+//     LenderCategory:{
+//         type: String,
+//     },
+//     BuyerAgent:{
+//         type: String,
+//     },
+//     ListingAgent:{
+//         type: String,
+//     },
+//     Lender:{
+//         type: String,
+//     },
+//     OriginalSource:{
+//         type: String,
+//     },
+//     OrignialCampaign:{
+//         type: String,
+//     },
+//     LastAgentNote:{
+//         type: String,
+//     },
+//     eAlerts:{
+//         type: String,
+//     },
+//     VisitTotal:{
+//         type: String,
+//     },
+//     listingviewcount:{
+//         type: String,
+//     },
+//     AvgListingPrice:{
+//         type: String,
+//     },
+//     NextCallDue:{
+//         type: String,
+//     },
+//     LastAgentCallDate:{
+//         type: String,
+//     },
+//     LastLenderCallDate:{
+//         type: String,
+//     },
+//     FirstVisitDate:{
+//         type: String,
+//     },
+//     LastVisitdate:{
+//         type: String,
+//     },
+//     RegisterDate:{
+//         type: String,
+//     },
+//     LeadType:{
+//         type: String,
+//     },
+//     AgentSelected:{
+//         type: String,
+//     },
+//     LenderOptIn:{
+//         type: String,
+//     },
+//     Address:{
+//         type: String,
+//     },
+//     City:{
+//         type: String,
+//     },
+//     State:{
+//         type: String,
+//     },
+//     ZipCode:{
+//         type: String,
+//     },
+//     Tags:{
+//         type: String,
+//     },
+//     Link:{
+//         type: String,
+//     },
+//     Birthday:{
+//         type: String,
+//     },
+//     HomeClosingDate:{
+//         type: String,
+//     },
+    
+    
+ });
+
+ module.exports = mongoose.model('Lead', LeadSchema);
+
