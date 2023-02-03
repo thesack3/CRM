@@ -8,7 +8,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import CsvUpload from '../DropBoxes/CsvUpload';
 
-export default function AddLeadModal() {
+export default function AddCSVLeadModal() {
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
@@ -22,50 +22,24 @@ export default function AddLeadModal() {
   return (
     <div>
       <Button variant="outlined" onClick={handleClickOpen}>
-       Add Lead
+       Add Lead CSV
       </Button>
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>New Lead Info</DialogTitle>
+        <DialogTitle>New CSV Lead File</DialogTitle>
         <DialogContent>
+
+
           <DialogContentText>
-            Tell us about your new lead!
+            Upload your lead CSV file here!
           </DialogContentText>
 
 
-          {/* <Button variant="outlined" onClick={handleClickOpen}>
-      {CsvUpload()}
-      </Button> */}
       
-          <TextField
-            autoFocus
-            margin="dense"
-            id="name"
-            label="Full Name"
-            type="email"
-            fullWidth
-            variant="standard"
-          />
 
-<TextField
-            autoFocus
-            margin="dense"
-            id="name"
-            label="Home Address"
-            type="email"
-            fullWidth
-            variant="standard"
-          />
-             <TextField
-            autoFocus
-            margin="dense"
-            id="name"
-            label="Email Address"
-            type="email"
-            fullWidth
-            variant="standard"
-          />
-
-
+<Button variant="outlined" onClick={handleClickOpen}>
+      {CsvUpload()}
+      </Button>
+      
 
 
         </DialogContent>

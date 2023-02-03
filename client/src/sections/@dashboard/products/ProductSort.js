@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Menu, Button, MenuItem, Typography } from '@mui/material';
 // component
 import Iconify from '../../../components/iconify';
-
+import AddLisingModal from '../../../components/modals/AddListing';
 // ----------------------------------------------------------------------
 
 const SORT_BY_OPTIONS = [
@@ -44,23 +44,8 @@ export default function ShopProductSort() {
 
       </Button>
 
-      <Button
-        color="inherit"
-        disableRipple
-        onClick={handleOpen}
-        endIcon={<Iconify icon={open ? 'eva:chevron-up-fill' : 'eva:chevron-down-fill'} />}
-      >
-        Sort By:&nbsp;
-        <Typography component="span" variant="subtitle2" sx={{ color: 'text.secondary' }}>
-          Newest
-        </Typography>
-
-
-
-
-
-
-      </Button>
+      
+      <AddLisingModal/>
 
       <Menu
         keepMounted

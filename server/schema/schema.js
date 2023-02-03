@@ -126,9 +126,8 @@ const LeadType = new GraphQLObjectType({
         Link:{ type: GraphQLString},
         Birthday:{ type: GraphQLString},
         HomeClosingDate:{ type: GraphQLString}, 
-    
        
-       
+
     })
  });
 
@@ -261,9 +260,9 @@ const mutation = new GraphQLObjectType({
                     from: process.env.EMAIL,
                     to: user.email,
                     subject: 'Account Verification Token',
-                    text: 'Hello,\n\n' + 'Please verify your account by clicking the link:' + process.env.BASE_URL +'\/verify\/'+ '.\n',
-                 //   html: 'Hello,<br><br>' + 'Please verify your account by clicking the link: <a href="' + process.env.BASE_URL +'\/verify\/' + token + '">here</a>.<br>'
-                    html: 'Hello,<br><br>' + 'Please verify your account by clicking the link: <a href="' + process.env.BASE_URL +'\/verify\/' + '">here</a>.<br>'
+                    text: 'Hello,\n\n' + 'Please verify your account by clicking the link:' + process.env.BASE_URL +'\/VerifyEmail\/'+ '.\n',
+                    html: 'Hello,<br><br>' + 'Please verify your account by clicking the link: <a href="' + process.env.BASE_URL +'\/VerifyEmail\/' + token + '">here</a>.<br>'
+                   // html: 'Hello,<br><br>' + 'Please verify your account by clicking the link: <a href="' + process.env.BASE_URL +'\/verify\/' + '">here</a>.<br>'
                
                 };
 
@@ -309,6 +308,48 @@ const mutation = new GraphQLObjectType({
                 }},
 
         // Add a client
+//Login User
+
+        loginUser:{
+            type: UserType,
+            args:{
+                email:{ type: GraphQLNonNull(GraphQLString) },
+                password :{ type: GraphQLNonNull(GraphQLString) },
+            },
+            resolve(parent, args) {
+                // Find the user with the provided email
+                return User.findOne({ email: args.email })
+                  .then(user => {
+                    // If the user does not exist, return an error
+                    if (!user) {
+                      throw new Error('No user found with that email');
+                    }
+              
+                    // Compare the provided password to the hashed password stored in the database
+                    return bcrypt.compare(args.password, user.password)
+                      .then(isMatch => {
+                        // If the password is incorrect, return an error
+                        if (!isMatch) {
+                          throw new Error('Incorrect password');
+                        }
+              
+                        // Generate a JWT for the user
+                        const jwt = jwt.sign({
+                          id: user.id,
+                          email: user.email
+                        }, secret, { expiresIn: '1h' });
+              
+                        // Return the user and JWT
+                        return {
+                          user,
+                          jwt
+                        };
+                      });
+                  });
+              }
+              
+        }
+        ,
 
         addClient:{
             type: ClientType,

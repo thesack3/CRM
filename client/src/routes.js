@@ -9,7 +9,7 @@ import LoginPage from './pages/LoginPage';
 import Page404 from './pages/Page404';
 import ProductsPage from './pages/ProductsPage';
 import DashboardAppPage from './pages/DashboardAppPage';
-import VerifyPage from './pages/VerifyPage';
+import VerifyPage from './pages/verify/index.js';
 import NonVerifiedPage from './pages/NonVerified';
 
 // ----------------------------------------------------------------------
@@ -25,7 +25,7 @@ export default function Router() {
         { path: 'user', element: <UserPage /> },
         { path: 'products', element: <ProductsPage /> },
         { path: 'blog', element: <BlogPage /> },
-  
+        
       ],
     },
     {
@@ -34,7 +34,9 @@ export default function Router() {
     },
     {
       path: 'verify',
-      element: <VerifyPage />,
+      element: <VerifyPage />, 
+
+
     },
     {
       path: 'nonverified',

@@ -1,8 +1,13 @@
+import  { useEffect, useMemo } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Link as RouterLink } from 'react-router-dom';
-// @mui
+import { Link as RouterLink, useParams, useLocation} from 'react-router-dom';
+// @muis
+import { useMutation } from '@apollo/client';
 import { styled } from '@mui/material/styles';
 import { Button, Typography, Container, Box } from '@mui/material';
+import {VERIFY_EMAIL} from '../../mutations/userMutations';
+
+
 
 // ----------------------------------------------------------------------
 
@@ -16,9 +21,63 @@ const StyledContent = styled('div')(({ theme }) => ({
   padding: theme.spacing(12, 0),
 }));
 
+
+
+function useQuery() {
+  const { token } = useLocation();
+  console.log(token);
+  alert("token!");
+
+
+
+  //  Authenticate the tokena and display the user 
+  //  info while logging their auth token to local storage\
+
+  return useMemo(() => new URLSearchParams(token), [token]);
+}
 // ----------------------------------------------------------------------
 
 export default function VerifyPage() {
+
+  const { token } = useQuery();
+
+  //  The example url format being queried would be:
+  
+  const [verifyEmail, { data, loading, error }] = useMutation(VERIFY_EMAIL);
+
+
+  useEffect(() => {
+    // verifyEmail({
+    //   variables: {
+    //   token,
+    //   },
+    //   });
+      
+      
+  }, [verifyEmail, token]);
+
+
+
+  const VerifyEmail = () => {
+
+
+
+    alert(token);
+
+
+    verifyEmail({
+      variables: {
+      token,
+      },
+      });
+
+
+
+  }
+
+
+
+
   return (
     <>
       <Helmet>
@@ -41,7 +100,7 @@ export default function VerifyPage() {
             sx={{ height: 260, mx: 'auto', my: { xs: 5, sm: 10 } }}
           />
 
-          <Button to="/" size="large" variant="contained" component={RouterLink}>
+          <Button to="/" size="large" variant="contained" component={RouterLink} onClick={VerifyEmail}>
             Verify
           </Button>
         </StyledContent>

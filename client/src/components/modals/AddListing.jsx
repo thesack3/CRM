@@ -8,7 +8,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import CsvUpload from '../DropBoxes/CsvUpload';
 
-export default function AddLeadModal() {
+export default function AddLisingModal() {
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
@@ -22,7 +22,7 @@ export default function AddLeadModal() {
   return (
     <div>
       <Button variant="outlined" onClick={handleClickOpen}>
-       Add Lead
+       Add Lisitng
       </Button>
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>New Lead Info</DialogTitle>
@@ -40,7 +40,7 @@ export default function AddLeadModal() {
             autoFocus
             margin="dense"
             id="name"
-            label="Full Name"
+            label="Full Homeowner Name"
             type="email"
             fullWidth
             variant="standard"
@@ -71,7 +71,7 @@ export default function AddLeadModal() {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleClose}>Subscribe</Button>
+          <Button onClick={handleClose}>Publish</Button>
         </DialogActions>
       </Dialog>
     </div>

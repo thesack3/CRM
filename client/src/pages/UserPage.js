@@ -2,6 +2,8 @@ import { Helmet } from 'react-helmet-async';
 import { filter } from 'lodash';
 import { sentenceCase } from 'change-case';
 import { useState } from 'react';
+
+import { useQuery } from '@apollo/client';
 // @mui
 import {
   Card,
@@ -22,7 +24,9 @@ import {
   TableContainer,
   TablePagination,
 } from '@mui/material';
-// components
+
+//  components
+import { GET_CLIENTS } from '../queries/clientQueres';
 import Label from '../components/label';
 import Iconify from '../components/iconify';
 import Scrollbar from '../components/scrollbar';
@@ -30,7 +34,9 @@ import Scrollbar from '../components/scrollbar';
 import { UserListHead, UserListToolbar } from '../sections/@dashboard/user';
 // mock
 import USERLIST from '../_mock/user';
-import AddClientModal from '../components/modals/AddLead';
+
+import AddLeadModal from '../components/modals/AddLead';
+import AddCSVLeadModal from '../components/modals/AddCSVLeadModal';
 
 // ----------------------------------------------------------------------
 
@@ -42,6 +48,10 @@ const TABLE_HEAD = [
   { id: 'status', label: 'Status', alignRight: false },
   { id: '' },
 ];
+
+
+
+
 
 // ----------------------------------------------------------------------
 
@@ -143,14 +153,24 @@ export default function UserPage() {
 
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - USERLIST.length) : 0;
 
+
+
+  //  Change the way filtered users works here: 
+
+  //  Change user list for list of users.map(user => user.name) etc...
+  
+  //  GRAPHQL REQUEST FOR CLEINTS
+  const { loading, error, data} = useQuery(GET_CLIENTS)
+  
   const filteredUsers = applySortFilter(USERLIST, getComparator(order, orderBy), filterName);
 
   const isNotFound = !filteredUsers.length && !!filterName;
 
+
   return (
     <>
       <Helmet>
-        <title> User | Minimal UI </title>
+        <title> User | RE CRM </title>
       </Helmet>
 
       <Container>
@@ -158,10 +178,12 @@ export default function UserPage() {
           <Typography variant="h4" gutterBottom>
             User
           </Typography>
-          <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
+          {/* <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
             New Lead
-          </Button>
+          </Button> */}
 
+          <AddCSVLeadModal/>
+          <AddLeadModal/>
           {/* <AddClientModal/> */}
         </Stack>
 
