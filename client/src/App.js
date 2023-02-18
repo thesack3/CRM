@@ -1,4 +1,7 @@
 // routes
+
+
+
 import { LicenseInfo } from '@mui/x-license-pro';
 import { InMemoryCache, ApolloClient, ApolloProvider, useQuery } from '@apollo/client';
 import React, { useEffect, useState } from 'react';
@@ -12,17 +15,15 @@ import ScrollToTop from './components/scroll-to-top';
 import { StyledChart } from './components/chart';
 
 
-LicenseInfo.setLicenseKey(process.env.MUIX_API_KEY );
-
-
-
-
-
 const VALIDATE_JWT_QUERY = gql`
   query ValidateJwt {
     validateJwt
   }
 `;
+
+
+LicenseInfo.setLicenseKey('9e17734200a964cd420488accda5490fTz01ODkyOSxFPTE3MDY4NzA0MzEyMTAsUz1wcm8sTE09c3Vic2NyaXB0aW9uLEtWPTI=');
+
 // ----------
 //------------------------------------------------------------
 
@@ -37,6 +38,7 @@ export default function App() {
   // });
 
   useEffect(() => {
+    
     const jwt = localStorage.getItem('jwt');
     if(jwt){
       //   setToken(jwt);
@@ -83,6 +85,7 @@ export default function App() {
     uri: 'http://localhost:5000/graphql',
     cache,
   })
+
 
   return (
 

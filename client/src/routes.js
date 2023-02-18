@@ -9,8 +9,12 @@ import LoginPage from './pages/LoginPage';
 import Page404 from './pages/Page404';
 import ProductsPage from './pages/ProductsPage';
 import DashboardAppPage from './pages/DashboardAppPage';
-import VerifyPage from './pages/verify/index.js';
+// import VerifyPage from './pages/VerifyEmail';
+import VerifyPage from './pages/Verify/index.js';
 import NonVerifiedPage from './pages/NonVerified';
+import ProfilePage from './pages/ProfilePage';
+import Website from './components/Website/index';
+import HomeList from './components/HomeList';
 
 // ----------------------------------------------------------------------
 
@@ -25,6 +29,7 @@ export default function Router() {
         { path: 'user', element: <UserPage /> },
         { path: 'products', element: <ProductsPage /> },
         { path: 'blog', element: <BlogPage /> },
+        { path: 'profile', element: <ProfilePage /> },
         
       ],
     },
@@ -33,10 +38,19 @@ export default function Router() {
       element: <LoginPage />,
     },
     {
-      path: 'verify',
-      element: <VerifyPage />, 
-
-
+      path: 'verifyemail/:token',
+      element: <VerifyPage  />,
+      // element: <NonVerifiedPage />,
+    },
+    {
+      path: 'home',
+      element: <Website  />,
+      // element: <NonVerifiedPage />,
+    },
+    {
+      path: 'listings',
+      element: <HomeList  />,
+      // element: <NonVerifiedPage />,
     },
     {
       path: 'nonverified',
@@ -58,3 +72,12 @@ export default function Router() {
 
   return routes;
 }
+
+
+
+
+
+
+
+
+

@@ -1,15 +1,15 @@
-import  { useEffect, useMemo } from 'react';
+import  { useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link as RouterLink, useParams, useLocation} from 'react-router-dom';
 // @muis
 import { useMutation } from '@apollo/client';
 import { styled } from '@mui/material/styles';
 import { Button, Typography, Container, Box } from '@mui/material';
-import {VERIFY_EMAIL} from '../../mutations/userMutations';
-
+import { VERIFY_EMAIL } from '../../mutations/userMutations';
 
 
 // ----------------------------------------------------------------------
+
 
 const StyledContent = styled('div')(({ theme }) => ({
   maxWidth: 480,
@@ -22,55 +22,63 @@ const StyledContent = styled('div')(({ theme }) => ({
 }));
 
 
-
-function useQuery() {
-  const { token } = useLocation();
-  console.log(token);
-  alert("token!");
-
-
-
-  //  Authenticate the tokena and display the user 
-  //  info while logging their auth token to local storage\
-
-  return useMemo(() => new URLSearchParams(token), [token]);
-}
 // ----------------------------------------------------------------------
 
-export default function VerifyPage() {
+export default function VerifyPage({ userToken }) {
+  const { token } = useParams();
 
-  const { token } = useQuery();
+const [verifyEmail, { data, loading, error }] = useMutation(VERIFY_EMAIL);
 
-  //  The example url format being queried would be:
+ const [tokenKey, setTokenKey] = useState(null);
+    
+
+  //  The example url format being queried would be:s
   
-  const [verifyEmail, { data, loading, error }] = useMutation(VERIFY_EMAIL);
-
-
   useEffect(() => {
-    // verifyEmail({
-    //   variables: {
-    //   token,
-    //   },
-    //   });
+
+
+    setTokenKey(token);
+
+    if(tokenKey){
+      alert(tokenKey);
+    }
+
+
+    if (userToken) {
+      const tokenParts = userToken.split('.');
+      if (tokenParts.length === 3) {
+        const decodedToken = JSON.parse(atob(tokenParts[1]));
+        setTokenKey(decodedToken._id);
+        alert(decodedToken._id);
+       
+      }
+    }
+   
+
       
       
-  }, [verifyEmail, token]);
+  }, [verifyEmail, userToken]);
 
 
 
-  const VerifyEmail = () => {
+  const VerifyEmail = ({ userToken }) => {
 
 
-
-    alert(token);
+alert("Verifying email!");
+    alert(userToken);
 
 
     verifyEmail({
       variables: {
-      token,
+        tokenKey,
       },
-      });
-
+    }).then((res) => {
+      console.log(res);
+      alert(res);
+    }).catch((err) => {
+      console.log(err);
+      alert(err);
+    });
 
 
   }

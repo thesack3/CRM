@@ -1,12 +1,23 @@
+
+import * as React from 'react';
 import { Helmet } from 'react-helmet-async';
-// @mui
 import { Grid, Button, Container, Stack, Typography } from '@mui/material';
+
+import { useQuery } from '@apollo/client';
+import { useDemoData } from '@mui/x-data-grid-generator';
+import { useState, useMemo } from 'react';
+import { GET_LEADS } from '../queries/leadQueries';
+
+import AddLeadModal from '../components/modals/AddLead';
+import UsersActions from '../components/UsersActions';
+// @mui
 // components
 import Iconify from '../components/iconify';
 import { BlogPostCard, BlogPostsSort, BlogPostsSearch } from '../sections/@dashboard/blog';
 // mock
 import POSTS from '../_mock/blog';
 
+import DataGridProCSV from '../components/dataGrid/DataGridProDash';
 // ----------------------------------------------------------------------
 
 const SORT_OPTIONS = [
@@ -18,10 +29,68 @@ const SORT_OPTIONS = [
 // ----------------------------------------------------------------------
 
 export default function BlogPage() {
+
+  const [users, setUsers] = useState([]);
+
+    const [pageSize , setpageSize] = useState(5);
+    const [rowId, setRowId ]= useState(null)
+
+ 
+        const columns = useMemo(
+          () => [
+            {field: 'id', headerName: 'ID', width: 70,  editable: true},
+            {field: 'LastName', headerName: 'Last Name', width: 70,  editable: true},
+            {field: 'FirstName', headerName: 'First', width: 70,  editable: true},
+            {field: 'Description', headerName: 'Last Name', width: 70,  editable: true},
+            {field: 'Address', headerName: 'First', width: 70,  editable: true},
+            {field: 'Actions', headerName: 'actions', width: 130, renderCell: (params) =>  <UsersActions{...{params, rowId, setRowId}}/>},
+         
+       ], [rowId])
+
+  const { loading, error, data } = useQuery(GET_LEADS);
+
+  // const { data } = useDemoData({
+  //   dataSet: 'Employee',
+  //   rowLength: 100000,
+  //   editable: true,
+  // });
+
+  const rows = [
+    
+  ];
+
+
+
+
+  React.useEffect(() => {
+
+ if(data){
+      console.log(data);
+  const { leads } = data;
+  setUsers(leads);
+  
+
+
+
+
+ }else{
+    setUsers(rows);
+ }
+
+   
+   
+    
+  }, [ data])
+
+  
+
+
+
+
   return (
     <>
       <Helmet>
-        <title> Dashboard </title>
+        <title> Leads </title>
       </Helmet>
 
       <Container>
@@ -29,9 +98,9 @@ export default function BlogPage() {
           <Typography variant="h4" gutterBottom>
             Blog
           </Typography>
-          <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
-            New Lead
-          </Button>
+
+      <AddLeadModal/>
+
         </Stack>
 
         <Stack mb={5} direction="row" alignItems="center" justifyContent="space-between">
@@ -39,11 +108,34 @@ export default function BlogPage() {
           <BlogPostsSort options={SORT_OPTIONS} />
         </Stack>
 
-        <Grid container spacing={3}>
+
+
+
+<DataGridProCSV  UserData={users}/>
+
+
+
+
+
+
+
+      {/* // Blog posts */}
+
+
+
+        {/* <Grid container spacing={3}>
           {POSTS.map((post, index) => (
             <BlogPostCard key={post.id} post={post} index={index} />
           ))}
-        </Grid>
+        </Grid> */}
+
+
+
+
+
+
+
+
       </Container>
     </>
   );

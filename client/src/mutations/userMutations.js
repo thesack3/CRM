@@ -1,15 +1,5 @@
 import {gql} from '@apollo/client';
 
-const REGISTER_USER = gql`
-mutation registerUser($email: String!, $password: String! ) {
-    registerUser(email: $email, password: $password)
-        {   
-            id
-            email
-            password
-        }
-    }
-`;
 
 const LOGIN_USER = gql`
 mutation loginUser($email: String!, $password: String!) {
@@ -23,20 +13,51 @@ mutation loginUser($email: String!, $password: String!) {
 }
 `;
 
-
-const VERIFY_EMAIL = gql`
-mutation verifyEmail($token: String!) {
-  verifyEmail(token: $token) {
-    success
-    message
-    user {
-      id
-      email
-      emailVerified
+const REGISTER_USER = gql`
+mutation registerUser($email: String!, $password: String! ) {
+    registerUser(email: $email, password: $password)
+        {   
+            id
+            email
+            password
+        }
     }
-  }
+`;
+
+const VERIFY_EMAIL= gql`
+mutation verifyAccount($token: String!) {
+    verifyAccount(token: $token)
+        {
+            success
+            message
+            user {
+                id
+                email
+                emailVerified
+            }
+        }
+    }
+`;
+
+
+const CHANGE_PASSWORD = gql`
+mutation changePassword($userId: ID!, $oldPassword: String!, $newPassword: String!) {
+    changePassword(userId: $userId, oldPassword: $oldPassword, newPassword: $newPassword) {
+        id
+        email
+        password
+    }
 }
 `;
-export {REGISTER_USER, LOGIN_USER, VERIFY_EMAIL};
+
+//    IMPLEMENTATION:
+
+// const [changePassword, { loading, error }] = useMutation(CHANGE_PASSWORD);
+
+// // Call the mutation with the necessary variables
+// changePassword({ variables: { userId: '123', oldPassword: 'old_password', newPassword: 'new_password' } });
+
+
+export {REGISTER_USER, LOGIN_USER, VERIFY_EMAIL, CHANGE_PASSWORD};
 
 

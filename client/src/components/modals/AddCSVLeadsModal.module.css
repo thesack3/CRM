@@ -1,0 +1,9 @@
+.AddCSVLeadsModal{
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: center;
+    align-items: center;
+    /* background-color: aquamarine; */
+    height: 50vh;
+    width: 40vw;
+}

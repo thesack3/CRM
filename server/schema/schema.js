@@ -103,7 +103,7 @@ const LeadType = new GraphQLObjectType({
         ListingAgent:{ type: GraphQLString}, 
         Lender:{ type: GraphQLString}, 
         OriginalSource:{ type: GraphQLString}, 
-        OrignialCampaign:{ type: GraphQLString}, 
+        OriginalCampaign:{ type: GraphQLString}, 
         LastAgentNote:{ type: GraphQLString}, 
         eAlerts:{ type: GraphQLString}, 
         VisitTotal:{ type: GraphQLString}, 
@@ -113,7 +113,7 @@ const LeadType = new GraphQLObjectType({
         LastAgentCallDate:{ type: GraphQLString}, 
         LastLenderCallDate:{ type: GraphQLString}, 
         FirstVisitDate:{ type: GraphQLString}, 
-        LastVisitdate:{ type: GraphQLString}, 
+        LastVisitDate:{ type: GraphQLString}, 
         RegisterDate:{ type: GraphQLString}, 
         LeadType:{ type: GraphQLString}, 
         AgentSelected:{ type: GraphQLString}, 
@@ -195,7 +195,14 @@ const LeadType = new GraphQLObjectType({
             type: LeadType,
             args: {id: { type: GraphQLID } },
             resolve(parent, args){
-                return Lead.findById(args.id);
+                console.log("resolving lead", args.id);
+                return Lead.findById(args.id).then((result) => {
+                  console.log("found lead", result);
+                  return result;
+                }).catch((error) => {
+                  console.error("error finding lead", error);
+                  return null;
+                });
             }
         }
     }
@@ -260,8 +267,8 @@ const mutation = new GraphQLObjectType({
                     from: process.env.EMAIL,
                     to: user.email,
                     subject: 'Account Verification Token',
-                    text: 'Hello,\n\n' + 'Please verify your account by clicking the link:' + process.env.BASE_URL +'\/VerifyEmail\/'+ '.\n',
-                    html: 'Hello,<br><br>' + 'Please verify your account by clicking the link: <a href="' + process.env.BASE_URL +'\/VerifyEmail\/' + token + '">here</a>.<br>'
+                    text: 'Hello,\n\n' + 'Please verify your account by clicking the link:' + process.env.BASE_URL +'\/verifyemail\/'+ '\n',
+                    html: 'Hello,<br><br>' + 'Please verify your account by clicking the link: <a href="' + process.env.BASE_URL +'\/verifyemail\/' + token + '">here</a>.<br>'
                    // html: 'Hello,<br><br>' + 'Please verify your account by clicking the link: <a href="' + process.env.BASE_URL +'\/verify\/' + '">here</a>.<br>'
                
                 };
@@ -281,35 +288,82 @@ const mutation = new GraphQLObjectType({
 
 
             //Verify Email
-            verifyEmail:{
-                type: UserType,
-                args:{
-                    token: { type: GraphQLNonNull(GraphQLString) },
-                },
-                async resolve(parent, args) {
+          //Verify Email
+        verifyEmail:{
+            type: UserType,
+            args:{
+            token: { type: GraphQLNonNull(GraphQLString) },
+            },
+            async resolve(parent, args) {
+            try {
+                //VERIFY EMAIL BY DECODING ITS JWT TOKEN
+                const decoded = jwt.verify(args.token, process.env.TOKEN_SECRET);
+                const user = await User.findOne({ _id: decoded._id, emailVerificationToken: args.token });
+                if (!user) {
+                return {
+                    success: false,
+                    message: 'We were unable to find a user for this token.',
+                    user: null
+                };
+                }
+                if (user.emailVerified) {
+                return {
+                    success: false,
+                    message: 'This user has already been verified.',
+                    user: null
+                };
+                }
+                user.emailVerified = true;
+                user.emailVerificationToken = undefined;
+                await user.save();
+                return {
+                success: true,
+                message: 'The account has been verified. Please log in.',
+                user: {
+                    id: user.id,
+                    email: user.email,
+                    emailVerified: true
+                }
+                };
+            } catch (err) {
+                return {
+                success: false,
+                message: err.message,
+                user: null
+                };
+            }
+            }
+            
+        },
 
-                  if (!args.token) return res.status(400).send({ type: 'not-verified', msg: 'We were unable to find a valid token. Your token my have expired.' });
-ß
-                  try{
-                    //VERIFY EMAIL BY DECODING ITS JWT TOKEN
-                    const decoded = jwt.verify(args.token, process.env.TOKEN_SECRET);
-                    const user = await User.findOne({ _id: decoded._id, emailVerificationToken: args.token });
-                    if (!user) return res.status(400).send({ msg: 'We were unable to find a user for this token.' });
-                    if (user.emailVerified) return res.status(400).send({ type: 'already-verified', msg: 'This user has already been verified.' });
+        // Change password
 
-                    user.emailVerified = true;
-                    user.emailVerificationToken = undefined;
-                    await user.save();
-                    res.status(200).send("The account has been verified. Please log in.");
-                  }catch(err){
-                    res.status(500).send({ msg: err.message });
-                  }
-
-                }},
-
-        // Add a client
+        changePassword: {
+            type: UserType,
+            args: {
+                userId: { type: GraphQLNonNull(GraphQLID) },
+                oldPassword: { type: GraphQLNonNull(GraphQLString) },
+                newPassword: { type: GraphQLNonNull(GraphQLString) }
+            },
+            async resolve(parent, { userId, oldPassword, newPassword }) {
+                // Find the user in the database
+                const user = await User.findById(userId);
+        
+                // Verify that the old password matches the user's current password
+                const isMatch = await bcrypt.compare(oldPassword, user.password);
+                if (!isMatch) {
+                    throw new Error('Incorrect password');
+                }
+        
+                // Hash the new password and update the user's password in the database
+                const hashedPassword = await bcrypt.hash(newPassword, 10);
+                user.password = hashedPassword;
+                await user.save();
+        
+                return user;
+            }
+        },        
 //Login User
-
         loginUser:{
             type: UserType,
             args:{
@@ -394,7 +448,7 @@ const mutation = new GraphQLObjectType({
                 ListingAgent:{ type: GraphQLString}, 
                 Lender:{ type: GraphQLString}, 
                 OriginalSource:{ type: GraphQLString}, 
-                OrignialCampaign:{ type: GraphQLString}, 
+                OriginalCampaign:{ type: GraphQLString}, 
                 LastAgentNote:{ type: GraphQLString}, 
                 eAlerts:{ type: GraphQLString}, 
                 VisitTotal:{ type: GraphQLString}, 
@@ -404,7 +458,7 @@ const mutation = new GraphQLObjectType({
                 LastAgentCallDate:{ type: GraphQLString}, 
                 LastLenderCallDate:{ type: GraphQLString}, 
                 FirstVisitDate:{ type: GraphQLString}, 
-                LastVisitdate:{ type: GraphQLString}, 
+                LastVisitDate:{ type: GraphQLString}, 
                 RegisterDate:{ type: GraphQLString}, 
                 LeadType:{ type: GraphQLString}, 
                 AgentSelected:{ type: GraphQLString}, 
@@ -420,11 +474,7 @@ const mutation = new GraphQLObjectType({
             
             },
             resolve(parent, args) {
-                const lead = new Lead({
-                    firstName: args.firstName,
-                    email : args.email, 
-                    // phone: args.phone
-                });
+                const lead = new Lead( args );
                 return lead.save();
 
                 //Client.create(//fields) //could do it this way as well

@@ -48,11 +48,6 @@ const TABLE_HEAD = [
   { id: 'status', label: 'Status', alignRight: false },
   { id: '' },
 ];
-
-
-
-
-
 // ----------------------------------------------------------------------
 
 function descendingComparator(a, b, orderBy) {

@@ -1,8 +1,8 @@
 // ----------------------------------------------------------------------
 
 const account = {
-  displayName: 'Byan Hossack',
-  email: 'bryanhossack@gmail.com',
+  displayName: 'Dominiq Martinez',
+  email: 'unhashlabs@gmail@gmail.com',
   photoURL: '/assets/images/avatars/avatar_default.jpg',
 };
 
