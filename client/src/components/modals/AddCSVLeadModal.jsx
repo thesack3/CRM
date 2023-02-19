@@ -121,57 +121,62 @@ export default function AddCSVLeadModal() {
     setLoading(true);
   
     data.forEach((lead) => {
-      addLead({
-        variables: {
-          firstName: lead.firstName,
-          email: lead.email,
-          lastName: lead.lastName,
-          description: lead.description,
-          phone: lead.phone,
-          phoneStatus: lead.phoneStatus,
-          emailInvalid: lead.emailInvalid,
-          GloballyOptedOutOfEmail: lead.GloballyOptedOutOfEmail,
-          GloballyOptedOutOfBuyerAgentEmail: lead.GloballyOptedOutOfBuyerAgentEmail,
-          GloballyOptedOutOfListingAgentEmail: lead.GloballyOptedOutOfListingAgentEmail,
-          GloballyOptedOutOfLenderEmail: lead.GloballyOptedOutOfLenderEmail,
-          GloballyOptedOutOfAlerts: lead.GloballyOptedOutOfAlerts,
-          OptInDate: lead.OptInDate,
-          BuyerAgentCategory: lead.BuyerAgentCategory,
-          ListingAgentCategory: lead.ListingAgentCategory,
-          LenderCategory: lead.LenderCategory,
-          BuyerAgent: lead.BuyerAgent,
-          ListingAgent: lead.ListingAgent,
-          Lender: lead.Lender,
-          OriginalSource: lead.OriginalSource,
-          OriginalCampaign: lead.OriginalCampaign,
-          LastAgentNote: lead.LastAgentNote,
-          eAlerts: lead.eAlerts,
-          VisitTotal: lead.VisitTotal,
-          listingviewcount: lead.listingviewcount,
-          AvgListingPrice: lead.AvgListingPrice,
-          NextCallDue: lead.NextCallDue,
-          LastAgentCallDate: lead.LastAgentCallDate,
-          LastLenderCallDate: lead.LastLenderCallDate,
-          FirstVisitDate: lead.FirstVisitDate,
-          LastVisitdDate: lead.LastVisitDate,
-          RegisterDate: lead.RegisterDate,
-          LeadType: lead.LeadType,
-          AgentSelected: lead.AgentSelected,
-          LenderOptIn: lead.LenderOptIn,
-          Address: lead.Address,
-          City: lead.City,
-          State: lead.State,
-          ZipCode: lead.ZipCode,
-          Tags: lead.Tags,
-          Link: lead.Link,
-          Birthday: lead.Birthday,
-          HomeClosingDate: lead.HomeClosingDate
-        }
-      }).then((res) => {
-        console.log(res);
-      }).catch((err) => {
-        console.log(err);
-      });
+
+console.log(lead);
+      // addLead({
+      //   variables: {
+      //     firstName: lead.firstName,
+      //     email: lead.email,
+      //     lastName: lead.lastName,
+      //     phone: lead.phone,
+      //     phoneStatus: lead.phoneStatus,
+      //     emailInvalid: lead.emailInvalid,
+      //     GloballyOptedOutOfEmail: lead.GloballyOptedOutOfEmail,
+      //     GloballyOptedOutOfBuyerAgentEmail: lead.GloballyOptedOutOfBuyerAgentEmail,
+      //     GloballyOptedOutOfListingAgentEmail: lead.GloballyOptedOutOfListingAgentEmail,
+      //     GloballyOptedOutOfLenderEmail: lead.GloballyOptedOutOfLenderEmail,
+      //     GloballyOptedOutOfAlerts: lead.GloballyOptedOutOfAlerts,
+      //     OptInDate: lead.OptInDate,
+      //     BuyerAgentCategory: lead.BuyerAgentCategory,
+      //     ListingAgentCategory: lead.ListingAgentCategory,
+      //     LenderCategory: lead.LenderCategory,
+      //     BuyerAgent: lead.BuyerAgent,
+      //     ListingAgent: lead.ListingAgent,
+      //     Lender: lead.Lender,
+      //     OriginalSource: lead.OriginalSource,
+      //     OriginalCampaign: lead.OriginalCampaign,
+      //     LastAgentNote: lead.LastAgentNote,
+      //     eAlerts: lead.eAlerts,
+      //     VisitTotal: lead.VisitTotal,
+      //     listingviewcount: lead.listingviewcount,
+      //     AvgListingPrice: lead.AvgListingPrice,
+      //     NextCallDue: lead.NextCallDue,
+      //     LastAgentCallDate: lead.LastAgentCallDate,
+      //     LastLenderCallDate: lead.LastLenderCallDate,
+      //     FirstVisitDate: lead.FirstVisitDate,
+      //     LastVisitdDate: lead.LastVisitDate,
+      //     RegisterDate: lead.RegisterDate,
+      //     LeadType: lead.LeadType,
+      //     AgentSelected: lead.AgentSelected,
+      //     LenderOptIn: lead.LenderOptIn,
+      //     Address: lead.Address,
+      //     City: lead.City,
+      //     State: lead.State,
+      //     ZipCode: lead.ZipCode,
+      //     Tags: lead.Tags,
+      //     Link: lead.Link,
+      //     Birthday: lead.Birthday,
+      //     HomeClosingDate: lead.HomeClosingDate
+      //   }
+      // }).then((res) => {
+      //   console.log(res);
+      // }).catch((err) => {
+      //   console.log(err);
+      // });
+
+
+
+
     });
   
     setLoading(false);
@@ -229,7 +234,6 @@ export default function AddCSVLeadModal() {
           <Button variant="outlined" onClick={handleClickOpen}>
           <CsvUpload handleData={handleChildData} />
                 </Button>
-
 
         </DialogContent>
         <DialogActions>

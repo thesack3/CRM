@@ -3,10 +3,10 @@ import * as React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Grid, Button, Container, Stack, Typography } from '@mui/material';
 
-import { useQuery } from '@apollo/client';
+import { useQuery, useSubscription } from '@apollo/client';
 import { useDemoData } from '@mui/x-data-grid-generator';
 import { useState, useMemo } from 'react';
-import { GET_LEADS } from '../queries/leadQueries';
+import { GET_LEADS, NEW_LEAD_SUBSCRIPTION } from '../queries/leadQueries';
 
 import AddLeadModal from '../components/modals/AddLead';
 import UsersActions from '../components/UsersActions';
@@ -35,17 +35,15 @@ export default function BlogPage() {
     const [pageSize , setpageSize] = useState(5);
     const [rowId, setRowId ]= useState(null)
 
+
+
+    useSubscription(NEW_LEAD_SUBSCRIPTION, {
+      onSubscriptionData: ({ subscriptionData }) => {
+        const { newLead } = subscriptionData.data;
+        setUsers((prevUsers) => [...prevUsers, newLead]);
+      },
+    });
  
-        const columns = useMemo(
-          () => [
-            {field: 'id', headerName: 'ID', width: 70,  editable: true},
-            {field: 'LastName', headerName: 'Last Name', width: 70,  editable: true},
-            {field: 'FirstName', headerName: 'First', width: 70,  editable: true},
-            {field: 'Description', headerName: 'Last Name', width: 70,  editable: true},
-            {field: 'Address', headerName: 'First', width: 70,  editable: true},
-            {field: 'Actions', headerName: 'actions', width: 130, renderCell: (params) =>  <UsersActions{...{params, rowId, setRowId}}/>},
-         
-       ], [rowId])
 
   const { loading, error, data } = useQuery(GET_LEADS);
 
@@ -68,22 +66,28 @@ export default function BlogPage() {
       console.log(data);
   const { leads } = data;
   setUsers(leads);
-  
-
-
-
 
  }else{
-    setUsers(rows);
+    setUsers([]);
  }
 
    
    
     
-  }, [ data])
+  }, [ data ])
 
   
 
+        const columns = useMemo(
+          () => [
+            {field: 'id', headerName: 'ID', width: 70,  editable: true},
+            {field: 'LastName', headerName: 'Last Name', width: 70,  editable: true},
+            {field: 'FirstName', headerName: 'First', width: 70,  editable: true},
+            {field: 'Description', headerName: 'Last Name', width: 70,  editable: true},
+            {field: 'Address', headerName: 'First', width: 70,  editable: true},
+            {field: 'Actions', headerName: 'actions', width: 130, renderCell: (params) =>  <UsersActions{...{params, rowId, setRowId}}/>},
+         
+       ], [rowId])
 
 
 

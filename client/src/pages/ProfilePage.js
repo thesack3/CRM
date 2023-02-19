@@ -55,14 +55,13 @@ export default function ProfilePage() {
 
     {/* Top Buttons  */}
     <Grid item xs={1} sx={{height: 50}}>
-
         {/* Change height or styles with XS */}
-        
+
       <Button sx={{height: 50}}>Leads</Button>
         
         </Grid>
         <Grid item xs={1} sx={{height: 50}}>
-          <Item>Follow-ups</Item>
+        <Button sx={{height: 50}}>Follow-Ups</Button>
         </Grid>
         <Grid item xs={1} sx={{height: 50}}>
           <Item>Drips</Item>

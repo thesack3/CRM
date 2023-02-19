@@ -12,84 +12,90 @@ import DialogTitle from '@mui/material/DialogTitle';
 import CsvUpload from '../DropBoxes/CsvUpload';
 import { ADD_LEAD } from '../../mutations/leadMutations';
 
-
 export default function AddLeadModal() {
 
+  const [addLead, { loading, error, data }] = useMutation(ADD_LEAD);
+
   const [formData, setFormData] = useState({
-    firstName: '',
-    email: '',
-    lastName: '',
-    description: '',
-    phone: '',
-    phoneStatus: '',
-    emailInvalid: '',
-    GloballyOptedOutOfEmail: '',
-    GloballyOptedOutOfBuyerAgentEmail: '',
-    GloballyOptedOutOfListingAgentEmail: '',
-    GloballyOptedOutOfLenderEmail: '',
+    firstName: "",
+    email: "",
+    lastName: "",
+    phone: "",
+    phoneStatus: "",
+    emailInvalid: "",
+    GloballyOptedOutOfEmail: "",
+    GloballyOptedOutOfBuyerAgentEmail: "",
+    GloballyOptedOutOfListingAgentEmail: "",
+    GloballyOptedOutOfLenderEmail: "",
     GloballyOptedOutOfAlerts: '',
-    OptInDate: '',
-    BuyerAgentCategory: '',
-    ListingAgentCategory: '',
-    LenderCategory: '',
-    BuyerAgent: '',
-    ListingAgent: '',
-    Lender: '',
-    OriginalSource: '',
-    OriginalCampaign: '',
-    LastAgentNote: '',
-    eAlerts: '',
-    VisitTotal: '',
-    listingviewcount: '',
-    AvgListingPrice: '',
-    NextCallDue: '',
-    LastAgentCallDate: '',
-    LastLenderCallDate: '',
-    FirstVisitDate: '',
-    LastVisitDate: '',
-    RegisterDate: '',
-    LeadType: '',
-    AgentSelected: '',
-    LenderOptIn: '',
-    Address: '',
-    City: '',
-    State: '',
-    ZipCode: '',
-    Tags: '',
-    Link: '',
-    Birthday: '',
-    HomeClosingDate: ''
+    OptInDate: "",
+    BuyerAgentCategory: "",
+    ListingAgentCategory: "",
+    LenderCategory: "",
+    BuyerAgent: "",
+    ListingAgent: "",
+    Lender: "",
+    OriginalSource: "",
+    OriginalCampaign: "",
+    LastAgentNote: "",
+    eAlerts: "",
+    VisitTotal: "",
+    listingviewcount: "",
+    AvgListingPrice: "",
+    NextCallDue: "",
+    LastAgentCallDate: "",
+    LastLenderCallDate: "",
+    FirstVisitDate: "",
+    LastVisitDate: "",
+    RegisterDate: "",
+    LeadType: "",
+    AgentSelected: "",
+    LenderOptIn: "",
+    Address: "",
+    City: "",
+    State: "",
+    ZipCode: "",
+    Tags: "",
+    Link: "",
+    Birthday: "",
+    HomeClosingDate: "",
+
+
   });
 
   const [uploadInProcess, setUploaded] = useState(false);
 
 
-  const [addLead, { loading, error, data }] = useMutation(ADD_LEAD);
 
- 
+ const [open, setOpen] = React.useState(false);
+
+
+
+
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+
+
   const handleChange = (event) => {
 
-    console.log(formData)
-
+    event.persist();
     setFormData({
       ...formData,
       [event.target.name]: event.target.value,
   
     });
 
-    
+    console.log(formData)
+
   };
 
 
 
- const [open, setOpen] = React.useState(false);
-
-  
 
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
 
   const handleClose = () => {
     setOpen(false);
@@ -98,76 +104,66 @@ export default function AddLeadModal() {
 
 
 
-
   const handleLeadSubmit = (e) => {
 
-  
-    
+    console.log(formData)
     e.preventDefault();
     addLead({
-      variables: formData,
+      variables:formData,
     }).then((res) => {
 
-
       setFormData({
-        firstName: '',
-        email: '',
-        lastName: '',
-        description: '',
-        phone: '',
-        phoneStatus: '',
-        emailInvalid: '',
-        GloballyOptedOutOfEmail: '',
-        GloballyOptedOutOfBuyerAgentEmail: '',
-        GloballyOptedOutOfListingAgentEmail: '',
-        GloballyOptedOutOfLenderEmail: '',
-        GloballyOptedOutOfAlerts: '',
-        OptInDate: '',
-        BuyerAgentCategory: '',
-        ListingAgentCategory: '',
-        LenderCategory: '',
-        BuyerAgent: '',
-        ListingAgent: '',
-        Lender: '',
-        OriginalSource: '',
-        OriginalCampaign: '',
-        LastAgentNote: '',
-        eAlerts: '',
-        VisitTotal: '',
-        listingviewcount: '',
-        AvgListingPrice: '',
-        NextCallDue: '',
-        LastAgentCallDate: '',
-        LastLenderCallDate: '',
-        FirstVisitDate: '',
-        LastVisitDate: '',
-        RegisterDate: '',
-        LeadType: '',
-        AgentSelected: '',
-        LenderOptIn: '',
-        Address: '',
-        City: '',
-        State: '',
-        ZipCode: '',
-        Tags: '',
-        Link: '',
-        Birthday: '',
-        HomeClosingDate: ''
-
-  
+        firstName: "",
+        email: "",
+        lastName: "",
+        phone: "",
+        phoneStatus: "",
+        emailInvalid: "",
+        GloballyOptedOutOfEmail: "",
+        GloballyOptedOutOfBuyerAgentEmail: "",
+        GloballyOptedOutOfListingAgentEmail: "",
+        GloballyOptedOutOfLenderEmail: "",
+        GloballyOptedOutOfAlerts: "",
+        OptInDate: "",
+        BuyerAgentCategory: "",
+        ListingAgentCategory: "",
+        LenderCategory: "",
+        BuyerAgent: "",
+        ListingAgent: "",
+        Lender: "",
+        OriginalSource: "",
+        OriginalCampaign: "",
+        LastAgentNote: "",
+        eAlerts: "",
+        VisitTotal: "",
+        listingviewcount: "",
+        AvgListingPrice: "",
+        NextCallDue: "",
+        LastAgentCallDate: "",
+        LastLenderCallDate: "",
+        FirstVisitDate: "",
+        LastVisitDate: "",
+        RegisterDate: "",
+        LeadType: "",
+        AgentSelected: "",
+        LenderOptIn: "",
+        Address: "",
+        City: "",
+        State: "",
+        ZipCode: "",
+        Tags: "",
+        Link: "",
+        Birthday: "",
+        HomeClosingDate: ""
       });
-      console.log(res);
 
-
-
-
+    console.log(res);
     setUploaded(false);
     console.log("Lead Submitted!");
+
     }).catch((err) => {
+      
       console.log(err);
-
-
-
     });
 
   }
@@ -262,18 +258,6 @@ value={formData.lastName}
 onChange={handleChange}
 />
 
-<TextField
-autoFocus
-margin="dense"
-id="description"
-label="Description"
-type="text"
-fullWidth
-variant="standard"
-name="description"
-value={formData.description}
-onChange={handleChange}
-/>
 
 <TextField
 autoFocus

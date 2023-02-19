@@ -58,4 +58,18 @@ const GET_LEADS = gql`
 `;
 
 
+
+
+export const NEW_LEAD_SUBSCRIPTION = gql`
+  subscription OnNewLead {
+    newLead {
+      id
+      LastName
+      FirstName
+      Description
+      Address
+    }
+  }
+`;
+
 export { GET_LEADS };

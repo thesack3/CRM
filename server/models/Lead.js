@@ -141,30 +141,39 @@ const LeadSchema = new mongoose.Schema({
 
     LenderOptIn:{
         type: String,
+        required: false
     },
     Address:{
         type: String,
+        required: false
     },
     City:{
         type: String,
+        required: false
     },
     State:{
         type: String,
+        required: false
     },
     ZipCode:{
         type: String,
+        required: false
     },
     Tags:{
         type: String,
+        required: false
     },
     Link:{
         type: String,
+        required: false
     },
     Birthday:{
         type: String,
+        required: false
     },
     HomeClosingDate:{
         type: String,
+        required: false
     },
     
     

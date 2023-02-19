@@ -10,7 +10,7 @@ import Page404 from './pages/Page404';
 import ProductsPage from './pages/ProductsPage';
 import DashboardAppPage from './pages/DashboardAppPage';
 // import VerifyPage from './pages/VerifyEmail';
-import VerifyPage from './pages/Verify/index.js';
+import VerifyPage from './pages/Verify/index';
 import NonVerifiedPage from './pages/NonVerified';
 import ProfilePage from './pages/ProfilePage';
 import Website from './components/Website/index';

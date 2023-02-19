@@ -85,7 +85,6 @@ const LeadType = new GraphQLObjectType({
         id:{ type: GraphQLID}, 
         firstName:{ type: GraphQLString}, 
         lastName:{ type: GraphQLString}, 
-        description:{ type: GraphQLString}, 
         email:{ type: GraphQLString}, 
         phone:{ type: GraphQLString}, 
         phoneStatus:{ type: GraphQLString}, 
@@ -431,7 +430,6 @@ const mutation = new GraphQLObjectType({
                 firstName:{ type: GraphQLNonNull(GraphQLString)}, 
                 email:{ type:GraphQLNonNull(GraphQLString) }, 
                 lastName:{ type: GraphQLString}, 
-                description:{ type: GraphQLString}, 
                 phone:{ type: GraphQLString}, 
                 phoneStatus:{ type: GraphQLString}, 
                 emailInvalid:{ type: GraphQLString}, 
@@ -473,9 +471,17 @@ const mutation = new GraphQLObjectType({
                 HomeClosingDate:{ type: GraphQLString}, 
             
             },
-            resolve(parent, args) {
-                const lead = new Lead( args );
-                return lead.save();
+            async resolve(parent, args) {
+                try {
+                    const lead = new Lead(args);
+                    const result = await lead.save();
+                    alert("Lead added");
+                    return result;
+                  } catch (error) {
+                    console.error(error);
+                    alert("ERROR ADDING LEAD");
+                    throw new Error("Error adding lead");
+                  }
 
                 //Client.create(//fields) //could do it this way as well
             }},      
