@@ -88,6 +88,7 @@ const LeadType = new GraphQLObjectType({
         email:{ type: GraphQLString}, 
         phone:{ type: GraphQLString}, 
         phoneStatus:{ type: GraphQLString}, 
+        description:{ type: GraphQLString},
         emailInvalid:{ type: GraphQLString}, 
         GloballyOptedOutOfEmail:{ type: GraphQLString}, 
         GloballyOptedOutOfBuyerAgentEmail:{ type: GraphQLString}, 
@@ -432,6 +433,7 @@ const mutation = new GraphQLObjectType({
                 lastName:{ type: GraphQLString}, 
                 phone:{ type: GraphQLString}, 
                 phoneStatus:{ type: GraphQLString}, 
+                description:{ type: GraphQLString},
                 emailInvalid:{ type: GraphQLString}, 
                 GloballyOptedOutOfEmail:{ type: GraphQLString}, 
                 GloballyOptedOutOfBuyerAgentEmail:{ type: GraphQLString}, 
@@ -475,11 +477,11 @@ const mutation = new GraphQLObjectType({
                 try {
                     const lead = new Lead(args);
                     const result = await lead.save();
-                    alert("Lead added");
+                
                     return result;
                   } catch (error) {
                     console.error(error);
-                    alert("ERROR ADDING LEAD");
+                 
                     throw new Error("Error adding lead");
                   }
 

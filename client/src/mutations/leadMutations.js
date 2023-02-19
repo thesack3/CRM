@@ -8,6 +8,7 @@ const ADD_LEAD = gql`
     $lastName: String,
     $phone: String,
     $phoneStatus: String,
+    $description: String,
     $emailInvalid: String,
     $GloballyOptedOutOfEmail: String,
     $GloballyOptedOutOfBuyerAgentEmail: String,
@@ -53,6 +54,7 @@ const ADD_LEAD = gql`
       lastName: $lastName,
       phone: $phone,
       phoneStatus: $phoneStatus,
+      description: $description,
       emailInvalid: $emailInvalid,
       GloballyOptedOutOfEmail: $GloballyOptedOutOfEmail,
       GloballyOptedOutOfBuyerAgentEmail: $GloballyOptedOutOfBuyerAgentEmail,
@@ -97,6 +99,7 @@ const ADD_LEAD = gql`
       lastName
       phone
       phoneStatus
+      description
       emailInvalid
       GloballyOptedOutOfEmail
       GloballyOptedOutOfBuyerAgentEmail

@@ -21,6 +21,10 @@ const LeadSchema = new mongoose.Schema({
         type: String,
         required: false
     },
+    description: {
+        type: String,
+        required: false
+    },
     phoneStatus: {
         type: String,
         required: false
