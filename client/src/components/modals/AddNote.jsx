@@ -100,7 +100,7 @@ export default function AddNote() {
     return () => {
       
     }
-  }, [])
+  }, [leadsData])
   
 
   const handleChange = (event) => {
@@ -151,33 +151,38 @@ export default function AddNote() {
   
     await Promise.all(
       data.map(async (note) => {
+
+
+
+        // console.log(note);
         try {
           const matchingLead = users.find(
             (lead) =>
               lead.firstName === note.FirstName && lead.lastName === note.LastName
           );
+          
           if (matchingLead) {
             console.log(
               `Note with firstName "${note.FirstName}" and lastName "${note.LastName}" matches lead with leadId "${matchingLead.id}"`
             );
   
-            await addNote({
-              variables: {
-                contactId: matchingLead.id,
-                FirstName: note.FirstName,
-                LastName: note.LastName,
-                Notes: note.Notes,
-                BuyerAgent: note.BuyerAgent,
-                ListingAgent: note.ListingAgent,
-                leadId: matchingLead.id,
-              },
-            });
+            // await addNote({
+            //   variables: {
+            //     contactId: matchingLead.id,
+            //     FirstName: note.FirstName,
+            //     LastName: note.LastName,
+            //     Notes: note.Notes,
+            //     BuyerAgent: note.BuyerAgent,
+            //     ListingAgent: note.ListingAgent,
+            //     leadId: matchingLead.id,
+            //   },
+            // });
   
             console.log(`Note with firstName "${note.FirstName}" and lastName "${note.LastName}" uploaded successfully`);
           } else {
-            console.error(
-              `Note with firstName "${note.FirstName}" and lastName "${note.LastName}" does not match lead`
-            );
+            // console.error(
+            //   `Note with firstName "${note.FirstName}" and lastName "${note.LastName}" does not match lead`
+            // );
           }
         } catch (error) {
           console.error(error);

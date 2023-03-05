@@ -103,7 +103,7 @@ useEffect(() => {
   return () => {
     
   }
-}, [])
+}, [leadsData])
 
 const handleUpload = async () => {
   setLoading(true);
