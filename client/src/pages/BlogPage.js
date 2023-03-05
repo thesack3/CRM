@@ -10,6 +10,7 @@ import { GET_LEADS, NEW_LEAD_SUBSCRIPTION } from '../queries/leadQueries';
 
 import AddLeadModal from '../components/modals/AddLead';
 import UsersActions from '../components/UsersActions';
+import AddNoteButton from '../components/modals/AddNoteButton'
 // @mui
 // components
 import Iconify from '../components/iconify';
@@ -19,6 +20,8 @@ import POSTS from '../_mock/blog';
 
 import DataGridProCSV from '../components/dataGrid/DataGridProDash';
 // ----------------------------------------------------------------------
+import UserModal from '../components/modals/UserModal';
+
 
 const SORT_OPTIONS = [
   { value: 'latest', label: 'Latest' },
@@ -31,7 +34,7 @@ const SORT_OPTIONS = [
 export default function BlogPage() {
 
   const [users, setUsers] = useState([]);
-
+  const [selectedRows, setSelectedRows] = useState([]);
     const [pageSize , setpageSize] = useState(5);
     const [rowId, setRowId ]= useState(null)
 
@@ -100,10 +103,13 @@ export default function BlogPage() {
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Blog
+            Leads 
           </Typography>
 
       <AddLeadModal/>
+
+      <AddNoteButton/>
+      {/* <UserModal/> */}
 
         </Stack>
 
@@ -115,7 +121,8 @@ export default function BlogPage() {
 
 
 
-<DataGridProCSV  UserData={users}/>
+<DataGridProCSV onRowSelectionChange={(selectedRows) => setSelectedRows(selectedRows)} 
+ UserData={users}/>
 
 
 

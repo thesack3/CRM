@@ -9,6 +9,7 @@ const GET_LEADS = gql`
       lastName
       phone
       phoneStatus
+      description
       emailInvalid
       GloballyOptedOutOfEmail
       GloballyOptedOutOfBuyerAgentEmail
@@ -47,10 +48,6 @@ const GET_LEADS = gql`
       Birthday
       HomeClosingDate
 
-
-
-
-
       
 
     }
@@ -71,5 +68,8 @@ export const NEW_LEAD_SUBSCRIPTION = gql`
     }
   }
 `;
+
+
+
 
 export { GET_LEADS };

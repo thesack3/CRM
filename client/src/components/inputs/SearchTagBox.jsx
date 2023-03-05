@@ -1,10 +1,14 @@
+
 import * as React from 'react';
+import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useAutocomplete } from '@mui/base/AutocompleteUnstyled';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import { styled } from '@mui/material/styles';
 import { autocompleteClasses } from '@mui/material/Autocomplete';
+import { useQuery } from '@apollo/client';
+import { GET_LEADS } from '../../queries/leadQueries';
 
 const Root = styled('div')(
   ({ theme }) => `
@@ -23,7 +27,7 @@ const Label = styled('label')`
 
 const InputWrapper = styled('div')(
   ({ theme }) => `
-  width: 300px;
+  width: 700px;
   border: 1px solid ${theme.palette.mode === 'dark' ? '#434343' : '#d9d9d9'};
   background-color: ${theme.palette.mode === 'dark' ? '#141414' : '#fff'};
   border-radius: 4px;
@@ -48,8 +52,8 @@ const InputWrapper = styled('div')(
     height: 30px;
     box-sizing: border-box;
     padding: 4px 6px;
-    width: 0;
-    min-width: 30px;
+    width: 90;
+    min-width: 90px;
     flex-grow: 1;
     border: 0;
     margin: 0;
@@ -111,7 +115,7 @@ const StyledTag = styled(Tag)(
 
 const Listbox = styled('ul')(
   ({ theme }) => `
-  width: 300px;
+  width: 500px;
   margin: 2px 0 0;
   padding: 0;
   position: absolute;
@@ -156,25 +160,108 @@ const Listbox = styled('ul')(
 `,
 );
 
-export default function TagBox() {
-  const {
-    getRootProps,
-    getInputLabelProps,
-    getInputProps,
-    getTagProps,
-    getListboxProps,
-    getOptionProps,
-    groupedOptions,
-    value,
-    focused,
-    setAnchorEl,
-  } = useAutocomplete({
-    id: 'customized-hook-demo',
-    defaultValue: [top100Films[1]],
-    multiple: true,
-    options: top100Films,
-    getOptionLabel: (option) => option.title,
-  });
+export default function TagBox(props) {
+
+  const { loading, error, data } = useQuery(GET_LEADS);
+const [leads, setLeads] = useState([]);
+useEffect(() => {
+  if (data) {
+    console.log(data);
+    setLeads(data.leads);
+    
+  }
+}, [data]);
+
+
+
+
+
+
+
+
+
+
+
+
+
+// ...
+
+const {
+  getRootProps,
+  getInputLabelProps,
+  getInputProps,
+  getTagProps,
+  getListboxProps,
+  getOptionProps,
+  groupedOptions,
+  value,
+  focused,
+  setAnchorEl,
+} = useAutocomplete({
+  id: 'customized-hook-demo',
+  defaultValue: [],
+  multiple: true,
+  options: leads,
+  getOptionLabel: (option) => option.email,
+  onChange: (event, newValue) => {
+    props.setLead(newValue);
+  },
+});
+
+
+
+// const [users, setUsers] = useState(null);
+// const { loading, error, data } = useQuery(GET_LEADS);
+
+// useEffect(() => {
+
+//  if(data){
+//   console.log(data);
+// const { leads } = data;
+// setUsers(leads);
+
+// }else{
+// setUsers([]);
+// }
+  
+
+//   return () => {
+    
+//   }
+// }, [data])
+
+
+
+//   const {
+//     getRootProps,
+//     getInputLabelProps,
+//     getInputProps,
+//     getTagProps,
+//     getListboxProps,
+//     getOptionProps,
+//     groupedOptions,
+//     value,
+//     focused,
+//     setAnchorEl,
+//   } = useAutocomplete({
+//     id: 'customized-hook-demo',
+//     defaultValue: [top100Films[1]],
+//     multiple: true,
+//     options: top100Films,
+//     getOptionLabel: (option) => option.title,
+//   });
+
+
+
+
+
+
+
+
+
+
+
+
 
   return (
     <Root>
@@ -182,7 +269,7 @@ export default function TagBox() {
         <Label {...getInputLabelProps()}>Search Filters</Label>
         <InputWrapper ref={setAnchorEl} className={focused ? 'focused' : ''}>
           {value.map((option, index) => (
-            <StyledTag label={option.title} {...getTagProps({ index })} />
+            <StyledTag label={option.email} {...getTagProps({ index })} />
           ))}
 
           <input {...getInputProps()} />
@@ -192,7 +279,7 @@ export default function TagBox() {
         <Listbox {...getListboxProps()}>
           {groupedOptions.map((option, index) => (
             <li {...getOptionProps({ option, index })}>
-              <span>{option.title}</span>
+              <span>{option.email}</span>
               <CheckIcon fontSize="small" />
             </li>
           ))}
@@ -256,3 +343,4 @@ const top100Films = [
       year: 2003,
     },
   ];
+

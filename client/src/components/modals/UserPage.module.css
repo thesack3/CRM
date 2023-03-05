@@ -1,0 +1,29 @@
+.MainModal{
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: center;
+    align-items: center;
+    /* background-color: aquamarine; */
+    height: fit-content;
+    width: 80vw;
+}
+
+/* .MainDiv{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: aquamarine;
+    height: 100%;
+    width: 100%;
+} */
+
+.ModalMain{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: aquamarine;
+    height: 100%;
+    width: 100%;
+}

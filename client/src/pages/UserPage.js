@@ -37,7 +37,9 @@ import USERLIST from '../_mock/user';
 
 import AddLeadModal from '../components/modals/AddLead';
 import AddCSVLeadModal from '../components/modals/AddCSVLeadModal';
-
+import AddCSVCall from '../components/modals/AddCSVCalls';
+import AddeAlert from '../components/modals/AddeAlert';
+import AddNote from '../components/modals/AddNote';
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
@@ -80,6 +82,10 @@ function applySortFilter(array, comparator, query) {
 }
 
 export default function UserPage() {
+
+
+
+  
   const [open, setOpen] = useState(null);
 
   const [page, setPage] = useState(0);
@@ -178,7 +184,10 @@ export default function UserPage() {
           </Button> */}
 
           <AddCSVLeadModal/>
+          <AddCSVCall/>
           <AddLeadModal/>
+          <AddeAlert/>
+          <AddNote/>
           {/* <AddClientModal/> */}
         </Stack>
 
