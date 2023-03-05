@@ -167,65 +167,129 @@ export default function AddCSVCall() {
     }
   }, [])
   
-  const handleUpload = () => {
 
-
-
-
+  const handleUpload = async () => {
     console.log("Uploading calls...");
     setLoading(true);
   
-    try{
+    try {
+      await Promise.all(
+        data.map(async (call) => {
+          const matchingLead = users.find(
+            (lead) =>
+              lead.firstName === call.FirstName && lead.lastName === call.LastName
+          );
+  
+          if (matchingLead) {
+            console.log(
+              `Call with firstName "${call.FirstName}" and lastName "${call.LastName}" matches lead with leadId "${matchingLead.id}"`
+            );
+  
+            await addCall({
+              variables: {
+                contactId: matchingLead.id,
+                FirstName: call.FirstName,
+                LastName: call.LastName,
+                DateCreated: call.DateCreated,
+                BuyerAgent: call.BuyerAgent,
+                ListingAgent: call.ListingAgent,
+                UserID: call.UserID,
+                AssociatedopportunityID: call.AssociatedOpportunityID,
+                CallDetails: call.CallDetails,
+                ContactPhoneID: call.ContactPhoneID,
+                LogType: call.LogType,
+                MediaURL: "null",
+                CallStartTime: "null",
+                CallEndTime: "null",
+                leadId: matchingLead.id,
+              },
+            });
+  
+            console.log(`Call with firstName "${call.FirstName}" and lastName "${call.LastName}" uploaded successfully`);
+            setCallSaved(true);
+          }
+        })
+      );
+  
+      setCallSaved(true);
+      console.log("All calls uploaded successfully");
+      setLoading(false);
+    } catch (error) {
+      console.error(error);
+      setLoading(false);
+    }
+  };
+  
+  
 
-      data.forEach((call) => {
-        // console.log(call);
-        const matchingLead = users.find((lead) => lead.firstName === call.FirstName && lead.lastName === call.LastName);
+
+
+
+
+
+
+
+
+  //   working: 
+  // const handleUpload = () => {
+
+
+
+
+  //   console.log("Uploading calls...");
+  //   setLoading(true);
+  
+  //   try{
+
+  //     data.forEach((call) => {
+  //       // console.log(call);
+  //       const matchingLead = users.find((lead) => lead.firstName === call.FirstName && lead.lastName === call.LastName);
     
-        if (matchingLead) {
-          console.log(`Call with firstName "${call.FirstName}" and lastName "${call.LastName}" matches lead with leadId "${matchingLead.id}"`);
+  //       if (matchingLead) {
+  //         console.log(`Call with firstName "${call.FirstName}" and lastName "${call.LastName}" matches lead with leadId "${matchingLead.id}"`);
     
-       //   Upload the call with the matching leadId
+  //      //   Upload the call with the matching leadId
   
   
   
        
-       // SET
+  //      // SET
   
   
-       console.log(call);
-          addCall({
-            variables: {
-              contactId: matchingLead.id,
-              FirstName: call.FirstName,
-              LastName: call.LastName,
-              DateCreated: call.DateCreated,
-              BuyerAgent: call.BuyerAgent,
-              ListingAgent: call.ListingAgent,
-              UserID: call.UserID,
-              AssociatedopportunityID: call.AssociatedOpportunityID,
-              CallDetails: call.CallDetails,
-              ContactPhoneID: call.ContactPhoneID,
-              LogType: call.LogType,
-              MediaURL: "null",
-              CallStartTime: "null",
-              CallEndTime: "null",
+  //      console.log(call);
+  //         addCall({
+  //           variables: {
+  //             contactId: matchingLead.id,
+  //             FirstName: call.FirstName,
+  //             LastName: call.LastName,
+  //             DateCreated: call.DateCreated,
+  //             BuyerAgent: call.BuyerAgent,
+  //             ListingAgent: call.ListingAgent,
+  //             UserID: call.UserID,
+  //             AssociatedopportunityID: call.AssociatedOpportunityID,
+  //             CallDetails: call.CallDetails,
+  //             ContactPhoneID: call.ContactPhoneID,
+  //             LogType: call.LogType,
+  //             MediaURL: "null",
+  //             CallStartTime: "null",
+  //             CallEndTime: "null",
          
-              leadId: matchingLead.id,
-            },
-          }).then((res) => {
-            setCallSaved(true);
-          })
+  //             leadId: matchingLead.id,
+  //           },
+  //         }).then((res) => {
+  //           setCallSaved(true);
+  //         })
   
   
-        } 
-      });
-    }catch(err){
+  //       } 
+  //     });
+  //   }catch(err){
 
-      console.log(err);
-    }
+  //     console.log(err);
+  //   }
   
-    setLoading(false);
-  };
+  //   setLoading(false);
+  // };
   
 
 

@@ -105,6 +105,53 @@ useEffect(() => {
   }
 }, [])
 
+const handleUpload = async () => {
+  setLoading(true);
+  console.log("Uploading e-alerts...");
+
+  try {
+    await Promise.all(
+      data.map(async (eAlert) => {
+        // Search for the lead whose firstName and lastName match with the eAlert's firstName and lastName
+        const matchingLead = users.find((lead) => lead.firstName === eAlert.FirstName && lead.lastName === eAlert.LastName);
+        
+        if (matchingLead) {
+          // If a matching lead is found, log its leadId
+          console.log(`eAlert with firstName "${eAlert.FirstName}" and lastName "${eAlert.LastName}" matches lead with leadId "${matchingLead.id}"`);
+          // Upload the eAlert with the matching leadId
+          await addeAlert({
+            variables: {
+              contactId: matchingLead.id,
+              FirstName: eAlert.FirstName,
+              LastName: eAlert.LastName,
+              SearchName: eAlert.SearchName,
+              QueryString: eAlert.QueryString,
+              EmailFrequency: eAlert.EmailFrequency,
+              BuyerAgent: eAlert.BuyerAgent,
+              ListingAgent: eAlert.ListingAgent,
+              leadId: matchingLead.id,
+            },
+          });
+          console.log(`eAlert with firstName "${eAlert.FirstName}" and lastName "${eAlert.LastName}" uploaded successfully`);
+          setAlertSaved(true);
+        } else {
+          // If no matching lead is found, log an error
+          // console.error(`eAlert with firstName "${eAlert.FirstName}" and lastName "${eAlert.LastName}" does not match any lead`);
+        }
+      })
+    );
+    console.log("All e-alerts uploaded successfully");
+    setAlertSaved(true);
+    setLoading(false);
+  } catch (error) {
+    console.error(error);
+    setLoading(false);
+  }
+};
+
+
+
+
 
 
 
@@ -138,52 +185,52 @@ useEffect(() => {
 
 
 
+// WORKING: 
+  // const handleUpload = () => {
+  //   setLoading(true);
 
-  const handleUpload = () => {
-    setLoading(true);
+  //   data.forEach((eAlert) => {
 
-    data.forEach((eAlert) => {
-
-      console.log("Uploading e-alerts...");
+  //     console.log("Uploading e-alerts...");
 
 
 
-      // Search for the lead whose firstName and lastName match with the eAlert's firstName and lastName
-      const matchingLead = users.find((lead) => lead.firstName === eAlert.FirstName && lead.lastName === eAlert.LastName);
+  //     // Search for the lead whose firstName and lastName match with the eAlert's firstName and lastName
+  //     const matchingLead = users.find((lead) => lead.firstName === eAlert.FirstName && lead.lastName === eAlert.LastName);
     
 
-      if (matchingLead) {
-        // If a matching lead is found, log its leadId
-        console.log(`eAlert with firstName "${eAlert.FirstName}" and lastName "${eAlert.LastName}" matches lead with leadId "${matchingLead.id}"`);
-        // Upload the eAlert with the matching leadId
+  //     if (matchingLead) {
+  //       // If a matching lead is found, log its leadId
+  //       console.log(`eAlert with firstName "${eAlert.FirstName}" and lastName "${eAlert.LastName}" matches lead with leadId "${matchingLead.id}"`);
+  //       // Upload the eAlert with the matching leadId
 
 
 
-        // SET 
-        addeAlert({
-          variables: {
-            contactId: matchingLead.id,
-            FirstName: eAlert.FirstName,
-            LastName: eAlert.LastName,
-            SearchName: eAlert.SearchName,
-            QueryString: eAlert.QueryString,
-            EmailFrequency: eAlert.EmailFrequency,
-            BuyerAgent: eAlert.BuyerAgent,
-            ListingAgent: eAlert.ListingAgent,
-            leadId: matchingLead.id,
-          },
-        }).then((res) => {
-          setAlertSaved(true);
-        })
+  //       // SET 
+  //       addeAlert({
+  //         variables: {
+  //           contactId: matchingLead.id,
+  //           FirstName: eAlert.FirstName,
+  //           LastName: eAlert.LastName,
+  //           SearchName: eAlert.SearchName,
+  //           QueryString: eAlert.QueryString,
+  //           EmailFrequency: eAlert.EmailFrequency,
+  //           BuyerAgent: eAlert.BuyerAgent,
+  //           ListingAgent: eAlert.ListingAgent,
+  //           leadId: matchingLead.id,
+  //         },
+  //       }).then((res) => {
+  //         setAlertSaved(true);
+  //       })
 
 
-      } else {
-        // If no matching lead is found, log an error
-        // console.error(`eAlert with firstName "${eAlert.FirstName}" and lastName "${eAlert.LastName}" does not match any lead`);
-      }
-    });
-    setLoading(false);
-  };
+  //     } else {
+  //       // If no matching lead is found, log an error
+  //       // console.error(`eAlert with firstName "${eAlert.FirstName}" and lastName "${eAlert.LastName}" does not match any lead`);
+  //     }
+  //   });
+  //   setLoading(false);
+  // };
   
 
 //   const handleUpload = () => {

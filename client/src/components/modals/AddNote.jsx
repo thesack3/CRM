@@ -145,80 +145,128 @@ export default function AddNote() {
   }
 
 
-
-
-  const handleUpload = () => {
-
+  const handleUpload = async () => {
     console.log("Uploading..");
     setLoading(true);
+  
+    await Promise.all(
+      data.map(async (note) => {
+        try {
+          const matchingLead = users.find(
+            (lead) =>
+              lead.firstName === note.FirstName && lead.lastName === note.LastName
+          );
+          if (matchingLead) {
+            console.log(
+              `Note with firstName "${note.FirstName}" and lastName "${note.LastName}" matches lead with leadId "${matchingLead.id}"`
+            );
+  
+            await addNote({
+              variables: {
+                contactId: matchingLead.id,
+                FirstName: note.FirstName,
+                LastName: note.LastName,
+                Notes: note.Notes,
+                BuyerAgent: note.BuyerAgent,
+                ListingAgent: note.ListingAgent,
+                leadId: matchingLead.id,
+              },
+            });
+  
+            console.log(`Note with firstName "${note.FirstName}" and lastName "${note.LastName}" uploaded successfully`);
+          } else {
+            console.error(
+              `Note with firstName "${note.FirstName}" and lastName "${note.LastName}" does not match lead`
+            );
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      })
+    );
+  
+    setLoading(false);
+    setNoteSaved(true);
+  };
+  
 
-    //   Leads
+  // const handleUpload = async () => {
+
+  //   console.log("Uploading..");
+  //   setLoading(true);
+
+  //   //   Leads
   
 
 
-   //   For each note...
-    data.forEach((note) => {
+  //  //   For each note...
+  //   data.forEach((note) => {
 
 
     
-        try{
+  //       try{
 
-       //   Search for where a note objects firstName and lastName match a leads firstName and lastName then use the leadId to place in the note
+  //      //   Search for where a note objects firstName and lastName match a leads firstName and lastName then use the leadId to place in the note
 
-       // Users is the array of leads containing the users[0].firstName and users[0].lastName and users[0].id, etc. Compare that. 
+  //      // Users is the array of leads containing the users[0].firstName and users[0].lastName and users[0].id, etc. Compare that. 
      
 
-       const matchingLead = users.find((lead) => lead.firstName === note.FirstName && lead.lastName === note.LastName);
-       if (matchingLead) {
+  //      const matchingLead = users.find((lead) => lead.firstName === note.FirstName && lead.lastName === note.LastName);
+  //      if (matchingLead) {
 
-         // console.log(users[0].firstName)
-         // console.log(users[0].lastName)
+  //        // console.log(users[0].firstName)
+  //        // console.log(users[0].lastName)
 
-         // console.log(note.FirstName)
-         // console.log(note.LastName)
+  //        // console.log(note.FirstName)
+  //        // console.log(note.LastName)
  
-         // If a matching lead is found, log its leadId
-         console.log(`Note with firstName "${note.FirstName}" and lastName "${note.LastName}" matches lead with leadId "${matchingLead.id}"`);
+  //        // If a matching lead is found, log its leadId
+  //        console.log(`Note with firstName "${note.FirstName}" and lastName "${note.LastName}" matches lead with leadId "${matchingLead.id}"`);
          
-         // Upload the note with the matching leadId
-         // SET
-
-         addNote({
-           variables: {
-             contactId: matchingLead.id,
-             FirstName: note.FirstName,
-             LastName: note.LastName,
-             Notes: note.Notes,
-             BuyerAgent: note.BuyerAgent,
-             ListingAgent: note.ListingAgent,
-             leadId: matchingLead.id,
-           },
-         }).then((res) => {
-          setNoteSaved(true);
-         })
+  //        // Upload the note with the matching leadId
+  //        // SET
 
 
 
-       } else {
-        console.log(error);
-         // If no matching lead is found, log an error
-         // console.error(`Note with firstName "${note.FirstName}" and lastName "${note.LastName}" does not match any lead`);
-       }
+  //      await addNote({
+  //          variables: {
+  //            contactId: matchingLead.id,
+  //            FirstName: note.FirstName,
+  //            LastName: note.LastName,
+  //            Notes: note.Notes,
+  //            BuyerAgent: note.BuyerAgent,
+  //            ListingAgent: note.ListingAgent,
+  //            leadId: matchingLead.id,
+  //          },
+  //        }).then((res) => {
+  //         setNoteSaved(true);
+  //        })
+
+
+
+  //      } else {
+
+
+  //       console.log(error);
+  //        // If no matching lead is found, log an error
+  //         // console.error(`Note with firstName "${note.FirstName}" and lastName "${note.LastName}" does not match  lead with leadId "${matchingLead.id}"``);
+
+  //      }
 
 
 
 
 
-        } catch (error) {
-            console.log(error);
-        }
+  //       } catch (error) {
+  //           console.log(error);
+  //       }
 
    
-    });
+  //   });
   
 
-    setLoading(false);
-  };
+  //   setLoading(false);
+  // };
 
 
 
