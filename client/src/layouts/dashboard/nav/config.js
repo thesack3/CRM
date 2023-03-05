@@ -12,18 +12,9 @@ const navConfig = [
     icon: icon('ic_analytics'),
   },
   {
-    title: 'Leads',
-    path: '/dashboard/user',
-    icon: icon('ic_user'),
-  },
-  {
     title: 'Listings',
     path: '/dashboard/products',
     icon: icon('ic_cart'),
-  }, {
-    title: 'Profile',
-    path: '/dashboard/profile',
-    icon: icon('ic_user'),
   },
   {
     title: 'Leads',
@@ -31,11 +22,11 @@ const navConfig = [
     icon: icon('ic_user'),
   },
  
-  {
-    title: 'Not found',
-    path: '/404',
-    icon: icon('ic_disabled'),
-  },
+  // {
+  //   title: 'Leads',
+  //   path: '/dashboard/user',
+  //   icon: icon('ic_user'),
+  // },
   {
     title: 'Login',
     path: '/login',
