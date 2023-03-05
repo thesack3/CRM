@@ -152,8 +152,6 @@ export default function AddNote() {
     await Promise.all(
       data.map(async (note) => {
 
-
-
         // console.log(note);
         try {
           const matchingLead = users.find(
@@ -166,17 +164,17 @@ export default function AddNote() {
               `Note with firstName "${note.FirstName}" and lastName "${note.LastName}" matches lead with leadId "${matchingLead.id}"`
             );
   
-            // await addNote({
-            //   variables: {
-            //     contactId: matchingLead.id,
-            //     FirstName: note.FirstName,
-            //     LastName: note.LastName,
-            //     Notes: note.Notes,
-            //     BuyerAgent: note.BuyerAgent,
-            //     ListingAgent: note.ListingAgent,
-            //     leadId: matchingLead.id,
-            //   },
-            // });
+            await addNote({
+              variables: {
+                contactId: matchingLead.id,
+                FirstName: note.FirstName,
+                LastName: note.LastName,
+                Notes: note.Notes,
+                BuyerAgent: note.BuyerAgent,
+                ListingAgent: note.ListingAgent,
+                leadId: matchingLead.id,
+              },
+            });
   
             console.log(`Note with firstName "${note.FirstName}" and lastName "${note.LastName}" uploaded successfully`);
           } else {

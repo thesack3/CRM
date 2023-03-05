@@ -10,6 +10,7 @@ import { updateLeadMutation } from '../mutations/leadMutations';
 
 
 function CellBox({params, rowId, setRowId, item }) {
+  
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState(false);
     const [highlighted, setHighlighted] = useState(false);

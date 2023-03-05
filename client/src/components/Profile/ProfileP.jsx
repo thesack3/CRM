@@ -66,7 +66,7 @@ const SelectFilter = () =>{
 
 
 
-export default function ProfileP() {
+export default function ProfileP({rowId}) {
 
   const [users, setUsers] = useState([]);
 
@@ -105,8 +105,8 @@ export default function ProfileP() {
       console.log(leadsData);
       const { leads } = leadsData;
       setUsers(leads);
-      setLead(leads[0]);
-      setSelectedLead(leads[0]);
+      setLead(leads[rowId]);
+      setSelectedLead(leads[rowId]);
 
 
       if(notesData){
@@ -134,30 +134,7 @@ export default function ProfileP() {
     }
   }, [selectedLead]);
 
-  
-  // useEffect(() => {
-  //   if(selectedLead){
-  //     alert("Selected Lead");
-  //     console.log(selectedLead);
-  //     getNotes();
-  //   }
-    
-  // }, []);
 
-
-  // const getNotes = async () => {
-  //   try {
-  //     const { data } = await GET_NOTES({
-  //       variables: { lead_id: selectedLead.id },
-  //     });
-  //     console.log(data);
-  //     alert("Notes Data");
-      
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
-  
 
 
   return (
@@ -171,59 +148,10 @@ export default function ProfileP() {
         <Grid container spacing={3} sx={{height: 'fit-content', paddingBottom: '10em'}} >
 
    
-{/* / ================================================== */}
-{/* / ================================================== */}
-{/* / ================================================== */}
-{/* Top Buttons */}
-{/* <Grid item xs={12} spacing={2} sx={{ height: 'fit-content' }}>
-  <Button sx={{ height: 50, fontSize: '.7rem', borderRadius: 2, backgroundColor: 'white', backgroundImage: 'linear-gradient(to bottom right, #f5e10a, #fffffc)', color: 'black' , margin: '2px', width: '120px', border: 'solid'}}>New (talked to)</Button>
-  <Button sx={{ height: 50, fontSize: '.7rem', borderRadius: 2, backgroundColor: 'white', backgroundImage: 'linear-gradient(to bottom right, #ff9100, #fffffc)', color: 'black', margin: '2px' , width: '120px', border: 'solid'}}>New (talked to)</Button>
-  <Button sx={{ height: 50, fontSize: '.7rem', borderRadius: 2, backgroundColor: 'white', backgroundImage: 'linear-gradient(to bottom right, #ff6200, #fffffc)', color: 'black' , margin: '2px', width: '120px', border: 'solid'}}>New (talked to)</Button>
-  <Button sx={{ height: 50, fontSize: '.7rem', borderRadius: 2, backgroundColor: 'white', backgroundImage: 'linear-gradient(to bottom right, #ff0800, #fffffc)', color: 'black' , margin: '2px', width: '120px', border: 'solid'}}>Hot (talked to)</Button>
-  <Button sx={{ height: 50, fontSize: '.7rem', borderRadius: 2, backgroundColor: 'white', backgroundImage: 'linear-gradient(to bottom right, #ff3700, #fffffc)', color: 'black' , margin: '2px', width: '120px', border: 'solid'}}>Hot (talked to)</Button>
-  <Button sx={{ height: 50, fontSize: '.7rem', borderRadius: 2, backgroundColor: 'white', backgroundImage: 'linear-gradient(to bottom right, #1aff00, #fffffc)', color: 'black' , margin: '2px', width: '100px', border: 'solid'}}>Qualify (talked to)</Button>
-  <Button sx={{ height: 50, fontSize: '.7rem', borderRadius: 2, backgroundColor: 'white', backgroundImage: 'linear-gradient(to bottom right, #007d06, #fffffc)', color: 'black' , margin: '2px', width: '100px', border: 'solid'}}>Qualify (talked to)</Button>
-  <Button sx={{ height: 50, fontSize: '.7rem', borderRadius: 2, backgroundColor: 'white', backgroundImage: 'linear-gradient(to bottom right, #00ffcc, #fffffc)', color: 'black' , margin: '2px', width: '100px', border: 'solid'}}>Nurture (talked to)</Button>
-  <Button sx={{ height: 50, fontSize: '.7rem', borderRadius: 2, backgroundColor: 'white', backgroundImage: 'linear-gradient(to bottom right, #0088ff, #fffffc)', color: 'black' , margin: '2px', width: '100px', border: 'solid'}}>Nurture (talked to)</Button>
-  <Button sx={{ height: 50, fontSize: '.7rem', borderRadius: 2, backgroundColor: 'white', backgroundImage: 'linear-gradient(to bottom right, #002c52, #fffffc)', color: 'black' , margin: '2px', width: '100px', border: 'solid'}}>Nurture (talked to)</Button>
-
-</Grid> */}
 
 
 
-{/* 
-<Grid item xs={12}  spacing={2} sx={{ height: 'fit-content'}}>
 
-
-<Button sx={{ height: 50, fontSize: '.7rem', borderRadius: 2, backgroundColor: 'white', backgroundImage: 'linear-gradient(to bottom right, #542c9e, #fffffc)', color: 'black' , margin: '2px', border: 'solid'}}>Unlikely (unresponsive)</Button>
-  <Button sx={{ height: 50, fontSize: '.7rem', borderRadius: 2, backgroundColor: 'white', backgroundImage: 'linear-gradient(to bottom right, #872c9e, #fffffc)', color: 'black', margin: '2px', border: 'solid' }}>Unlikely (unresponsive)</Button>
-  <Button sx={{ height: 50, fontSize: '.7rem', borderRadius: 2, backgroundColor: 'white', backgroundImage: 'linear-gradient(to bottom right, #340440, #fffffc)', color: 'black' , margin: '2px', border: 'solid'}}>Unlikely (unresponsive)</Button>
-  <Button sx={{ height: 50, fontSize: '.7rem', borderRadius: 2, backgroundColor: 'white', backgroundImage: 'linear-gradient(to bottom right, #402204, #fffffc)', color: 'black' , margin: '2px', border: 'solid'}}>Unlikely (unresponsive)</Button>
-  <Button sx={{ height: 50, fontSize: '.7rem', borderRadius: 2, backgroundColor: 'white', backgroundImage: 'linear-gradient(to bottom right, #ab5e11, #fffffc)', color: 'black' , margin: '2px', border: 'solid'}}>Unlikely (unresponsive)</Button>
-  <Button sx={{ height: 50, fontSize: '.7rem', borderRadius: 2, backgroundColor: 'white', backgroundImage: 'linear-gradient(to bottom right, #de57c3, #fffffc)', color: 'black' , margin: '2px', border: 'solid'}}> Pending </Button>
-  <Button sx={{ height: 50, fontSize: '.7rem', borderRadius: 2, backgroundColor: 'white', backgroundImage: 'linear-gradient(to bottom right, #00fcc6, #fffffc)', color: 'black' , margin: '2px', border: 'solid'}}> Closed </Button>
-  <Button sx={{ height: 50, fontSize: '.7rem', borderRadius: 2, backgroundColor: 'white', backgroundImage: 'linear-gradient(to bottom right, #000000, #000000)', color: 'white' , margin: '2px', border: 'solid'}}> Trash </Button>
-
-  </Grid>
- */}
-
-
-{/* ================================================================================================================================================================================================================================================================================ */}
-
-
-{/* / ================================================== */}
-
-{/* / ================================================== */}
-{/* Search Filter tags and custom presets============================ */}
-{/* <Grid item xs={12} sx={{ height: 100 , display: 'flex', justifyContent: 'left', alignContent: 'center'}}>
-<TagBox  setLead={handleLeadChange} />
-<SelectFilter/>
-</Grid> */}
-
-{/* <Grid item xs={12} sx={{ height: 'fit-content' , display: 'flex', justifyContent: 'left', alignContent: 'center', backgroundColor: 'red'}}>
-<SearchBox />
-</Grid>
- */}
 
 
 <Grid item xs={12} sx={{ height: 'fit-content' , display: 'flex',justifyContent: 'center', alignContent: 'center'}}>
@@ -266,20 +194,6 @@ export default function ProfileP() {
   <hr color='black'/>
   {lead ? lead.description : 'none'}
 </Box>
-{/* 
-<Box sx={{width: '350px', marginLeft: '5px'}}>
-  <p style={{fontWeight: 'bold'}}>
-    Lead
-  </p>
-  <hr color='black'/>
-  <p>Selected Lead: {selectedLead ? selectedLead.email : 'none'}</p>
-  <p style={{fontWeight: 'bold', wordWrap: 'break-word'}}>
-    (555)555-5555
-  </p>
-  <p style={{fontWeight: 'bold', wordWrap: 'break-word'}}>
-    annapappadupoila@flastrarconnectusa.com
-  </p>
-</Box> */}
 
 
   
@@ -293,27 +207,10 @@ export default function ProfileP() {
 
 
 
-
-{/* / ================================================== */}
 <Grid item xs={4} md={4} lg={4} sx={{display: 'flex-direction', justifyContent: 'center'}}>
-{/* 
-<AppTasks
-              title="To Do"
-              list={[
-                { id: '1', label: 'Follow up with Lead #1233' },
-                { id: '2', label: 'Call Lead #1233' },
-      
-              ]}
-            /> */}
-
-{/* 
-  <h1>
-      History
-  </h1>
 
 
 
-<SnackBar/> */}
 
 <h3>
       Notes
@@ -323,12 +220,7 @@ export default function ProfileP() {
   {notesLoading ? "Loading Notes..." : (notesData && notesData.notes && notesData.notes.length > 0 ? (
   notesData.notes.map((note) => (
     <SnackBar notes={notesData} type={"Notes"}/>
-    // <div key={note.id}>
-    //   <h2>{note.FirstName} {note.LastName}</h2>
-    //   <p>{note.Notes}</p>
-    //   <p>Buyer Agent: {note.BuyerAgent}</p>
-    //   <p>Listing Agent: {note.ListingAgent}</p>
-    // </div>
+  
   ))
 ) : "No Notes")}
 

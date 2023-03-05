@@ -143,7 +143,7 @@ export default function DataGridProCSV(props) {
         const columns = useMemo(
           () => [
             // {field: 'Actions', headerName: 'actions', width: 130, renderCell: (params) =>  <UsersActions{...{params, rowId, setRowId}}/>},
-            {field: 'Profile', headerName: 'Profile', width: 150,  editable: true, renderCell: (params) =>  <ProfileDetailsPage/>},
+            {field: 'Profile', headerName: 'Profile', width: 150,  editable: true, renderCell: (params) =>  <ProfileDetailsPage row={params.row.Uid} {...{params }}   />},
             {field: 'id', headerName: 'ID', width: 250,  editable: true},
             {field: 'firstName', headerName: 'First Name', width: 180,  editable: true, renderCell: (params) =>  <CellBox item={1} {...{params, rowId, setRowId }}/>},
             {field: 'lastName', headerName: 'last Name', width: 180,  editable: true, renderCell: (params) =>  <CellBox item={2} {...{params, rowId, setRowId }}/>},

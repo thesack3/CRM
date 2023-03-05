@@ -63,7 +63,7 @@ const SelectFilter = () =>{
 
 
 
-export default function ProfileDetailsPage() {
+export default function ProfileDetailsPage({params, row}) {
 
   const [users, setUsers] = useState([]);
   const theme = useTheme();
@@ -87,7 +87,9 @@ const handleLeadChange = (lead) => {
 };
 useEffect(() => {
 
-  if(data){
+  
+
+    if(data){
        console.log(data);
    const { leads } = data;
    
@@ -108,6 +110,8 @@ useEffect(() => {
      setUsers([]);
   }
  
+  
+  
     
 
    }, [ data , Notedata])
@@ -121,7 +125,7 @@ useEffect(() => {
 
 
   return (
-   <UserModal/>
+   <UserModal RowId={row}/>
   );
 }
 

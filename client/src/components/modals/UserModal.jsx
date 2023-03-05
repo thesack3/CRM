@@ -20,7 +20,7 @@ import {ADD_EALERT} from '../../mutations/eAlertMutations';
 import {ADD_NOTE} from '../../mutations/noteMutations';
 import ProfileP from '../Profile/ProfileP';
 
-export default function UserModal() {
+export default function UserModal({RowId}) {
   const [open, setOpen] = React.useState(false);
   const [data, setData] = React.useState(false);
   const [loading, setLoading] = useState(false);
@@ -219,7 +219,7 @@ export default function UserModal() {
         <DialogContent  className={styles.MainModal}>
 
               <Box sx={{width: '100%' , height: 'fit-content'}}> 
-                <ProfileP/>
+                <ProfileP rowId={RowId}/>
     
   </Box>
         </DialogContent>

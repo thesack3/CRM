@@ -18,8 +18,8 @@ const navConfig = [
   },
   {
     title: 'Leads',
-    path: '/dashboard/blog',
-    icon: icon('ic_user'),
+    path: '/dashboard/leads',
+    icon: icon('ic_van'),
   },
  
   // {
