@@ -110,15 +110,15 @@ export default function ProfileP() {
 
 
       if(notesData){
-        alert("Notes Data");
+        // alert("Notes Data");
         console.log(notesData);
       }
       if (callsData) {
-        alert("Calls Data");
+        // alert("Calls Data");
         console.log(callsData);
       }
       if (ealertsdata) {
-        alert("EAlerts Data");
+        // alert("EAlerts Data");
         console.log(ealertsdata);
       }
 
