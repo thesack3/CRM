@@ -7,17 +7,17 @@ import { BsChatText, BsJournal } from 'react-icons/bs';
 
 const action = (
   <Button color="secondary" size="small" sx={{height: '10px'}}>
-     <p style={{marginRight: '5px'}}>From: Bryan</p> <BsChatText/>
+     <p style={{marginRight: '5px'}}>Action</p> <BsChatText/>
   </Button>
 );
 const Noteaction = (
   <Button color="secondary" size="small" sx={{height: '10px'}}>
-     <p style={{marginRight: '5px'}}>From: Jake</p> <BsJournal/>
+     <p style={{marginRight: '5px'}}>Note</p> <BsJournal/>
   </Button>
 );
-const Alertactio = (
+const Alertaction = (
   <Button color="secondary" size="small" sx={{height: '10px'}}>
-     <p style={{marginRight: '5px'}}>From: Jake</p> <BsChatText/>
+     <p style={{marginRight: '5px'}}>Alert</p> <BsChatText/>
   </Button>
 );
 
@@ -102,7 +102,7 @@ export default function SnackBar(props) {
         <SnackbarContent 
   sx={{backgroundColor: UIColor, color: '#000000'}}
   message={alert.FirstName}
-  action={Noteaction} />
+  action={Alertaction} />
 
     </div>
 
