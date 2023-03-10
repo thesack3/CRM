@@ -11,6 +11,7 @@ import { GET_LEADS, NEW_LEAD_SUBSCRIPTION } from '../queries/leadQueries';
 import AddLeadModal from '../components/modals/AddLead';
 import UsersActions from '../components/UsersActions';
 import AddNoteButton from '../components/modals/AddNoteButton'
+import AddCSVLeadModal from '../components/modals/AddCSVLeadModal';
 // @mui
 // components
 import Iconify from '../components/iconify';
@@ -106,9 +107,9 @@ export default function BlogPage() {
             Leads 
           </Typography>
 
-      <AddLeadModal/>
-
-      <AddNoteButton/>
+      <AddLeadModal/>   
+      <AddCSVLeadModal/>
+      {/* <AddNoteButton/> */}
       {/* <UserModal/> */}
 
         </Stack>
