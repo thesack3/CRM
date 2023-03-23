@@ -43,7 +43,11 @@ const GET_LEADS = gql`
       City
       State
       ZipCode
-      Tags
+      tags{
+        id
+        title
+        dateCreated
+      }
       Link
       Birthday
       HomeClosingDate

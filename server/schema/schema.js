@@ -20,6 +20,7 @@
         } = require('graphql');
 const User = require('../models/User');
 const Note = require('../models/Note');
+const Tag = require('../models/Tag');
 const EAlert = require('../models/EAlert');
 const Call = require('../models/Call');
 
@@ -148,6 +149,10 @@ const UserType = new GraphQLObjectType({
         })
     });
 
+
+
+
+
  // Client Type
  const ClientType = new GraphQLObjectType({
     name: 'Client',
@@ -206,15 +211,30 @@ const LeadType = new GraphQLObjectType({
         City:{ type: GraphQLString}, 
         State:{ type: GraphQLString},
         ZipCode:{ type: GraphQLString},
-        Tags:{ type: GraphQLString},
+        tags: { type: GraphQLList(GraphQLID) },
         Link:{ type: GraphQLString},
         Birthday:{ type: GraphQLString},
         HomeClosingDate:{ type: GraphQLString}, 
+        tags: {
+          type: new GraphQLList(TagType),
+          resolve(parent, args) {
+          return Tag.find({ _id: { $in: parent.tags } });
+          },
+         },
        
 
     })
  });
 
+
+ const TagType = new GraphQLObjectType({
+    name: 'Tag',
+    fields: () => ({
+        id:{ type: GraphQLID},
+        title:{ type: GraphQLString},
+        dateCreated: { type: GraphQLString},
+    })})
+        
 
  //Graphql Input Types: 
 
@@ -346,7 +366,30 @@ const LeadType = new GraphQLObjectType({
                   return null;
                 });
             }
+        },
+        tag: {
+            type: TagType,
+            args: {id: { type: GraphQLID } },
+            resolve(parent, args){
+                return Tag.findById(args.id).then((result) => {
+                    console.log("found tag", result);
+                    return result;
+                    }).catch((error) => {
+                    console.error("error finding tag", error);
+                    return null;
+                    });
+            }   
+        },
+        tags:{
+            type: new GraphQLList(TagType),
+            resolve(parent, args){
+                return Tag.find();
+            }
+
         }
+
+
+
     }
  })
 
@@ -569,74 +612,97 @@ const mutation = new GraphQLObjectType({
         addLead: {
             type: LeadType,
             args:{
-                
-                firstName:{ type: GraphQLNonNull(GraphQLString)}, 
-                email:{ type:GraphQLNonNull(GraphQLString) }, 
-                lastName:{ type: GraphQLString}, 
-                phone:{ type: GraphQLString}, 
-                phoneStatus:{ type: GraphQLString}, 
-                description:{ type: GraphQLString},
-                emailInvalid:{ type: GraphQLString}, 
-                GloballyOptedOutOfEmail:{ type: GraphQLString}, 
-                GloballyOptedOutOfBuyerAgentEmail:{ type: GraphQLString}, 
-                GloballyOptedOutOfListingAgentEmail:{ type: GraphQLString}, 
-                GloballyOptedOutOfLenderEmail:{ type: GraphQLString}, 
-                GloballyOptedOutOfAlerts:{ type: GraphQLString}, 
-                OptInDate:{ type: GraphQLString}, 
-                BuyerAgentCategory:{ type: GraphQLString}, 
-                ListingAgentCategory:{ type: GraphQLString}, 
-                LenderCategory:{ type: GraphQLString}, 
-                BuyerAgent:{ type: GraphQLString}, 
-                ListingAgent:{ type: GraphQLString}, 
-                Lender:{ type: GraphQLString}, 
-                OriginalSource:{ type: GraphQLString}, 
-                OriginalCampaign:{ type: GraphQLString}, 
-                LastAgentNote:{ type: GraphQLString}, 
-                eAlerts:{ type: GraphQLString}, 
-                VisitTotal:{ type: GraphQLString}, 
-                listingviewcount:{ type: GraphQLString}, 
-                AvgListingPrice:{ type: GraphQLString}, 
-                NextCallDue:{ type: GraphQLString}, 
-                LastAgentCallDate:{ type: GraphQLString}, 
-                LastLenderCallDate:{ type: GraphQLString}, 
-                FirstVisitDate:{ type: GraphQLString}, 
-                LastVisitDate:{ type: GraphQLString}, 
-                RegisterDate:{ type: GraphQLString}, 
-                LeadType:{ type: GraphQLString}, 
-                AgentSelected:{ type: GraphQLString}, 
-                LenderOptIn:{ type: GraphQLString}, 
-                Address:{ type: GraphQLString}, 
-                City:{ type: GraphQLString}, 
-                State:{ type: GraphQLString},
-                ZipCode:{ type: GraphQLString},
-                Tags:{ type: GraphQLString},
-                Link:{ type: GraphQLString},
-                Birthday:{ type: GraphQLString},
-                HomeClosingDate:{ type: GraphQLString}, 
-            
+              firstName: { type: GraphQLNonNull(GraphQLString) }, 
+              email: { type: GraphQLNonNull(GraphQLString) }, 
+              lastName: { type: GraphQLString }, 
+              phone: { type: GraphQLString }, 
+              phoneStatus: { type: GraphQLString }, 
+              description: { type: GraphQLString },
+              emailInvalid: { type: GraphQLString }, 
+              GloballyOptedOutOfEmail: { type: GraphQLString }, 
+              GloballyOptedOutOfBuyerAgentEmail: { type: GraphQLString }, 
+              GloballyOptedOutOfListingAgentEmail: { type: GraphQLString }, 
+              GloballyOptedOutOfLenderEmail: { type: GraphQLString }, 
+              GloballyOptedOutOfAlerts: { type: GraphQLString }, 
+              OptInDate: { type: GraphQLString }, 
+              BuyerAgentCategory: { type: GraphQLString }, 
+              ListingAgentCategory: { type: GraphQLString }, 
+              LenderCategory: { type: GraphQLString }, 
+              BuyerAgent: { type: GraphQLString }, 
+              ListingAgent: { type: GraphQLString }, 
+              Lender: { type: GraphQLString }, 
+              OriginalSource: { type: GraphQLString }, 
+              OriginalCampaign: { type: GraphQLString }, 
+              LastAgentNote: { type: GraphQLString }, 
+              eAlerts: { type: GraphQLString }, 
+              VisitTotal: { type: GraphQLString }, 
+              listingviewcount: { type: GraphQLString }, 
+              AvgListingPrice: { type: GraphQLString }, 
+              NextCallDue: { type: GraphQLString }, 
+              LastAgentCallDate: { type: GraphQLString }, 
+              LastLenderCallDate: { type: GraphQLString }, 
+              FirstVisitDate: { type: GraphQLString }, 
+              LastVisitDate: { type: GraphQLString }, 
+              RegisterDate: { type: GraphQLString }, 
+              LeadType: { type: GraphQLString }, 
+              AgentSelected: { type: GraphQLString }, 
+              LenderOptIn: { type: GraphQLString }, 
+              Address: { type: GraphQLString }, 
+              City: { type: GraphQLString }, 
+              State: { type: GraphQLString },
+              ZipCode: { type: GraphQLString },
+              tags: { type: GraphQLList(GraphQLString) }, // updated
+              Link: { type: GraphQLString },
+              Birthday: { type: GraphQLString },
+              HomeClosingDate: { type: GraphQLString }, 
             },
             async resolve(parent, args) {
-                try {
-                    const lead = new Lead(args);
-                    const result = await lead.save();
-                
-                    return result;
-                  } catch (error) {
-                    console.error(error);
-                 
-                    throw new Error("Error adding lead");
-                  }
-
-                //Client.create(//fields) //could do it this way as well
-            }},   
+              try {
+                const lead = new Lead(args);
+                const result = await lead.save();
+                return result;
+              } catch (error) {
+                console.error( "Error details", error);
             
-            updateLead: {
+                throw new Error("Error adding lead");
+              }
+            }
+          },
+           
+
+            addTag:{
+                type: TagType,
+                args:{
+                    title: { type: GraphQLNonNull(GraphQLString) },
+                    dateCreated: { type: GraphQLNonNull(GraphQLString) },
+                },
+                async resolve(parent, args) {
+                    try {
+                        const tag = new Tag(args);
+                        const result = await tag.save();
+                    
+                        return result;
+                      } catch (error) {
+                        console.error(error);
+                     
+                        throw new Error("Error adding tag");
+                      }
+    
+                    //Client.create(//fields) //could do it this way as well
+                }
+
+                    
+
+            },
+            
+      updateLead: {
                 type: LeadType,
                 args: {
                   id: { type: GraphQLNonNull(GraphQLID) },
                   firstName: { type: GraphQLString },
                   email: { type: GraphQLString },
                   lastName: { type: GraphQLString },
+                   tags: { type: GraphQLList(GraphQLString) }
                   // Add additional fields to update here
                 },
                 async resolve(parent, { id, ...updatedFields }) {

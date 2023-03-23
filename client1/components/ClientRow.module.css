@@ -1,0 +1,23 @@
+
+.row{
+    
+    padding-top: 1em;
+    margin: 1em; 
+}
+.row:hover{
+    width: 90vw;
+    
+    }
+
+    .button{
+        border: none;
+        border-radius: 10px;
+        background-color: #eb0085;
+        width: 40px;
+        height: 40px;
+
+    }
+    .button:hover{
+    
+        scale: 1.1;
+    }

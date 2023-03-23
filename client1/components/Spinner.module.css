@@ -1,0 +1,8 @@
+.spinner{
+    display: flex;
+    justify-content: center;
+}
+.spinnerBoarder{
+    width: 5em;
+    height: 5em;
+}

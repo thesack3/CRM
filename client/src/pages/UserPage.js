@@ -34,7 +34,7 @@ import Scrollbar from '../components/scrollbar';
 import { UserListHead, UserListToolbar } from '../sections/@dashboard/user';
 // mock
 import USERLIST from '../_mock/user';
-
+import TagBox from '../components/inputs/SearchTagBox';
 import AddLeadModal from '../components/modals/AddLead';
 import AddCSVLeadModal from '../components/modals/AddCSVLeadModal';
 import AddCSVCall from '../components/modals/AddCSVCalls';

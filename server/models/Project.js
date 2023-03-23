@@ -14,6 +14,11 @@ const ProjectSchema = new mongoose.Schema({
     clientId:{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Client'
+    },
+    tags :{ 
+        type: [String],
+        required: false,
+        default: []
     }
 })
 

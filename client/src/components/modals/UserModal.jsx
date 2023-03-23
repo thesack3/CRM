@@ -205,17 +205,18 @@ export default function UserModal({RowId}) {
   return (
     <div className={styles.MainDiv}  >
       <Button variant="outlined" onClick={handleClickOpen}>
-       Profile Page
+       Profile 
       </Button>
 
 <div className={styles.ModalMain}>
        <Dialog maxWidth="xl" maxHeight="xl"   sx={{width: '100%',  height: '100%',
     display: 'flex',
     flexDirection: 'column',
+   
     }} open={open} onClose={handleClose}  >
       
     
-        <DialogTitle >Profile Page</DialogTitle >
+        <DialogTitle >Profile </DialogTitle >
         <DialogContent  className={styles.MainModal}>
 
               <Box sx={{width: '100%' , height: 'fit-content'}}> 

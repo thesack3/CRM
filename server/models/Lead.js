@@ -163,10 +163,6 @@ const LeadSchema = new mongoose.Schema({
         type: String,
         required: false
     },
-    Tags:{
-        type: String,
-        required: false
-    },
     Link:{
         type: String,
         required: false
@@ -179,7 +175,10 @@ const LeadSchema = new mongoose.Schema({
         type: String,
         required: false
     },
-    
+    tags : [{ 
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Tag'
+    }]
     
  });
 

@@ -19,33 +19,32 @@ function CellBox({params, rowId, setRowId, item }) {
 
 
     const [updateLead, { Leadloading, error, Leaddata }] = useMutation(updateLeadMutation);
+
+
     const handleUpdateLead = async (leadId, first, Email, last) => {
         try {
-         const result = await   updateLead({
+         const result = await updateLead({
             variables: {
               id: leadId,
               firstName: first,
               email: Email,
-              lastName: last
+              lastName: last,
+              tags: []
             }
+          }).then((res) => {
+
+            console.log("Lead Updated");
+          // console.log(result.data.updateLead);
+            console.log(res)
+          }).catch((err) => {
+            console.log("error updating lead.");
+        console.log(err)
+            console.log(err)
           });
-      
-          console.log("Lead Updated");
-          console.log(result.data.updateLead);
-      
-        //   let updatedField = '';
-        //   if (first !== params.row.firstName) {
-        //     updatedField = 'firstName';
-        //   } else if (last !== params.row.lastName) {
-        //     updatedField = 'lastName';
-        //   } else if (Email !== params.row.email) {
-        //     updatedField = 'email';
-        //   }
-          
-        //   setHighlightField(result.data.updateLead[updatedField]);
-          
-      
-        return result.data.updateLead;
+
+    
+          return result
+        // return result.data.updateLead;
         } catch (error) {
           console.log("Failed updating the lead");
           console.log(error);
@@ -57,8 +56,11 @@ function CellBox({params, rowId, setRowId, item }) {
     useEffect(() => {
 
         console.log(params.row)
+        
         const {firstName, id, email , lastName} = params.row;
 
+
+        
         handleUpdateLead(id, firstName,email , lastName ).then((res) => {
            //  alert("Lead Updated")
             console.log("Lead Updated")
@@ -67,15 +69,18 @@ function CellBox({params, rowId, setRowId, item }) {
                  if (item === 1) {
                     const {firstName} = params.row;
                     setHighlightField(firstName);
+                    
                 }else if (item === 2) {
                     const {lastName} = params.row;
                     setHighlightField(lastName);
+                    
                 }else if (item === 3) {
                     const {email} = params.row;
                     setHighlightField(email);
+                  
                 }
 
-
+           
                
         }).catch((err) => {
             console.log(err)
@@ -141,7 +146,7 @@ function CellBox({params, rowId, setRowId, item }) {
 
         
         setSuccess(true);
-        handleSubmit();
+        // handleSubmit();
  
     };
 
@@ -152,7 +157,7 @@ function CellBox({params, rowId, setRowId, item }) {
       };
 
 const handleSubmit = async () => {
-    setHighlighted(true);
+    // setHighlighted(true);
     setLoading(true);
     setSuccess(false);
 
@@ -168,12 +173,15 @@ const handleSubmit = async () => {
     }
 
     try {
+      
       const result = await handleUpdateLead(id, firstName, email, lastName);
       console.log("Lead Updated");
       console.log(result);
       setHighlightField(result.data.updateLead[updatedField]);
       setSuccess(true);
+      setHighlighted(true);
     } catch (error) {
+      // setHighlighted(true);
       console.log("Failed updating the lead");
       console.log(error);
       setSuccess(false);
@@ -249,8 +257,8 @@ const handleSubmit = async () => {
         sx={{
             m:1,
             position: 'relative',
-            backgroundColor: highlighted ? '#8effb1' : '#00000',
-
+             backgroundColor: highlighted ? '#8effb1' : '#00000',
+           // backgroundColor: highlighted ? '#00000' : '#00000',
             height: '100%',
             width: '100%',
             display: 'flex',

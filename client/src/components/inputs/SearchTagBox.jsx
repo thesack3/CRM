@@ -1,4 +1,5 @@
 
+
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
@@ -9,6 +10,7 @@ import { styled } from '@mui/material/styles';
 import { autocompleteClasses } from '@mui/material/Autocomplete';
 import { useQuery } from '@apollo/client';
 import { GET_LEADS } from '../../queries/leadQueries';
+ import { GET_TAGS } from '../../queries/tagQueries';
 
 const Root = styled('div')(
   ({ theme }) => `
@@ -117,6 +119,8 @@ const Listbox = styled('ul')(
   ({ theme }) => `
   width: 500px;
   margin: 2px 0 0;
+  backgroundColor: 'red';
+
   padding: 0;
   position: absolute;
   list-style: none;
@@ -162,27 +166,27 @@ const Listbox = styled('ul')(
 
 export default function TagBox(props) {
 
-  const { loading, error, data } = useQuery(GET_LEADS);
-const [leads, setLeads] = useState([]);
+  // const { loading, error, data } = useQuery(GET_LEADS);
+
+   const {loading, error, data} = useQuery(GET_TAGS);
+
+
+// const [leads, setLeads] = useState([]);
+
+const [tags, setTags] = useState([]);
+
+
+
 useEffect(() => {
   if (data) {
+
     console.log(data);
-    setLeads(data.leads);
+    // alert("data");
+    setTags(data.tags);
+    // setLeads(data);
     
   }
 }, [data]);
-
-
-
-
-
-
-
-
-
-
-
-
 
 // ...
 
@@ -201,75 +205,23 @@ const {
   id: 'customized-hook-demo',
   defaultValue: [],
   multiple: true,
-  options: leads,
-  getOptionLabel: (option) => option.email,
+  options: tags,
+  getOptionLabel: (option) => option.title,
   onChange: (event, newValue) => {
-    props.setLead(newValue);
+
+    
+    console.log(newValue);
+    // props.setLead(newValue);
   },
 });
-
-
-
-// const [users, setUsers] = useState(null);
-// const { loading, error, data } = useQuery(GET_LEADS);
-
-// useEffect(() => {
-
-//  if(data){
-//   console.log(data);
-// const { leads } = data;
-// setUsers(leads);
-
-// }else{
-// setUsers([]);
-// }
-  
-
-//   return () => {
-    
-//   }
-// }, [data])
-
-
-
-//   const {
-//     getRootProps,
-//     getInputLabelProps,
-//     getInputProps,
-//     getTagProps,
-//     getListboxProps,
-//     getOptionProps,
-//     groupedOptions,
-//     value,
-//     focused,
-//     setAnchorEl,
-//   } = useAutocomplete({
-//     id: 'customized-hook-demo',
-//     defaultValue: [top100Films[1]],
-//     multiple: true,
-//     options: top100Films,
-//     getOptionLabel: (option) => option.title,
-//   });
-
-
-
-
-
-
-
-
-
-
-
-
 
   return (
     <Root>
       <div {...getRootProps()}>
-        <Label {...getInputLabelProps()}>Search Filters</Label>
+        <Label {...getInputLabelProps()}>Search Tags</Label>
         <InputWrapper ref={setAnchorEl} className={focused ? 'focused' : ''}>
           {value.map((option, index) => (
-            <StyledTag label={option.email} {...getTagProps({ index })} />
+            <StyledTag label={option.title} {...getTagProps({ index })} />
           ))}
 
           <input {...getInputProps()} />
@@ -279,7 +231,7 @@ const {
         <Listbox {...getListboxProps()}>
           {groupedOptions.map((option, index) => (
             <li {...getOptionProps({ option, index })}>
-              <span>{option.email}</span>
+              <span>{option.title}</span>
               <CheckIcon fontSize="small" />
             </li>
           ))}
@@ -288,59 +240,4 @@ const {
     </Root>
   );
 }
-
-// Top 100 films as rated by IMDb users. http://www.imdb.com/chart/top
-const top100Films = [
-    { title: 'Isabella Rossellini', year: 1994 },
-    { title: 'Emma Watson', year: 1972 },
-    { title: 'Noah Centineo', year: 1974 },
-    { title: 'Ava DuVernay', year: 2008 },
-    { title: 'Isabella Rossellini', year: 1957 },
-    { title: "Jacob Black", year: 1993 },
-    { title: 'Sophia Vergara', year: 1994 },
-    {
-      title: 'Ethan Hawke',
-      year: 2003,
-    }, { title: 'Isabella Rossellini', year: 1994 },
-    { title: 'Emma Watson', year: 1972 },
-    { title: 'Noah Centineo', year: 1974 },
-    { title: 'Ava DuVernay', year: 2008 },
-    { title: 'Isabella Rossellini', year: 1957 },
-    { title: "Jacob Black", year: 1993 },
-    { title: 'Sophia Vergara', year: 1994 },
-    {
-      title: 'Ethan Hawke',
-      year: 2003,
-    }, { title: 'Isabella Rossellini', year: 1994 },
-    { title: 'Emma Watson', year: 1972 },
-    { title: 'Noah Centineo', year: 1974 },
-    { title: 'Ava DuVernay', year: 2008 },
-    { title: 'Isabella Rossellini', year: 1957 },
-    { title: "Jacob Black", year: 1993 },
-    { title: 'Sophia Vergara', year: 1994 },
-    {
-      title: 'Ethan Hawke',
-      year: 2003,
-    }, { title: 'Isabella Rossellini', year: 1994 },
-    { title: 'Emma Watson', year: 1972 },
-    { title: 'Noah Centineo', year: 1974 },
-    { title: 'Ava DuVernay', year: 2008 },
-    { title: 'Isabella Rossellini', year: 1957 },
-    { title: "Jacob Black", year: 1993 },
-    { title: 'Sophia Vergara', year: 1994 },
-    {
-      title: 'Ethan Hawke',
-      year: 2003,
-    }, { title: 'Isabella Rossellini', year: 1994 },
-    { title: 'Emma Watson', year: 1972 },
-    { title: 'Noah Centineo', year: 1974 },
-    { title: 'Ava DuVernay', year: 2008 },
-    { title: 'Isabella Rossellini', year: 1957 },
-    { title: "Jacob Black", year: 1993 },
-    { title: 'Sophia Vergara', year: 1994 },
-    {
-      title: 'Ethan Hawke',
-      year: 2003,
-    },
-  ];
 
