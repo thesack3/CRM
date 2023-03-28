@@ -11,11 +11,12 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import CsvUpload from '../DropBoxes/CsvUpload';
 import { ADD_LEAD } from '../../mutations/leadMutations';
-import {ADD_TAG} from '../../mutations/addTag';
+// import {ADD_TAG} from '../../mutations/addTag';
+import {ADD_CATEGORY} from '../../mutations/addCategory';
 
-export default function AddTagModal() {
+export default function AddCategoryModal() {
 
-  const [addLead, { loading, error, data }] = useMutation(ADD_TAG, {
+  const [addLead, { loading, error, data }] = useMutation(ADD_CATEGORY, {
     onCompleted: (data) => {
         console.log(data);
         setUploaded(true);
@@ -101,13 +102,13 @@ export default function AddTagModal() {
     { uploadInProcess ?( <div>
  
  <Button variant="outlined" onClick={handleClickOpen}>
-  Add Tag
+  Add Category
  </Button>
  <Dialog open={open} onClose={handleClose}>
-   <DialogTitle>New Tag Info</DialogTitle>
+   <DialogTitle>New Category Info</DialogTitle>
    <DialogContent>
      <DialogContentText>
-       Tell us about your new tag!
+       Tell us about your new Category!
      </DialogContentText>
 
 
@@ -128,7 +129,7 @@ export default function AddTagModal() {
 </div> ) : ( <div>
  
  <Button variant="outlined" onClick={handleClickOpen}>
-  Add Tag
+  Add Category
  </Button>
  <Dialog open={open} onClose={handleClose}>
    <DialogTitle>New Lead Info</DialogTitle>

@@ -16,6 +16,7 @@ import { GET_LEADS } from '../../queries/leadQueries';
 import ProfileDetailsPage from '../ProfileDetailsPage';
 import { updateLeadMutation } from '../../mutations/leadMutations';
 import { SEND_EMAILS_MUTATION } from '../../mutations/bulkEmail';
+import EditCellBox from '../CellBoxes/EdtableCellBox';
 import EmailActionModal from '../modals/EmalActionModal';
 import AddNote from '../modals/AddNote';
 import AddeAlert from '../modals/AddeAlert';
@@ -25,10 +26,7 @@ import ProfileP from '../Profile/ProfileP';
 
 export default function DataGridProCSV(props) {
 
-
-
-
-
+  const [tags, setTags] = useState([]);
 
 
   const [updateLead, { Leadloading, error, Leaddata }] = useMutation(updateLeadMutation);
@@ -71,9 +69,58 @@ export default function DataGridProCSV(props) {
     'email',
     'lastName',
     'Profile',
+    'OriginalSource',
+    'phone',
+    'phoneStatus',
+    'emailInvalid',
+    'GloballyOptedOutOfEmail',
+    'OriginalSource',
+    'BuyerAgent',
+    'GloballyoptedOutOfBuyerAgentEmail',
+    'GloballyoptedOutOfListingAgentEmail',
+    'GloballyoptedOutOfLenderEmail',
+    'GloballyoptedOutOfAlerts',
+    'OptInDate',
+    'BuyerAgentCategory',
+    'ListingAgentCategory',
+    'LenderCategory',
+    'BuyerAgent',
+    'ListingAgent',
+    'Lender',
+    'tags',
+    'OriginalCampaign',
+    'LastAgentNote',
+    'eAlerts',
+    'VisitTotal',
+    'listingviewcount',
+    'AvgListingPrice',
+    'NextCallDue',
+    'LastAgentCallDate',
+    'LastLenderCallDate',
+    'FirstVisitDate',
+    'LastVisitDate',
+    'RegisterDate',
+    'LeadType',
+    'AgentSelected',
+    'LenderOptIn',
+    'Address',
+    'City',
+    'tags',
+    'categories',
+    'State',
+    'Zip',
+    'Link',
+    'Birthday',
+    'HomeClosingDate',
+  
+
   ]);
+
+
+
+
   const [gridRef, setGridRef] = useState({});
-  const [count, setCount] = useState(0);
+
   const [sendEmails, { loading: Emailsloading, error: Emailerror, data: emaildata }] = useMutation(
     SEND_EMAILS_MUTATION
   );
@@ -135,6 +182,8 @@ export default function DataGridProCSV(props) {
   };
 
   useEffect(() => {
+
+
     if(props.UserData){ 
       // console.log(props.UserData)
       
@@ -153,16 +202,51 @@ export default function DataGridProCSV(props) {
   const columns = useMemo(
     () => [
       {field: 'Profile', headerName: 'Profile', width: 150,  editable: true, renderCell: (params) =>  <ProfileDetailsPage row={params.row.Uid} {...{params }}/>},
-      { field: 'id', headerName: 'ID', width: 250, editable: true},
+      { field: 'id', headerName: 'ID', width: 250, editable: true, hide: true },
       { field: 'firstName', headerName: 'First Name', width: 180, editable: true, type: 'text'  , renderCell: (params) =>  <CellBox item={1} {...{params, rowId, setRowId }}/>},
-      { field: 'lastName', headerName: 'last Name', width: 180, editable: true , renderCell: (params) =>  <CellBox item={2} {...{params, rowId, setRowId }}/>},
+      { field: 'lastName', headerName: 'last Name', width: 180, editable: true , renderCell: (params) =>  <CellBox item={2} {...{params, rowId, setRowId }}/>, hide: true },
       { field: 'email', headerName: 'email', width: 250, editable: true, renderCell: (params) =>  <CellBox item={3} {...{params, rowId, setRowId }}/> },
-      { field: 'phone', headerName: 'phone', width: 180, editable: true },
-      { field: 'phoneStatus', headerName: 'phoneStatus', width: 120, editable: true },
-      { field: 'emailInvalid', headerName: 'emailInvalid', width: 120, editable: true },
-      { field: 'GloballyOptedOutOfEmail', headerName: 'GloballyOptedOutOfEmail', width: 120, editable: true },
-      { field: 'GloballyOptedOutOfBuyerAgentEmail', headerName: 'GloballyOptedOutOfBuyerAgentEmail', width: 120, editable: true },
-      { field: 'Uid', headerName: 'UID', width: 100, editable: true },
+      { field: 'phone', headerName: 'phone', width: 180, editable: true, renderCell: (params) =>  <CellBox item={4} {...{params, rowId, setRowId }}/> , hide: true},
+      { field: 'phoneStatus', headerName: 'phoneStatus', width: 120, editable: true , renderCell: (params) =>  <CellBox item={5} {...{params, rowId, setRowId }}/>, hide: true},
+      { field: 'emailInvalid', headerName: 'emailInvalid', width: 120, editable: true, renderCell: (params) =>  <CellBox item={6} {...{params, rowId, setRowId }}/>, hide: true },
+      { field: 'GloballyOptedOutOfEmail', headerName: 'GloballyOptedOutOfEmail', width: 120, editable: true, renderCell: (params) =>  <CellBox item={7} {...{params, rowId, setRowId }}/>, hide: true  },
+      { field: 'GloballyOptedOutOfBuyerAgentEmail', headerName: 'GloballyOptedOutOfBuyerAgentEmail', width: 120, editable: true, renderCell: (params) =>  <CellBox item={8} {...{params, rowId, setRowId }}/>, hide: true  },
+      { field: 'GloballyOptedOutOfListingAgentEmail', headerName: 'GloballyOptedOutOfListingAgentEmail', width: 120, editable: true, renderCell: (params) =>  <CellBox item={9} {...{params, rowId, setRowId }}/> , hide: true },
+      { field: 'GloballyOptedOutOfLenderEmail', headerName: 'GloballyOptedOutOfLenderEmail', width: 120, editable: true , renderCell: (params) =>  <CellBox item={10} {...{params, rowId, setRowId }}/>, hide: true },
+      { field: 'GloballyOptedOutOfAlerts', headerName: 'GloballyOptedOutOfAlerts', width: 120, editable: true, renderCell: (params) =>  <CellBox item={11} {...{params, rowId, setRowId }}/>, hide: true  },
+      { field: 'OptInDate', headerName: 'OptInDate', width: 120, editable: true, renderCell: (params) =>  <CellBox item={12} {...{params, rowId, setRowId }}/> , hide: true },
+      { field: 'BuyerAgentCategory', headerName: 'BuyerAgentCategory', width: 120, editable: true, renderCell: (params) =>  <CellBox item={13} {...{params, rowId, setRowId }}/>, hide: true  },
+      { field: 'ListingAgentCategory', headerName: 'ListingAgentCategory', width: 120, editable: true , renderCell: (params) =>  <CellBox item={14} {...{params, rowId, setRowId }}/>, hide: true },
+      { field: 'LenderCategory', headerName: 'LenderCategory', width: 120, editable: true , renderCell: (params) =>  <CellBox item={15} {...{params, rowId, setRowId }}/>, hide: true },
+      { field: 'BuyerAgent', headerName: 'BuyerAgent', width: 120, editable: true , renderCell: (params) =>  <CellBox item={16} {...{params, rowId, setRowId }}/>, hide: true },
+      { field: 'ListingAgent', headerName: 'ListingAgent', width: 120, editable: true, renderCell: (params) =>  <CellBox item={17} {...{params, rowId, setRowId }}/> , hide: true },
+      { field: 'Lender', headerName: 'Lender', width: 120, editable: true, renderCell: (params) =>  <CellBox item={18} {...{params, rowId, setRowId }}/>, hide: true  },
+      { field: 'OriginalSource', headerName: 'OriginalSource', width: 120, editable: true , renderCell: (params) =>  <CellBox item={19} {...{params, rowId, setRowId }}/>, hide: true },
+      { field: 'OriginalCampaign', headerName: 'OriginalCampaign', width: 120, editable: true , renderCell: (params) =>  <CellBox item={20} {...{params, rowId, setRowId }}/>, hide: true },
+      { field: 'LastAgentNote', headerName: 'LastAgentNote', width: 120, editable: true, renderCell: (params) =>  <CellBox item={21} {...{params, rowId, setRowId }}/>, hide: true  },
+      { field: 'eAlerts', headerName: 'eAlerts', width: 120, editable: true , renderCell: (params) =>  <CellBox item={22} {...{params, rowId, setRowId }}/>, hide: true },
+      { field: 'VisitTotal', headerName: 'VisitTotal', width: 120, editable: true, renderCell: (params) =>  <CellBox item={23} {...{params, rowId, setRowId }}/> , hide: true },
+      { field: 'listingviewcount', headerName: 'listingviewcount', width: 120, editable: true , renderCell: (params) =>  <CellBox item={24} {...{params, rowId, setRowId }}/>, hide: true },
+      { field: 'AvgListingPrive', headerName: 'AvgListingPrive', width: 120, editable: true , renderCell: (params) =>  <CellBox item={25} {...{params, rowId, setRowId }}/>, hide: true },
+      { field: 'NextCallDue', headerName: 'NextCallDue', width: 120, editable: true , renderCell: (params) =>  <CellBox item={26} {...{params, rowId, setRowId }}/>, hide: true },
+      { field: 'LastAgentCalDate', headerName: 'LastAgentCalDate', width: 120, editable: true , renderCell: (params) =>  <CellBox item={27} {...{params, rowId, setRowId }}/>, hide: true },
+      { field: 'LastLenderCallDate', headerName: 'LastLenderCallDate', width: 120, editable: true , renderCell: (params) =>  <CellBox item={28} {...{params, rowId, setRowId }}/>, hide: true },
+      { field: 'FirstVisitDate', headerName: 'FirstVisitDate', width: 120, editable: true , renderCell: (params) =>  <CellBox item={29} {...{params, rowId, setRowId }}/>, hide: true },
+      { field: 'LastVisitDate', headerName: 'LastVisitDate', width: 120, editable: true , renderCell: (params) =>  <CellBox item={30} {...{params, rowId, setRowId }}/>, hide: true },
+      { field: 'RegisterDate', headerName: 'RegisterDate', width: 120, editable: true , renderCell: (params) =>  <CellBox item={31} {...{params, rowId, setRowId }}/>, hide: true },
+      { field: 'LeadType', headerName: 'LeadType', width: 120, editable: true , renderCell: (params) =>  <CellBox item={32} {...{params, rowId, setRowId }}/>, hide: true },
+      { field: 'AgentSelected', headerName: 'AgentSelected', width: 120, editable: true , renderCell: (params) =>  <CellBox item={33} {...{params, rowId, setRowId }}/>, hide: true },
+      { field: 'LenderOptIn', headerName: 'LenderOptIn', width: 120, editable: true , renderCell: (params) =>  <CellBox item={34} {...{params, rowId, setRowId }}/>, hide: true },
+      { field: 'Address', headerName: 'Address', width: 120, editable: true , renderCell: (params) =>  <CellBox item={35} {...{params, rowId, setRowId }}/>, hide: true },
+      { field: 'City', headerName: 'City', width: 120, editable: true, renderCell: (params) =>  <CellBox item={36} {...{params, rowId, setRowId }}/>, hide: true  },
+      { field: 'State', headerName: 'State', width: 120, editable: true , renderCell: (params) =>  <CellBox item={37} {...{params, rowId, setRowId }}/>, hide: true },
+      { field: 'ZipCode', headerName: 'Lender', width: 120, editable: true, renderCell: (params) =>  <CellBox item={38} {...{params, rowId, setRowId }}/> , hide: true },
+      { field: 'Link', headerName: 'Link', width: 120, editable: true, renderCell: (params) =>  <CellBox item={39} {...{params, rowId, setRowId }}/> , hide: true },
+      { field: 'Birthday', headerName: 'Birthday', width: 120, editable: true, renderCell: (params) =>  <CellBox item={40} {...{params, rowId, setRowId }}/> , hide: true },
+      { field: 'HomeClosingDate', headerName: 'HomeClosingDate', width: 120, editable: true, renderCell: (params) =>  <CellBox item={41} {...{params, rowId, setRowId }}/> , hide: true },
+      { field: 'tags', headerName: 'tags', width: 170, editable: true, renderCell: (params) =>  <CellBox item={42} {...{params, rowId, setRowId }}/> },
+      { field: 'categories', headerName: 'categories', width: 170, editable: true, renderCell: (params) =>  <CellBox item={43} {...{params, rowId, setRowId }}/> },
+      { field: 'Uid', headerName: 'UID', width: 100, editable: true, hide: true },
       ],
       [rowId]
       );
@@ -178,6 +262,9 @@ export default function DataGridProCSV(props) {
       const row = updatedData.find((r) => r.id === id);
       row[field] = value;
       });
+
+
+
       setResponseData(updatedData);
       };
       
@@ -187,21 +274,46 @@ export default function DataGridProCSV(props) {
       
       const filteredData = useMemo(() => {
       if (!searchQuery) {
+
+        //  RETURN ALL FO THE ROWS
       return responseData;
       }
       const filteredRows = responseData.filter((row) => {
+
+
+
+        
+        //  return the rows in the search query
+
       return Object.values(row).some((fieldValue) => {
+
+
+        //  SEARCHING FOR THE QUERY IN EACH FIELD OF EACH ROW, SO WHEN THE ROW GETS TO "TAGS", IT SHOULD LOOP THEROUGH A TAGS
+        //  ARRAY AND CHECK IF THE QUERY IS IN THE ARRAY
+        console.log("fieldValue")
+         console.log(fieldValue)
+
+         
+
+        // alert("tags! ")
+
+
+        // cehck if props.categories array ["new", "old", "used"] is included in any of the rows 
       return String(fieldValue).toLowerCase().includes(searchQuery.toLowerCase());
+
+
       });
       });
       return filteredRows;
+
+
     }, [responseData, searchQuery]);
 
     return (
     <div style={{ height: 600, width: '100%' }}>
     <div style={{ display: 'flex', alignItems: 'center' }}>
     <Typography variant="h6" style={{ marginRight: 16 }}>
-    User Data
+    User Fields
     </Typography>
     <TextField
     variant="outlined"
@@ -242,11 +354,14 @@ export default function DataGridProCSV(props) {
     </div>
     <div style={{ height: 540, width: '100%' }}>
 
+
+      {/* DATA GRID PRO  */}
     <DataGridPro
   rows={filteredData}
   columns={columns.filter((column) => selectedColumns.includes(column.field))}
   pageSize={pageSize}
-  rowsPerPageOptions={[5, 10, 25]}
+ disableVirtualization
+  rowsPerPageOptions={[10]}
   checkboxSelection
   disableSelectionOnClick
     apiRef={apiRef}
@@ -262,37 +377,16 @@ export default function DataGridProCSV(props) {
       setSelectedColumns,
       gridRef,
       setGridRef,
-      count,
-      setCount,
+   
     },
   }}
+
+
+
+
 />
 
 
-    {/* <DataGridPro
-    rows={filteredData}
-    columns={columns.filter((column) => selectedColumns.includes(column.field))}
-    pageSize={pageSize}
-    rowsPerPageOptions={[5, 10, 25]}
-    checkboxSelection
-    disableSelectionOnClick
-    onSelectionModelChange={handleRowSelection}
-    onPageSizeChange={handlePageSizeChange}
-    // onEditRowsModelChange={handleEditRowsModelChange}
-  
- onCellEditCommit={(params) => setRowId(params.id)}
-    components={{ Toolbar: GridToolbar }}
-    componentsProps={{
-    toolbar: {
-    selectedColumns,
-    setSelectedColumns,
-    gridRef,
-    setGridRef,
-    count,
-    setCount,
-    },
-    }}
-    /> */}
     </div>
 
     </div>
@@ -301,8 +395,6 @@ export default function DataGridProCSV(props) {
 
 
 
-// removed parameter from data grid:
-// experimentalFeatures={{ newEditingApi: true }}
 
 
 

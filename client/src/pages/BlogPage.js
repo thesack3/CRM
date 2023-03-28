@@ -10,7 +10,10 @@ import { GET_LEADS, NEW_LEAD_SUBSCRIPTION } from '../queries/leadQueries';
 
 import AddLeadModal from '../components/modals/AddLead';
 
+import AddCategoryModal from '../components/modals/AddCategory';
+
 import AddTagModal from '../components/modals/AddTag';
+
 import UsersActions from '../components/UsersActions';
 import AddNoteButton from '../components/modals/AddNoteButton'
 import AddCSVLeadModal from '../components/modals/AddCSVLeadModal';
@@ -50,6 +53,12 @@ export default function BlogPage() {
       setCategories(categories);
       console.log('Remote categories!');
       console.log(categories);
+
+      //  e.g: [New, Old, Test]
+      //   SET CATEGORIES TO 
+
+
+
     }
 
 
@@ -123,6 +132,7 @@ const handleLeadChange = (lead) => {
 <AddLeadModal/>   
             <AddCSVLeadModal/>
             <AddTagModal/>
+            <AddCategoryModal/>
 </Stack>
 
 <Stack sx={{marginTop: '1em'}}>
@@ -133,21 +143,19 @@ const handleLeadChange = (lead) => {
 </Stack>
 
 
-        <Stack sx={{marginTop: '0px'}} direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-            <Typography variant="h4" gutterBottom>
-              Leads 
-            </Typography>
+        {/* <Stack sx={{marginTop: '0px'}} direction="row" alignItems="center" justifyContent="space-between" mb={5}> */}
+            {/* <Typography variant="h4" gutterBottom>
+              Tags 
+            </Typography> */}
 
      
             {/* <AddNoteButton/> */}
             {/* <UserModal/> */}
 
-            <Grid item xs={12} sx={{ height: 100 , display: 'flex', justifyContent: 'left', alignContent: 'center'}}>
+            {/* <Grid item xs={12} sx={{ height: 100 , display: 'flex', justifyContent: 'left', alignContent: 'center'}}>
           <TagBox  setLead={handleLeadChange} />
-          </Grid>
-              </Stack>
-
-
+          </Grid> */}
+              {/* </Stack> */}
 
 
 
@@ -158,30 +166,16 @@ const handleLeadChange = (lead) => {
             {/* <AddNoteButton/> */}
             {/* <UserModal/> */}
 
-            <Grid item xs={12} sx={{ height: 100 , display: 'flex', justifyContent: 'left', alignContent: 'center'}}>
+            {/* <Grid item xs={12} sx={{ height: 100 , display: 'flex', justifyContent: 'left', alignContent: 'center'}}>
           <LeadBox  setLead={handleLeadChange} />
-          </Grid>
+          </Grid> */}
               </Stack>
-
-
-
-
-    
-
-
 
           <Box sx={{  width: '100%', height: 'fit-content'}}>
 
-          <DataGridProCSV onRowSelectionChange={(selectedRows) => setSelectedRows(selectedRows)} 
+          <DataGridProCSV categories={remoteCategories} onRowSelectionChange={(selectedRows) => setSelectedRows(selectedRows)} 
           UserData={users}/>
           </Box>
-
-
-
-
-
-
-
 
 
 

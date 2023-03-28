@@ -48,6 +48,11 @@ const GET_LEADS = gql`
         title
         dateCreated
       }
+      categories{
+        id
+        title
+        dateCreated
+      }
       Link
       Birthday
       HomeClosingDate

@@ -1,17 +1,11 @@
 import { Grid, Button } from '@mui/material';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useQuery } from '@apollo/client';
+import { GET_CATEGORIES } from '../../queries/categoryQueries';
+
 
 const categories = [
-  'Hot Lead',
-  'Cold Lead',
-  'Category 3',
-  'Category 4',
-  'Category 5',
-  'Category 6',
-  'Category 7',
-  'Category 8',
-  'Category 9',
-  'Category 10',
+
 ];
 
 const grayColors = [
@@ -20,9 +14,17 @@ const grayColors = [
 ];
 
 export default function CategoryGrid(props) {
-  const [selectedCategories, setSelectedCategories] = useState([]);
-  const [toggleStatus, setToggleStatus] = useState(categories.map(() => false));
 
+const [categoryList, setCategoryList] = useState([
+
+]);
+
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [toggleStatus, setToggleStatus] = useState(categoryList.map(() => false));
+
+  const {loading, error, data} = useQuery(GET_CATEGORIES);
+
+  
   const handleCategoryClick = (category, index) => {
     const newToggleStatus = [...toggleStatus];
     newToggleStatus[index] = !newToggleStatus[index];
@@ -55,11 +57,35 @@ export default function CategoryGrid(props) {
 
 
 
+
+
+useEffect(() => {
+  if (data) {
+
+    console.log(data);
+
+    // alert("category data");
+
+
+    const categoyList = data.categories.map((category) => {
+      return category.title;
+      })
+
+      setCategoryList(categoyList);
+
+    // alert("data");
+    // selectedCategories(data.categories);
+    // setLeads(data);
+    
+  }
+}, [data]);
+
+
   console.log('Active toggled buttons:', getActiveToggles());
 
   return (
     <Grid container spacing={2} sx={{ width: '100%' }}>
-      {categories.map((category, index) => {
+      {categoryList.map((category, index) => {
         const opacity = selectedCategories.includes(category) ? 1 : 0.5;
         return (
           <Grid item xs={2} key={category}>

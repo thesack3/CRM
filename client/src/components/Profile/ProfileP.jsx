@@ -2,7 +2,7 @@
 import * as React from 'react';
 import { useEffect , useState} from 'react';
 import Box from '@mui/material/Box';
-import { Grid, Container, Typography, Button, Select, MenuItem, Divider, Avatar  } from '@mui/material';
+import { Grid, Container, Typography, Button, Select, MenuItem, Divider, Avatar , Alert, Snackbar } from '@mui/material';
 import { Helmet } from 'react-helmet-async';
 import { useTheme } from '@mui/system';
 import { useQuery } from '@apollo/client';
@@ -15,6 +15,7 @@ import { GET_CALLS } from '../../queries/callQueries';
 import { GET_EALERTS } from '../../queries/eAlertQueries';
 
 import TagBoxView from '../inputs/SearchTagBoxView';
+import CategoryBoxView from '../inputs/SearchCategory';
 import SnackBar from '../dataGrid/SnackBar';
 
 
@@ -23,10 +24,26 @@ import EmailActionModal from '../modals/EmalActionModal';
 
 
 export default function ProfileP({ rowId }) {
+
+  const [open, setOpen] = React.useState(false);
+
+  const handleClick = () => {
+    setOpen(true);
+  };
+
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpen(false);
+  };
+
   const [users, setUsers] = useState([]);
   const [lead, setLead] = useState();
   const [selectedLead, setSelectedLead] = useState(null);
   
+  const [arrayCell, setArrayCell] = useState(null);
   const theme = useTheme();
   
   const { loading: leadsLoading, error: leadsError, data: leadsData } = useQuery(GET_LEADS);
@@ -52,15 +69,34 @@ export default function ProfileP({ rowId }) {
   const handleLeadChange = (lead) => {
     setSelectedLead(lead);
   };
+
+
+  const done = () => {
+
+    console.log("updatedLead");
+
+
+  }
   
   useEffect(() => {
     if (leadsData) {
-      const { leads } = leadsData;
+      const { leads , tags} = leadsData;
       setUsers(leads); 
+
       setLead(leads[rowId]);
       setSelectedLead(leads[rowId]);
 
+      if (tags != null){
 
+        setArrayCell(tags[0].title);
+        console.log(tags)
+        alert("tags");
+      }
+
+
+
+
+      
       // console.log("leadsData");
       // console.log(lead);
 
@@ -94,14 +130,14 @@ export default function ProfileP({ rowId }) {
 
               <Box mt={2} sx={{}}> 
                 <Typography variant="h6" fontWeight="bold" mb={1}>
-                  Tags 
-                   {lead ? lead.tags.length : 'none'}
+                
+                   {arrayCell != null ? arrayCell : (null) }
                 </Typography>
 
 
 
-
-                <TagBoxView Lead={lead}  />
+                 <CategoryBoxView  Lead={lead} successCheck={handleClick} />
+                <TagBoxView Lead={lead} successCheck={handleClick}  />
               </Box>
             </Box>
           </Grid>
@@ -198,6 +234,13 @@ Lead
         </Box>
       </Grid>
     </Grid>
+
+
+    <Snackbar open={open} autoHideDuration={2000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+          Updated Lead!
+        </Alert>
+      </Snackbar>
   </Container>
 </>
 );

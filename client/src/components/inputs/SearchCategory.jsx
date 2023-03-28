@@ -4,7 +4,7 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Alert, Snackbar } from '@mui/material';
+
 import { useAutocomplete } from '@mui/base/AutocompleteUnstyled';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
@@ -13,7 +13,7 @@ import { autocompleteClasses } from '@mui/material/Autocomplete';
 import { useQuery, useMutation } from '@apollo/client';
 import { GET_TAGS , GET_TAG} from '../../queries/tagQueries';
 import { updateLeadMutation } from '../../mutations/leadMutations';
-
+import { GET_CATEGORIES } from '../../queries/categoryQueries';
 
 
 
@@ -144,21 +144,7 @@ cursor: pointer;
 `);
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-export default function TagBoxView(props) {
- 
+export default function CategoryBoxView(props) {
     const [retreivedTags, setRetreivedTags] = useState([]);
 
 
@@ -170,7 +156,7 @@ export default function TagBoxView(props) {
     );
 
     const { loading: tagsLoading, error: tagsError, data: tagsData } = useQuery(
-      GET_TAGS
+      GET_CATEGORIES
     );
 
       
@@ -183,7 +169,34 @@ export default function TagBoxView(props) {
 
     const [tags, setTags] = useState(retreivedTags);
   
-
+    const handleUpdateLead = async (leadId, first, Email, last, Tags, Categories) => {
+      try {
+        const result = await updateLead({
+          variables: {
+            id: leadId,
+            firstName: first,
+            email: Email,
+            lastName: last,
+            tags: Tags,
+            categories: Categories,
+          },
+        }).then((res) => {
+          console.log("Lead Updated");
+          console.log(result.data.updateLead);
+          console.log(res);
+        }).catch((err) => {
+          console.log("error updating lead.");
+          console.log(err);
+        });
+  
+        return result;
+        // return result.data.updateLead;
+      } catch (error) {
+        console.log("Failed updating the lead");
+        console.log(error);
+        return null;
+      }
+    };
   
     useEffect(() => {
 
@@ -192,17 +205,17 @@ export default function TagBoxView(props) {
       if(props.Lead){
         console.log("props.Lead");
         setLead(props.Lead);
-        setLead(props.Lead.tags);
+        setLead(props.Lead.categories);
 
       
-        if (props.Lead.tags != null){
+        if (props.Lead.categories != null){
 
-              if (props.Lead.tags.length > 0 && tagsData && tagsData.tags) {
+              if (props.Lead.tags.length > 0 && tagsData && tagsData.categories) {
         console.log("props.tags");
         console.log(props.Lead);
 
       
-        const tagsArray = props.Lead.tags.map((tag) => {
+        const tagsArray = props.Lead.categories.map((tag) => {
           return tag.title;
           }
       )
@@ -229,9 +242,9 @@ export default function TagBoxView(props) {
     }, [tagsData, props.Lead]);
   
     useEffect(() => {
-      if (tagsData && tagsData.tags) {
-        setRetreivedTags(tagsData.tags);
-        setTags(tagsData.tags);
+      if (tagsData && tagsData.categories) {
+        setRetreivedTags(tagsData.categories);
+        setTags(tagsData.categories);
       }
     }, [tagsData]);
   
@@ -267,15 +280,15 @@ export default function TagBoxView(props) {
               firstName: props.Lead.firstName,
               email: props.Lead.email,
               lastName: props.Lead.lastName,
-              tags: newTags,
+              tags: [],
+              categories: newTags,
             },
           }).then((res) => {
-   
             props.successCheck();
-            console.log("Lead Updated");
+            console.log("Lead Updated with new categories");
             console.log(res);
           }).catch((err) => {
-            console.log("error updating lead.");
+            console.log("error updating lead with new categories.");
             console.log(err);
           });
   
@@ -290,8 +303,7 @@ export default function TagBoxView(props) {
     return (
       <Root>
         <div {...getRootProps()}>
-          <Label {...getInputLabelProps()}>Search Tags</Label>
-
+          <Label {...getInputLabelProps()}>Categories</Label>
           <InputWrapper ref={setAnchorEl} className={focused ? "focused"
   : ""}>
   {value.map((option, index) => (
@@ -301,8 +313,7 @@ export default function TagBoxView(props) {
   </InputWrapper>
   </div>
   {groupedOptions.length > 0 ? (
-
-      <Listbox {...getListboxProps()}>
+  <Listbox {...getListboxProps()}>
   {groupedOptions.map((option, index) => (
   <li {...getOptionProps({ option, index })}>
   <span>{option.title}</span>
@@ -310,11 +321,6 @@ export default function TagBoxView(props) {
   </li>
   ))}
   </Listbox>
-    
-
-
-
-
   ) : null}
   </Root>
   );

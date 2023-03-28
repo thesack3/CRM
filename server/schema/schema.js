@@ -21,6 +21,7 @@
 const User = require('../models/User');
 const Note = require('../models/Note');
 const Tag = require('../models/Tag');
+const Category = require('../models/Category');
 const EAlert = require('../models/EAlert');
 const Call = require('../models/Call');
 
@@ -212,7 +213,9 @@ const LeadType = new GraphQLObjectType({
         State:{ type: GraphQLString},
         ZipCode:{ type: GraphQLString},
         tags: { type: GraphQLList(GraphQLID) },
+        categories: { type: GraphQLList(GraphQLID) },
         Link:{ type: GraphQLString},
+
         Birthday:{ type: GraphQLString},
         HomeClosingDate:{ type: GraphQLString}, 
         tags: {
@@ -221,6 +224,13 @@ const LeadType = new GraphQLObjectType({
           return Tag.find({ _id: { $in: parent.tags } });
           },
          },
+         categories: {
+            type: new GraphQLList(CategoryType),
+            resolve(parent, args) {
+            return Category.find({ _id: { $in: parent.categories } });
+            },
+           },
+         
        
 
     })
@@ -233,8 +243,18 @@ const LeadType = new GraphQLObjectType({
         id:{ type: GraphQLID},
         title:{ type: GraphQLString},
         dateCreated: { type: GraphQLString},
-    })})
-        
+    })});
+
+
+    const CategoryType = new GraphQLObjectType({
+        name: 'Category',
+        fields: () => ({
+            id:{ type: GraphQLID},
+            title:{ type: GraphQLString},
+            dateCreated: { type: GraphQLString},
+        })});
+            
+    
 
  //Graphql Input Types: 
 
@@ -384,6 +404,26 @@ const LeadType = new GraphQLObjectType({
             type: new GraphQLList(TagType),
             resolve(parent, args){
                 return Tag.find();
+            }
+
+        },
+        category: {
+            type: CategoryType,
+            args: {id: { type: GraphQLID } },
+            resolve(parent, args){
+                return Category.findById(args.id).then((result) => {
+                    console.log("found category", result);
+                    return result;
+                    }).catch((error) => {
+                    console.error("error finding category", error);
+                    return null;
+                    });
+            }   
+        },
+        categories:{
+            type: new GraphQLList(CategoryType),
+            resolve(parent, args){
+                return Category.find();
             }
 
         }
@@ -668,7 +708,30 @@ const mutation = new GraphQLObjectType({
               }
             }
           },
-           
+          addCategory:{
+            type: CategoryType,
+            args:{
+                title: { type: GraphQLNonNull(GraphQLString) },
+                dateCreated: { type: GraphQLNonNull(GraphQLString) },
+            },
+            async resolve(parent, args) {
+                try {
+                    const category = new Category(args);
+                    const result = await category.save();
+                
+                    return result;
+                  } catch (error) {
+                    console.error(error);
+                 
+                    throw new Error("Error adding tag");
+                  }
+
+                //Client.create(//fields) //could do it this way as well
+            }
+
+                
+
+        },
 
             addTag:{
                 type: TagType,
@@ -702,7 +765,9 @@ const mutation = new GraphQLObjectType({
                   firstName: { type: GraphQLString },
                   email: { type: GraphQLString },
                   lastName: { type: GraphQLString },
-                   tags: { type: GraphQLList(GraphQLString) }
+                  tags: { type: GraphQLList(GraphQLString) },  
+                  categories: { type: GraphQLList(GraphQLString) }
+
                   // Add additional fields to update here
                 },
                 async resolve(parent, { id, ...updatedFields }) {
@@ -720,8 +785,7 @@ const mutation = new GraphQLObjectType({
                   }
                 }
               }
-,              
-
+,        
 
 
 sendEmails: {

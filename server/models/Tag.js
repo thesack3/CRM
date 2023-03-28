@@ -7,7 +7,6 @@ const TagSchema = new mongoose.Schema({
     dateCreated:{
         type: String,
     }
-  
 
   
 })

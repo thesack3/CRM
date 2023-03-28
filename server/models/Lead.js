@@ -178,6 +178,10 @@ const LeadSchema = new mongoose.Schema({
     tags : [{ 
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Tag'
+    }],
+    categories : [{ 
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Category'
     }]
     
  });
