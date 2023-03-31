@@ -703,7 +703,6 @@ const mutation = new GraphQLObjectType({
                 return result;
               } catch (error) {
                 console.error( "Error details", error);
-            
                 throw new Error("Error adding lead");
               }
             }
