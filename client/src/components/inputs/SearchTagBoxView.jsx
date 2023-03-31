@@ -9,7 +9,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import { styled } from '@mui/material/styles';
 import { autocompleteClasses } from '@mui/material/Autocomplete';
-import { useQuery, useMutation } from '@apollo/client';
+import { useQuery, useMutation, gql } from '@apollo/client';
 import { GET_TAGS , GET_TAG} from '../../queries/tagQueries';
 import { updateLeadMutation } from '../../mutations/leadMutations';
 
@@ -165,8 +165,37 @@ export default function TagBoxView(props) {
 
     
     const [updateLead, { Leadloading, updateLeadError, Leaddata }] = useMutation(
-      updateLeadMutation
+      updateLeadMutation,
+      {
+        update: (cache, { data: { updateLead } }) => {
+          cache.modify({
+            fields: {
+              leads(existingLeads = [], { readField }) {
+                const updatedLeadRef = cache.writeFragment({
+                  data: updateLead,
+                  fragment: gql`
+                    fragment UpdatedLead on Lead {
+                      id
+                      tags {
+                        id
+                        title
+                      }
+                    }
+                  `,
+                });
+                const leadId = readField("id", updatedLeadRef);
+                const leadIndex = existingLeads.findIndex((lead) => lead.id === leadId);
+                if (leadIndex >= 0) {
+                  existingLeads[leadIndex] = updatedLeadRef;
+                }
+                return existingLeads;
+              },
+            },
+          });
+        },
+      }
     );
+    
 
     const { loading: tagsLoading, error: tagsError, data: tagsData } = useQuery(
       GET_TAGS
@@ -289,7 +318,7 @@ export default function TagBoxView(props) {
     return (
       <Root>
         <div {...getRootProps()}>
-          <Label {...getInputLabelProps()}>Search Tags</Label>
+          <Label {...getInputLabelProps()}>Add Tags</Label>
 
           <InputWrapper ref={setAnchorEl} className={focused ? "focused"
   : ""}>

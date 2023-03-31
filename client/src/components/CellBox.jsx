@@ -24,7 +24,7 @@ function CellBox({params, rowId, setRowId, item }) {
 
     const handleUpdateLead = async (leadId, first, Email, last, Tags) => {
         try {
-            setHighlighted(true);
+            // setHighlighted(true);
          const result = await updateLead({
             variables: {
               id: leadId,
@@ -83,8 +83,9 @@ function CellBox({params, rowId, setRowId, item }) {
 
 
         
-       handleUpdateLead(id, firstName,email , lastName ).then((res) => {
+       handleUpdateLead(id, firstName,email , lastName, [] ,phone ).then((res) => {
             // alert("Lead Updated")
+            setHighlighted(true);
            console.log("Lead Updated")
                  console.log(res)
 
@@ -231,13 +232,12 @@ function CellBox({params, rowId, setRowId, item }) {
                         // console.log(tags)
                         // alert("Tags!")
                         
-    
                         const tagsArray = tags.map((tag) => {
                             return tag.title;
                             }
                         )
 
-                        setArrayCell(tagsArray);
+                        setArrayCell(tags);
 
 
                         
@@ -262,24 +262,28 @@ function CellBox({params, rowId, setRowId, item }) {
                         return category.title;
                         } )
 
-                        setArrayCell(categoriesArray);
+                        setArrayCell(categories);
                       
                     }else{ 
                     //   setHighlightField("No Categories");
                     }
 
-
+                    setSuccess(false);
 
                 }
-    
+
+              
+                setHighlighted(false);
                 }).catch((err) => {
             console.log(err)
          })
 
+      
+
       return () => {
         
       }
-    }, [params.value])
+    }, [])
 
 
   
@@ -291,7 +295,7 @@ function CellBox({params, rowId, setRowId, item }) {
 
 
         
-        setSuccess(true);
+        // setSuccess(true);
         // handleSubmit();
  
     };
@@ -302,7 +306,7 @@ function CellBox({params, rowId, setRowId, item }) {
         setSuccess(false);
         // GraphQL mutation to delete the user
         // using the Apollo Client
-        setSuccess(true);
+        // setSuccess(true);
         setLoading(false);
     };
 
@@ -322,15 +326,21 @@ function CellBox({params, rowId, setRowId, item }) {
             justifyContent: 'center',
             alignItems: 'center',
             transition: 'background-color 0.5s ease-in-out',
+            // borderTop: '1px solid black', 
+            // borderBottom: '1px solid black', 
+            // borderLeft: 'none', 
+            // borderRight: 'none'
+
+
         }}
       >
         {item === 42 || 43 ?  (
 
-            <Box sx={{display: 'flex', flexDirection: 'row', flexWrap: 'wrap'}}>
+            <Box sx={{display: 'flex', flexDirection: 'column'}}>
 
         {arrayCell.map((tag) => (
-            <Box sx={{fontWeight: 'bold'}}> 
-                 <p style={{padding: '5px'}}> {tag} </p>
+            <Box sx={{fontWeight: 'bold', display: 'flex', flexDirection: 'row', justifyContent: 'center', alignContent: 'center'}}> 
+                 <p style={{}}> {tag} </p>
                 </Box>
            
         ))}

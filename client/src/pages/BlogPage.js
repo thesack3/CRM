@@ -50,6 +50,8 @@ export default function BlogPage() {
 
 
     const remoteCategories = (categories) => {
+
+    
       setCategories(categories);
       console.log('Remote categories!');
       console.log(categories);
@@ -57,11 +59,7 @@ export default function BlogPage() {
       //  e.g: [New, Old, Test]
       //   SET CATEGORIES TO 
 
-
-
     }
-
-
 
     useSubscription(NEW_LEAD_SUBSCRIPTION, {
       onSubscriptionData: ({ subscriptionData }) => {
@@ -173,7 +171,7 @@ const handleLeadChange = (lead) => {
 
           <Box sx={{  width: '100%', height: 'fit-content'}}>
 
-          <DataGridProCSV categories={remoteCategories} onRowSelectionChange={(selectedRows) => setSelectedRows(selectedRows)} 
+          <DataGridProCSV Categories={categories} onRowSelectionChange={(selectedRows) => setSelectedRows(selectedRows)} 
           UserData={users}/>
           </Box>
 

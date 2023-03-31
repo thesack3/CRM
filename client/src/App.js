@@ -81,6 +81,8 @@ export default function App() {
     }
   });
   
+
+  
   const client = new ApolloClient({
     uri: 'http://localhost:5000/graphql',
     cache,

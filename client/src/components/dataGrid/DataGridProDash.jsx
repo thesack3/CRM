@@ -149,8 +149,6 @@ export default function DataGridProCSV(props) {
   };
   
   
-
-  
   const rows = [
    
   ];
@@ -183,14 +181,32 @@ export default function DataGridProCSV(props) {
 
   useEffect(() => {
 
-
+   
     if(props.UserData){ 
       // console.log(props.UserData)
       
  
     const usersWithIds = props.UserData.map((user, index) => {
-      return { ...user, Uid: index};
+
+      const Tags = user.tags.map((item, index) => {
+        return item.title;
+      });
+      
+      const Categories = user.categories.map((item, index) => {
+        return item.title;
+      });
+
+      console.log(Categories)
+      console.log(Tags)
+
+
+// alert("user!")
+
+
+
+      return { ...user, Uid: index, tags: Tags, categories: Categories};
     });
+
 
 
     setResponseData(usersWithIds)
@@ -244,8 +260,8 @@ export default function DataGridProCSV(props) {
       { field: 'Link', headerName: 'Link', width: 120, editable: true, renderCell: (params) =>  <CellBox item={39} {...{params, rowId, setRowId }}/> , hide: true },
       { field: 'Birthday', headerName: 'Birthday', width: 120, editable: true, renderCell: (params) =>  <CellBox item={40} {...{params, rowId, setRowId }}/> , hide: true },
       { field: 'HomeClosingDate', headerName: 'HomeClosingDate', width: 120, editable: true, renderCell: (params) =>  <CellBox item={41} {...{params, rowId, setRowId }}/> , hide: true },
-      { field: 'tags', headerName: 'tags', width: 170, editable: true, renderCell: (params) =>  <CellBox item={42} {...{params, rowId, setRowId }}/> },
-      { field: 'categories', headerName: 'categories', width: 170, editable: true, renderCell: (params) =>  <CellBox item={43} {...{params, rowId, setRowId }}/> },
+      { field: 'tags', headerName: 'tags', width: 270, editable: true, renderCell: (params) =>  <CellBox item={42} {...{params, rowId, setRowId }}/> },
+      { field: 'categories', headerName: 'categories', width: 270, editable: true, renderCell: (params) =>  <CellBox item={43} {...{params, rowId, setRowId }}/> },
       { field: 'Uid', headerName: 'UID', width: 100, editable: true, hide: true },
       ],
       [rowId]
@@ -272,42 +288,38 @@ export default function DataGridProCSV(props) {
       setSearchQuery(event.target.value);
       };
       
-      const filteredData = useMemo(() => {
-      if (!searchQuery) {
+      const [filteredData, setFilteredData] = useState([]);
 
-        //  RETURN ALL FO THE ROWS
-      return responseData;
-      }
-      const filteredRows = responseData.filter((row) => {
-
-
-
-        
-        //  return the rows in the search query
-
-      return Object.values(row).some((fieldValue) => {
-
-
-        //  SEARCHING FOR THE QUERY IN EACH FIELD OF EACH ROW, SO WHEN THE ROW GETS TO "TAGS", IT SHOULD LOOP THEROUGH A TAGS
-        //  ARRAY AND CHECK IF THE QUERY IS IN THE ARRAY
-        console.log("fieldValue")
-         console.log(fieldValue)
-
-         
-
-        // alert("tags! ")
-
-
-        // cehck if props.categories array ["new", "old", "used"] is included in any of the rows 
-      return String(fieldValue).toLowerCase().includes(searchQuery.toLowerCase());
-
-
-      });
-      });
-      return filteredRows;
+      useEffect(() => {
+        const filteredRows = responseData.filter((row) => {
+          const matched = Object.values(row).some((value) => {
+            return String(value).toLowerCase().includes(searchQuery.toLowerCase());
+          });
+      
+          const categoryMatched =
+            props.Categories.length === 0 ||
+            props.Categories.some((category) => {
+              return row.categories.includes(category);
+            });
+      
+          return matched && categoryMatched;
+        });
+      
+        setFilteredData(filteredRows);
+      }, [responseData, searchQuery, props.Categories]);
+      
+      // ...
+      
+      <DataGridPro
+        rows={filteredData}
+        // ...
+      />
+      
 
 
-    }, [responseData, searchQuery]);
+
+
+    
 
     return (
     <div style={{ height: 600, width: '100%' }}>
@@ -361,6 +373,7 @@ export default function DataGridProCSV(props) {
   columns={columns.filter((column) => selectedColumns.includes(column.field))}
   pageSize={pageSize}
  disableVirtualization
+ rowHeight={100}
   rowsPerPageOptions={[10]}
   checkboxSelection
   disableSelectionOnClick

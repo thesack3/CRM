@@ -303,7 +303,7 @@ export default function CategoryBoxView(props) {
     return (
       <Root>
         <div {...getRootProps()}>
-          <Label {...getInputLabelProps()}>Categories</Label>
+          <Label {...getInputLabelProps()}>Add Categories</Label>
           <InputWrapper ref={setAnchorEl} className={focused ? "focused"
   : ""}>
   {value.map((option, index) => (

@@ -228,8 +228,7 @@ export default function UserModal({RowId}) {
   
 
         <DialogActions>
-          <Button onClick={handleClose} sx={{color:"red"}}>Cancel</Button>
-          <Button onClick={handleUpload}>Upload Leads</Button>
+          <Button onClick={handleClose}>Confirm</Button>
         </DialogActions>
       </Dialog>
     
