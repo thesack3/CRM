@@ -323,7 +323,7 @@ export default function SearchCategory(props) {
     return (
       <Root>
         <div {...getRootProps()}>
-          <Label {...getInputLabelProps()}>Add Categories</Label>
+          <Label {...getInputLabelProps()}>Add Tags</Label>
 
           <InputWrapper ref={setAnchorEl} className={focused ? "focused"
   : ""}>
