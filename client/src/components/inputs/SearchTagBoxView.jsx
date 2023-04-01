@@ -189,7 +189,7 @@ export default function SearchCategory(props) {
     
 
     const { loading: tagsLoading, error: tagsError, data: tagsData } = useQuery(
-      GET_CATEGORIES
+      GET_TAGS
     );
 
       
