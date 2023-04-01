@@ -167,7 +167,7 @@ export default function SearchCategory(props) {
                   fragment: gql`
                     fragment UpdatedLead on Lead {
                       id
-                      categories {
+                      tags {
                         id
                         title
                       }
@@ -285,7 +285,7 @@ export default function SearchCategory(props) {
           newTags.push(newValue[i].id);
         }
 
-            const OGTags = props.Lead.tags.map((tag) => {
+            const OGTCategories = props.Lead.categories.map((tag) => {
               return tag.id;
               
               });
@@ -298,8 +298,8 @@ export default function SearchCategory(props) {
               firstName: props.Lead.firstName,
               email: props.Lead.email,
               lastName: props.Lead.lastName,
-              Tags: OGTags,
-              Categories: newTags,
+              Tags: newTags,
+              Categories: OGTCategories,
             },
           }).then((res) => {
    
