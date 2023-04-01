@@ -777,6 +777,9 @@ const mutation = new GraphQLObjectType({
                     }
                     Object.assign(lead, updatedFields);
                     const result = await lead.save();
+
+                    console.log("Successfully updated lead", result);
+                    console.log("Updated fields", updatedFields);
                     return result;
                   } catch (error) {
                     console.error(error);
