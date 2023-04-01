@@ -131,10 +131,10 @@ export default function AddTagModal() {
   Add Tag
  </Button>
  <Dialog open={open} onClose={handleClose}>
-   <DialogTitle>New Lead Info</DialogTitle>
+   <DialogTitle>New tag Info</DialogTitle>
    <DialogContent>
      <DialogContentText>
-       Tell us about your new lead!
+       Tell us about your new tag!
      </DialogContentText>
 
 
@@ -154,7 +154,7 @@ value={formData.title}
 onChange={handleChange}
 />
 
-<TextField
+{/* <TextField
 autoFocus
 margin="dense"
 id="dateCreated"
@@ -165,7 +165,7 @@ variant="standard"
 name="dateCreated"
 value={formData.dateCreated}
 onChange={handleChange}
-/>
+/> */}
 
 
    </DialogContent>

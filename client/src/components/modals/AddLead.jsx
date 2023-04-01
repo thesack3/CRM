@@ -16,12 +16,15 @@ export default function AddLeadModal() {
 
   const [addLead, { loading, error, data }] = useMutation(ADD_LEAD);
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState(
+    
+    {
     firstName: "",
     email: "",
     lastName: "",
     phone: "",
     phoneStatus: "",
+    descritpion: "",
     emailInvalid: "",
     GloballyOptedOutOfEmail: "",
     GloballyOptedOutOfBuyerAgentEmail: "",
@@ -55,7 +58,7 @@ export default function AddLeadModal() {
     City: "",
     State: "",
     ZipCode: "",
-    Tags: "",
+    Tags: [],
     Link: "",
     Birthday: "",
     HomeClosingDate: "",
@@ -151,7 +154,7 @@ export default function AddLeadModal() {
         City: "",
         State: "",
         ZipCode: "",
-        Tags: "",
+        Tags: [],
         Link: "",
         Birthday: "",
         HomeClosingDate: ""

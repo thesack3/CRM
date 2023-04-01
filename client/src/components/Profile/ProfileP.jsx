@@ -27,6 +27,10 @@ import EmailActionModal from '../modals/EmalActionModal';
 
 export default function ProfileP({ rowId }) {
 
+
+  const [usersTags, setUsersTags] = useState(null);
+
+  const [usersCategories, setUsersCategories] = useState(null);
   const [open, setOpen] = React.useState(false);
 
   const handleClick = () => {
@@ -82,9 +86,68 @@ export default function ProfileP({ rowId }) {
   useEffect(() => {
     if (leadsData) {
       const { leads } = leadsData;
+
+
+
+
+
       setUsers(leads); 
       setLead(leads[rowId]);
       setSelectedLead(leads[rowId]);
+
+
+
+      // const defaultCategories = lead.categories.map((obj) => {
+      //   const { title} = obj;
+
+      //   const Title = title;
+      //   const newItem = {
+      //     title: Title,
+      //   }
+
+      //   return newItem;
+      // });
+
+
+      const defaultCategories = leads[rowId].categories.map((obj) => {
+        const { title} = obj;
+
+        const Title = title;
+
+        const item = {
+          title: Title,
+        }
+
+
+        return item;
+      
+      });
+
+
+      setUsersCategories(defaultCategories);
+
+
+
+
+      const defaultTags = leads[rowId].tags.map((obj) => {
+        const { title} = obj;
+
+        const Title = title;
+
+        const item = {
+          title: Title,
+        }
+
+
+        return item;
+      
+      });
+
+
+      setUsersTags(defaultTags);
+      setUsersCategories(defaultCategories);
+
+
     } else {
       setUsers([]);
     }
@@ -92,9 +155,13 @@ export default function ProfileP({ rowId }) {
   
   useEffect(() => {
     if (lead) {
+
+
+
+
       setLead((prevLead) => ({ ...prevLead, ...lead }));
     }
-  }, [lead]);
+  }, []);
   
   
   return (
@@ -140,8 +207,17 @@ export default function ProfileP({ rowId }) {
 
 
 
-                 <CategoryBoxView  Lead={lead} successCheck={handleClick} />
-                <TagBoxView Lead={lead} successCheck={handleClick}  />
+{usersTags ? (     <CategoryBoxView  defaultValues={usersCategories} Lead={lead} successCheck={handleClick} />
+): (null)}
+
+
+{usersTags ? (      <TagBoxView   defaultValues={usersTags} Lead={lead} successCheck={handleClick}  />
+
+
+): (null)}
+           
+         
+
               </Box>
             </Box>
           </Grid>

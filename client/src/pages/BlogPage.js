@@ -1,7 +1,7 @@
 
 import * as React from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Grid, Button, Container, Stack, Typography, Box } from '@mui/material';
+import { Grid, Button, Container, Stack, Typography, Box, Snackbar , Alert} from '@mui/material';
 
 import { useQuery, useSubscription } from '@apollo/client';
 import { useDemoData } from '@mui/x-data-grid-generator';
@@ -40,6 +40,8 @@ const SORT_OPTIONS = [
 // ----------------------------------------------------------------------
 
 export default function BlogPage() {
+
+  const [open, setOpen] = React.useState(false);
 
   const [categories, setCategories] = useState([]);
 
@@ -86,6 +88,17 @@ const handleLeadChange = (lead) => {
 };
 
 
+
+const handleClose = (event, reason) => {
+  if (reason === 'clickaway') {
+    return;
+  }
+  setOpen(false);
+};
+
+
+
+
   React.useEffect(() => {
 
  if(data){
@@ -103,6 +116,10 @@ const handleLeadChange = (lead) => {
   }, [ data ])
 
   
+  const handleClick = () => {
+    setOpen(true);
+  };
+
 
         const columns = useMemo(
           () => [
@@ -118,17 +135,19 @@ const handleLeadChange = (lead) => {
 
 
   return (
-    <Box sx={{height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+    <Box sx={{height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center',  alignContent: 'center'}}>
       <Helmet>
         <title> Leads </title>
       </Helmet>
 
-      <Container sx={{ width: '100%'}}>
+      <Container sx={{ width: '100vw'}}>
 
 
       <Stack sx={{display: 'flex', flexDirection: 'row', marginTop: '20px'}}> 
 <AddLeadModal/>   
-            <AddCSVLeadModal/>
+
+{/* // TODO PUT BACK */}
+            {/* <AddCSVLeadModal/> */}
             <AddTagModal/>
             <AddCategoryModal/>
 </Stack>
@@ -171,11 +190,16 @@ const handleLeadChange = (lead) => {
 
           <Box sx={{  width: '100%', height: 'fit-content'}}>
 
-          <DataGridProCSV Categories={categories} onRowSelectionChange={(selectedRows) => setSelectedRows(selectedRows)} 
+          <DataGridProCSV  successCheck={handleClick}  Categories={categories} onRowSelectionChange={(selectedRows) => setSelectedRows(selectedRows)} 
           UserData={users}/>
           </Box>
 
 
+          <Snackbar open={open} autoHideDuration={2000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="success" sx={{ width: '90vw', backgroundColor: 'green', color: 'white' }}>
+          Updated Lead!
+        </Alert>
+      </Snackbar>
 
       </Container>
     </Box>

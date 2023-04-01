@@ -29,40 +29,14 @@ export default function DataGridProCSV(props) {
   const [tags, setTags] = useState([]);
 
 
-  const [updateLead, { Leadloading, error, Leaddata }] = useMutation(updateLeadMutation);
+  const [columnSetting, setColumnSeting] = useState([
+    { 0: 'true', 1: 'false', 2: 'false' },
 
+  ]);
 
-  const handleUpdateLead = async (leadId, first, Email, last, Tags) => {
-      try {
-       const result = await updateLead({
-          variables: {
-            id: leadId,
-            firstName: first,
-            email: Email,
-            lastName: last,
-            tags: Tags
-          }
-        }).then((res) => {
-
-          console.log("Lead Updated");
-        // console.log(result.data.updateLead);
-          console.log(res)
-        }).catch((err) => {
-          console.log("error updating lead.");
-      console.log(err)
-          console.log(err)
-        });
-
+ 
   
-        return result
-      // return result.data.updateLead;
-      } catch (error) {
-        console.log("Failed updating the lead");
-        console.log(error);
-        return null;
-      }
-    };
-    
+
   const [selectedColumns, setSelectedColumns] = useState([
     'id',
     'firstName',
@@ -196,6 +170,16 @@ export default function DataGridProCSV(props) {
         return item.title;
       });
 
+
+
+      const OGTags = user.tags.map((item, index) => {
+        return item.id;
+      });
+      
+      const OGCategories = user.categories.map((item, index) => {
+        return item.id;
+      });
+
       console.log(Categories)
       console.log(Tags)
 
@@ -204,7 +188,7 @@ export default function DataGridProCSV(props) {
 
 
 
-      return { ...user, Uid: index, tags: Tags, categories: Categories};
+      return { ...user, Uid: index, tags: Tags, categories: Categories, ogTags: OGTags, ogCategories: OGCategories};
     });
 
 
@@ -219,10 +203,56 @@ export default function DataGridProCSV(props) {
     () => [
       {field: 'Profile', headerName: 'Profile', width: 150,  editable: true, renderCell: (params) =>  <ProfileDetailsPage row={params.row.Uid} {...{params }}/>},
       { field: 'id', headerName: 'ID', width: 250, editable: true, hide: true },
-      { field: 'firstName', headerName: 'First Name', width: 180, editable: true, type: 'text'  , renderCell: (params) =>  <CellBox item={1} {...{params, rowId, setRowId }}/>},
-      { field: 'lastName', headerName: 'last Name', width: 180, editable: true , renderCell: (params) =>  <CellBox item={2} {...{params, rowId, setRowId }}/>, hide: true },
-      { field: 'email', headerName: 'email', width: 250, editable: true, renderCell: (params) =>  <CellBox item={3} {...{params, rowId, setRowId }}/> },
-      { field: 'phone', headerName: 'phone', width: 180, editable: true, renderCell: (params) =>  <CellBox item={4} {...{params, rowId, setRowId }}/> , hide: true},
+      { field: 'firstName', headerName: 'First Name', width: 180, editable: true, type: 'text'  , renderCell: (params) => 
+      
+      <Box sx={ { width: '100%', height: '100%' ,borderTop: 'none', 
+      borderBottom: 'none', 
+      borderLeft: '1px solid lightgray', 
+      borderRight:  'none',
+      overflow: 'hidden', }}> 
+      <CellBox successCheck={props.successCheck} item={1} {...{params, rowId, setRowId }}/>
+
+      </Box>
+    
+    },
+      { field: 'lastName', headerName: 'last Name', width: 180, editable: true , renderCell: (params) => 
+      <Box sx={ { width: '100%', height: '100%' ,borderTop: 'none', 
+      borderBottom: 'none', 
+      borderLeft: '1px solid lightgray', 
+      borderRight:  'none',
+      overflow: 'hidden', }}> 
+      
+      <CellBox item={2} {...{params, rowId, setRowId }}/>
+      </Box>
+      
+      , hide: true },
+      { field: 'email', headerName: 'email', width: 250, editable: true, renderCell: (params) => 
+      
+      <Box sx={ { width: '100%', height: '100%' ,borderTop: 'none', 
+      borderBottom: 'none', 
+      borderLeft: '1px solid lightgray', 
+      borderRight:  'none',
+      overflow: 'hidden',
+      
+      }}> 
+      
+      <CellBox item={3} {...{params, rowId, setRowId }}/> 
+
+      </Box>
+      
+      },
+      { field: 'phone', headerName: 'phone', width: 180, editable: true, renderCell: (params) => 
+      
+      <Box sx={ { width: '100%', height: '100%' ,borderTop: 'none', 
+      borderBottom: 'none', 
+      borderLeft: '1px solid lightgray', 
+      borderRight:  'none', }}> 
+      
+      <CellBox item={4} {...{params, rowId, setRowId }}/> 
+
+      </Box>
+      
+      , hide: true},
       { field: 'phoneStatus', headerName: 'phoneStatus', width: 120, editable: true , renderCell: (params) =>  <CellBox item={5} {...{params, rowId, setRowId }}/>, hide: true},
       { field: 'emailInvalid', headerName: 'emailInvalid', width: 120, editable: true, renderCell: (params) =>  <CellBox item={6} {...{params, rowId, setRowId }}/>, hide: true },
       { field: 'GloballyOptedOutOfEmail', headerName: 'GloballyOptedOutOfEmail', width: 120, editable: true, renderCell: (params) =>  <CellBox item={7} {...{params, rowId, setRowId }}/>, hide: true  },
@@ -259,9 +289,43 @@ export default function DataGridProCSV(props) {
       { field: 'ZipCode', headerName: 'Lender', width: 120, editable: true, renderCell: (params) =>  <CellBox item={38} {...{params, rowId, setRowId }}/> , hide: true },
       { field: 'Link', headerName: 'Link', width: 120, editable: true, renderCell: (params) =>  <CellBox item={39} {...{params, rowId, setRowId }}/> , hide: true },
       { field: 'Birthday', headerName: 'Birthday', width: 120, editable: true, renderCell: (params) =>  <CellBox item={40} {...{params, rowId, setRowId }}/> , hide: true },
-      { field: 'HomeClosingDate', headerName: 'HomeClosingDate', width: 120, editable: true, renderCell: (params) =>  <CellBox item={41} {...{params, rowId, setRowId }}/> , hide: true },
-      { field: 'tags', headerName: 'tags', width: 270, editable: true, renderCell: (params) =>  <CellBox item={42} {...{params, rowId, setRowId }}/> },
-      { field: 'categories', headerName: 'categories', width: 270, editable: true, renderCell: (params) =>  <CellBox item={43} {...{params, rowId, setRowId }}/> },
+      { field: 'HomeClosingDate', headerName: 'HomeClosingDate', width: 120, editable: true, renderCell: (params) => 
+
+      <Box sx={ { width: '100%', height: '100%' ,borderTop: 'none', 
+      borderBottom: 'none', 
+      borderLeft: '1px solid lightgray', 
+      borderRight:  'none', }}> 
+       <CellBox item={41} {...{params, rowId, setRowId }}/> 
+
+        </Box>
+
+       
+       
+       , hide: true },
+      { field: 'tags', headerName: 'tags', width: 270, editable: true, renderCell: (params) =>  <Box sx={ { width: '100%', height: '100%' ,borderTop: 'none', 
+      borderBottom: 'none', 
+      borderLeft: '1px solid lightgray', 
+      borderRight:  'none', }}> 
+      
+      <CellBox  item={42} {...{params, rowId, setRowId }}/> 
+
+      </Box>
+      
+      
+      
+      },
+      { field: 'categories', headerName: 'categories', width: 270, editable: true, renderCell: (params) =>  <Box sx={ { width: '100%', height: '100%' ,borderTop: 'none', 
+      borderBottom: 'none', 
+      borderLeft: '1px solid lightgray', 
+      borderRight:  '1px solid black', }}> 
+        
+        
+         <CellBox item={43} {...{params, rowId, setRowId }}/>
+
+         </Box>
+         
+         
+          },
       { field: 'Uid', headerName: 'UID', width: 100, editable: true, hide: true },
       ],
       [rowId]

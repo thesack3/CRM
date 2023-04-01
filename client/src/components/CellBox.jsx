@@ -8,7 +8,7 @@ import { Checkbox, CircularProgress, Fab } from '@mui/material';
 
 import { updateLeadMutation } from '../mutations/leadMutations';
 
-function CellBox({params, rowId, setRowId, item }) {
+function CellBox({params, rowId, setRowId, item, successCheck }) {
   
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState(false);
@@ -22,7 +22,7 @@ function CellBox({params, rowId, setRowId, item }) {
     const [updateLead, { Leadloading, error, Leaddata }] = useMutation(updateLeadMutation);
 
 
-    const handleUpdateLead = async (leadId, first, Email, last, Tags) => {
+    const handleUpdateLead = async (leadId, first, Email, last, tags, categories) => {
         try {
             // setHighlighted(true);
          const result = await updateLead({
@@ -31,11 +31,12 @@ function CellBox({params, rowId, setRowId, item }) {
               firstName: first,
               email: Email,
               lastName: last,
-              tags: Tags
+              Tags: tags,
+              Categories: categories
             }
           }).then((res) => {
 
-         
+         successCheck();
           // console.log(result.data.updateLead);
             console.log(res)
           }).catch((err) => {
@@ -78,16 +79,21 @@ function CellBox({params, rowId, setRowId, item }) {
           NextCallDue, LastAgentCallDate, LastLenderCallDate, 
           FirstVisitDate, LastVisitDate, RegisterDate, LeadType, 
           AgentSelected, LenderOptIn, Address , City, State, 
-          ZipCode, Link, Birthday, HomeClosingDate 
+          ZipCode, Link, Birthday, HomeClosingDate , ogTags, ogCategories, tags, categories
+   
           } = params.row;
 
 
+
+          
         
-       handleUpdateLead(id, firstName,email , lastName, [] ,phone ).then((res) => {
+       handleUpdateLead(id, firstName,email , lastName, ogTags, ogCategories ).then((res) => {
             // alert("Lead Updated")
             setHighlighted(true);
            console.log("Lead Updated")
                  console.log(res)
+
+                
 
                  if (item === 1) {
                     const {firstName} = params.row;
@@ -326,10 +332,7 @@ function CellBox({params, rowId, setRowId, item }) {
             justifyContent: 'center',
             alignItems: 'center',
             transition: 'background-color 0.5s ease-in-out',
-            // borderTop: '1px solid black', 
-            // borderBottom: '1px solid black', 
-            // borderLeft: 'none', 
-            // borderRight: 'none'
+          
 
 
         }}

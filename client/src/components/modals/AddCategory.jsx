@@ -132,10 +132,10 @@ export default function AddCategoryModal() {
   Add Category
  </Button>
  <Dialog open={open} onClose={handleClose}>
-   <DialogTitle>New Lead Info</DialogTitle>
+   <DialogTitle>New category Info</DialogTitle>
    <DialogContent>
      <DialogContentText>
-       Tell us about your new lead!
+       Tell us about your category!
      </DialogContentText>
 
 
@@ -155,7 +155,7 @@ value={formData.title}
 onChange={handleChange}
 />
 
-<TextField
+{/* <TextField
 autoFocus
 margin="dense"
 id="dateCreated"
@@ -167,12 +167,12 @@ name="dateCreated"
 value={formData.dateCreated}
 onChange={handleChange}
 />
-
+ */}
 
    </DialogContent>
    <DialogActions>
      <Button onClick={handleClose}>Cancel</Button>
-     <Button onClick={handleLeadSubmit}>Add Tag</Button>
+     <Button onClick={handleLeadSubmit}>Add Category</Button>
    </DialogActions>
  </Dialog>
 </div>)}

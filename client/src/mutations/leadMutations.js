@@ -1,5 +1,6 @@
 import { gql } from '@apollo/client';
 
+
 const ADD_LEAD = gql`
   mutation addLead(
     $firstName: String!,
@@ -41,10 +42,11 @@ const ADD_LEAD = gql`
     $City: String,
     $State: String,
     $ZipCode: String,
-    $tags: [String]
+    $tags: [String],
     $Link: String,
     $Birthday: String,
     $HomeClosingDate: String
+    
   ) {
     addLead(
       firstName: $firstName,
@@ -80,16 +82,16 @@ const ADD_LEAD = gql`
       LastVisitDate: $LastVisitDate,
       RegisterDate: $RegisterDate,
       LeadType: $LeadType,
-      AgentSelected: $Agent,
-LenderOptIn: $LenderOptIn,
-Address: $Address,
-City: $City,
-State: $State,
-ZipCode: $ZipCode,
-tags: $tags,
-Link: $Link,
-Birthday: $Birthday,
-HomeClosingDate: $HomeClosingDate
+      AgentSelected: $AgentSelected,
+      LenderOptIn: $LenderOptIn,
+      Address: $Address,
+      City: $City,
+      State: $State,
+      ZipCode: $ZipCode,
+      tags: $tags,
+      Link: $Link,
+      Birthday: $Birthday,
+      HomeClosingDate: $HomeClosingDate
 ) {
 id
 firstName
@@ -131,7 +133,9 @@ Address
 City
 State
 ZipCode
-tags
+tags{
+  id
+}
 Link
 Birthday
 HomeClosingDate
@@ -145,8 +149,8 @@ const updateLeadMutation = gql`
     $firstName: String,
     $email: String,
     $lastName: String,
-    $tags: [String],
-    $categories: [String]
+    $Tags: [String],
+    $Categories: [String]
    
   ) {
     updateLead(
@@ -154,8 +158,8 @@ const updateLeadMutation = gql`
       firstName: $firstName,
       email: $email,
       lastName: $lastName,
-      tags: $tags,
-      categories: $categories,
+      tags: $Tags,
+      categories: $Categories,
  
     ) {
       id
