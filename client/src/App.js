@@ -4,9 +4,10 @@
 
 import { LicenseInfo } from '@mui/x-license-pro';
 import { InMemoryCache, ApolloClient, ApolloProvider, useQuery } from '@apollo/client';
-import React, { useEffect, useState } from 'react';
-import gql from 'graphql-tag';
 
+import React, { useEffect, useState } from 'react';
+
+import gql from 'graphql-tag';
 
 import Router from './routes';
 import ThemeProvider from './theme';
@@ -24,18 +25,10 @@ const VALIDATE_JWT_QUERY = gql`
 
 LicenseInfo.setLicenseKey('9e17734200a964cd420488accda5490fTz01ODkyOSxFPTE3MDY4NzA0MzEyMTAsUz1wcm8sTE09c3Vic2NyaXB0aW9uLEtWPTI=');
 
-// ----------
-//------------------------------------------------------------
 
 export default function App() {
 
-  // const { loading, error, data } = useQuery(VALIDATE_JWT_QUERY, {
-  //   context: {
-  //     headers: {
-  //       authorization: localStorage.getItem('jwt'),
-  //     },
-  //   },
-  // });
+ 
 
   useEffect(() => {
     
@@ -43,15 +36,17 @@ export default function App() {
     if(jwt){
       //   setToken(jwt);
     }
-
   
     return () => {
-      
+    
     }
   }, [])
   
 
 
+
+
+  
   const cache = new InMemoryCache({
     typePolicies:{
       Query:{
@@ -89,12 +84,7 @@ export default function App() {
   })
 
 
-  return (
-
-
-<>
-
-     <ApolloProvider client={client}>
+  return (<><ApolloProvider client={client}>
 
 
   <ThemeProvider>
