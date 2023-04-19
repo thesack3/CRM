@@ -147,7 +147,7 @@ const handleClose = (event, reason) => {
 <AddLeadModal/>   
 
 {/* // TODO PUT BACK */}
-            {/* <AddCSVLeadModal/> */}
+            <AddCSVLeadModal/>
             <AddTagModal/>
             <AddCategoryModal/>
 </Stack>
