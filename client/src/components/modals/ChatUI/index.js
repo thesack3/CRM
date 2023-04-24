@@ -45,8 +45,8 @@ const Receiver = styled(Paper)(({ theme }) => ({
   minHeight: '50px',
 }));
 
-const ChatUI = ({ handleProfile }) => {
-  const { setIsCall } = useContext(callContext);
+const ChatUI = ({ handleProfile, lead }) => {
+  const { setIsCall, setUserName } = useContext(callContext);
   const autoGrow = (element) => {
     element.style.height = '5px';
     element.style.height = `${element.scrollHeight}px`;
@@ -68,14 +68,16 @@ const ChatUI = ({ handleProfile }) => {
           >
             <Iconify icon="mdi:user" color="#18712" width={42} height={42} />
             <Typography fontSize={18} fontWeight={700}>
-              Dominiq
+              {lead?.firstName || '-'}
             </Typography>
           </Box>
           <Button
             sx={{ borderRadius: '100px' }}
             onClick={() => {
               setIsCall(true);
+              setUserName(lead?.firstName || '');
               window.localStorage.setItem('isCall', true);
+              window.localStorage.setItem('userName', lead?.firstName || '');
             }}
           >
             <Iconify icon="eva:phone-fill" color="#18712" width={22} height={22} />

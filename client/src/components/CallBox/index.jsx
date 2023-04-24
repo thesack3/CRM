@@ -16,7 +16,7 @@ const Header = styled(Paper)(({ theme }) => ({
 }));
 
 const CallBox = () => {
-  const { isCall, setIsCall } = useContext(callContext);
+  const {userName ,setIsCall } = useContext(callContext);
 
   const waveformRef = useRef();
 
@@ -57,7 +57,7 @@ const CallBox = () => {
         >
           <Iconify icon="mdi:user" color="#18712" width={36} height={36} />
           <Typography fontSize={18} fontWeight={600} marginTop={1}>
-            Dominiq
+            {userName || 'dd'}
           </Typography>
         </Box>
         <Button

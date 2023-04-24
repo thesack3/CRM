@@ -26,7 +26,7 @@ LicenseInfo.setLicenseKey(
 );
 
 export default function App() {
-  const { isCall } = useContext(callContext);
+  const { isCall, userName } = useContext(callContext);
   useEffect(() => {
     const jwt = localStorage.getItem('jwt');
     if (jwt) {
@@ -69,14 +69,15 @@ export default function App() {
     uri: 'http://localhost:4000/graphql',
     cache,
   });
+  console.log('iscal---------', isCall, typeof isCall, userName, typeof userName);
   return (
     <>
       <ApolloProvider client={client}>
         <ThemeProvider>
+          {isCall === true ? <CallBox /> : ''}
           <ScrollToTop />
           <StyledChart />
           <Router />
-          {isCall === 'true' ? <CallBox /> : ''}
         </ThemeProvider>
       </ApolloProvider>
     </>

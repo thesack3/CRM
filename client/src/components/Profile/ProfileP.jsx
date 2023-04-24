@@ -38,7 +38,7 @@ import CallBox from '../CallBox';
 import { callContext } from '../../hooks/useCall';
 
 export default function ProfileP({ rowId }) {
-  const { isCall, setIsCall } = useContext(callContext);
+  const { isCall, setIsCall, userName, setUserName } = useContext(callContext);
   const [usersTags, setUsersTags] = useState(null);
   const [isMessageModal, setIsMessageModal] = useState(false);
   const [usersCategories, setUsersCategories] = useState(null);
@@ -163,11 +163,10 @@ export default function ProfileP({ rowId }) {
       </Helmet>
       <Container maxWidth="lg" sx={{ width: '70vw', minHeight: '75vh' }}>
         {isMessageModal ? (
-          <ChatUI handleProfile={() => setIsMessageModal(false)} />
+          <ChatUI handleProfile={() => setIsMessageModal(false)} lead={lead} />
         ) : (
           <Grid>
             <DialogTitle>Profile </DialogTitle>
-
             <Grid container spacing={3}>
               <Grid item xs={12} md={4} lg={3}>
                 <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -181,7 +180,9 @@ export default function ProfileP({ rowId }) {
                       sx={{ borderRadius: '100px' }}
                       onClick={() => {
                         setIsCall(true);
+                        setUserName(lead?.firstName || '');
                         window.localStorage.setItem('isCall', true);
+                        window.localStorage.setItem('userName', lead?.firstName || '');
                       }}
                     >
                       <Iconify icon="eva:phone-fill" color="#18712" width={22} height={22} />
