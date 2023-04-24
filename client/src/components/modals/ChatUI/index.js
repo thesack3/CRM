@@ -1,8 +1,9 @@
-import React from 'react';
-import { Box, FormControl, Grid, OutlinedInput, Paper, Typography } from '@mui/material';
+import React, { useContext } from 'react';
+import { Box, FormControl, Grid, OutlinedInput, Paper, Typography, Button } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { display } from '@mui/system';
-import Iconify from '../iconify';
+import Iconify from '../../iconify';
+import { callContext } from '../../../hooks/useCall';
 
 const Item = styled(Paper)(({ theme }) => ({
   display: 'none',
@@ -17,6 +18,9 @@ const Header = styled(Paper)(({ theme }) => ({
   ...theme.typography.body1,
   padding: theme.spacing(1),
   color: theme.palette.text.primary,
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
 }));
 const Sender = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#ccf1fabf',
@@ -42,6 +46,7 @@ const Receiver = styled(Paper)(({ theme }) => ({
 }));
 
 const ChatUI = ({ handleProfile }) => {
+  const { setIsCall } = useContext(callContext);
   const autoGrow = (element) => {
     element.style.height = '5px';
     element.style.height = `${element.scrollHeight}px`;
@@ -66,6 +71,15 @@ const ChatUI = ({ handleProfile }) => {
               Dominiq
             </Typography>
           </Box>
+          <Button
+            sx={{ borderRadius: '100px' }}
+            onClick={() => {
+              setIsCall(true);
+              window.localStorage.setItem('isCall', true);
+            }}
+          >
+            <Iconify icon="eva:phone-fill" color="#18712" width={22} height={22} />
+          </Button>
         </Header>
         <Grid
           style={{ backgroundColor: '#fafafa', overflowY: 'scroll', height: '45vh' }}

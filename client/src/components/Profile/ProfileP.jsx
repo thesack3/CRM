@@ -1,5 +1,5 @@
 // import * as React from 'react';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import {
   Grid,
@@ -32,10 +32,13 @@ import CallModal from '../modals/CallModal';
 import MessageModal from '../modals/Message';
 
 import EmailActionModal from '../modals/EmalActionModal';
-import ChatUI from '../ChatUI';
+import ChatUI from '../modals/ChatUI';
 import Iconify from '../iconify/Iconify';
+import CallBox from '../CallBox';
+import { callContext } from '../../hooks/useCall';
 
 export default function ProfileP({ rowId }) {
+  const { isCall, setIsCall } = useContext(callContext);
   const [usersTags, setUsersTags] = useState(null);
   const [isMessageModal, setIsMessageModal] = useState(false);
   const [usersCategories, setUsersCategories] = useState(null);
@@ -174,7 +177,15 @@ export default function ProfileP({ rowId }) {
                   />
 
                   <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'row' }}>
-                    <CallModal />
+                    <Button
+                      sx={{ borderRadius: '100px' }}
+                      onClick={() => {
+                        setIsCall(true);
+                        window.localStorage.setItem('isCall', true);
+                      }}
+                    >
+                      <Iconify icon="eva:phone-fill" color="#18712" width={22} height={22} />
+                    </Button>
                     <Button href="" sx={{ borderRadius: '100px' }} onClick={() => setIsMessageModal(true)}>
                       <Iconify icon="eva:email-fill" color="#18712" width={22} height={22} />
                     </Button>
@@ -326,7 +337,6 @@ export default function ProfileP({ rowId }) {
             </Grid>
           </Grid>
         )}
-
         <Snackbar open={open} autoHideDuration={2000} onClose={handleClose}>
           <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
             Updated Lead!

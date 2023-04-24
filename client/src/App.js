@@ -1,11 +1,8 @@
+import React, { useContext, useEffect, useState } from 'react';
 // routes
-
-
 
 import { LicenseInfo } from '@mui/x-license-pro';
 import { InMemoryCache, ApolloClient, ApolloProvider, useQuery } from '@apollo/client';
-
-import React, { useEffect, useState } from 'react';
 
 import gql from 'graphql-tag';
 
@@ -14,7 +11,9 @@ import ThemeProvider from './theme';
 // components
 import ScrollToTop from './components/scroll-to-top';
 import { StyledChart } from './components/chart';
-
+import CallBox from './components/CallBox/index';
+import { callContext } from './hooks/useCall';
+import './app.css';
 
 const VALIDATE_JWT_QUERY = gql`
   query ValidateJwt {
@@ -22,80 +21,64 @@ const VALIDATE_JWT_QUERY = gql`
   }
 `;
 
-
-LicenseInfo.setLicenseKey('9e17734200a964cd420488accda5490fTz01ODkyOSxFPTE3MDY4NzA0MzEyMTAsUz1wcm8sTE09c3Vic2NyaXB0aW9uLEtWPTI=');
-
+LicenseInfo.setLicenseKey(
+  '9e17734200a964cd420488accda5490fTz01ODkyOSxFPTE3MDY4NzA0MzEyMTAsUz1wcm8sTE09c3Vic2NyaXB0aW9uLEtWPTI='
+);
 
 export default function App() {
-
- 
-
+  const { isCall } = useContext(callContext);
   useEffect(() => {
-    
     const jwt = localStorage.getItem('jwt');
-    if(jwt){
+    if (jwt) {
       //   setToken(jwt);
     }
-  
-    return () => {
-    
-    }
-  }, [])
-  
 
+    return () => {};
+  }, []);
 
-
-
-  
   const cache = new InMemoryCache({
-    typePolicies:{
-      Query:{
-        fields:{
-          clients:{
-            merge(existing, incoming){
+    typePolicies: {
+      Query: {
+        fields: {
+          clients: {
+            merge(existing, incoming) {
               return incoming;
             },
           },
           projects: {
-            merge(existing, incoming){
+            merge(existing, incoming) {
               return incoming;
-            }
+            },
           },
           leads: {
-            merge(existing, incoming){
+            merge(existing, incoming) {
               return incoming;
             },
           },
           users: {
-            merge(existing, incoming){
+            merge(existing, incoming) {
               return incoming;
             },
-          }
-        }
-      }
-    }
+          },
+        },
+      },
+    },
   });
-  
 
-  
   const client = new ApolloClient({
     uri: 'http://localhost:4000/graphql',
     cache,
-  })
-
-
-  return (<><ApolloProvider client={client}>
-
-
-  <ThemeProvider>
-      <ScrollToTop />
-      <StyledChart />
-      <Router />
-    </ThemeProvider>
-</ApolloProvider>
-
-</>
-    
-  
+  });
+  return (
+    <>
+      <ApolloProvider client={client}>
+        <ThemeProvider>
+          <ScrollToTop />
+          <StyledChart />
+          <Router />
+          {isCall === 'true' ? <CallBox /> : ''}
+        </ThemeProvider>
+      </ApolloProvider>
+    </>
   );
 }

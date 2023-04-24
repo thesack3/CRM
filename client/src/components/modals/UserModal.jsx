@@ -183,7 +183,7 @@ export default function UserModal({ RowId }) {
       <div className={styles.ModalMain}>
         <Dialog
           maxWidth="xl"
-          maxHeight="xl"
+          // maxHeight="xl"
           sx={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}
           open={open}
           onClose={handleClose}
