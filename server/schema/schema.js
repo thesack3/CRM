@@ -24,7 +24,23 @@ const Tag = require('../models/Tag');
 const Category = require('../models/Category');
 const EAlert = require('../models/EAlert');
 const Call = require('../models/Call');
+const Text = require('../models/Text');
 
+
+const TwilioMSGType = new GraphQLObjectType({
+    name: 'TwilioMSG',
+    fields: () => ({
+        accountSid:{ type: GraphQLID},
+        id:{ type: GraphQLID},
+        to:{ type: GraphQLString},
+        from:{ type: GraphQLString},
+        body:{ type: GraphQLString},
+        status:{ type: GraphQLString},
+        dateCreated:{ type: GraphQLString},
+        dateUpdated:{ type: GraphQLString},
+        dateSent:{ type: GraphQLString},
+        direction:{ type: GraphQLString},
+    })})
 
 
 
@@ -149,6 +165,25 @@ const UserType = new GraphQLObjectType({
             }
         })
     });
+
+
+    const TextType = new GraphQLObjectType({
+        name: 'Text',
+        fields: () => ({
+            id: { type: GraphQLID },
+            to: { type: GraphQLString },
+            from: { type: GraphQLString },
+            body: { type: GraphQLString },
+            status: { type: GraphQLString },
+            dateCreated: { type: GraphQLString },
+            dateUpdated: { type: GraphQLString },
+            accountSid: { type: GraphQLString },
+            
+          
+        })
+        
+    });
+
 
 
 
@@ -305,6 +340,26 @@ const LeadType = new GraphQLObjectType({
             }
 
         },
+
+        texts: {
+            type: new GraphQLList(TextType),
+            args: {
+                leadId: { type: GraphQLNonNull(GraphQLID) }
+                },
+            resolve(parent, args){
+
+                return Text.find({ leadId: args.leadId });
+            }
+        },
+        text:{ //TODO
+            type: TextType,
+            args: {
+              leadId: { type: GraphQLNonNull(GraphQLID) }
+            },
+            resolve(parent, args) {
+              return Text.findOne({ leadId: args.leadId });
+            }
+        },
         notes: {
             type: new GraphQLList(NoteType),
             args: {
@@ -438,6 +493,71 @@ const LeadType = new GraphQLObjectType({
 const mutation = new GraphQLObjectType({
     name: 'Mutation',
     fields:{
+        sendSMS: {
+            type: TextType,
+            args: {
+                toNumber: { type: GraphQLString },
+                msg: { type: GraphQLString },
+                leadId: { type: GraphQLID },
+                },
+
+            async resolve(parent, args) {
+                // Your AccountSID and Auth Token from console.twilio.com
+                const accountSid = 'ACc1d129072adcdd2b82563d7c50f996ce';
+                const authToken = 'ae969f0a0988a8179b77cefedf51b4f5';
+    
+                const client = require('twilio')(accountSid, authToken);
+    
+                return client.messages
+                .create({
+                    body: args.msg,
+                    to: args.toNumber, // number passed at row. 
+                    from: '+18443112751', // From a valid Twilio number
+                })
+                .then((message) =>  {
+                    // console.log(message.sid)
+                    console.log(message)
+                    const twilioMSG = {
+                        date_Updated: message.dateUpdated,
+                        date_Sent: message.dateSent,
+                        accountSid: message.accountSid,
+                        to: message.to,
+                        from: message.from,
+                        body: message.body,
+                        status: message.status,
+                    };
+
+
+                    const newText = new Text({
+                        body: twilioMSG.body,
+                        to: twilioMSG.to,
+                        from: twilioMSG.from,
+                        dateCreated: twilioMSG.date_Updated,
+                        leadId: args.leadId,
+                        });
+
+
+                    
+                     newText.save();
+
+
+
+
+
+
+
+    
+                     return twilioMSG;
+        
+    
+        
+                }) ;
+    
+    
+    
+            //   return projects;
+            }
+          },
         //Email Verification Register User
         registerUser:{
             type: UserType,
@@ -788,53 +908,49 @@ const mutation = new GraphQLObjectType({
                 }
               }
 ,        
-
-
-sendEmails: {
-    type: new GraphQLList(EmailType),
-    args: {
-      emails: { type: GraphQLNonNull(new GraphQLList(GraphQLNonNull(GraphQLString))) },
-      subject: { type: GraphQLNonNull(GraphQLString) },
-      body: { type: GraphQLNonNull(GraphQLString) }
-    },
-    async resolve(parent, args) {
-      const transporter = nodemailer.createTransport({
-        host: "smtp.porkbun.com",
-        port: 587,
-        secure: false,
-        auth: {
-          user: process.env.EMAIL,
-          pass: process.env.PASSWORD
-        }
-      });
-  
-      // Loop through the list of email addresses and send the email
-      const emails = [];
-      for (let i = 0; i < args.emails.length; i++) {
-        const mailOptions = {
-          from: process.env.EMAIL,
-          to: args.emails[i],
-          subject: args.subject,
-          text: args.body,
-          html: `<p>${args.body}</p>`
-        };
-  
-        const info = await transporter.sendMail(mailOptions);
-        const email = {
-          id: info.messageId,
-          to: args.emails[i],
-          subject: args.subject,
-          body: args.body
-        };
-        emails.push(email);
-      }
-  
-      return emails;
-    }
-  },
-  
-
-
+        sendEmails: {
+            type: new GraphQLList(EmailType),
+            args: {
+            emails: { type: GraphQLNonNull(new GraphQLList(GraphQLNonNull(GraphQLString))) },
+            subject: { type: GraphQLNonNull(GraphQLString) },
+            body: { type: GraphQLNonNull(GraphQLString) }
+            },
+            async resolve(parent, args) {
+            const transporter = nodemailer.createTransport({
+                host: "smtp.porkbun.com",
+                port: 587,
+                secure: false,
+                auth: {
+                user: process.env.EMAIL,
+                pass: process.env.PASSWORD
+                }
+            });
+        
+            // Loop through the list of email addresses and send the email
+            const emails = [];
+            for (let i = 0; i < args.emails.length; i++) {
+                const mailOptions = {
+                from: process.env.EMAIL,
+                to: args.emails[i],
+                subject: args.subject,
+                text: args.body,
+                html: `<p>${args.body}</p>`
+                };
+        
+                const info = await transporter.sendMail(mailOptions);
+                const email = {
+                id: info.messageId,
+                to: args.emails[i],
+                subject: args.subject,
+                body: args.body
+                };
+                emails.push(email);
+            }
+        
+            return emails;
+            }
+        },
+        
         //Delete a client
 
         deleteClient:{
@@ -847,7 +963,6 @@ sendEmails: {
             }
 
         },
-
 
         //Add project
         addProject:{
@@ -879,51 +994,51 @@ sendEmails: {
                 return project.save();
             },
         },
- //Add Call
- addCall:{
-    type: CallType,
-    args:{
-        
-        contactId: { type: GraphQLNonNull(GraphQLString)},
-        FirstName : { type: GraphQLNonNull(GraphQLString)},
-        LastName : { type: GraphQLNonNull(GraphQLString)},
-        DateCreated : { type: GraphQLNonNull(GraphQLString)},
-        BuyerAgent : { type: GraphQLNonNull(GraphQLString)},
-        ListingAgent : { type: GraphQLNonNull(GraphQLString)},
-        UserID: { type: GraphQLNonNull(GraphQLString)},
-        AssociatedopportunityID: { type: GraphQLNonNull(GraphQLString)},
-        CallDetails: { type: GraphQLNonNull(GraphQLString)},
-        ContactPhoneID: { type: GraphQLNonNull(GraphQLString)},
-        LogType: { type: GraphQLNonNull(GraphQLString)},
-        MediaURL: { type: GraphQLNonNull(GraphQLString)},
-        CallStartTime: { type: GraphQLNonNull(GraphQLString)},
-        CallEndTime: { type: GraphQLNonNull(GraphQLString)},
-        leadId: {type: GraphQLNonNull(GraphQLID)},
-       
-},
-resolve(parent, args){
-    const NEWCall = new Call({
-        contactId: args.contactId,
-        FirstName: args.FirstName,
-        LastName: args.LastName,
-        DateCreated: args.DateCreated,
-        BuyerAgent: args.BuyerAgent,
-        ListingAgent: args.ListingAgent,
-        UserID: args.UserID,
-        AssociatedopportunityID: args.AssociatedopportunityID,
-        CallDetails: args.CallDetails,
-        ContactPhoneID: args.ContactPhoneID,
-        LogType: args.LogType,
-        MediaURL: args.MediaURL,
-        CallStartTime: args.CallStartTime,
-        CallEndTime: args.CallEndTime,
-        leadId: args.leadId,
-    });
-    return NEWCall.save();
-}
+         //Add Call
+        addCall:{
+            type: CallType,
+            args:{
+                
+                contactId: { type: GraphQLNonNull(GraphQLString)},
+                FirstName : { type: GraphQLNonNull(GraphQLString)},
+                LastName : { type: GraphQLNonNull(GraphQLString)},
+                DateCreated : { type: GraphQLNonNull(GraphQLString)},
+                BuyerAgent : { type: GraphQLNonNull(GraphQLString)},
+                ListingAgent : { type: GraphQLNonNull(GraphQLString)},
+                UserID: { type: GraphQLNonNull(GraphQLString)},
+                AssociatedopportunityID: { type: GraphQLNonNull(GraphQLString)},
+                CallDetails: { type: GraphQLNonNull(GraphQLString)},
+                ContactPhoneID: { type: GraphQLNonNull(GraphQLString)},
+                LogType: { type: GraphQLNonNull(GraphQLString)},
+                MediaURL: { type: GraphQLNonNull(GraphQLString)},
+                CallStartTime: { type: GraphQLNonNull(GraphQLString)},
+                CallEndTime: { type: GraphQLNonNull(GraphQLString)},
+                leadId: {type: GraphQLNonNull(GraphQLID)},
+            
+        },
+        resolve(parent, args){
+            const NEWCall = new Call({
+                contactId: args.contactId,
+                FirstName: args.FirstName,
+                LastName: args.LastName,
+                DateCreated: args.DateCreated,
+                BuyerAgent: args.BuyerAgent,
+                ListingAgent: args.ListingAgent,
+                UserID: args.UserID,
+                AssociatedopportunityID: args.AssociatedopportunityID,
+                CallDetails: args.CallDetails,
+                ContactPhoneID: args.ContactPhoneID,
+                LogType: args.LogType,
+                MediaURL: args.MediaURL,
+                CallStartTime: args.CallStartTime,
+                CallEndTime: args.CallEndTime,
+                leadId: args.leadId,
+            });
+            return NEWCall.save();
+        }
 
 
-},
+        },
          //Add EAlert
          addEAlert:{
             type: EAlertType,
