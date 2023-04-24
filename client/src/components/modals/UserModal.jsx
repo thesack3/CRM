@@ -194,9 +194,9 @@ export default function UserModal({ RowId }) {
             </Box>
           </DialogContent>
 
-          <DialogActions>
+          {/* <DialogActions>
             <Button onClick={handleClose}>Confirm</Button>
-          </DialogActions>
+          </DialogActions> */}
         </Dialog>
       </div>
     </div>

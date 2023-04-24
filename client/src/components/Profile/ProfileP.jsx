@@ -33,10 +33,11 @@ import MessageModal from '../modals/Message';
 
 import EmailActionModal from '../modals/EmalActionModal';
 import ChatUI from '../ChatUI';
+import Iconify from '../iconify/Iconify';
 
 export default function ProfileP({ rowId }) {
   const [usersTags, setUsersTags] = useState(null);
-  const [isMessageModal, setIsMessageModal] = useState(true);
+  const [isMessageModal, setIsMessageModal] = useState(false);
   const [usersCategories, setUsersCategories] = useState(null);
   const [open, setOpen] = React.useState(false);
 
@@ -174,7 +175,9 @@ export default function ProfileP({ rowId }) {
 
                   <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'row' }}>
                     <CallModal />
-                    <MessageModal />
+                    <Button href="" sx={{ borderRadius: '100px' }} onClick={() => setIsMessageModal(true)}>
+                      <Iconify icon="eva:email-fill" color="#18712" width={22} height={22} />
+                    </Button>
                   </Box>
 
                   <Typography variant="h6" fontWeight="bold" mb={1}>

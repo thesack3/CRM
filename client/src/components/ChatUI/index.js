@@ -31,7 +31,7 @@ const Sender = styled(Paper)(({ theme }) => ({
   minHeight: '50px',
   display: 'flex',
   alignItems: 'center',
-  marginTop: 16,
+  marginTop: 20,
 }));
 const Receiver = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#ccf6c4ba',
@@ -39,7 +39,7 @@ const Receiver = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(1),
   textAlign: 'center',
   color: theme.palette.text.secondary,
-  marginTop: 16,
+  marginTop: 20,
   maxWidth: '270px',
   minHeight: '50px',
 }));
@@ -51,16 +51,10 @@ const ChatUI = () => {
   };
 
   return (
-    <Grid container spacing={3} padding={4} minHeight={'75vh'} alignItems="center">
-      <Grid item xs={2}>
-        <Item />
-      </Grid>
-      <Grid xs={7} sx={{ backgroundColor: '#f5f7f2', height:'100%' }} padding={2} borderRadius={1.5}>
-        <Header>
-          Dominiq
-          {/* <Typography>Dominiq</Typography> */}
-        </Header>
-        <Grid style={{ backgroundColor: '#fafafa' }} marginTop={3} padding={2} borderRadius={1.5}>
+    <Grid container spacing={3} padding={4} minHeight={'75vh'} alignItems="center" justifyContent={'center'}>
+      <Grid xs={12} sx={{ backgroundColor: '#f5f7f2', height: '100%' }} padding={2} borderRadius={1.5}>
+        <Header>Dominiq</Header>
+        <Grid style={{ backgroundColor: '#fafafa', overflowY: 'scroll', height:"45vh" }} marginTop={3} padding={2} borderRadius={1.5}>
           <Grid xs={12} container flexDirection={{ xs: 'column', sm: 'row' }} justifyContent={'flex-end'}>
             <Sender>Hurry! I've passed my driving test!</Sender>
           </Grid>
@@ -83,7 +77,7 @@ const ChatUI = () => {
               padding: '12px',
               boxShadow: '0 0 4px #ccf1fabf',
               resize: 'none',
-              minHeight: '50px',
+              minHeight: '100px',
               maxHeight: '150px',
               outline: 'none',
             }}
@@ -92,9 +86,6 @@ const ChatUI = () => {
             placeholder="Write a Message"
           />
         </Grid>
-      </Grid>
-      <Grid item xs={3}>
-        <Item />
       </Grid>
     </Grid>
   );
