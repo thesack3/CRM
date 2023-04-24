@@ -1,7 +1,8 @@
 import React from 'react';
-import { Box, FormControl, Grid, OutlinedInput, Paper } from '@mui/material';
+import { Box, FormControl, Grid, OutlinedInput, Paper, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { display } from '@mui/system';
+import Iconify from '../iconify';
 
 const Item = styled(Paper)(({ theme }) => ({
   display: 'none',
@@ -15,10 +16,6 @@ const Header = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fafafa',
   ...theme.typography.body1,
   padding: theme.spacing(1),
-  fontWeight: 700,
-  height: 70,
-  display: 'flex',
-  alignItems: 'center',
   color: theme.palette.text.primary,
 }));
 const Sender = styled(Paper)(({ theme }) => ({
@@ -44,7 +41,7 @@ const Receiver = styled(Paper)(({ theme }) => ({
   minHeight: '50px',
 }));
 
-const ChatUI = () => {
+const ChatUI = ({ handleProfile }) => {
   const autoGrow = (element) => {
     element.style.height = '5px';
     element.style.height = `${element.scrollHeight}px`;
@@ -53,8 +50,29 @@ const ChatUI = () => {
   return (
     <Grid container spacing={3} padding={4} minHeight={'75vh'} alignItems="center" justifyContent={'center'}>
       <Grid xs={12} sx={{ backgroundColor: '#f5f7f2', height: '100%' }} padding={2} borderRadius={1.5}>
-        <Header>Dominiq</Header>
-        <Grid style={{ backgroundColor: '#fafafa', overflowY: 'scroll', height:"45vh" }} marginTop={3} padding={2} borderRadius={1.5}>
+        <Header>
+          <Box
+            sx={{
+              backgroundColor: 'transparent',
+              cursor: 'pointer',
+              display: 'inline-flex',
+              alignItems: 'flex-end',
+              gap: '6px',
+            }}
+            onClick={() => handleProfile()}
+          >
+            <Iconify icon="mdi:user" color="#18712" width={42} height={42} />
+            <Typography fontSize={18} fontWeight={700}>
+              Dominiq
+            </Typography>
+          </Box>
+        </Header>
+        <Grid
+          style={{ backgroundColor: '#fafafa', overflowY: 'scroll', height: '45vh' }}
+          marginTop={3}
+          padding={2}
+          borderRadius={1.5}
+        >
           <Grid xs={12} container flexDirection={{ xs: 'column', sm: 'row' }} justifyContent={'flex-end'}>
             <Sender>Hurry! I've passed my driving test!</Sender>
           </Grid>

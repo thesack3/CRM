@@ -160,7 +160,7 @@ export default function ProfileP({ rowId }) {
       </Helmet>
       <Container maxWidth="lg" sx={{ width: '70vw', minHeight: '75vh' }}>
         {isMessageModal ? (
-          <ChatUI />
+          <ChatUI handleProfile={() => setIsMessageModal(false)} />
         ) : (
           <Grid>
             <DialogTitle>Profile </DialogTitle>
