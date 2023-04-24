@@ -176,9 +176,9 @@ const UserType = new GraphQLObjectType({
             body: { type: GraphQLString },
             status: { type: GraphQLString },
             dateCreated: { type: GraphQLString },
-            dateUpdated: { type: GraphQLString },
+            date_Updated: { type: GraphQLString },
             accountSid: { type: GraphQLString },
-            
+
           
         })
         
@@ -493,6 +493,71 @@ const LeadType = new GraphQLObjectType({
 const mutation = new GraphQLObjectType({
     name: 'Mutation',
     fields:{
+        sendCall: {
+            type: TextType,
+            args: {
+                toNumber: { type: GraphQLString },
+                msg: { type: GraphQLString },
+                leadId: { type: GraphQLID },
+                },
+
+            async resolve(parent, args) {
+                // Your AccountSID and Auth Token from console.twilio.com
+                const accountSid = 'ACc1d129072adcdd2b82563d7c50f996ce';
+                const authToken = 'ae969f0a0988a8179b77cefedf51b4f5';
+    
+                const client = require('twilio')(accountSid, authToken);
+    
+                return client.calls
+                .create({
+                    twiml: '<Response><Say>Bryan Hossack real estate at your service!</Say></Response>',
+                    to: args.toNumber, // number passed at row. 
+                    from: '+18443112751', // From a valid Twilio number
+                })
+                .then((message) =>  {
+                    // console.log(message.sid)
+                    console.log(message)
+                    const twilioMSG = {
+                        date_Updated: message.dateUpdated,
+                        date_Sent: message.dateSent,
+                        accountSid: message.accountSid,
+                        to: message.to,
+                        from: message.from,
+                        body: message.body,
+                        status: message.status,
+                    };
+
+
+                    // const newText = new Text({
+                    //     body: twilioMSG.body,
+                    //     to: twilioMSG.to,
+                    //     from: twilioMSG.from,
+                    //     dateCreated: twilioMSG.date_Updated,
+                    //     leadId: args.leadId,
+                    //     });
+
+
+                    
+                    //  newText.save();
+
+
+
+
+
+
+
+    
+                     return twilioMSG;
+        
+    
+        
+                }) ;
+    
+    
+    
+            //   return projects;
+            }
+          },
         sendSMS: {
             type: TextType,
             args: {

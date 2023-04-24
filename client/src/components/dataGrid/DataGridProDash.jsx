@@ -1,7 +1,7 @@
 
-
+// 
 import * as React from 'react';
-import { Button, FormControl, InputLabel, Select, MenuItem , TextField, Typography, Drawer  } from '@mui/material';
+import { Button, FormControl, InputLabel, Select, MenuItem , TextField, Typography, Alert, Snackbar  } from '@mui/material';
 import { useQuery ,useMutation} from '@apollo/client';
 import { useMemo,useState, useEffect} from 'react';
 import Box from '@mui/material/Box';
@@ -21,10 +21,14 @@ import EmailActionModal from '../modals/EmalActionModal';
 import AddNote from '../modals/AddNote';
 import AddeAlert from '../modals/AddeAlert';
 import ProfileP from '../Profile/ProfileP';
+import CategoryBoxView from '../inputs/SearchCategory'
+import TagBoxView from '../inputs/SearchTagBoxView'
 
 
 
 export default function DataGridProCSV(props) {
+
+  const [open, setOpen] = React.useState(false);
 
   const [tags, setTags] = useState([]);
 
@@ -91,6 +95,13 @@ export default function DataGridProCSV(props) {
   ]);
 
 
+const handleClose = () => {
+    setOpen(false);
+  };
+
+  const ha = () => {
+    setOpen(true);
+  };
 
 
   const [gridRef, setGridRef] = useState({});
@@ -307,7 +318,8 @@ export default function DataGridProCSV(props) {
       borderLeft: '1px solid lightgray', 
       borderRight:  'none', }}> 
       
-      <CellBox  item={42} {...{params, rowId, setRowId }}/> 
+      {/* <CellBox  item={42} {...{params, rowId, setRowId }}/>  */}
+      <TagBoxView defaultValues={params.row.tags} Lead={params.row} successCheck={() => {console.log("hello")}} /> 
 
       </Box>
       
@@ -318,10 +330,11 @@ export default function DataGridProCSV(props) {
       borderBottom: 'none', 
       borderLeft: '1px solid lightgray', 
       borderRight:  '1px solid black', }}> 
-        
-        
-         <CellBox item={43} {...{params, rowId, setRowId }}/>
+               
+        <CategoryBoxView defaultValues={params.row.categories} Lead={params.row} successCheck={() => {console.log("hello")}} /> 
 
+        
+     
          </Box>
          
          
@@ -432,6 +445,12 @@ export default function DataGridProCSV(props) {
 
 
       {/* DATA GRID PRO  */}
+      <Snackbar open={open} autoHideDuration={2000} onClose={handleClose}>
+          <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+            Updated Lead!
+          </Alert>
+        </Snackbar>
+
     <DataGridPro
   rows={filteredData}
   columns={columns.filter((column) => selectedColumns.includes(column.field))}

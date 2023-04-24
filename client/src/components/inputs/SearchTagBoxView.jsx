@@ -86,6 +86,7 @@ const StyledTag = styled(Tag)(({ theme }) => `
   padding: 0 4px 0 10px;
   outline: 0;
   overflow: hidden;
+  color: 'red';
 
   & span {
     overflow: hidden;
@@ -325,7 +326,7 @@ export default function SearchCategory(props) {
           <InputWrapper ref={setAnchorEl} className={focused ? "focused"
   : ""}>
   {value.map((option, index) => (
-  <StyledTag label={option.title} {...getTagProps({ index })} />
+  <StyledTag  style={{width: '100px'}} label={option.title} {...getTagProps({ index })} />
   ))}
   <input {...getInputProps()} readOnly />
   </InputWrapper>

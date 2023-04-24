@@ -328,7 +328,7 @@ export default function SearchCategory(props) {
           <InputWrapper ref={setAnchorEl} className={focused ? "focused"
   : ""}>
   {value.map((option, index) => (
-  <StyledTag label={option.title} {...getTagProps({ index })} />
+  <StyledTag  style={{width: '100px'}} label={option.title} {...getTagProps({ index })} />
   ))}
   <input {...getInputProps()} readOnly />
   </InputWrapper>
