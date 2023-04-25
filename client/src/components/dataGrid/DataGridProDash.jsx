@@ -208,6 +208,9 @@ export default function DataGridProCSV(props) {
               borderLeft: '1px solid lightgray',
               borderRight: 'none',
               overflow: 'hidden',
+              display:'flex',
+              justifyContent:"center",
+
             }}
           >
             <CellBox successCheck={props.successCheck} item={1} {...{ params, rowId, setRowId }} />
@@ -216,7 +219,7 @@ export default function DataGridProCSV(props) {
       },
       {
         field: 'lastName',
-        headerName: 'last Name',
+        headerName: 'Last Name',
         width: 180,
         editable: true,
         renderCell: (params) => (
@@ -229,6 +232,8 @@ export default function DataGridProCSV(props) {
               borderLeft: '1px solid lightgray',
               borderRight: 'none',
               overflow: 'hidden',
+              display:'flex',
+              justifyContent:"center",
             }}
           >
             <CellBox item={2} {...{ params, rowId, setRowId }} />
@@ -239,7 +244,7 @@ export default function DataGridProCSV(props) {
       },
       {
         field: 'email',
-        headerName: 'email',
+        headerName: 'Email',
         width: 250,
         editable: true,
         renderCell: (params) => (
@@ -252,6 +257,8 @@ export default function DataGridProCSV(props) {
               borderLeft: '1px solid lightgray',
               borderRight: 'none',
               overflow: 'hidden',
+              display:'flex',
+              justifyContent:"center",
             }}
           >
             <CellBox item={3} {...{ params, rowId, setRowId }} />
@@ -260,7 +267,7 @@ export default function DataGridProCSV(props) {
       },
       {
         field: 'phone',
-        headerName: 'phone',
+        headerName: 'Phone',
         width: 180,
         editable: true,
         renderCell: (params) => (
@@ -272,6 +279,8 @@ export default function DataGridProCSV(props) {
               borderBottom: 'none',
               borderLeft: '1px solid lightgray',
               borderRight: 'none',
+              display:'flex',
+              justifyContent:"center",
             }}
           >
             <CellBox item={4} {...{ params, rowId, setRowId }} />
@@ -282,7 +291,7 @@ export default function DataGridProCSV(props) {
       },
       {
         field: 'phoneStatus',
-        headerName: 'phoneStatus',
+        headerName: 'Phone Status',
         width: 120,
         editable: true,
         renderCell: (params) => <CellBox item={5} {...{ params, rowId, setRowId }} />,
@@ -290,7 +299,7 @@ export default function DataGridProCSV(props) {
       },
       {
         field: 'emailInvalid',
-        headerName: 'emailInvalid',
+        headerName: 'Email Invalid',
         width: 120,
         editable: true,
         renderCell: (params) => <CellBox item={6} {...{ params, rowId, setRowId }} />,
@@ -409,7 +418,7 @@ export default function DataGridProCSV(props) {
         hide: true,
       },
       {
-        field: 'LastAgentNote',
+        field: 'Last Agent Note',
         headerName: 'LastAgentNote',
         width: 120,
         editable: true,
@@ -418,7 +427,7 @@ export default function DataGridProCSV(props) {
       },
       {
         field: 'eAlerts',
-        headerName: 'eAlerts',
+        headerName: 'E Alerts',
         width: 120,
         editable: true,
         renderCell: (params) => <CellBox item={22} {...{ params, rowId, setRowId }} />,
@@ -426,7 +435,7 @@ export default function DataGridProCSV(props) {
       },
       {
         field: 'VisitTotal',
-        headerName: 'VisitTotal',
+        headerName: 'Visit Total',
         width: 120,
         editable: true,
         renderCell: (params) => <CellBox item={23} {...{ params, rowId, setRowId }} />,
@@ -434,7 +443,7 @@ export default function DataGridProCSV(props) {
       },
       {
         field: 'listingviewcount',
-        headerName: 'listingviewcount',
+        headerName: 'Listing View Count',
         width: 120,
         editable: true,
         renderCell: (params) => <CellBox item={24} {...{ params, rowId, setRowId }} />,
@@ -442,7 +451,7 @@ export default function DataGridProCSV(props) {
       },
       {
         field: 'AvgListingPrive',
-        headerName: 'AvgListingPrive',
+        headerName: 'Avg. Listing Prive',
         width: 120,
         editable: true,
         renderCell: (params) => <CellBox item={25} {...{ params, rowId, setRowId }} />,
@@ -450,7 +459,7 @@ export default function DataGridProCSV(props) {
       },
       {
         field: 'NextCallDue',
-        headerName: 'NextCallDue',
+        headerName: 'Next Call Due',
         width: 120,
         editable: true,
         renderCell: (params) => <CellBox item={26} {...{ params, rowId, setRowId }} />,
@@ -474,7 +483,7 @@ export default function DataGridProCSV(props) {
       },
       {
         field: 'FirstVisitDate',
-        headerName: 'FirstVisitDate',
+        headerName: 'Firs tVisit Date',
         width: 120,
         editable: true,
         renderCell: (params) => <CellBox item={29} {...{ params, rowId, setRowId }} />,
@@ -482,7 +491,7 @@ export default function DataGridProCSV(props) {
       },
       {
         field: 'LastVisitDate',
-        headerName: 'LastVisitDate',
+        headerName: 'Last Visit Date',
         width: 120,
         editable: true,
         renderCell: (params) => <CellBox item={30} {...{ params, rowId, setRowId }} />,
@@ -514,7 +523,7 @@ export default function DataGridProCSV(props) {
       },
       {
         field: 'LenderOptIn',
-        headerName: 'LenderOptIn',
+        headerName: 'Lender OptIn',
         width: 120,
         editable: true,
         renderCell: (params) => <CellBox item={34} {...{ params, rowId, setRowId }} />,
@@ -604,6 +613,9 @@ export default function DataGridProCSV(props) {
               borderBottom: 'none',
               borderLeft: '1px solid lightgray',
               borderRight: 'none',
+              display:"flex",
+              justifyContent:"center",
+              alignItems:'center'
             }}
           >
             {/* <CellBox  item={42} {...{params, rowId, setRowId }}/>  */}
@@ -619,7 +631,7 @@ export default function DataGridProCSV(props) {
       },
       {
         field: 'categories',
-        headerName: 'categories',
+        headerName: 'Categories',
         width: 270,
         editable: true,
         renderCell: (params) => (
@@ -631,6 +643,9 @@ export default function DataGridProCSV(props) {
               borderBottom: 'none',
               borderLeft: '1px solid lightgray',
               borderRight: '1px solid black',
+              display:"flex",
+              justifyContent:"center",
+              alignItems:'center'
             }}
           >
             <CategoryBoxView
@@ -694,9 +709,13 @@ export default function DataGridProCSV(props) {
     // ...
   />;
 
+// const handleVisibility=()=>{
+//  const a= columns.filter((column) => selectedColumns.includes(column.field))
+//  console.log('a-------------------', a);
+// }
   return (
     <div style={{ height: 600, width: '100%' }}>
-      <div style={{ display: 'flex', alignItems: 'center' }}>
+      <div style={{ display: 'flex', alignItems: 'center', marginBottom:"20px" }}>
         <Typography variant="h6" style={{ marginRight: 16 }}>
           User Fields
         </Typography>
@@ -759,6 +778,7 @@ export default function DataGridProCSV(props) {
           onCellEditCommit={handleCellEditCommit} // Add this line
           onCellEditStart={handleCellEditStart} // Add this line
           components={{ Toolbar: GridToolbar }}
+          // onColumnVisibilityModelChange={handleVisibility}
           componentsProps={{
             toolbar: {
               selectedColumns,

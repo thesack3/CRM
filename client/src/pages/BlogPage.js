@@ -49,7 +49,8 @@ export default function BlogPage() {
   const [selectedRows, setSelectedRows] = useState([]);
   const [pageSize , setpageSize] = useState(5);
   const [rowId, setRowId ]= useState(null)
-  const [refetchCategories, setRefetchCategories]=useState('')
+  const [refetchCategories, setRefetchCategories]=useState('');
+  const [refetchTag, setRefetchTag]=useState('')
 
 
     const remoteCategories = (categories) => {
@@ -121,6 +122,9 @@ const handleClose = (event, reason) => {
   const handleRefetchCategories=()=>{
        setRefetchCategories(new Date().getTime())
   }
+  const handleRefetchTag=()=>{
+    setRefetchTag(new Date().getTime())
+  }
   const handleClick = () => {
     setOpen(true);
   };
@@ -148,12 +152,12 @@ const handleClose = (event, reason) => {
       <Container sx={{ width: '100vw'}}>
 
 
-      <Stack sx={{display: 'flex', flexDirection: 'row', marginTop: '20px'}}> 
+      <Stack sx={{display: 'flex', flexDirection: 'row', marginTop: '20px', gap:"16px"}}> 
 <AddLeadModal handleRefetch={handleRefetch}  />   
 
 {/* // TODO PUT BACK */}
             <AddCSVLeadModal/>
-            <AddTagModal/>
+            <AddTagModal callback={handleRefetchTag} />
             <AddCategoryModal callback={handleRefetchCategories} />
 </Stack>
 
