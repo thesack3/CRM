@@ -71,7 +71,7 @@ export default function BlogPage() {
     });
  
 
-  const { loading, error, data } = useQuery(GET_LEADS);
+  const { loading, error, data, refetch } = useQuery(GET_LEADS);
 
   // const { data } = useDemoData({
   //   dataSet: 'Employee',
@@ -115,7 +115,10 @@ const handleClose = (event, reason) => {
     
   }, [ data ])
 
-  
+  const handleRefetch=async()=>{
+   await refetch()
+
+  }
   const handleClick = () => {
     setOpen(true);
   };
@@ -144,7 +147,7 @@ const handleClose = (event, reason) => {
 
 
       <Stack sx={{display: 'flex', flexDirection: 'row', marginTop: '20px'}}> 
-<AddLeadModal/>   
+<AddLeadModal handleRefetch={handleRefetch}  />   
 
 {/* // TODO PUT BACK */}
             <AddCSVLeadModal/>

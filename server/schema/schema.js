@@ -504,7 +504,7 @@ const mutation = new GraphQLObjectType({
             async resolve(parent, args) {
                 // Your AccountSID and Auth Token from console.twilio.com
                 const accountSid = 'ACc1d129072adcdd2b82563d7c50f996ce';
-                const authToken = 'ae969f0a0988a8179b77cefedf51b4f5';
+                const authToken = '0a8da2b96fc12fa62f5b4f510197b9bc';
     
                 const client = require('twilio')(accountSid, authToken);
     
@@ -569,7 +569,7 @@ const mutation = new GraphQLObjectType({
             async resolve(parent, args) {
                 // Your AccountSID and Auth Token from console.twilio.com
                 const accountSid = 'ACc1d129072adcdd2b82563d7c50f996ce';
-                const authToken = 'ae969f0a0988a8179b77cefedf51b4f5';
+                const authToken = '0a8da2b96fc12fa62f5b4f510197b9bc';
     
                 const client = require('twilio')(accountSid, authToken);
     

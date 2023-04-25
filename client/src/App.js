@@ -66,10 +66,10 @@ export default function App() {
   });
 
   const client = new ApolloClient({
-    uri: 'http://localhost:5000/graphql',
+    uri: 'http://localhost:4000/graphql',
     cache,
   });
-  console.log('iscal---------', isCall, typeof isCall, userName, typeof userName);
+  
   return (
     <>
       <ApolloProvider client={client}>

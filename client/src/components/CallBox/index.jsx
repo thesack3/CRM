@@ -16,7 +16,7 @@ const Header = styled(Paper)(({ theme }) => ({
 }));
 
 const CallBox = () => {
-  const {userName ,setIsCall } = useContext(callContext);
+  const { userName, setIsCall } = useContext(callContext);
 
   const waveformRef = useRef();
 

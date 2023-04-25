@@ -205,6 +205,7 @@ console.log(lead);
 
   const handleClose = () => {
     setOpen(false);
+    setData(false);
   };
 
   return (

@@ -16,7 +16,7 @@ import {
 } from '@mui/material';
 import { Helmet } from 'react-helmet-async';
 import { useTheme } from '@mui/system';
-import { useQuery } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import CategoryGrid from '../inputs/CategorySearchBox';
 
 // sections
@@ -36,25 +36,14 @@ import ChatUI from '../modals/ChatUI';
 import Iconify from '../iconify/Iconify';
 import CallBox from '../CallBox';
 import { callContext } from '../../hooks/useCall';
+import { SEND_CALL } from '../../mutations/sendCall';
 
 export default function ProfileP({ rowId }) {
-  const { isCall, setIsCall, userName, setUserName } = useContext(callContext);
+  const { isCall, setIsCall, userName, setUserName, setLeadId, leadId } = useContext(callContext);
   const [usersTags, setUsersTags] = useState(null);
   const [isMessageModal, setIsMessageModal] = useState(false);
   const [usersCategories, setUsersCategories] = useState(null);
   const [open, setOpen] = React.useState(false);
-
-  const handleClick = () => {
-    setOpen(true);
-  };
-
-  const handleClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-
-    setOpen(false);
-  };
 
   const [users, setUsers] = useState([]);
   const [lead, setLead] = useState();
@@ -64,6 +53,9 @@ export default function ProfileP({ rowId }) {
   const theme = useTheme();
 
   const { loading: leadsLoading, error: leadsError, data: leadsData } = useQuery(GET_LEADS);
+  const [sendCall, { data, loading, error }] = useMutation(SEND_CALL, {
+    variables: { toNumber: '9099945730', msg: 'Call', leadId },
+  });
 
   const {
     loading: callsLoading,
@@ -91,8 +83,15 @@ export default function ProfileP({ rowId }) {
     skip: !selectedLead,
   });
 
-  const handleLeadChange = (lead) => {
-    setSelectedLead(lead);
+  const handleClick = () => {
+    setOpen(true);
+  };
+
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpen(false);
   };
 
   const done = () => {
@@ -156,6 +155,18 @@ export default function ProfileP({ rowId }) {
     }
   }, []);
 
+  const handleLeadChange = (lead) => {
+    setSelectedLead(lead);
+  };
+
+  const handleCall = async () => {
+    try {
+      await sendCall();
+    } catch (error) {
+      console.log('Error-', error);
+    }
+  };
+
   return (
     <>
       <Helmet>
@@ -181,8 +192,11 @@ export default function ProfileP({ rowId }) {
                       onClick={() => {
                         setIsCall(true);
                         setUserName(lead?.firstName || '');
+                        setLeadId(lead?.id || '');
+                        window.localStorage.setItem('leadId', lead?.id || '');
                         window.localStorage.setItem('isCall', true);
                         window.localStorage.setItem('userName', lead?.firstName || '');
+                        handleCall();
                       }}
                     >
                       <Iconify icon="eva:phone-fill" color="#18712" width={22} height={22} />
@@ -214,9 +228,6 @@ export default function ProfileP({ rowId }) {
                     ) : null}
 
                     {usersTags ? <TagBoxView defaultValues={usersTags} Lead={lead} successCheck={handleClick} /> : null}
-
-
-                    
                   </Box>
                 </Box>
               </Grid>

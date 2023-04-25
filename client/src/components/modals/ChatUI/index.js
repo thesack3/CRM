@@ -1,9 +1,15 @@
-import React, { useContext } from 'react';
+import { useMutation, useQuery } from '@apollo/client';
+import React, { useContext, useState } from 'react';
 import { Box, FormControl, Grid, OutlinedInput, Paper, Typography, Button } from '@mui/material';
+import LoadingButton from '@mui/lab/LoadingButton';
+import SendIcon from '@mui/icons-material/Send';
 import { styled } from '@mui/material/styles';
 import { display } from '@mui/system';
 import Iconify from '../../iconify';
 import { callContext } from '../../../hooks/useCall';
+import { SEND_SMS } from '../../../mutations/sendSms';
+import { GET_SMS_TEXT } from '../../../queries/textQueries';
+import { SEND_CALL } from '../../../mutations/sendCall';
 
 const Item = styled(Paper)(({ theme }) => ({
   display: 'none',
@@ -26,7 +32,7 @@ const Sender = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#ccf1fabf',
   ...theme.typography.body2,
   padding: theme.spacing(1),
-  textAlign: 'center',
+  textAlign: 'left',
   color: theme.palette.text.secondary,
   maxWidth: '270px',
   minHeight: '50px',
@@ -38,7 +44,7 @@ const Receiver = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#ccf6c4ba',
   ...theme.typography.body2,
   padding: theme.spacing(1),
-  textAlign: 'center',
+  textAlign: 'left',
   color: theme.palette.text.secondary,
   marginTop: 20,
   maxWidth: '270px',
@@ -46,10 +52,46 @@ const Receiver = styled(Paper)(({ theme }) => ({
 }));
 
 const ChatUI = ({ handleProfile, lead }) => {
-  const { setIsCall, setUserName } = useContext(callContext);
+  const [message, setMessage] = useState('');
+  const [sender, setSender] = useState([]);
+  const [receiver, setReceiver] = useState([]);
+  const { setIsCall, setUserName, setLeadId, leadId } = useContext(callContext);
+  const {
+    loading: textLoading,
+    data: textData,
+    refetch,
+  } = useQuery(GET_SMS_TEXT, {
+    variables: { leadId: lead?.id },
+  });
+  const [sendSMS, { loading }] = useMutation(SEND_SMS, {
+    variables: { toNumber: '9099945730', msg: message, leadId: lead?.id },
+  });
+
+  const [sendCall, { data, error }] = useMutation(SEND_CALL, {
+    variables: { toNumber: '9099945730', msg: 'Call', leadId },
+  });
+
   const autoGrow = (element) => {
     element.style.height = '5px';
     element.style.height = `${element.scrollHeight}px`;
+  };
+
+  const handleSendSMS = async () => {
+    try {
+      await sendSMS();
+      await refetch();
+      setMessage('');
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleCall = async () => {
+    try {
+      await sendCall();
+    } catch (error) {
+      console.log('Error-', error);
+    }
   };
 
   return (
@@ -73,11 +115,14 @@ const ChatUI = ({ handleProfile, lead }) => {
           </Box>
           <Button
             sx={{ borderRadius: '100px' }}
-            onClick={() => {
+            onClick={async () => {
               setIsCall(true);
               setUserName(lead?.firstName || '');
+              setLeadId(lead?.id || '');
+              window.localStorage.setItem('leadId', lead?.id || '');
               window.localStorage.setItem('isCall', true);
               window.localStorage.setItem('userName', lead?.firstName || '');
+              await handleCall();
             }}
           >
             <Iconify icon="eva:phone-fill" color="#18712" width={22} height={22} />
@@ -89,18 +134,21 @@ const ChatUI = ({ handleProfile, lead }) => {
           padding={2}
           borderRadius={1.5}
         >
-          <Grid xs={12} container flexDirection={{ xs: 'column', sm: 'row' }} justifyContent={'flex-end'}>
-            <Sender>Hurry! I've passed my driving test!</Sender>
-          </Grid>
-          <Receiver>Just one? Having seen your driving, I wouldn't be so optimistic.</Receiver>
-          <Receiver>What can be better than hearing someone say "I love you"?</Receiver>
-          <Grid xs={12} container flexDirection={{ xs: 'column', sm: 'row' }} justifyContent={'flex-end'}>
-            <Sender>Hearing a bank machine go "brr" as it deals out the cash</Sender>
-          </Grid>
-          <Receiver>I have something cool for you.</Receiver>
-          <Grid xs={12} container flexDirection={{ xs: 'column', sm: 'row' }} justifyContent={'flex-end'}>
-            <Sender>what's that</Sender>
-          </Grid>
+          {textData &&
+            textData?.texts?.map((item) => (
+              <>
+                <Grid
+                  key={item.dateCreated}
+                  xs={12}
+                  container
+                  flexDirection={{ xs: 'column', sm: 'row' }}
+                  justifyContent={'flex-end'}
+                >
+                  <Sender>{item.body}</Sender>
+                </Grid>
+                {/* <Receiver>Just one? Having seen your driving, I wouldn't be so optimistic.</Receiver> */}
+              </>
+            ))}
         </Grid>
         <Grid marginTop={3}>
           <textarea
@@ -118,7 +166,21 @@ const ChatUI = ({ handleProfile, lead }) => {
             onInput={autoGrow}
             autoComplete={false}
             placeholder="Write a Message"
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
           />
+          <Grid display={'flex'} justifyContent={'flex-end'} width={'100%'}>
+            <LoadingButton
+              size="medium"
+              onClick={handleSendSMS}
+              endIcon={<SendIcon />}
+              loading={loading}
+              loadingPosition="end"
+              variant="contained"
+            >
+              <span>Send</span>
+            </LoadingButton>
+          </Grid>
         </Grid>
       </Grid>
     </Grid>
