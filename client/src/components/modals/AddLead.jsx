@@ -12,7 +12,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import CsvUpload from '../DropBoxes/CsvUpload';
 import { ADD_LEAD } from '../../mutations/leadMutations';
 
-export default function AddLeadModal() {
+export default function AddLeadModal({handleRefetch}) {
 
   const [addLead, { loading, error, data }] = useMutation(ADD_LEAD);
 
@@ -163,6 +163,8 @@ export default function AddLeadModal() {
     console.log(res);
     setUploaded(false);
     console.log("Lead Submitted!");
+    handleRefetch();
+    handleClose();
 
     }).catch((err) => {
       
