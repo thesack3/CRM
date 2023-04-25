@@ -32,15 +32,22 @@ import AddeAlert from '../modals/AddeAlert';
 import ProfileP from '../Profile/ProfileP';
 import CategoryBoxView from '../inputs/SearchCategory';
 import TagBoxView from '../inputs/SearchTagBoxView';
+import AddLeadModal from '../modals/AddLead';
+import AddCSVLeadModal from '../modals/AddCSVLeadModal';
+import AddTagModal from '../modals/AddTag';
+import AddCategoryModal from '../modals/AddCategory';
+import CategoryGrid from '../inputs/CategorySearchBox';
 
 export default function DataGridProCSV(props) {
-  console.log("props-----------", props);
+  console.log('props-----------', props);
   const [open, setOpen] = React.useState(false);
 
   const [tags, setTags] = useState([]);
 
   const [columnSetting, setColumnSeting] = useState([{ 0: 'true', 1: 'false', 2: 'false' }]);
-
+  const [refetchCategories, setRefetchCategories] = useState('');
+  const [refetchTag, setRefetchTag] = useState('');
+  const [categories, setCategories] = useState([]);
   const [selectedColumns, setSelectedColumns] = useState([
     'id',
     'firstName',
@@ -101,13 +108,14 @@ export default function DataGridProCSV(props) {
   };
 
   const [gridRef, setGridRef] = useState({});
+  const [openSnack, setOpenSnack] = React.useState(false);
 
   const [sendEmails, { loading: Emailsloading, error: Emailerror, data: emaildata }] =
     useMutation(SEND_EMAILS_MUTATION);
   const [rowSelectedUsers, setRowSelectedUsers] = useState(['dominiqmartinez13@gmail.com', 'unhashlabs@gmail.com']);
   const [responseData, setResponseData] = useState([]);
 
-  const { loading: graphQLClientsLoading, error: graphQLClientsError, data } = useQuery(GET_LEADS);
+  const { loading: graphQLClientsLoading, error: graphQLClientsError, data, refetch } = useQuery(GET_LEADS);
 
   const [pageSize, setPageSize] = useState(5);
   const [rowId, setRowId] = useState(null);
@@ -202,18 +210,17 @@ export default function DataGridProCSV(props) {
           <Box
             sx={{
               width: '100%',
-              height: '100%',
+
               borderTop: 'none',
               borderBottom: 'none',
               borderLeft: '1px solid lightgray',
               borderRight: 'none',
               overflow: 'hidden',
-              display:'flex',
-              justifyContent:"center",
-
+              display: 'flex',
+              justifyContent: 'center',
             }}
           >
-            <CellBox successCheck={props.successCheck} item={1} {...{ params, rowId, setRowId }} />
+            <CellBox successCheck={() => setOpenSnack(true)} item={1} {...{ params, rowId, setRowId }} />
           </Box>
         ),
       },
@@ -226,14 +233,13 @@ export default function DataGridProCSV(props) {
           <Box
             sx={{
               width: '100%',
-              height: '100%',
               borderTop: 'none',
               borderBottom: 'none',
               borderLeft: '1px solid lightgray',
               borderRight: 'none',
               overflow: 'hidden',
-              display:'flex',
-              justifyContent:"center",
+              display: 'flex',
+              justifyContent: 'center',
             }}
           >
             <CellBox item={2} {...{ params, rowId, setRowId }} />
@@ -257,8 +263,8 @@ export default function DataGridProCSV(props) {
               borderLeft: '1px solid lightgray',
               borderRight: 'none',
               overflow: 'hidden',
-              display:'flex',
-              justifyContent:"center",
+              display: 'flex',
+              justifyContent: 'center',
             }}
           >
             <CellBox item={3} {...{ params, rowId, setRowId }} />
@@ -279,8 +285,8 @@ export default function DataGridProCSV(props) {
               borderBottom: 'none',
               borderLeft: '1px solid lightgray',
               borderRight: 'none',
-              display:'flex',
-              justifyContent:"center",
+              display: 'flex',
+              justifyContent: 'center',
             }}
           >
             <CellBox item={4} {...{ params, rowId, setRowId }} />
@@ -613,9 +619,9 @@ export default function DataGridProCSV(props) {
               borderBottom: 'none',
               borderLeft: '1px solid lightgray',
               borderRight: 'none',
-              display:"flex",
-              justifyContent:"center",
-              alignItems:'center'
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
             }}
           >
             {/* <CellBox  item={42} {...{params, rowId, setRowId }}/>  */}
@@ -643,9 +649,9 @@ export default function DataGridProCSV(props) {
               borderBottom: 'none',
               borderLeft: '1px solid lightgray',
               borderRight: '1px solid black',
-              display:"flex",
-              justifyContent:"center",
-              alignItems:'center'
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
             }}
           >
             <CategoryBoxView
@@ -683,7 +689,12 @@ export default function DataGridProCSV(props) {
   };
 
   const [filteredData, setFilteredData] = useState([]);
-
+  const handleCloseSnackbar = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpenSnack(false);
+  };
   useEffect(() => {
     const filteredRows = responseData.filter((row) => {
       const matched = Object.values(row).some((value) => {
@@ -691,8 +702,8 @@ export default function DataGridProCSV(props) {
       });
 
       const categoryMatched =
-        props.Categories.length === 0 ||
-        props.Categories.some((category) => {
+        categories.length === 0 ||
+        categories.some((category) => {
           return row.categories.includes(category);
         });
 
@@ -700,7 +711,7 @@ export default function DataGridProCSV(props) {
     });
 
     setFilteredData(filteredRows);
-  }, [responseData, searchQuery, props.Categories]);
+  }, [responseData, searchQuery, categories]);
 
   // ...
 
@@ -709,51 +720,43 @@ export default function DataGridProCSV(props) {
     // ...
   />;
 
-// const handleVisibility=()=>{
-//  const a= columns.filter((column) => selectedColumns.includes(column.field))
-//  console.log('a-------------------', a);
-// }
+  // const handleVisibility=()=>{
+  //  const a= columns.filter((column) => selectedColumns.includes(column.field))
+  //  console.log('a-------------------', a);
+  // }
   return (
     <div style={{ height: 600, width: '100%' }}>
-      <div style={{ display: 'flex', alignItems: 'center', marginBottom:"20px" }}>
-        <Typography variant="h6" style={{ marginRight: 16 }}>
-          User Fields
-        </Typography>
-        <TextField
-          variant="outlined"
-          label="Search"
-          value={searchQuery}
-          onChange={handleSearchInputChange}
-          style={{ marginRight: 16 }}
-        />
-        <Button variant="outlined" style={{ marginRight: 16 }}>
-          Export
-        </Button>
-        <Button
-          variant="outlined"
-          style={{ marginRight: 16 }}
-          disabled={rowSelectedUsers.length === 0}
-          onClick={() => handleSendEmails(rowSelectedUsers, 'Test Subject', 'This is a test email body')}
-        >
-          Send Email
-        </Button>
-        <Typography variant="h6" style={{ marginLeft: 'auto', marginRight: 16 }}>
-          Rows per page:
-        </Typography>
-        <TextField
-          select
-          value={pageSize}
-          onChange={(e) => setPageSize(Number(e.target.value))}
-          variant="outlined"
-          style={{ width: 80 }}
-        >
-          {[5, 10, 25].map((size) => (
-            <MenuItem key={size} value={size}>
-              {size}
-            </MenuItem>
-          ))}
-        </TextField>
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          marginTop: '40px',
+        }}
+      >
+        <Box sx={{ display: 'flex', flexDirection: 'row', gap: '16px' }}>
+          <AddLeadModal handleRefetch={refetch} />
+
+          {/* // TODO PUT BACK */}
+          <AddCSVLeadModal />
+          <AddTagModal callback={() => setRefetchTag(new Date().getTime())} />
+          <AddCategoryModal callback={() => setRefetchCategories(new Date().getTime())} />
+        </Box>
+
+        <Box flex>
+          <Button variant="outlined" style={{ marginRight: 16 }}>
+            Export
+          </Button>
+          <Button
+            variant="outlined"
+            disabled={rowSelectedUsers.length === 0}
+            onClick={() => handleSendEmails(rowSelectedUsers, 'Test Subject', 'This is a test email body')}
+          >
+            Send Email
+          </Button>
+        </Box>
       </div>
+
       <div style={{ height: 540, width: '100%' }}>
         {/* DATA GRID PRO  */}
         <Snackbar open={open} autoHideDuration={2000} onClose={handleClose}>
@@ -761,33 +764,112 @@ export default function DataGridProCSV(props) {
             Updated Lead!
           </Alert>
         </Snackbar>
+        <Box sx={{ position: 'relative', top: '30px', overflowX: 'scroll', width: '100%' }}>
+          <CategoryGrid remote={(e) => setCategories(e)} callback={refetchCategories} />
+        </Box>
+        <Box sx={{ height: '100%' }}>
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'flex-end',
+              position: 'relative',
+              top: '60px',
+              right: '16px',
+              zIndex: '2',
+              maxWidth: '330px',
+              marginLeft: 'auto',
+            }}
+          >
+            <Typography variant="h6" style={{ marginRight: 16 }}>
+              User Fields
+            </Typography>
+            <TextField
+              size="small"
+              variant="outlined"
+              label="Search"
+              value={searchQuery}
+              onChange={handleSearchInputChange}
+            />
+          </Box>
 
-        <DataGridPro
-          rows={filteredData}
-          columns={columns.filter((column) => selectedColumns.includes(column.field))}
-          pageSize={pageSize}
-          disableVirtualization
-          rowHeight={100}
-          rowsPerPageOptions={[10]}
-          checkboxSelection
-          disableSelectionOnClick
-          apiRef={apiRef}
-          onSelectionModelChange={handleRowSelection}
-          onPageSizeChange={handlePageSizeChange}
-          // onCellEditCommit={(params) => setRowId(params.id)}
-          onCellEditCommit={handleCellEditCommit} // Add this line
-          onCellEditStart={handleCellEditStart} // Add this line
-          components={{ Toolbar: GridToolbar }}
-          // onColumnVisibilityModelChange={handleVisibility}
-          componentsProps={{
-            toolbar: {
-              selectedColumns,
-              setSelectedColumns,
-              gridRef,
-              setGridRef,
-            },
-          }}
-        />
+          <DataGridPro
+            sx={{
+              backgroundColor: '#f9fafb',
+              paddingTop: '14px',
+              paddingLeft: '14px',
+              '& .MuiDataGrid-toolbarContainer': {
+                marginBottom: '20px',
+              },
+              '& .MuiDataGrid-columnHeaderTitleContainer': {
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              },
+            }}
+            rows={filteredData}
+            columns={columns.filter((column) => selectedColumns.includes(column.field))}
+            pageSize={pageSize}
+            disableVirtualization
+            rowHeight={70}
+            rowsPerPageOptions={[10]}
+            checkboxSelection
+            disableSelectionOnClick
+            apiRef={apiRef}
+            onSelectionModelChange={handleRowSelection}
+            onPageSizeChange={handlePageSizeChange}
+            // onCellEditCommit={(params) => setRowId(params.id)}
+            onCellEditCommit={handleCellEditCommit} // Add this line
+            onCellEditStart={handleCellEditStart} // Add this line
+            components={{ Toolbar: GridToolbar }}
+            // onColumnVisibilityModelChange={handleVisibility}
+            componentsProps={{
+              toolbar: {
+                selectedColumns,
+                setSelectedColumns,
+                gridRef,
+                setGridRef,
+              },
+            }}
+          />
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'start',
+              position: 'relative',
+              bottom: '55px',
+              marginLeft: '20px',
+            }}
+          >
+            <Typography variant="h6" sx={{ marginRight: '20px' }}>
+              Rows per page:
+            </Typography>
+            <TextField
+              size="small"
+              select
+              value={pageSize}
+              onChange={(e) => setPageSize(Number(e.target.value))}
+              variant="outlined"
+              style={{ width: 80 }}
+            >
+              {[5, 10, 25].map((size) => (
+                <MenuItem key={size} value={size}>
+                  {size}
+                </MenuItem>
+              ))}
+            </TextField>
+          </Box>
+          <Snackbar open={openSnack} autoHideDuration={2000} onClose={handleCloseSnackbar}>
+            <Alert
+              onClose={handleCloseSnackbar}
+              severity="success"
+              sx={{ width: '90vw', backgroundColor: 'green', color: 'white' }}
+            >
+              Updated Lead!
+            </Alert>
+          </Snackbar>
+        </Box>
       </div>
     </div>
   );

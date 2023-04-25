@@ -58,7 +58,7 @@ export default function Nav({ openNav, onCloseNav }) {
       </Box>
 
       <Box sx={{ mb: 5, mx: 2.5 }}>
-        <Link underline="none" >
+        <Link underline="none">
           <StyledAccount>
             <Avatar src={account.photoURL} alt="photoURL" />
 
@@ -84,7 +84,7 @@ export default function Nav({ openNav, onCloseNav }) {
           <Box
             component="img"
             src="/assets/illustrations/illustration_avatar.png"
-            sx={{ width: 100, position: 'absolute', top: -50}}
+            sx={{ width: 100, position: 'absolute', top: -50 }}
           />
 
           <Box sx={{ textAlign: 'center' }}>
@@ -97,9 +97,8 @@ export default function Nav({ openNav, onCloseNav }) {
             </Typography>
           </Box>
 
-
-          <Button href="/login"  variant="contained">
-           Log out
+          <Button href="/login" variant="contained">
+            Log out
           </Button>
         </Stack>
       </Box>

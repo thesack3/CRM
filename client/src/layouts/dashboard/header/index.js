@@ -14,7 +14,7 @@ import NotificationsPopover from './NotificationsPopover';
 
 // ----------------------------------------------------------------------
 
-const NAV_WIDTH = 280;
+const NAV_WIDTH = 200;
 
 const HEADER_MOBILE = 64;
 
@@ -56,8 +56,9 @@ export default function Header({ onOpenNav }) {
         >
           <Iconify icon="eva:menu-2-fill" />
         </IconButton>
-
-        <Searchbar />
+        <span style={{ marginLeft: '70px' }}>
+          <Searchbar />
+        </span>
         <Box sx={{ flexGrow: 1 }} />
 
         <Stack
