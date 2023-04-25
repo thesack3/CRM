@@ -15,7 +15,7 @@ import { ADD_LEAD } from '../../mutations/leadMutations';
 // import {ADD_TAG} from '../../mutations/addTag';
 import { ADD_CATEGORY } from '../../mutations/addCategory';
 
-export default function AddCategoryModal() {
+export default function AddCategoryModal({callback}) {
   const [addLead, { loading, error, data }] = useMutation(ADD_CATEGORY, {
     onCompleted: (data) => {
       console.log(data);
@@ -68,6 +68,7 @@ export default function AddCategoryModal() {
         setUploaded(false);
         console.log('Lead Submitted!');
         setSuccess(true)
+        callback()
       })
       .catch((err) => {
         console.log(err);
