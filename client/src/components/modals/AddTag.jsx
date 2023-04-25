@@ -14,7 +14,7 @@ import CsvUpload from '../DropBoxes/CsvUpload';
 import { ADD_LEAD } from '../../mutations/leadMutations';
 import {ADD_TAG} from '../../mutations/addTag';
 
-export default function AddTagModal() {
+export default function AddTagModal({callback}) {
 
   const [addLead, { loading, error, data }] = useMutation(ADD_TAG, {
     onCompleted: (data) => {
@@ -87,7 +87,8 @@ export default function AddTagModal() {
     console.log(res);
     setUploaded(false);
     console.log("Lead Submitted!");
-    setSuccess(true)
+    setSuccess(true);
+    callback();
     // handleClose()
 
     }).catch((err) => {

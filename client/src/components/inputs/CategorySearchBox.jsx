@@ -22,7 +22,7 @@ const [categoryList, setCategoryList] = useState([
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [toggleStatus, setToggleStatus] = useState(categoryList.map(() => false));
 
-  const {loading, error, data} = useQuery(GET_CATEGORIES);
+  const {loading, error, data, refetch} = useQuery(GET_CATEGORIES);
 
   
   const handleCategoryClick = (category, index) => {
@@ -57,6 +57,11 @@ const [categoryList, setCategoryList] = useState([
 
 
 
+useEffect(()=>{
+  if(props?.callback){
+    refetch();
+  }
+},[props.callback])
 
 
 useEffect(() => {

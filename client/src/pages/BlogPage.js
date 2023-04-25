@@ -44,11 +44,13 @@ export default function BlogPage() {
   const [open, setOpen] = React.useState(false);
 
   const [categories, setCategories] = useState([]);
-
+  
   const [users, setUsers] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
-    const [pageSize , setpageSize] = useState(5);
-    const [rowId, setRowId ]= useState(null)
+  const [pageSize , setpageSize] = useState(5);
+  const [rowId, setRowId ]= useState(null)
+  const [refetchCategories, setRefetchCategories]=useState('');
+  const [refetchTag, setRefetchTag]=useState('')
 
 
     const remoteCategories = (categories) => {
@@ -114,10 +116,14 @@ const handleClose = (event, reason) => {
    
     
   }, [ data ])
-
   const handleRefetch=async()=>{
    await refetch()
-
+  }
+  const handleRefetchCategories=()=>{
+       setRefetchCategories(new Date().getTime())
+  }
+  const handleRefetchTag=()=>{
+    setRefetchTag(new Date().getTime())
   }
   const handleClick = () => {
     setOpen(true);
@@ -135,7 +141,7 @@ const handleClose = (event, reason) => {
          
        ], [rowId])
 
-
+      
 
   return (
     <Box sx={{height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center',  alignContent: 'center'}}>
@@ -146,19 +152,19 @@ const handleClose = (event, reason) => {
       <Container sx={{ width: '100vw'}}>
 
 
-      <Stack sx={{display: 'flex', flexDirection: 'row', marginTop: '20px'}}> 
+      <Stack sx={{display: 'flex', flexDirection: 'row', marginTop: '20px', gap:"16px"}}> 
 <AddLeadModal handleRefetch={handleRefetch}  />   
 
 {/* // TODO PUT BACK */}
             <AddCSVLeadModal/>
-            <AddTagModal/>
-            <AddCategoryModal/>
+            <AddTagModal callback={handleRefetchTag} />
+            <AddCategoryModal callback={handleRefetchCategories} />
 </Stack>
 
 <Stack sx={{marginTop: '1em'}}>
 
 
-<CategoryGrid remote={remoteCategories}/>
+<CategoryGrid remote={remoteCategories} callback={refetchCategories} />
 
 </Stack>
 
