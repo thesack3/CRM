@@ -9,6 +9,7 @@ import Iconify from '../../iconify';
 import { callContext } from '../../../hooks/useCall';
 import { SEND_SMS } from '../../../mutations/sendSms';
 import { GET_SMS_TEXT } from '../../../queries/textQueries';
+import { SEND_CALL } from '../../../mutations/sendCall';
 
 const Item = styled(Paper)(({ theme }) => ({
   display: 'none',
@@ -54,7 +55,7 @@ const ChatUI = ({ handleProfile, lead }) => {
   const [message, setMessage] = useState('');
   const [sender, setSender] = useState([]);
   const [receiver, setReceiver] = useState([]);
-  const { setIsCall, setUserName } = useContext(callContext);
+  const { setIsCall, setUserName, setLeadId, leadId } = useContext(callContext);
   const {
     loading: textLoading,
     data: textData,
@@ -62,8 +63,12 @@ const ChatUI = ({ handleProfile, lead }) => {
   } = useQuery(GET_SMS_TEXT, {
     variables: { leadId: lead?.id },
   });
-  const [sendSMS, { data, loading, error }] = useMutation(SEND_SMS, {
+  const [sendSMS, { loading }] = useMutation(SEND_SMS, {
     variables: { toNumber: '9099945730', msg: message, leadId: lead?.id },
+  });
+
+  const [sendCall, { data, error }] = useMutation(SEND_CALL, {
+    variables: { toNumber: '9099945730', msg: 'Call', leadId },
   });
 
   const autoGrow = (element) => {
@@ -78,6 +83,14 @@ const ChatUI = ({ handleProfile, lead }) => {
       setMessage('');
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  const handleCall = async () => {
+    try {
+      await sendCall();
+    } catch (error) {
+      console.log('Error-', error);
     }
   };
 
@@ -102,11 +115,14 @@ const ChatUI = ({ handleProfile, lead }) => {
           </Box>
           <Button
             sx={{ borderRadius: '100px' }}
-            onClick={() => {
+            onClick={async () => {
               setIsCall(true);
               setUserName(lead?.firstName || '');
+              setLeadId(lead?.id || '');
+              window.localStorage.setItem('leadId', lead?.id || '');
               window.localStorage.setItem('isCall', true);
               window.localStorage.setItem('userName', lead?.firstName || '');
+              await handleCall();
             }}
           >
             <Iconify icon="eva:phone-fill" color="#18712" width={22} height={22} />
@@ -133,14 +149,6 @@ const ChatUI = ({ handleProfile, lead }) => {
                 {/* <Receiver>Just one? Having seen your driving, I wouldn't be so optimistic.</Receiver> */}
               </>
             ))}
-          {/* <Receiver>What can be better than hearing someone say "I love you"?</Receiver>
-          <Grid xs={12} container flexDirection={{ xs: 'column', sm: 'row' }} justifyContent={'flex-end'}>
-            <Sender>Hearing a bank machine go "brr" as it deals out the cash</Sender>
-          </Grid>
-          <Receiver>I have something cool for you.</Receiver>
-          <Grid xs={12} container flexDirection={{ xs: 'column', sm: 'row' }} justifyContent={'flex-end'}>
-            {data && <Sender>{data?.sendSMS?.body}</Sender>}
-          </Grid> */}
         </Grid>
         <Grid marginTop={3}>
           <textarea
