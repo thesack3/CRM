@@ -145,7 +145,6 @@ cursor: pointer;
 
 
 export default function SearchCategory(props) {
-  console.log( "tag props-------------", props);
  
     const [retreivedTags, setRetreivedTags] = useState([]);
 
@@ -318,6 +317,7 @@ export default function SearchCategory(props) {
         }
       },
     });
+  
     return (
       <Root>
         <div {...getRootProps()}>
@@ -326,7 +326,7 @@ export default function SearchCategory(props) {
           <InputWrapper ref={setAnchorEl} className={focused ? "focused"
   : ""}>
   {value.map((option, index) => (
-  <StyledTag  style={{width: '100px'}} label={option} {...getTagProps({ index })} />
+  <StyledTag  style={{width: '100px'}} label={option.title} {...getTagProps({ index })} />
   ))}
   <input {...getInputProps()} readOnly />
   </InputWrapper>
