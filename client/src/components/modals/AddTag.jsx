@@ -5,6 +5,7 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import { Box } from '@mui/system';
 import Dialog from '@mui/material/Dialog';
+import { Alert, Snackbar } from '@mui/material';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
@@ -33,7 +34,7 @@ export default function AddTagModal() {
 
 
  const [open, setOpen] = React.useState(false);
-
+ const [success, setSuccess]=useState(false)
 
 
 
@@ -70,7 +71,7 @@ export default function AddTagModal() {
 
 
   const handleLeadSubmit = (e) => {
-
+    setSuccess(false)
     console.log(formData)
     e.preventDefault();
     addLead({
@@ -86,6 +87,8 @@ export default function AddTagModal() {
     console.log(res);
     setUploaded(false);
     console.log("Lead Submitted!");
+    setSuccess(true)
+    // handleClose()
 
     }).catch((err) => {
       
@@ -175,7 +178,11 @@ onChange={handleChange}
    </DialogActions>
  </Dialog>
 </div>)}
-    
+     { success && <Snackbar open={open} autoHideDuration={2000} onClose={()=>{}}>
+        <Alert onClose={()=>{}} severity="success" sx={{ width: '90vw', backgroundColor: 'green', color: 'white' }}>
+          Updated Tag!
+        </Alert>
+      </Snackbar>}
     </>
    
   );

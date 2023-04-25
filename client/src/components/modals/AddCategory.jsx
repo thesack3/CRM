@@ -6,6 +6,7 @@ import TextField from '@mui/material/TextField';
 import { Box } from '@mui/system';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
+import { Alert, Snackbar } from '@mui/material';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -30,6 +31,7 @@ export default function AddCategoryModal() {
   const [uploadInProcess, setUploaded] = useState(false);
 
   const [open, setOpen] = React.useState(false);
+  const [success, setSuccess]=useState(false)
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -50,6 +52,7 @@ export default function AddCategoryModal() {
   };
 
   const handleLeadSubmit = (e) => {
+    setSuccess(false)
     console.log(formData);
     e.preventDefault();
     addLead({
@@ -64,6 +67,7 @@ export default function AddCategoryModal() {
         console.log(res);
         setUploaded(false);
         console.log('Lead Submitted!');
+        setSuccess(true)
       })
       .catch((err) => {
         console.log(err);
@@ -141,6 +145,11 @@ onChange={handleChange}
           </Dialog>
         </div>
       )}
+      { success && <Snackbar open={open} autoHideDuration={2000} onClose={()=>{}}>
+        <Alert onClose={()=>{}} severity="success" sx={{ width: '90vw', backgroundColor: 'green', color: 'white' }}>
+          Updated Category!
+        </Alert>
+      </Snackbar>}
     </>
   );
 }
