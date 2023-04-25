@@ -1,4 +1,4 @@
-import { useMutation } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import React, { useContext, useState } from 'react';
 import { Box, FormControl, Grid, OutlinedInput, Paper, Typography, Button } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
@@ -8,6 +8,7 @@ import { display } from '@mui/system';
 import Iconify from '../../iconify';
 import { callContext } from '../../../hooks/useCall';
 import { SEND_SMS } from '../../../mutations/sendSms';
+import { GET_SMS_TEXT } from '../../../queries/textQueries';
 
 const Item = styled(Paper)(({ theme }) => ({
   display: 'none',
@@ -50,21 +51,30 @@ const Receiver = styled(Paper)(({ theme }) => ({
 }));
 
 const ChatUI = ({ handleProfile, lead }) => {
-  // console.log('lead-----------', lead);
   const [message, setMessage] = useState('');
+  const [sender, setSender] = useState([]);
+  const [receiver, setReceiver] = useState([]);
   const { setIsCall, setUserName } = useContext(callContext);
+  const {
+    loading: textLoading,
+    data: textData,
+    refetch,
+  } = useQuery(GET_SMS_TEXT, {
+    variables: { leadId: lead?.id },
+  });
+  const [sendSMS, { data, loading, error }] = useMutation(SEND_SMS, {
+    variables: { toNumber: '9099945730', msg: message, leadId: lead?.id },
+  });
+
   const autoGrow = (element) => {
     element.style.height = '5px';
     element.style.height = `${element.scrollHeight}px`;
   };
 
-  const [sendSMS, { data, loading, error }] = useMutation(SEND_SMS, {
-    variables: { toNumber: '9099945730', msg: message, leadId: lead?.id },
-  });
-
   const handleSendSMS = async () => {
     try {
       await sendSMS();
+      await refetch();
       setMessage('');
     } catch (error) {
       console.log(error);
@@ -108,18 +118,29 @@ const ChatUI = ({ handleProfile, lead }) => {
           padding={2}
           borderRadius={1.5}
         >
-          <Grid xs={12} container flexDirection={{ xs: 'column', sm: 'row' }} justifyContent={'flex-end'}>
-            <Sender>Hurry! I've passed my driving test!</Sender>
-          </Grid>
-          <Receiver>Just one? Having seen your driving, I wouldn't be so optimistic.</Receiver>
-          <Receiver>What can be better than hearing someone say "I love you"?</Receiver>
+          {textData &&
+            textData?.texts?.map((item) => (
+              <>
+                <Grid
+                  key={item.dateCreated}
+                  xs={12}
+                  container
+                  flexDirection={{ xs: 'column', sm: 'row' }}
+                  justifyContent={'flex-end'}
+                >
+                  <Sender>{item.body}</Sender>
+                </Grid>
+                {/* <Receiver>Just one? Having seen your driving, I wouldn't be so optimistic.</Receiver> */}
+              </>
+            ))}
+          {/* <Receiver>What can be better than hearing someone say "I love you"?</Receiver>
           <Grid xs={12} container flexDirection={{ xs: 'column', sm: 'row' }} justifyContent={'flex-end'}>
             <Sender>Hearing a bank machine go "brr" as it deals out the cash</Sender>
           </Grid>
           <Receiver>I have something cool for you.</Receiver>
           <Grid xs={12} container flexDirection={{ xs: 'column', sm: 'row' }} justifyContent={'flex-end'}>
             {data && <Sender>{data?.sendSMS?.body}</Sender>}
-          </Grid>
+          </Grid> */}
         </Grid>
         <Grid marginTop={3}>
           <textarea
