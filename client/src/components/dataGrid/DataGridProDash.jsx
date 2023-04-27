@@ -1,4 +1,4 @@
-//
+// TODO: add subscription to update the table when a new lead is added, NEW_LEAD_SUBSCRIPTION
 import * as React from 'react';
 import {
   Button,
@@ -116,6 +116,7 @@ export default function DataGridProCSV(props) {
   const [responseData, setResponseData] = useState([]);
 
   const { loading: graphQLClientsLoading, error: graphQLClientsError, data, refetch } = useQuery(GET_LEADS);
+  console.log('getLeadData', data);
 
   const [pageSize, setPageSize] = useState(5);
   const [rowId, setRowId] = useState(null);
@@ -807,8 +808,18 @@ export default function DataGridProCSV(props) {
                 justifyContent: 'center',
               },
             }}
-            rows={filteredData}
-            columns={columns.filter((column) => selectedColumns.includes(column.field))}
+            rows={[
+              { id: 1, name: 'John', age: 32, email: 'john@example.com' },
+              { id: 2, name: 'Jane', age: 28, email: 'jane@example.com' },
+              { id: 3, name: 'Bob', age: 45, email: 'bob@example.com' },
+              // ...
+            ]}
+            columns={[
+              { field: 'id', headerName: 'ID' },
+              { field: 'name', headerName: 'Name' },
+              { field: 'age', headerName: 'Age' },
+              { field: 'email', headerName: 'Email' },
+            ]}
             pageSize={pageSize}
             disableVirtualization
             rowHeight={70}
