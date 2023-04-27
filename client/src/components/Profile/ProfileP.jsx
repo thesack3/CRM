@@ -54,9 +54,8 @@ export default function ProfileP({ rowId }) {
 
   const { loading: leadsLoading, error: leadsError, data: leadsData } = useQuery(GET_LEADS);
   const [sendCall, { data, loading, error }] = useMutation(SEND_CALL, {
-    variables: { toNumber: '9099945730', msg: 'Call', leadId },
+    variables: { toNumber: lead?.phone, msg: 'Call', leadId },
   });
-
   const {
     loading: callsLoading,
     error: callsError,

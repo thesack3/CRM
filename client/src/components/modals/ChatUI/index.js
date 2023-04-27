@@ -64,11 +64,11 @@ const ChatUI = ({ handleProfile, lead }) => {
     variables: { leadId: lead?.id },
   });
   const [sendSMS, { loading }] = useMutation(SEND_SMS, {
-    variables: { toNumber: '9099945730', msg: message, leadId: lead?.id },
+    variables: { toNumber: lead?.phone, msg: message, leadId: lead?.id },
   });
 
   const [sendCall, { data, error }] = useMutation(SEND_CALL, {
-    variables: { toNumber: '9099945730', msg: 'Call', leadId },
+    variables: { toNumber: lead?.phone, msg: 'Call', leadId },
   });
 
   const autoGrow = (element) => {
