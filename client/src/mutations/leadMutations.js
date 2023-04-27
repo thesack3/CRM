@@ -167,10 +167,12 @@ const updateLeadMutation = gql`
       email
       lastName
       tags{
-        id
+        id,
+        title
       }
       categories{
-        id
+        id,
+        title
       }
     
       

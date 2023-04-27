@@ -37,9 +37,11 @@ import AddCSVLeadModal from '../modals/AddCSVLeadModal';
 import AddTagModal from '../modals/AddTag';
 import AddCategoryModal from '../modals/AddCategory';
 import CategoryGrid from '../inputs/CategorySearchBox';
+import AutoSelect from '../AutoSelect';
+import { GET_CATEGORIES } from '../../queries/categoryQueries';
+import { GET_TAGS } from '../../queries/tagQueries';
 
 export default function DataGridProCSV(props) {
-  console.log('props-----------', props);
   const [open, setOpen] = React.useState(false);
 
   const [tags, setTags] = useState([]);
@@ -103,10 +105,6 @@ export default function DataGridProCSV(props) {
     setOpen(false);
   };
 
-  const ha = () => {
-    setOpen(true);
-  };
-
   const [gridRef, setGridRef] = useState({});
   const [openSnack, setOpenSnack] = React.useState(false);
 
@@ -114,8 +112,33 @@ export default function DataGridProCSV(props) {
     useMutation(SEND_EMAILS_MUTATION);
   const [rowSelectedUsers, setRowSelectedUsers] = useState(['dominiqmartinez13@gmail.com', 'unhashlabs@gmail.com']);
   const [responseData, setResponseData] = useState([]);
-
   const { loading: graphQLClientsLoading, error: graphQLClientsError, data, refetch } = useQuery(GET_LEADS);
+  const { loading: tagsLoading, error: tagsError, data: tagsData } = useQuery(GET_TAGS);
+  const { loading: categoriesLoading, error: categoriesError, data: categoriesList } = useQuery(GET_CATEGORIES);
+  const [updateLead, { loading }] = useMutation(updateLeadMutation);
+  console.log('tags-----------------', tagsData);
+  const updateCategories = async (list, id, type) => {
+
+    console.log("type------------", list);
+    const entries = list?.map((x) => x.title);
+    console.log('entries-------, ', entries);
+    if (type === 'categories') {
+      await updateLead({
+        variables: {
+          id,
+          categories: entries,
+        },
+      });
+    }
+    if (type === 'tags') {
+      await updateLead({
+        variables: {
+          id,
+          tags: entries,
+        },
+      });
+    }
+  };
 
   const [pageSize, setPageSize] = useState(5);
   const [rowId, setRowId] = useState(null);
@@ -608,7 +631,7 @@ export default function DataGridProCSV(props) {
       {
         field: 'tags',
         headerName: 'Tags',
-        width: 270,
+        width: 370,
         editable: true,
         renderCell: (params) => (
           <Box
@@ -624,21 +647,33 @@ export default function DataGridProCSV(props) {
               alignItems: 'center',
             }}
           >
-            {/* <CellBox  item={42} {...{params, rowId, setRowId }}/>  */}
-            <TagBoxView
+            {/* <CellBox item={42} {...{ params, rowId, setRowId }} /> */}
+            <AutoSelect
+              data={params.row}
+              type="tags"
+              label="Add Tags"
+              list={tagsData && tagsData?.tags}
+              defaultValues={params.row.tagsData?.map((x) => {
+                return {
+                  title: x || '',
+                };
+              })}
+              handleUpdate={(value, id, type) => updateCategories(value, id, type)}
+            />
+            {/* <TagBoxView
               defaultValues={params.row.tags}
               Lead={params.row}
               successCheck={() => {
                 console.log('hello');
               }}
-            />
+            /> */}
           </Box>
         ),
       },
       {
         field: 'categories',
         headerName: 'Categories',
-        width: 270,
+        width: 370,
         editable: true,
         renderCell: (params) => (
           <Box
@@ -654,19 +689,31 @@ export default function DataGridProCSV(props) {
               alignItems: 'center',
             }}
           >
-            <CategoryBoxView
+            <AutoSelect
+              data={params.row}
+              label="Add Categories"
+              type="categories"
+              list={categoriesList && categoriesList?.categories}
+              defaultValues={params.row.categories?.map((x) => {
+                return {
+                  title: x || '',
+                };
+              })}
+              handleUpdate={(value, id, type) => updateCategories(value, id, type)}
+            />
+            {/* <CategoryBoxView
               defaultValues={params.row.categories}
               Lead={params.row}
               successCheck={() => {
                 console.log('hello');
               }}
-            />
+            /> */}
           </Box>
         ),
       },
       { field: 'Uid', headerName: 'UID', width: 100, editable: true, hide: true },
     ],
-    [rowId]
+    [rowId, categoriesList, tags]
   );
 
   const handlePageSizeChange = (params) => {

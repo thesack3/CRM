@@ -424,7 +424,7 @@ const LeadType = new GraphQLObjectType({
         leads:{
             type: new GraphQLList(LeadType), 
             resolve(parent, args){
-                return Lead.find();
+                return Lead.find().limit(5);
             } 
         },
 
