@@ -40,8 +40,8 @@ const ChatUI = ({ handleProfile, lead }) => {
   const handleSendSMS = async () => {
     try {
       await sendSMS();
-      await refetch();
       setMessage('');
+      await refetch();
     } catch (error) {
       console.log(error);
     }
@@ -98,7 +98,9 @@ const ChatUI = ({ handleProfile, lead }) => {
           {textData &&
             textData?.texts?.map((item) => (
               <>
-                {item.from === '+18443112751' ? (
+                {item.to === '+18443112751' ? (
+                  <Receive>{item.body}</Receive>
+                ) : (
                   <Grid
                     key={item.dateCreated}
                     xs={12}
@@ -106,10 +108,8 @@ const ChatUI = ({ handleProfile, lead }) => {
                     flexDirection={{ xs: 'column', sm: 'row' }}
                     justifyContent={'flex-end'}
                   >
-                    <Sender>{item.body}</Sender>
+                    <Send>{item.body}</Send>
                   </Grid>
-                ) : (
-                  <Receiver>{item.body}</Receiver>
                 )}
               </>
             ))}
@@ -170,7 +170,7 @@ const Header = styled(Paper)(({ theme }) => ({
   justifyContent: 'space-between',
   alignItems: 'center',
 }));
-const Sender = styled(Paper)(({ theme }) => ({
+const Send = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#ccf1fabf',
   ...theme.typography.body2,
   padding: theme.spacing(1),
@@ -182,7 +182,7 @@ const Sender = styled(Paper)(({ theme }) => ({
   alignItems: 'center',
   marginTop: 20,
 }));
-const Receiver = styled(Paper)(({ theme }) => ({
+const Receive = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#ccf6c4ba',
   ...theme.typography.body2,
   padding: theme.spacing(1),
