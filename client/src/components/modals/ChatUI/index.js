@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from '@apollo/client';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Box, FormControl, Grid, OutlinedInput, Paper, Typography, Button } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
 import SendIcon from '@mui/icons-material/Send';
@@ -11,51 +11,12 @@ import { SEND_SMS } from '../../../mutations/sendSms';
 import { GET_SMS_TEXT } from '../../../queries/textQueries';
 import { SEND_CALL } from '../../../mutations/sendCall';
 
-const Item = styled(Paper)(({ theme }) => ({
-  display: 'none',
-  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-  ...theme.typography.body2,
-  padding: theme.spacing(1),
-  textAlign: 'center',
-  color: theme.palette.text.secondary,
-}));
-const Header = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fafafa',
-  ...theme.typography.body1,
-  padding: theme.spacing(1),
-  color: theme.palette.text.primary,
-  display: 'flex',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-}));
-const Sender = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#ccf1fabf',
-  ...theme.typography.body2,
-  padding: theme.spacing(1),
-  textAlign: 'left',
-  color: theme.palette.text.secondary,
-  maxWidth: '270px',
-  minHeight: '50px',
-  display: 'flex',
-  alignItems: 'center',
-  marginTop: 20,
-}));
-const Receiver = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#ccf6c4ba',
-  ...theme.typography.body2,
-  padding: theme.spacing(1),
-  textAlign: 'left',
-  color: theme.palette.text.secondary,
-  marginTop: 20,
-  maxWidth: '270px',
-  minHeight: '50px',
-}));
-
 const ChatUI = ({ handleProfile, lead }) => {
   const [message, setMessage] = useState('');
   const [sender, setSender] = useState([]);
   const [receiver, setReceiver] = useState([]);
   const { setIsCall, setUserName, setLeadId, leadId } = useContext(callContext);
+
   const {
     loading: textLoading,
     data: textData,
@@ -137,16 +98,19 @@ const ChatUI = ({ handleProfile, lead }) => {
           {textData &&
             textData?.texts?.map((item) => (
               <>
-                <Grid
-                  key={item.dateCreated}
-                  xs={12}
-                  container
-                  flexDirection={{ xs: 'column', sm: 'row' }}
-                  justifyContent={'flex-end'}
-                >
-                  <Sender>{item.body}</Sender>
-                </Grid>
-                {/* <Receiver>Just one? Having seen your driving, I wouldn't be so optimistic.</Receiver> */}
+                {item.from === '+18443112751' ? (
+                  <Grid
+                    key={item.dateCreated}
+                    xs={12}
+                    container
+                    flexDirection={{ xs: 'column', sm: 'row' }}
+                    justifyContent={'flex-end'}
+                  >
+                    <Sender>{item.body}</Sender>
+                  </Grid>
+                ) : (
+                  <Receiver>{item.body}</Receiver>
+                )}
               </>
             ))}
         </Grid>
@@ -188,3 +152,43 @@ const ChatUI = ({ handleProfile, lead }) => {
 };
 
 export default ChatUI;
+
+const Item = styled(Paper)(({ theme }) => ({
+  display: 'none',
+  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+  ...theme.typography.body2,
+  padding: theme.spacing(1),
+  textAlign: 'center',
+  color: theme.palette.text.secondary,
+}));
+const Header = styled(Paper)(({ theme }) => ({
+  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fafafa',
+  ...theme.typography.body1,
+  padding: theme.spacing(1),
+  color: theme.palette.text.primary,
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+}));
+const Sender = styled(Paper)(({ theme }) => ({
+  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#ccf1fabf',
+  ...theme.typography.body2,
+  padding: theme.spacing(1),
+  textAlign: 'left',
+  color: theme.palette.text.secondary,
+  maxWidth: '270px',
+  minHeight: '50px',
+  display: 'flex',
+  alignItems: 'center',
+  marginTop: 20,
+}));
+const Receiver = styled(Paper)(({ theme }) => ({
+  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#ccf6c4ba',
+  ...theme.typography.body2,
+  padding: theme.spacing(1),
+  textAlign: 'left',
+  color: theme.palette.text.secondary,
+  marginTop: 20,
+  maxWidth: '270px',
+  minHeight: '50px',
+}));
