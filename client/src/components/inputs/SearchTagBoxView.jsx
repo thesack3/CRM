@@ -7,19 +7,16 @@ import CloseIcon from '@mui/icons-material/Close';
 import { styled } from '@mui/material/styles';
 import { autocompleteClasses } from '@mui/material/Autocomplete';
 import { useQuery, useMutation, gql } from '@apollo/client';
-import { GET_TAGS , GET_TAG} from '../../queries/tagQueries';
+import { GET_TAGS, GET_TAG } from '../../queries/tagQueries';
 import { GET_CATEGORIES } from '../../queries/categoryQueries';
 import { updateLeadMutation } from '../../mutations/leadMutations';
 
-
-
-
-
-
-const Root = styled('div')(({ theme }) => `
+const Root = styled('div')(
+  ({ theme }) => `
   color: ${theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.65)' : 'rgba(0,0,0,.85)'};
   font-size: 14px;
-`);
+`
+);
 
 const Label = styled('label')`
   padding: 0 0 4px;
@@ -27,7 +24,8 @@ const Label = styled('label')`
   display: block;
 `;
 
-const InputWrapper = styled('div')(({ theme }) => `
+const InputWrapper = styled('div')(
+  ({ theme }) => `
   width: 200px;
   border: 1px solid ${theme.palette.mode === 'dark' ? '#434343' : '#d9d9d9'};
   background-color: ${theme.palette.mode === 'dark' ? '#141414' : '#fff'};
@@ -58,7 +56,8 @@ const InputWrapper = styled('div')(({ theme }) => `
     margin: 0;
     outline: 0;
   }
-`);
+`
+);
 
 function Tag(props) {
   const { label, onDelete, ...other } = props;
@@ -73,7 +72,8 @@ Tag.propTypes = {
   label: PropTypes.string.isRequired,
 };
 
-const StyledTag = styled(Tag)(({ theme }) => `
+const StyledTag = styled(Tag)(
+  ({ theme }) => `
   display: flex;
   align-items: center;
   height: 24px;
@@ -93,10 +93,11 @@ const StyledTag = styled(Tag)(({ theme }) => `
     white-space: nowrap;
     text-overflow: ellipsis;
   }
-`);
+`
+);
 
-const Listbox = styled
-('ul')(({ theme }) => `
+const Listbox = styled('ul')(
+  ({ theme }) => `
 width: 500px;
 margin: 2px 0 0;
 padding: 0;
@@ -139,246 +140,176 @@ cursor: pointer;
   color: currentColor;
 }
 }
-`);
-
-
-
+`
+);
 
 export default function SearchCategory(props) {
- 
-    const [retreivedTags, setRetreivedTags] = useState([]);
+  console.log('props.lead', props.lead);
 
+  const [retreivedTags, setRetreivedTags] = useState([]);
 
-    const [usersTags, setUsersTags] = useState([{ title: "new" }]);
-    const [lead, setLead] = useState(null);
+  const [usersTags, setUsersTags] = useState([{ title: 'new' }]);
+  const [lead, setLead] = useState(null);
 
-    
-    const [updateLead, { Leadloading, updateLeadError, Leaddata }] = useMutation(
-      updateLeadMutation,
-      {
-        update: (cache, { data: { updateLead } }) => {
-          cache.modify({
-            fields: {
-              leads(existingLeads = [], { readField }) {
-                const updatedLeadRef = cache.writeFragment({
-                  data: updateLead,
-                  fragment: gql`
-                    fragment UpdatedLead on Lead {
-                      id
-                      tags {
-                        id
-                        title
-                      }
-                    }
-                  `,
-                });
-                const leadId = readField("id", updatedLeadRef);
-                const leadIndex = existingLeads.findIndex((lead) => lead.id === leadId);
-                if (leadIndex >= 0) {
-                  existingLeads[leadIndex] = updatedLeadRef;
+  const [updateLead, { Leadloading, updateLeadError, Leaddata }] = useMutation(updateLeadMutation, {
+    update: (cache, { data: { updateLead } }) => {
+      cache.modify({
+        fields: {
+          leads(existingLeads = [], { readField }) {
+            const updatedLeadRef = cache.writeFragment({
+              data: updateLead,
+              fragment: gql`
+                fragment UpdatedLead on Lead {
+                  id
+                  tags {
+                    id
+                    title
+                  }
                 }
-                return existingLeads;
-              },
-            },
-          });
+              `,
+            });
+            const leadId = readField('id', updatedLeadRef);
+            const leadIndex = existingLeads.findIndex((lead) => lead.id === leadId);
+            if (leadIndex >= 0) {
+              existingLeads[leadIndex] = updatedLeadRef;
+            }
+            return existingLeads;
+          },
         },
-      }
-    );
-    
+      });
+    },
+  });
 
-    const { loading: tagsLoading, error: tagsError, data: tagsData } = useQuery(
-      GET_TAGS
-    );
+  const { loading: tagsLoading, error: tagsError, data: tagsData } = useQuery(GET_TAGS);
 
-      
   // const { loading: tagsLoading, error: tagsError, data: tagsData } = useQuery(GET_TAG, {
   //   variables: { id: selectedLead ? selectedLead.id : null },
   //   skip: !selectedLead,
   // });
 
+  const [tags, setTags] = useState(retreivedTags);
 
+  useEffect(() => {
+    if (props.Lead) {
+      console.log('props.Lead');
+      setLead(props.Lead);
+      setLead(props.Lead.tags);
+      console.log(props.Lead.tags);
+      console.log(props.Lead.tags);
 
-    const [tags, setTags] = useState(retreivedTags);
-  
+      // alert("Check info here")
 
-  
-    useEffect(() => {
+      const defaultArray = [];
 
-    
+      if (props.Lead.tags != null) {
+        if (props.Lead.tags.length > 0 && tagsData && tagsData.tags) {
+          console.log('props.tags');
+          console.log(props.Lead);
 
-      if(props.Lead){
-        console.log("props.Lead");
-        setLead(props.Lead);
-        setLead(props.Lead.tags);
-        console.log(props.Lead.tags);
-        console.log(props.Lead.tags);
+          const tagsArray = props.Lead.tags.map((tag) => {
+            return tag.title;
+          });
 
-        // alert("Check info here")
+          console.log(tagsArray);
 
-        const defaultArray = []
-
-
-           
-      
-        if (props.Lead.tags != null){
-
-              if (props.Lead.tags.length > 0 && tagsData && tagsData.tags) {
-        console.log("props.tags");
-        console.log(props.Lead);
-
-      
-        const tagsArray = props.Lead.tags.map((tag) => {
-          return tag.title;
-          }
-      )
-
-      console.log(tagsArray);
-  
-      console.log(props);
-      //  alert("Check info here")
-
-
-
-
-      }
-
-
+          console.log(props);
+          //  alert("Check info here")
         }
+      }
+    }
+  }, [tagsData, props.Lead]);
 
+  useEffect(() => {
+    if (tagsData && tagsData.tags) {
+      setRetreivedTags(tagsData.tags);
+      setTags(tagsData.tags);
+    }
+  }, [tagsData, props.Lead]);
+
+  const {
+    getRootProps,
+    getInputLabelProps,
+    getInputProps,
+    getTagProps,
+    getListboxProps,
+    getOptionProps,
+    groupedOptions,
+    value,
+    focused,
+    setAnchorEl,
+  } = useAutocomplete({
+    id: 'customized-hook-demo',
+    //  defaultValue: retreivedTags,
+    defaultValue: props.defaultValues,
+    multiple: true,
+    options: tags,
+    getOptionLabel: (option) => option.title,
+    onChange: async (event, newValue) => {
+      const newTags = [];
+
+      for (let i = 0; i < newValue.length; i += 1) {
+        newTags.push(newValue[i].id);
       }
 
+      const OGTCategories = props.Lead.categories.map((tag) => {
+        return tag.id;
+      });
 
-
-    }, [tagsData, props.Lead]);
-  
-    useEffect(() => {
-      if (tagsData && tagsData.tags) {
-        setRetreivedTags(tagsData.tags);
-        setTags(tagsData.tags);
-      }
-    }, [tagsData, props.Lead]);
-  
-    const {
-      getRootProps,
-      getInputLabelProps,
-      getInputProps,
-      getTagProps,
-      getListboxProps,
-      getOptionProps,
-      groupedOptions,
-      value,
-      focused,
-      setAnchorEl,
-    } = useAutocomplete({
-      id: "customized-hook-demo",
-     //  defaultValue: retreivedTags,
-     defaultValue: props.defaultValues,
-      multiple: true,
-      options: tags,
-      getOptionLabel: (option) => option.title,
-      onChange: async (event, newValue) => {
-        const newTags = [];
-  
-        for (let i = 0; i < newValue.length; i += 1) {
-          newTags.push(newValue[i].id);
-        }
-
-            const OGTCategories = props.Lead.categories.map((tag) => {
-              return tag.id;
-              
-              });
-
-        //   Save new tags to user
-        try {
-          const result = await updateLead({
-            variables: {
-              id: props.Lead.id,
-              firstName: props.Lead.firstName,
-              email: props.Lead.email,
-              lastName: props.Lead.lastName,
-              Tags: newTags,
-              Categories: OGTCategories,
-            },
-          }).then((res) => {
-   
+      //   Save new tags to user
+      try {
+        const result = await updateLead({
+          variables: {
+            id: props.Lead.id,
+            firstName: props.Lead.firstName,
+            email: props.Lead.email,
+            lastName: props.Lead.lastName,
+            Tags: newTags,
+            Categories: OGTCategories,
+          },
+        })
+          .then((res) => {
             props.successCheck();
-            console.log("Lead Updated");
+            console.log('Lead Updated');
             console.log(res);
-          }).catch((err) => {
+          })
+          .catch((err) => {
             console.log(err);
-            console.log("error adding category.");
-          
-          }); 
-  
-          return result;
-        } catch (err) {
-          console.log(err);
-          return null;
-        }
-      },
-    });
-  
-    return (
-      <Root>
-        <div {...getRootProps()}>
-          <Label {...getInputLabelProps()}>Add Tags</Label>
+            console.log('error adding category.');
+          });
 
-          <InputWrapper ref={setAnchorEl} className={focused ? "focused"
-  : ""}>
-  {value.map((option, index) => (
-  <StyledTag  style={{width: '100px'}} label={option.title} {...getTagProps({ index })} />
-  ))}
-  <input {...getInputProps()} readOnly />
-  </InputWrapper>
-  </div>
-  {groupedOptions.length > 0 ? (
+        return result;
+      } catch (err) {
+        console.log(err);
+        return null;
+      }
+    },
+  });
 
-      <Listbox {...getListboxProps()}>
-  {groupedOptions.map((option, index) => (
-  <li {...getOptionProps({ option, index })}>
-  <span>{option.title}</span>
-  <CheckIcon fontSize="small" />
-  </li>
-  ))}
-  </Listbox>
-    
+  return (
+    <Root>
+      <div {...getRootProps()}>
+        <Label {...getInputLabelProps()}>Add Tags</Label>
 
-
-
-
-  ) : null}
-  </Root>
+        <InputWrapper ref={setAnchorEl} className={focused ? 'focused' : ''}>
+          {value.map((option, index) => (
+            <StyledTag style={{ width: '100px' }} label={option.title} {...getTagProps({ index })} />
+          ))}
+          <input {...getInputProps()} readOnly />
+        </InputWrapper>
+      </div>
+      {groupedOptions.length > 0 ? (
+        <Listbox {...getListboxProps()}>
+          {groupedOptions.map((option, index) => (
+            <li {...getOptionProps({ option, index })}>
+              <span>{option.title}</span>
+              <CheckIcon fontSize="small" />
+            </li>
+          ))}
+        </Listbox>
+      ) : null}
+    </Root>
   );
-  }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+}
 
 // import * as React from 'react';
 // import { useState, useEffect } from 'react';
@@ -391,11 +322,6 @@ export default function SearchCategory(props) {
 // import { useQuery, useMutation, gql } from '@apollo/client';
 // import { GET_TAGS , GET_TAG} from '../../queries/tagQueries';
 // import { updateLeadMutation } from '../../mutations/leadMutations';
-
-
-
-
-
 
 // const Root = styled('div')(({ theme }) => `
 //   color: ${theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.65)' : 'rgba(0,0,0,.85)'};
@@ -521,26 +447,12 @@ export default function SearchCategory(props) {
 // }
 // `);
 
-
-
-
-
-
-
-
-
 // export default function TagBoxView(props) {
 
-
-
-
- 
 //     const [retreivedTags, setRetreivedTags] = useState([]);
-
 
 //     const [lead, setLead] = useState(null);
 
-    
 //     const [updateLead, { Leadloading, updateLeadError, Leaddata }] = useMutation(
 //       updateLeadMutation,
 //       {
@@ -572,72 +484,56 @@ export default function SearchCategory(props) {
 //         },
 //       }
 //     );
-    
 
 //     const { loading: tagsLoading, error: tagsError, data: tagsData } = useQuery(
 //       GET_TAGS
 //     );
 
-      
 //   // const { loading: tagsLoading, error: tagsError, data: tagsData } = useQuery(GET_TAG, {
 //   //   variables: { id: selectedLead ? selectedLead.id : null },
 //   //   skip: !selectedLead,
 //   // });
 
-
-
 //     const [tags, setTags] = useState(retreivedTags);
-  
 
-  
 //     useEffect(() => {
-
-    
 
 //       if(props.Lead){
 //         console.log("props.Lead");
 //         setLead(props.Lead);
 //         setLead(props.Lead.tags);
 
-      
 //         if (props.Lead.tags != null){
 
 //               if (props.Lead.tags.length > 0 && tagsData && tagsData.tags) {
 //         console.log("props.tags");
 //         console.log(props.Lead);
 
-      
 //         const tagsArray = props.Lead.tags.map((tag) => {
 //           return tag.title;
 //           }
 //       )
 
 //       console.log(tagsArray);
-  
+
 //       console.log(props);
 //       //  alert("Check info here")
 
-
-
-
 //       }
-
 
 //         }
 
 //       }
 
-
-
 //     }, [tagsData]);
-  
+
 //     useEffect(() => {
 //       if (tagsData && tagsData.tags) {
 //         setRetreivedTags(tagsData.tags);
 //         setTags(tagsData.tags);
 //       }
 //     }, [tagsData]);
-  
+
 //     const {
 //       getRootProps,
 //       getInputLabelProps,
@@ -657,7 +553,7 @@ export default function SearchCategory(props) {
 //       getOptionLabel: (option) => option.title,
 //       onChange: async (event, newValue) => {
 //         const newTags = [];
-  
+
 //         for (let i = 0; i < newValue.length; i += 1) {
 //           newTags.push(newValue[i].id);
 //         }
@@ -665,7 +561,6 @@ export default function SearchCategory(props) {
 //         const categoriesArray = props.Lead.tags.map((category) => {
 //           return category.title;
 //           });
-
 
 //           const OGcategories = props.Lead.categories.map((category) => {
 //             return category.id;
@@ -684,15 +579,15 @@ export default function SearchCategory(props) {
 //               Categories: OGcategories,
 //             },
 //           }).then((res) => {
-   
+
 //             props.successCheck();
 //             console.log("Lead Updated");
 //             console.log(res);
 //           }).catch((err) => {
 //             console.log("error updating lead.");
 //             console.log(err);
-//           }); 
-  
+//           });
+
 //           return result;
 //         } catch (err) {
 //           console.log(err);
@@ -700,7 +595,7 @@ export default function SearchCategory(props) {
 //         }
 //       },
 //     });
-  
+
 //     return (
 //       <Root>
 //         <div {...getRootProps()}>
@@ -724,10 +619,6 @@ export default function SearchCategory(props) {
 //   </li>
 //   ))}
 //   </Listbox>
-    
-
-
-
 
 //   ) : null}
 //   </Root>

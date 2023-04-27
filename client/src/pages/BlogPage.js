@@ -6,6 +6,7 @@ import { useSubscription } from '@apollo/client';
 import { NEW_LEAD_SUBSCRIPTION } from '../queries/leadQueries';
 
 import DataGridProCSV from '../components/dataGrid/DataGridProDash';
+import DataGridProCSV2 from '../components/dataGrid/DataGrid2';
 
 export default function BlogPage() {
   return (
@@ -32,7 +33,8 @@ export default function BlogPage() {
         }}
       >
         <Box sx={{ width: '100%', height: 'fit-content' }}>
-          <DataGridProCSV />
+          {/* <DataGridProCSV /> */}
+          <DataGridProCSV2 />
         </Box>
       </Box>
     </Box>

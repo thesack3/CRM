@@ -1,35 +1,14 @@
-//
+// TODO: add subscription to update the table when a new lead is added, NEW_LEAD_SUBSCRIPTION
 import * as React from 'react';
-import {
-  Button,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  TextField,
-  Typography,
-  Alert,
-  Snackbar,
-} from '@mui/material';
+import { Button, MenuItem, TextField, Typography, Alert, Snackbar } from '@mui/material';
 import { useQuery, useMutation } from '@apollo/client';
 import { useMemo, useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import { DataGridPro, GridToolbar } from '@mui/x-data-grid-pro';
-import moment from 'moment';
-import { useDemoData } from '@mui/x-data-grid-generator';
-import UsersActions from '../UsersActions';
-import styles from './Datagrid.module.css';
 import CellBox from '../CellBox';
-import { GET_CLIENTS } from '../../queries/clientQueres';
 import { GET_LEADS } from '../../queries/leadQueries';
 import ProfileDetailsPage from '../ProfileDetailsPage';
-import { updateLeadMutation } from '../../mutations/leadMutations';
 import { SEND_EMAILS_MUTATION } from '../../mutations/bulkEmail';
-import EditCellBox from '../CellBoxes/EdtableCellBox';
-import EmailActionModal from '../modals/EmalActionModal';
-import AddNote from '../modals/AddNote';
-import AddeAlert from '../modals/AddeAlert';
-import ProfileP from '../Profile/ProfileP';
 import CategoryBoxView from '../inputs/SearchCategory';
 import TagBoxView from '../inputs/SearchTagBoxView';
 import AddLeadModal from '../modals/AddLead';
@@ -37,75 +16,17 @@ import AddCSVLeadModal from '../modals/AddCSVLeadModal';
 import AddTagModal from '../modals/AddTag';
 import AddCategoryModal from '../modals/AddCategory';
 import CategoryGrid from '../inputs/CategorySearchBox';
+import { selectedCols } from '../../constants/arrays';
+import { gridStyles } from '../../constants/styles';
 
-export default function DataGridProCSV(props) {
+export default function DataGridProCSV2(props) {
   console.log('props-----------', props);
   const [open, setOpen] = React.useState(false);
-
-  const [tags, setTags] = useState([]);
-
-  const [columnSetting, setColumnSeting] = useState([{ 0: 'true', 1: 'false', 2: 'false' }]);
   const [refetchCategories, setRefetchCategories] = useState('');
   const [refetchTag, setRefetchTag] = useState('');
   const [categories, setCategories] = useState([]);
-  const [selectedColumns, setSelectedColumns] = useState([
-    'id',
-    'firstName',
-    'email',
-    'lastName',
-    'Profile',
-    'OriginalSource',
-    'phone',
-    'phoneStatus',
-    'emailInvalid',
-    'GloballyOptedOutOfEmail',
-    'OriginalSource',
-    'BuyerAgent',
-    'GloballyoptedOutOfBuyerAgentEmail',
-    'GloballyoptedOutOfListingAgentEmail',
-    'GloballyoptedOutOfLenderEmail',
-    'GloballyoptedOutOfAlerts',
-    'OptInDate',
-    'BuyerAgentCategory',
-    'ListingAgentCategory',
-    'LenderCategory',
-    'BuyerAgent',
-    'ListingAgent',
-    'Lender',
-    'tags',
-    'OriginalCampaign',
-    'LastAgentNote',
-    'eAlerts',
-    'VisitTotal',
-    'listingviewcount',
-    'AvgListingPrice',
-    'NextCallDue',
-    'LastAgentCallDate',
-    'LastLenderCallDate',
-    'FirstVisitDate',
-    'LastVisitDate',
-    'RegisterDate',
-    'LeadType',
-    'AgentSelected',
-    'LenderOptIn',
-    'Address',
-    'City',
-    'tags',
-    'categories',
-    'State',
-    'Zip',
-    'Link',
-    'Birthday',
-    'HomeClosingDate',
-  ]);
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  const ha = () => {
-    setOpen(true);
-  };
+  const [selectedColumns, setSelectedColumns] = useState(selectedCols);
+  const [columnsToShow, setColumnsToShow] = useState([]);
 
   const [gridRef, setGridRef] = useState({});
   const [openSnack, setOpenSnack] = React.useState(false);
@@ -120,6 +41,7 @@ export default function DataGridProCSV(props) {
   const [pageSize, setPageSize] = useState(5);
   const [rowId, setRowId] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [gridDataLoading, setGridDataLoading] = useState(true);
 
   const handleCellEditStart = (params) => {
     console.log('Cell edit started:', params);
@@ -161,7 +83,7 @@ export default function DataGridProCSV(props) {
     if (data?.leads) {
       // console.log(props.UserData)
 
-      const usersWithIds = data?.leads.map((user, index) => {
+      const usersWithIds = data.leads.map((user, index) => {
         const Tags = user.tags.map((item, index) => {
           return item.title;
         });
@@ -188,7 +110,8 @@ export default function DataGridProCSV(props) {
 
       setResponseData(usersWithIds);
     }
-  }, [data?.leads, data]);
+  }, [props.UserData, data]);
+  console.log('responseData', data?.leads);
 
   const columns = useMemo(
     () => [
@@ -197,54 +120,26 @@ export default function DataGridProCSV(props) {
         headerName: 'Profile',
         width: 150,
         editable: true,
-        renderCell: (params) => <ProfileDetailsPage row={params.row.Uid} {...{ params }} />,
+        renderCell: (params) => (
+          <Button variant="outlined" onClick={() => console.log('params', params.row)}>
+            Profile
+          </Button>
+        ),
+
+        hide: true,
       },
-      { field: 'id', headerName: 'ID', width: 250, editable: true, hide: true },
       {
         field: 'firstName',
         headerName: 'First Name',
         width: 180,
         editable: true,
         type: 'text',
-        renderCell: (params) => (
-          <Box
-            sx={{
-              width: '100%',
-
-              borderTop: 'none',
-              borderBottom: 'none',
-              borderLeft: '1px solid lightgray',
-              borderRight: 'none',
-              overflow: 'hidden',
-              display: 'flex',
-              justifyContent: 'center',
-            }}
-          >
-            <CellBox successCheck={() => setOpenSnack(true)} item={1} {...{ params, rowId, setRowId }} />
-          </Box>
-        ),
       },
       {
         field: 'lastName',
         headerName: 'Last Name',
         width: 180,
         editable: true,
-        renderCell: (params) => (
-          <Box
-            sx={{
-              width: '100%',
-              borderTop: 'none',
-              borderBottom: 'none',
-              borderLeft: '1px solid lightgray',
-              borderRight: 'none',
-              overflow: 'hidden',
-              display: 'flex',
-              justifyContent: 'center',
-            }}
-          >
-            <CellBox item={2} {...{ params, rowId, setRowId }} />
-          </Box>
-        ),
 
         hide: true,
       },
@@ -253,45 +148,12 @@ export default function DataGridProCSV(props) {
         headerName: 'Email',
         width: 250,
         editable: true,
-        renderCell: (params) => (
-          <Box
-            sx={{
-              width: '100%',
-              height: '100%',
-              borderTop: 'none',
-              borderBottom: 'none',
-              borderLeft: '1px solid lightgray',
-              borderRight: 'none',
-              overflow: 'hidden',
-              display: 'flex',
-              justifyContent: 'center',
-            }}
-          >
-            <CellBox item={3} {...{ params, rowId, setRowId }} />
-          </Box>
-        ),
       },
       {
         field: 'phone',
         headerName: 'Phone',
         width: 180,
         editable: true,
-        renderCell: (params) => (
-          <Box
-            sx={{
-              width: '100%',
-              height: '100%',
-              borderTop: 'none',
-              borderBottom: 'none',
-              borderLeft: '1px solid lightgray',
-              borderRight: 'none',
-              display: 'flex',
-              justifyContent: 'center',
-            }}
-          >
-            <CellBox item={4} {...{ params, rowId, setRowId }} />
-          </Box>
-        ),
 
         hide: true,
       },
@@ -300,7 +162,6 @@ export default function DataGridProCSV(props) {
         headerName: 'Phone Status',
         width: 120,
         editable: true,
-        renderCell: (params) => <CellBox item={5} {...{ params, rowId, setRowId }} />,
         hide: true,
       },
       {
@@ -308,7 +169,6 @@ export default function DataGridProCSV(props) {
         headerName: 'Email Invalid',
         width: 120,
         editable: true,
-        renderCell: (params) => <CellBox item={6} {...{ params, rowId, setRowId }} />,
         hide: true,
       },
       {
@@ -316,7 +176,6 @@ export default function DataGridProCSV(props) {
         headerName: 'GloballyOptedOutOfEmail',
         width: 120,
         editable: true,
-        renderCell: (params) => <CellBox item={7} {...{ params, rowId, setRowId }} />,
         hide: true,
       },
       {
@@ -324,7 +183,6 @@ export default function DataGridProCSV(props) {
         headerName: 'GloballyOptedOutOfBuyerAgentEmail',
         width: 120,
         editable: true,
-        renderCell: (params) => <CellBox item={8} {...{ params, rowId, setRowId }} />,
         hide: true,
       },
       {
@@ -332,7 +190,6 @@ export default function DataGridProCSV(props) {
         headerName: 'GloballyOptedOutOfListingAgentEmail',
         width: 120,
         editable: true,
-        renderCell: (params) => <CellBox item={9} {...{ params, rowId, setRowId }} />,
         hide: true,
       },
       {
@@ -340,7 +197,6 @@ export default function DataGridProCSV(props) {
         headerName: 'GloballyOptedOutOfLenderEmail',
         width: 120,
         editable: true,
-        renderCell: (params) => <CellBox item={10} {...{ params, rowId, setRowId }} />,
         hide: true,
       },
       {
@@ -348,7 +204,6 @@ export default function DataGridProCSV(props) {
         headerName: 'GloballyOptedOutOfAlerts',
         width: 120,
         editable: true,
-        renderCell: (params) => <CellBox item={11} {...{ params, rowId, setRowId }} />,
         hide: true,
       },
       {
@@ -356,7 +211,7 @@ export default function DataGridProCSV(props) {
         headerName: 'OptInDate',
         width: 120,
         editable: true,
-        renderCell: (params) => <CellBox item={12} {...{ params, rowId, setRowId }} />,
+
         hide: true,
       },
       {
@@ -364,7 +219,7 @@ export default function DataGridProCSV(props) {
         headerName: 'BuyerAgentCategory',
         width: 120,
         editable: true,
-        renderCell: (params) => <CellBox item={13} {...{ params, rowId, setRowId }} />,
+
         hide: true,
       },
       {
@@ -372,7 +227,7 @@ export default function DataGridProCSV(props) {
         headerName: 'ListingAgentCategory',
         width: 120,
         editable: true,
-        renderCell: (params) => <CellBox item={14} {...{ params, rowId, setRowId }} />,
+
         hide: true,
       },
       {
@@ -380,7 +235,7 @@ export default function DataGridProCSV(props) {
         headerName: 'LenderCategory',
         width: 120,
         editable: true,
-        renderCell: (params) => <CellBox item={15} {...{ params, rowId, setRowId }} />,
+
         hide: true,
       },
       {
@@ -388,7 +243,7 @@ export default function DataGridProCSV(props) {
         headerName: 'BuyerAgent',
         width: 120,
         editable: true,
-        renderCell: (params) => <CellBox item={16} {...{ params, rowId, setRowId }} />,
+
         hide: true,
       },
       {
@@ -396,7 +251,7 @@ export default function DataGridProCSV(props) {
         headerName: 'ListingAgent',
         width: 120,
         editable: true,
-        renderCell: (params) => <CellBox item={17} {...{ params, rowId, setRowId }} />,
+
         hide: true,
       },
       {
@@ -404,7 +259,7 @@ export default function DataGridProCSV(props) {
         headerName: 'Lender',
         width: 120,
         editable: true,
-        renderCell: (params) => <CellBox item={18} {...{ params, rowId, setRowId }} />,
+
         hide: true,
       },
       {
@@ -412,7 +267,7 @@ export default function DataGridProCSV(props) {
         headerName: 'OriginalSource',
         width: 120,
         editable: true,
-        renderCell: (params) => <CellBox item={19} {...{ params, rowId, setRowId }} />,
+
         hide: true,
       },
       {
@@ -420,7 +275,7 @@ export default function DataGridProCSV(props) {
         headerName: 'OriginalCampaign',
         width: 120,
         editable: true,
-        renderCell: (params) => <CellBox item={20} {...{ params, rowId, setRowId }} />,
+
         hide: true,
       },
       {
@@ -428,7 +283,7 @@ export default function DataGridProCSV(props) {
         headerName: 'LastAgentNote',
         width: 120,
         editable: true,
-        renderCell: (params) => <CellBox item={21} {...{ params, rowId, setRowId }} />,
+
         hide: true,
       },
       {
@@ -436,7 +291,7 @@ export default function DataGridProCSV(props) {
         headerName: 'E Alerts',
         width: 120,
         editable: true,
-        renderCell: (params) => <CellBox item={22} {...{ params, rowId, setRowId }} />,
+
         hide: true,
       },
       {
@@ -444,7 +299,7 @@ export default function DataGridProCSV(props) {
         headerName: 'Visit Total',
         width: 120,
         editable: true,
-        renderCell: (params) => <CellBox item={23} {...{ params, rowId, setRowId }} />,
+
         hide: true,
       },
       {
@@ -452,7 +307,7 @@ export default function DataGridProCSV(props) {
         headerName: 'Listing View Count',
         width: 120,
         editable: true,
-        renderCell: (params) => <CellBox item={24} {...{ params, rowId, setRowId }} />,
+
         hide: true,
       },
       {
@@ -460,7 +315,7 @@ export default function DataGridProCSV(props) {
         headerName: 'Avg. Listing Prive',
         width: 120,
         editable: true,
-        renderCell: (params) => <CellBox item={25} {...{ params, rowId, setRowId }} />,
+
         hide: true,
       },
       {
@@ -468,7 +323,7 @@ export default function DataGridProCSV(props) {
         headerName: 'Next Call Due',
         width: 120,
         editable: true,
-        renderCell: (params) => <CellBox item={26} {...{ params, rowId, setRowId }} />,
+
         hide: true,
       },
       {
@@ -476,7 +331,7 @@ export default function DataGridProCSV(props) {
         headerName: 'LastAgentCalDate',
         width: 120,
         editable: true,
-        renderCell: (params) => <CellBox item={27} {...{ params, rowId, setRowId }} />,
+
         hide: true,
       },
       {
@@ -484,7 +339,7 @@ export default function DataGridProCSV(props) {
         headerName: 'LastLenderCallDate',
         width: 120,
         editable: true,
-        renderCell: (params) => <CellBox item={28} {...{ params, rowId, setRowId }} />,
+
         hide: true,
       },
       {
@@ -492,7 +347,7 @@ export default function DataGridProCSV(props) {
         headerName: 'Firs tVisit Date',
         width: 120,
         editable: true,
-        renderCell: (params) => <CellBox item={29} {...{ params, rowId, setRowId }} />,
+
         hide: true,
       },
       {
@@ -500,7 +355,7 @@ export default function DataGridProCSV(props) {
         headerName: 'Last Visit Date',
         width: 120,
         editable: true,
-        renderCell: (params) => <CellBox item={30} {...{ params, rowId, setRowId }} />,
+
         hide: true,
       },
       {
@@ -508,7 +363,7 @@ export default function DataGridProCSV(props) {
         headerName: 'RegisterDate',
         width: 120,
         editable: true,
-        renderCell: (params) => <CellBox item={31} {...{ params, rowId, setRowId }} />,
+
         hide: true,
       },
       {
@@ -516,7 +371,7 @@ export default function DataGridProCSV(props) {
         headerName: 'LeadType',
         width: 120,
         editable: true,
-        renderCell: (params) => <CellBox item={32} {...{ params, rowId, setRowId }} />,
+
         hide: true,
       },
       {
@@ -524,7 +379,7 @@ export default function DataGridProCSV(props) {
         headerName: 'AgentSelected',
         width: 120,
         editable: true,
-        renderCell: (params) => <CellBox item={33} {...{ params, rowId, setRowId }} />,
+
         hide: true,
       },
       {
@@ -532,7 +387,7 @@ export default function DataGridProCSV(props) {
         headerName: 'Lender OptIn',
         width: 120,
         editable: true,
-        renderCell: (params) => <CellBox item={34} {...{ params, rowId, setRowId }} />,
+
         hide: true,
       },
       {
@@ -540,7 +395,7 @@ export default function DataGridProCSV(props) {
         headerName: 'Address',
         width: 120,
         editable: true,
-        renderCell: (params) => <CellBox item={35} {...{ params, rowId, setRowId }} />,
+
         hide: true,
       },
       {
@@ -548,7 +403,7 @@ export default function DataGridProCSV(props) {
         headerName: 'City',
         width: 120,
         editable: true,
-        renderCell: (params) => <CellBox item={36} {...{ params, rowId, setRowId }} />,
+
         hide: true,
       },
       {
@@ -556,7 +411,7 @@ export default function DataGridProCSV(props) {
         headerName: 'State',
         width: 120,
         editable: true,
-        renderCell: (params) => <CellBox item={37} {...{ params, rowId, setRowId }} />,
+
         hide: true,
       },
       {
@@ -564,7 +419,7 @@ export default function DataGridProCSV(props) {
         headerName: 'Lender',
         width: 120,
         editable: true,
-        renderCell: (params) => <CellBox item={38} {...{ params, rowId, setRowId }} />,
+
         hide: true,
       },
       {
@@ -572,7 +427,7 @@ export default function DataGridProCSV(props) {
         headerName: 'Link',
         width: 120,
         editable: true,
-        renderCell: (params) => <CellBox item={39} {...{ params, rowId, setRowId }} />,
+
         hide: true,
       },
       {
@@ -580,7 +435,7 @@ export default function DataGridProCSV(props) {
         headerName: 'Birthday',
         width: 120,
         editable: true,
-        renderCell: (params) => <CellBox item={40} {...{ params, rowId, setRowId }} />,
+
         hide: true,
       },
       {
@@ -588,20 +443,6 @@ export default function DataGridProCSV(props) {
         headerName: 'HomeClosingDate',
         width: 120,
         editable: true,
-        renderCell: (params) => (
-          <Box
-            sx={{
-              width: '100%',
-              height: '100%',
-              borderTop: 'none',
-              borderBottom: 'none',
-              borderLeft: '1px solid lightgray',
-              borderRight: 'none',
-            }}
-          >
-            <CellBox item={41} {...{ params, rowId, setRowId }} />
-          </Box>
-        ),
 
         hide: true,
       },
@@ -610,61 +451,34 @@ export default function DataGridProCSV(props) {
         headerName: 'Tags',
         width: 270,
         editable: true,
-        renderCell: (params) => (
-          <Box
-            sx={{
-              width: '100%',
-              height: '100%',
-              borderTop: 'none',
-              borderBottom: 'none',
-              borderLeft: '1px solid lightgray',
-              borderRight: 'none',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-          >
-            {/* <CellBox  item={42} {...{params, rowId, setRowId }}/>  */}
-            <TagBoxView
-              defaultValues={params.row.tags}
-              Lead={params.row}
-              successCheck={() => {
-                console.log('hello');
-              }}
-            />
-          </Box>
-        ),
+        // renderCell: (params) => <TagBoxView defaultValues={params.row.tags} lead={params.row} />,
+        renderCell: (params) => <Button>Temporary</Button>,
       },
       {
         field: 'categories',
         headerName: 'Categories',
         width: 270,
         editable: true,
-        renderCell: (params) => (
-          <Box
-            sx={{
-              width: '100%',
-              height: '100%',
-              borderTop: 'none',
-              borderBottom: 'none',
-              borderLeft: '1px solid lightgray',
-              borderRight: '1px solid black',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-          >
-            <CategoryBoxView
-              defaultValues={params.row.categories}
-              Lead={params.row}
-              successCheck={() => {
-                console.log('hello');
-              }}
-            />
-          </Box>
-        ),
+        // renderCell: (params) => (
+        //   <Box
+        //     sx={{
+        //       width: '100%',
+        //       height: '100%',
+        //       borderTop: 'none',
+        //       borderBottom: 'none',
+        //       borderLeft: '1px solid lightgray',
+        //       borderRight: '1px solid black',
+        //       display: 'flex',
+        //       justifyContent: 'center',
+        //       alignItems: 'center',
+        //     }}
+        //   >
+        //     <CategoryBoxView defaultValues={params.row.categories} Lead={params.row} />
+        //   </Box>
+        // ),
+        renderCell: (params) => <Button>Temporary</Button>,
       },
-      { field: 'Uid', headerName: 'UID', width: 100, editable: true, hide: true },
+      //   { field: 'Uid', headerName: 'UID', width: 100, editable: true, hide: true },
     ],
     [rowId]
   );
@@ -724,6 +538,64 @@ export default function DataGridProCSV(props) {
   //  const a= columns.filter((column) => selectedColumns.includes(column.field))
   //  console.log('a-------------------', a);
   // }
+
+  // remove categories and tags from data.leads and make new array
+  const leadsRows = data?.leads
+    ? data.leads.map((lead) => {
+        const { __typename, ...rest } = lead;
+        return { ...rest, profile: 'hello' };
+      })
+    : [];
+
+  // get columns where hide is false
+  const visible = [];
+  columns.forEach((column) => {
+    visible.push(column.field);
+  });
+  console.log('visinle--col-----------------', visible);
+  const leadsCols = leadsRows[0] ? Object.keys(leadsRows[0]) : [];
+  console.log('visinle----row---------------', leadsCols);
+
+  // go over columns and get colums that does not have hide:true
+  const visibleColumns = [];
+  columns.forEach((column) => {
+    if (!column.hide) {
+      visibleColumns.push(column.field);
+    }
+  });
+  console.log('visibleColumns-----------------', visibleColumns);
+
+  // when page loads, check if columns are in local storage, if not, set them
+  useEffect(() => {
+    if (localStorage.getItem('columns')) {
+      const visibleColumnsFieldList = JSON.parse(localStorage.getItem('columns'));
+      console.log('columns list in localstorage-----------------', visibleColumnsFieldList);
+
+      if (visibleColumnsFieldList.length > 0) {
+        columns.forEach((column) => {
+          if (visibleColumnsFieldList.includes(column.field)) {
+            column.hide = false;
+          } else {
+            column.hide = true;
+          }
+        });
+        // make object with column.field as key and column.hide as value
+      }
+    }
+    const columnsToShow = {};
+    columns.forEach((column) => {
+      columnsToShow[column.field] = column.hide;
+    });
+    setColumnsToShow(columns);
+    setGridDataLoading(false);
+  }, []);
+  console.log('columnsToShiw-----------------', columnsToShow);
+
+  const ColumnVisibilityChangeHandler = (obj) => {
+    const visibleColumnsFieldList = Object.keys(obj).filter((key) => obj[key]);
+    console.log('columnbeforeslect----------------', visibleColumnsFieldList);
+    localStorage.setItem('columns', JSON.stringify(visibleColumnsFieldList));
+  };
   return (
     <div style={{ height: 600, width: '100%' }}>
       <div
@@ -759,8 +631,8 @@ export default function DataGridProCSV(props) {
 
       <div style={{ height: 540, width: '100%' }}>
         {/* DATA GRID PRO  */}
-        <Snackbar open={open} autoHideDuration={2000} onClose={handleClose}>
-          <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+        <Snackbar open={open} autoHideDuration={2000} onClose={() => setOpen(false)}>
+          <Alert onClose={() => setOpen(false)} severity="success" sx={{ width: '100%' }}>
             Updated Lead!
           </Alert>
         </Snackbar>
@@ -793,21 +665,9 @@ export default function DataGridProCSV(props) {
             />
           </Box>
 
-          <DataGridPro
-            sx={{
-              backgroundColor: '#f9fafb',
-              paddingTop: '14px',
-              paddingLeft: '14px',
-              '& .MuiDataGrid-toolbarContainer': {
-                marginBottom: '20px',
-              },
-              '& .MuiDataGrid-columnHeaderTitleContainer': {
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              },
-            }}
-            rows={filteredData}
+          {/* <DataGridPro
+            sx={gridStyles}
+            rows={leads}
             columns={columns.filter((column) => selectedColumns.includes(column.field))}
             pageSize={pageSize}
             disableVirtualization
@@ -831,7 +691,27 @@ export default function DataGridProCSV(props) {
                 setGridRef,
               },
             }}
-          />
+          /> */}
+          {console.log('columnsToShowbeforepassing-----------------', columnsToShow)}
+          {!gridDataLoading && (
+            <DataGridPro
+              sx={gridStyles}
+              rows={leadsRows}
+              columns={columnsToShow}
+              onColumnVisibilityModelChange={(e) => ColumnVisibilityChangeHandler(e)}
+              editable
+              editMode="cell"
+              apiRef={apiRef}
+              disableColumnMenu
+              onCellEditCommit={(params, event) => {
+                console.log('cell edit commit', params);
+              }}
+              components={{
+                Toolbar: GridToolbar,
+                gridRef,
+              }}
+            />
+          )}
           <Box
             sx={{
               display: 'flex',
