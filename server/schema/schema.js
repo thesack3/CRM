@@ -224,6 +224,8 @@ const LeadType = new GraphQLObjectType({
     City: { type: GraphQLString },
     State: { type: GraphQLString },
     ZipCode: { type: GraphQLString },
+    tagsList:{type:GraphQLList(GraphQLString)},
+    categoriesList:{type:GraphQLList(GraphQLString)},
     tags: { type: GraphQLList(GraphQLID) },
     categories: { type: GraphQLList(GraphQLID) },
     Link: { type: GraphQLString },
@@ -388,7 +390,7 @@ const RootQuery = new GraphQLObjectType({
     leads: {
       type: new GraphQLList(LeadType),
       resolve(parent, args) {
-        return Lead.find();
+        return Lead.find().limit(8);
       },
     },
 
@@ -887,23 +889,15 @@ const mutation = new GraphQLObjectType({
         firstName: { type: GraphQLString },
         email: { type: GraphQLString },
         lastName: { type: GraphQLString },
-        tags: { type: GraphQLList(GraphQLString) },
-        categories: { type: GraphQLList(GraphQLString) },
+        tagsList: { type: GraphQLList(GraphQLString) },
+        categoriesList: { type: GraphQLList(GraphQLString) },
 
         // Add additional fields to update here
       },
-      async resolve(parent, { id, ...updatedFields }) {
+      async resolve(parent, { id, ...params }) {
         try {
-          const lead = await Lead.findById(id);
-          if (!lead) {
-            throw new Error(`Lead with ID ${id} not found`);
-          }
-          Object.assign(lead, updatedFields);
-          const result = await lead.save();
-
-          console.log("Successfully updated lead", result);
-          console.log("Updated fields", updatedFields);
-          return result;
+          let update= await Lead.findOneAndUpdate({id},{...params},{new:true})
+          return update;
         } catch (error) {
           console.error(error);
           throw new Error(`Error updating lead with ID ${id}`);

@@ -714,7 +714,7 @@ export default function DataGridProCSV(props) {
   }, [responseData, searchQuery, categories]);
 
   // ...
-
+  console.log('filteredData----------------', filteredData);
   <DataGridPro
     rows={filteredData}
     // ...

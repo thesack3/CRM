@@ -111,7 +111,7 @@ export default function DataGridProCSV2(props) {
       setResponseData(usersWithIds);
     }
   }, [props.UserData, data]);
-  console.log('responseData', data?.leads);
+  console.log('responseData--------------', data);
 
   const columns = useMemo(
     () => [

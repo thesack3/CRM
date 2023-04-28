@@ -43,6 +43,8 @@ const GET_LEADS = gql`
       City
       State
       ZipCode
+      tagsList
+      categoriesList
       tags{
         id
         title
