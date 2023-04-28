@@ -389,8 +389,9 @@ const RootQuery = new GraphQLObjectType({
     },
     leads: {
       type: new GraphQLList(LeadType),
+      args: { skip: { type: GraphQLString }, take: { type: GraphQLString } },
       resolve(parent, args) {
-        return Lead.find();
+        return Lead.find().limit(Number(args?.take)).skip(Number(args?.skip)).exec();
       },
     },
 
