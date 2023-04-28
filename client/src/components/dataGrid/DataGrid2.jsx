@@ -18,30 +18,55 @@ import AddCategoryModal from '../modals/AddCategory';
 import CategoryGrid from '../inputs/CategorySearchBox';
 import { selectedCols } from '../../constants/arrays';
 import { gridStyles } from '../../constants/styles';
+import SelectField from '../SelectField';
+import { GET_CATEGORIES } from '../../queries/categoryQueries';
+import { GET_TAGS } from '../../queries/tagQueries';
+import { updateLeadMutation } from '../../mutations/leadMutations';
 
 export default function DataGridProCSV2(props) {
-  console.log('props-----------', props);
   const [open, setOpen] = React.useState(false);
   const [refetchCategories, setRefetchCategories] = useState('');
   const [refetchTag, setRefetchTag] = useState('');
   const [categories, setCategories] = useState([]);
   const [selectedColumns, setSelectedColumns] = useState(selectedCols);
   const [columnsToShow, setColumnsToShow] = useState([]);
-
   const [gridRef, setGridRef] = useState({});
   const [openSnack, setOpenSnack] = React.useState(false);
+  const [responseData, setResponseData] = useState([]);
+  const [rowSelectedUsers, setRowSelectedUsers] = useState(['dominiqmartinez13@gmail.com', 'unhashlabs@gmail.com']);
+
+  const { loading: graphQLClientsLoading, error: graphQLClientsError, data, refetch } = useQuery(GET_LEADS);
+  const { loading: categoryLoading, error, data: categoriesData } = useQuery(GET_CATEGORIES);
+  const { data: tagData, loading: tagLoading } = useQuery(GET_TAGS);
 
   const [sendEmails, { loading: Emailsloading, error: Emailerror, data: emaildata }] =
     useMutation(SEND_EMAILS_MUTATION);
-  const [rowSelectedUsers, setRowSelectedUsers] = useState(['dominiqmartinez13@gmail.com', 'unhashlabs@gmail.com']);
-  const [responseData, setResponseData] = useState([]);
-
-  const { loading: graphQLClientsLoading, error: graphQLClientsError, data, refetch } = useQuery(GET_LEADS);
+  const [updateLead] = useMutation(updateLeadMutation);
 
   const [pageSize, setPageSize] = useState(5);
   const [rowId, setRowId] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [gridDataLoading, setGridDataLoading] = useState(true);
+
+  const handleUpdate = async (values, id, type) => {
+    const entries = values?.map((x) => x.title);
+    if (type === 'categories') {
+      await updateLead({
+        variables: {
+          id,
+          categoriesList: entries,
+        },
+      });
+    }
+    if (type === 'tags') {
+      await updateLead({
+        variables: {
+          id,
+          tagsList: entries,
+        },
+      });
+    }
+  };
 
   const handleCellEditStart = (params) => {
     console.log('Cell edit started:', params);
@@ -111,7 +136,6 @@ export default function DataGridProCSV2(props) {
       setResponseData(usersWithIds);
     }
   }, [props.UserData, data]);
-  console.log('responseData--------------', data);
 
   const columns = useMemo(
     () => [
@@ -449,38 +473,55 @@ export default function DataGridProCSV2(props) {
       {
         field: 'tags',
         headerName: 'Tags',
-        width: 270,
+        width: 310,
         editable: true,
-        // renderCell: (params) => <TagBoxView defaultValues={params.row.tags} lead={params.row} />,
-        renderCell: (params) => <Button>Temporary</Button>,
+        renderCell: (params) => (
+          <SelectField
+            data={params.row}
+            list={tagData && tagData?.tags}
+            defaultValues={params?.row?.tagsList?.map((x) => ({
+              title: x,
+            }))}
+            type={'tags'}
+            handleUpdate={(value, id, type) => handleUpdate(value, id, type)}
+          />
+        ),
       },
       {
         field: 'categories',
         headerName: 'Categories',
-        width: 270,
+        width: 330,
         editable: true,
-        // renderCell: (params) => (
-        //   <Box
-        //     sx={{
-        //       width: '100%',
-        //       height: '100%',
-        //       borderTop: 'none',
-        //       borderBottom: 'none',
-        //       borderLeft: '1px solid lightgray',
-        //       borderRight: '1px solid black',
-        //       display: 'flex',
-        //       justifyContent: 'center',
-        //       alignItems: 'center',
-        //     }}
-        //   >
-        //     <CategoryBoxView defaultValues={params.row.categories} Lead={params.row} />
-        //   </Box>
-        // ),
-        renderCell: (params) => <Button>Temporary</Button>,
+        renderCell: (params) => (
+          <Box
+            sx={{
+              width: '100%',
+              height: '100%',
+              borderTop: 'none',
+              borderBottom: 'none',
+              borderLeft: '1px solid lightgray',
+              borderRight: '1px solid black',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <SelectField
+              data={params.row}
+              list={categoriesData && categoriesData?.categories}
+              defaultValues={params?.row?.categoriesList?.map((x) => ({
+                title: x,
+              }))}
+              type={'categories'}
+              handleUpdate={(value, id, type) => handleUpdate(value, id, type)}
+            />
+            {/* <CategoryBoxView defaultValues={params.row.categories} Lead={params.row} /> */}
+          </Box>
+        ),
       },
       //   { field: 'Uid', headerName: 'UID', width: 100, editable: true, hide: true },
     ],
-    [rowId]
+    [rowId, data]
   );
 
   const handlePageSizeChange = (params) => {

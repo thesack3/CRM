@@ -5,12 +5,8 @@ import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import { styled } from '@mui/material/styles';
 import { autocompleteClasses } from '@mui/material/Autocomplete';
-import { useMutation } from '@apollo/client';
-import { updateLeadMutation } from '../../mutations/leadMutations';
 
 export default function SelectField({ data, label, list, type, handleUpdate, defaultValues }) {
-  // const dvalue = data.categories.map((x) => ({ title: x.title || 'd' }));
-  console.log('dvalue----------', list);
   const {
     getRootProps,
     getInputLabelProps,
@@ -28,11 +24,10 @@ export default function SelectField({ data, label, list, type, handleUpdate, def
     multiple: true,
     options: list || [],
     getOptionLabel: (option) => option.title,
-    onChange: () => {
-      handleUpdate(value, data.id, type);
+    onChange: (e, selectedValue) => {
+      handleUpdate(selectedValue, data.id, type);
     },
   });
-  console.log('values----------------', value);
   return (
     <Root>
       <div {...getRootProps()}>
@@ -202,18 +197,3 @@ const Listbox = styled('ul')(
     }
   `
 );
-
-// Top 100 films as rated by IMDb users. http://www.imdb.com/chart/top
-const top100Films = [
-  { title: 'The Shawshank Redemption', year: 1994 },
-  { title: 'The Godfather', year: 1972 },
-  { title: 'The Godfather: Part II', year: 1974 },
-  { title: 'The Dark Knight', year: 2008 },
-  { title: '12 Angry Men', year: 1957 },
-  { title: "Schindler's List", year: 1993 },
-  { title: 'Pulp Fiction', year: 1994 },
-  {
-    title: 'The Lord of the Rings: The Return of the King',
-    year: 2003,
-  },
-];

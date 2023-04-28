@@ -224,8 +224,8 @@ const LeadType = new GraphQLObjectType({
     City: { type: GraphQLString },
     State: { type: GraphQLString },
     ZipCode: { type: GraphQLString },
-    tagsList:{type:GraphQLList(GraphQLString)},
-    categoriesList:{type:GraphQLList(GraphQLString)},
+    tagsList: { type: GraphQLList(GraphQLString) },
+    categoriesList: { type: GraphQLList(GraphQLString) },
     tags: { type: GraphQLList(GraphQLID) },
     categories: { type: GraphQLList(GraphQLID) },
     Link: { type: GraphQLString },
@@ -390,7 +390,7 @@ const RootQuery = new GraphQLObjectType({
     leads: {
       type: new GraphQLList(LeadType),
       resolve(parent, args) {
-        return Lead.find().limit(8);
+        return Lead.find();
       },
     },
 
@@ -476,8 +476,7 @@ const mutation = new GraphQLObjectType({
 
         return client.calls
           .create({
-            twiml:
-              "<Response><Say>Bryan Hossack real estate at your service!</Say></Response>",
+            twiml: "<Response><Say>Bryan Hossack real estate at your service!</Say></Response>",
             to: args.toNumber, // number passed at row.
             from: "+18443112751", // From a valid Twilio number
           })
@@ -581,10 +580,7 @@ const mutation = new GraphQLObjectType({
 
         console.log(args.password);
         console.log(hashedPassword);
-        const unhashedPassword = await bcrypt.compare(
-          args.password,
-          hashedPassword
-        );
+        const unhashedPassword = await bcrypt.compare(args.password, hashedPassword);
         console.log(unhashedPassword);
 
         //CREATE UNIQUE JSON WEB TOKEN FOR USER TO VERIFY EMAIL
@@ -630,9 +626,7 @@ const mutation = new GraphQLObjectType({
           if (err) {
             console.log(err);
           } else {
-            console.log(
-              "A verification email has been sent to " + user.email + "."
-            );
+            console.log("A verification email has been sent to " + user.email + ".");
           }
         });
 
@@ -734,30 +728,28 @@ const mutation = new GraphQLObjectType({
           }
 
           // Compare the provided password to the hashed password stored in the database
-          return bcrypt
-            .compare(args.password, user.password)
-            .then((isMatch) => {
-              // If the password is incorrect, return an error
-              if (!isMatch) {
-                throw new Error("Incorrect password");
-              }
+          return bcrypt.compare(args.password, user.password).then((isMatch) => {
+            // If the password is incorrect, return an error
+            if (!isMatch) {
+              throw new Error("Incorrect password");
+            }
 
-              // Generate a JWT for the user
-              const jwt = jwt.sign(
-                {
-                  id: user.id,
-                  email: user.email,
-                },
-                secret,
-                { expiresIn: "1h" }
-              );
+            // Generate a JWT for the user
+            const jwt = jwt.sign(
+              {
+                id: user.id,
+                email: user.email,
+              },
+              secret,
+              { expiresIn: "1h" }
+            );
 
-              // Return the user and JWT
-              return {
-                user,
-                jwt,
-              };
-            });
+            // Return the user and JWT
+            return {
+              user,
+              jwt,
+            };
+          });
         });
       },
     },
@@ -891,12 +883,13 @@ const mutation = new GraphQLObjectType({
         lastName: { type: GraphQLString },
         tagsList: { type: GraphQLList(GraphQLString) },
         categoriesList: { type: GraphQLList(GraphQLString) },
+        leadId: { type: GraphQLString },
 
         // Add additional fields to update here
       },
       async resolve(parent, { id, ...params }) {
         try {
-          let update= await Lead.findOneAndUpdate({id},{...params},{new:true})
+          let update = await Lead.findOneAndUpdate({ _id: id }, { ...params }, { new: true });
           return update;
         } catch (error) {
           console.error(error);

@@ -149,8 +149,8 @@ const updateLeadMutation = gql`
     $firstName: String,
     $email: String,
     $lastName: String,
-    $Tags: [String],
-    $Categories: [String]
+    $tagsList: [String],
+    $categoriesList: [String]
    
   ) {
     updateLead(
@@ -158,20 +158,16 @@ const updateLeadMutation = gql`
       firstName: $firstName,
       email: $email,
       lastName: $lastName,
-      tags: $Tags,
-      categories: $Categories,
+      tagsList: $tagsList,
+      categoriesList: $categoriesList,
  
     ) {
       id
       firstName
       email
       lastName
-      tags{
-        id
-      }
-      categories{
-        id
-      }
+      tagsList
+      categoriesList
     
       
     }
