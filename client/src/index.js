@@ -1,23 +1,58 @@
 import ReactDOM from 'react-dom/client';
+import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 import { BrowserRouter } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
-
-//
-import App from './App';
 import * as serviceWorker from './serviceWorker';
 import reportWebVitals from './reportWebVitals';
 import CallContextProvider from './hooks/useCall';
+import App from './App';
 
 // ----------------------------------------------------------------------
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
+const cache = new InMemoryCache({
+  typePolicies: {
+    Query: {
+      fields: {
+        clients: {
+          merge(existing, incoming) {
+            return incoming;
+          },
+        },
+        projects: {
+          merge(existing, incoming) {
+            return incoming;
+          },
+        },
+        leads: {
+          merge(existing, incoming) {
+            return incoming;
+          },
+        },
+        users: {
+          merge(existing, incoming) {
+            return incoming;
+          },
+        },
+      },
+    },
+  },
+});
+
+const client = new ApolloClient({
+  uri: 'http://localhost:4000/graphql',
+  cache,
+});
+
 root.render(
   <HelmetProvider>
     <BrowserRouter>
-      <CallContextProvider>
-        <App />
-      </CallContextProvider>
+      <ApolloProvider client={client}>
+        <CallContextProvider>
+          <App />
+        </CallContextProvider>
+      </ApolloProvider>
     </BrowserRouter>
   </HelmetProvider>
 );

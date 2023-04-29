@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useState } from 'react';
 import { useMutation } from '@apollo/client';
+import { Alert, Snackbar } from '@mui/material';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import { Box } from '@mui/system';
@@ -14,6 +15,9 @@ import { ADD_LEAD } from '../../mutations/leadMutations';
 
 export default function AddLeadModal({ handleRefetch }) {
   const [addLead, { loading, error, data }] = useMutation(ADD_LEAD);
+  const [openSnack, setOpenSnack] = useState(false);
+  const [uploadInProcess, setUploaded] = useState(false);
+  const [open, setOpen] = React.useState(false);
 
   const [formData, setFormData] = useState({
     firstName: '',
@@ -60,10 +64,6 @@ export default function AddLeadModal({ handleRefetch }) {
     Birthday: '',
     HomeClosingDate: '',
   });
-
-  const [uploadInProcess, setUploaded] = useState(false);
-
-  const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -140,6 +140,7 @@ export default function AddLeadModal({ handleRefetch }) {
         console.log('Lead Submitted!');
         handleRefetch();
         handleClose();
+        setOpenSnack(true);
       })
       .catch((err) => {
         console.log(err);
@@ -738,6 +739,11 @@ export default function AddLeadModal({ handleRefetch }) {
               <Button onClick={handleLeadSubmit}>Add Lead</Button>
             </DialogActions>
           </Dialog>
+          <Snackbar open={openSnack} autoHideDuration={2000} onClose={() => setOpenSnack(false)}>
+            <Alert onClose={() => setOpenSnack(false)} severity="success" sx={{ width: '100%' }}>
+              Tag Updated
+            </Alert>
+          </Snackbar>
         </div>
       )}
     </>
