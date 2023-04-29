@@ -15,23 +15,21 @@ import { ADD_LEAD } from '../../mutations/leadMutations';
 // import {ADD_TAG} from '../../mutations/addTag';
 import { ADD_CATEGORY } from '../../mutations/addCategory';
 
-export default function AddCategoryModal({callback}) {
+export default function AddCategoryModal({ callback }) {
+  const [openSnack, setOpenSnack] = useState(false);
+  const [uploadInProcess, setUploaded] = useState(false);
+  const [open, setOpen] = React.useState(false);
+  const [formData, setFormData] = useState({
+    title: '',
+    dateCreated: '',
+  });
+
   const [addLead, { loading, error, data }] = useMutation(ADD_CATEGORY, {
     onCompleted: (data) => {
       console.log(data);
       setUploaded(true);
     },
   });
-
-  const [formData, setFormData] = useState({
-    title: '',
-    dateCreated: '',
-  });
-
-  const [uploadInProcess, setUploaded] = useState(false);
-
-  const [open, setOpen] = React.useState(false);
-  const [success, setSuccess]=useState(false)
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -52,7 +50,6 @@ export default function AddCategoryModal({callback}) {
   };
 
   const handleLeadSubmit = (e) => {
-    setSuccess(false)
     console.log(formData);
     e.preventDefault();
     addLead({
@@ -67,8 +64,9 @@ export default function AddCategoryModal({callback}) {
         console.log(res);
         setUploaded(false);
         console.log('Lead Submitted!');
-        setSuccess(true)
-        callback()
+        callback();
+        handleClose();
+        setOpenSnack(true);
       })
       .catch((err) => {
         console.log(err);
@@ -146,11 +144,11 @@ onChange={handleChange}
           </Dialog>
         </div>
       )}
-      { success && <Snackbar open={open} autoHideDuration={2000} onClose={()=>{}}>
-        <Alert onClose={()=>{}} severity="success" sx={{ width: '90vw', backgroundColor: 'green', color: 'white' }}>
-          Updated Category!
+      <Snackbar open={openSnack} autoHideDuration={2000} onClose={() => setOpenSnack(false)}>
+        <Alert onClose={() => setOpenSnack(false)} severity="success" sx={{ width: '100%' }}>
+          Tag Updated
         </Alert>
-      </Snackbar>}
+      </Snackbar>
     </>
   );
 }

@@ -127,7 +127,7 @@ export default function ProfileP({ rowId }) {
         return item;
       });
 
-      setUsersCategories(defaultCategories);
+      // setUsersCategories(defaultCategories);
 
       const defaultTags = leads[rowId].tags.map((obj) => {
         const { title } = obj;
@@ -142,7 +142,7 @@ export default function ProfileP({ rowId }) {
       });
 
       setUsersTags(defaultTags);
-      setUsersCategories(defaultCategories);
+      // setUsersCategories(defaultCategories);
     } else {
       setUsers([]);
     }
@@ -222,11 +222,11 @@ export default function ProfileP({ rowId }) {
                       {arrayCell != null ? arrayCell : null}
                     </Typography>
 
-                    {usersTags ? (
+                    {/* {usersTags ? (
                       <CategoryBoxView defaultValues={usersCategories} Lead={lead} successCheck={handleClick} />
                     ) : null}
 
-                    {usersTags ? <TagBoxView defaultValues={usersTags} Lead={lead} successCheck={handleClick} /> : null}
+                    {usersTags ? <TagBoxView defaultValues={usersTags} Lead={lead} successCheck={handleClick} /> : null} */}
                   </Box>
                 </Box>
               </Grid>
@@ -257,7 +257,7 @@ export default function ProfileP({ rowId }) {
                         <Typography variant="h6" fontWeight="bold">
                           Tags
                         </Typography>
-                        <Typography variant="body1" mt={1} sx={{ fontWeight: 'bold', color: 'green' }}>
+                        {/* <Typography variant="body1" mt={1} sx={{ fontWeight: 'bold', color: 'green' }}>
                           {lead ? (
                             <>
                               {lead.tags.map((tag) => (
@@ -267,7 +267,7 @@ export default function ProfileP({ rowId }) {
                           ) : (
                             'none'
                           )}
-                        </Typography>
+                        </Typography> */}
                       </Box>
 
                       <Box
@@ -283,7 +283,7 @@ export default function ProfileP({ rowId }) {
                         <Typography variant="h6" fontWeight="bold" mb={1}>
                           Categories
                         </Typography>
-                        <Typography variant="body1" mt={1} sx={{ fontWeight: 'bold', color: 'green' }}>
+                        {/* <Typography variant="body1" mt={1} sx={{ fontWeight: 'bold', color: 'green' }}>
                           {lead ? (
                             <>
                               {lead.categories.map((tag) => (
@@ -293,7 +293,7 @@ export default function ProfileP({ rowId }) {
                           ) : (
                             'none'
                           )}
-                        </Typography>
+                        </Typography> */}
                       </Box>
                     </Box>
                   </Box>

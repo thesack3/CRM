@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
 const GET_LEADS = gql`
-  query {
-    leads {
+  query Leads($take: String, $skip: String) {
+    leads(take: $take, skip: $skip) {
       id
       firstName
       email
@@ -43,12 +43,14 @@ const GET_LEADS = gql`
       City
       State
       ZipCode
-      tags{
+      tagsList
+      categoriesList
+      tags {
         id
         title
         dateCreated
       }
-      categories{
+      categories {
         id
         title
         dateCreated
@@ -56,15 +58,9 @@ const GET_LEADS = gql`
       Link
       Birthday
       HomeClosingDate
-
-      
-
     }
   }
 `;
-
-
-
 
 export const NEW_LEAD_SUBSCRIPTION = gql`
   subscription OnNewLead {
@@ -77,8 +73,5 @@ export const NEW_LEAD_SUBSCRIPTION = gql`
     }
   }
 `;
-
-
-
 
 export { GET_LEADS };
