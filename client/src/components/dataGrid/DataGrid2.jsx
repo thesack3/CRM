@@ -22,9 +22,13 @@ import SelectField from '../SelectField';
 import { GET_CATEGORIES } from '../../queries/categoryQueries';
 import { GET_TAGS } from '../../queries/tagQueries';
 import { updateLeadMutation } from '../../mutations/leadMutations';
+import ProfileP from '../Profile/ProfileP';
+import UserModal from '../modals/UserModal';
+import CustomModal from '../modals/CustomModal';
 
 export default function DataGridProCSV2(props) {
   const [open, setOpen] = React.useState(false);
+  const [profileModal, setProfileModal] = useState(false);
   const [refetchCategories, setRefetchCategories] = useState('');
   const [refetchTag, setRefetchTag] = useState('');
   const [categories, setCategories] = useState([]);
@@ -153,10 +157,14 @@ export default function DataGridProCSV2(props) {
         width: 150,
         editable: true,
         renderCell: (params) => (
-          <Button variant="outlined" onClick={() => console.log('params', params.row)}>
-            Profile
-          </Button>
+          // <Button variant="outlined" onClick={() => setProfileModal(true)}>
+          //   Profile
+          // </Button>
+          <CustomModal>
+            <ProfileP />
+          </CustomModal>
         ),
+        // renderCell: (params) => <ProfileDetailsPage row={params.row.Uid} {...{ params }} />,
 
         hide: true,
       },
@@ -657,7 +665,8 @@ export default function DataGridProCSV2(props) {
       >
         <Box sx={{ display: 'flex', flexDirection: 'row', gap: '16px' }}>
           <AddLeadModal handleRefetch={refetch} />
-
+          {/* {profileModal && <ProfileP />} */}
+          {profileModal && <CustomModal />}
           {/* // TODO PUT BACK */}
           <AddCSVLeadModal />
           <AddTagModal callback={() => setRefetchTag(new Date().getTime())} />
