@@ -100,7 +100,7 @@ export default function LeadDetails({ leadDetail, categories, tags, handleUpdate
         fullWidth
       >
         {leadDetail && (
-          <Container maxWidth="lg" sx={{ width: '75vw', minHeight: '75vh', paddingTop: '16px' }}>
+          <Container maxWidth="lg" sx={{ width: '70vw', minHeight: '75vh', paddingTop: '16px' }}>
             {isMessageModal ? (
               <ChatUI handleProfile={() => setIsMessageModal(false)} lead={leadDetail} />
             ) : (

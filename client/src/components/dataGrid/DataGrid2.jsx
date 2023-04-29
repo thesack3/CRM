@@ -631,7 +631,6 @@ export default function DataGridProCSV2(props) {
   useEffect(() => {
     if (localStorage.getItem('columns')) {
       const visibleColumnsFieldList = JSON.parse(localStorage.getItem('columns'));
-      console.log('columns list in localstorage-----------------', visibleColumnsFieldList);
 
       if (visibleColumnsFieldList.length > 0) {
         columns.forEach((column) => {
@@ -651,17 +650,13 @@ export default function DataGridProCSV2(props) {
     setColumnsToShow(columns);
     setGridDataLoading(false);
   }, []);
-  console.log('columnsToShiw-----------------', columnsToShow);
 
   const ColumnVisibilityChangeHandler = (obj) => {
     const visibleColumnsFieldList = Object.keys(obj).filter((key) => obj[key]);
-    console.log('columnbeforeslect----------------', visibleColumnsFieldList);
     localStorage.setItem('columns', JSON.stringify(visibleColumnsFieldList));
   };
 
   const edidLead = async (values) => {
-    console.log('cell edit commit-----', values?.value, values?.field, values?.id);
-
     if (values?.value) {
       const { value, field, id } = values;
       await updateLead({
@@ -744,35 +739,7 @@ export default function DataGridProCSV2(props) {
             />
           </Box>
 
-          {/* <DataGridPro
-            sx={gridStyles}
-            rows={leads}
-            columns={columns.filter((column) => selectedColumns.includes(column.field))}
-            pageSize={pageSize}
-            disableVirtualization
-            rowHeight={70}
-            rowsPerPageOptions={[10]}
-            checkboxSelection
-            disableSelectionOnClick
-            apiRef={apiRef}
-            onSelectionModelChange={handleRowSelection}
-            onPageSizeChange={handlePageSizeChange}
-            // onCellEditCommit={(params) => setRowId(params.id)}
-            onCellEditCommit={handleCellEditCommit} // Add this line
-            onCellEditStart={handleCellEditStart} // Add this line
-            components={{ Toolbar: GridToolbar }}
-            // onColumnVisibilityModelChange={handleVisibility}
-            componentsProps={{
-              toolbar: {
-                selectedColumns,
-                setSelectedColumns,
-                gridRef,
-                setGridRef,
-              },
-            }}
-          /> */}
-          {console.log('columnsToShowbeforepassing-----------------', columnsToShow)}
-          {!gridDataLoading && (
+          {!gridDataLoading && !categoryLoading && (
             <DataGridPro
               sx={gridStyles}
               rows={leadsRows}
