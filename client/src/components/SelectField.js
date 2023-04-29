@@ -28,6 +28,7 @@ export default function SelectField({ data, label, list, type, handleUpdate, def
       handleUpdate(selectedValue, data.id, type);
     },
   });
+  
   return (
     <Root>
       <div {...getRootProps()}>

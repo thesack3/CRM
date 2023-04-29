@@ -25,6 +25,7 @@ import { updateLeadMutation } from '../../mutations/leadMutations';
 import ProfileP from '../Profile/ProfileP';
 import UserModal from '../modals/UserModal';
 import CustomModal from '../modals/CustomModal';
+import LeadDetails from '../LeadDetails';
 
 export default function DataGridProCSV2(props) {
   const [open, setOpen] = React.useState(false);
@@ -78,6 +79,7 @@ export default function DataGridProCSV2(props) {
         },
       });
     }
+    refetch();
   };
 
   const handleCellEditStart = (params) => {
@@ -160,9 +162,12 @@ export default function DataGridProCSV2(props) {
           // <Button variant="outlined" onClick={() => setProfileModal(true)}>
           //   Profile
           // </Button>
-          <CustomModal>
-            <ProfileP />
-          </CustomModal>
+          <LeadDetails
+            leadDetail={params.row}
+            categories={categoriesData}
+            tags={tagData}
+            handleUpdate={(value, id, type) => handleUpdate(value, id, type)}
+          />
         ),
         // renderCell: (params) => <ProfileDetailsPage row={params.row.Uid} {...{ params }} />,
 
