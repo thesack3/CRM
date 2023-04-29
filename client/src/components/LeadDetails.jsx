@@ -100,7 +100,7 @@ export default function LeadDetails({ leadDetail, categories, tags, handleUpdate
         fullWidth
       >
         {leadDetail && (
-          <Container maxWidth="lg" sx={{ width: '70vw', minHeight: '75vh' }}>
+          <Container maxWidth="lg" sx={{ width: '75vw', minHeight: '75vh', paddingTop: '16px' }}>
             {isMessageModal ? (
               <ChatUI handleProfile={() => setIsMessageModal(false)} lead={leadDetail} />
             ) : (
@@ -212,17 +212,21 @@ export default function LeadDetails({ leadDetail, categories, tags, handleUpdate
                             <Typography variant="h6" fontWeight="bold">
                               Tags
                             </Typography>
-                            {/* <Typography variant="body1" mt={1} sx={{ fontWeight: 'bold', color: 'green' }}>
-                          {lead ? (
-                            <>
-                              {lead.tags.map((tag) => (
-                                <p key={tag.id}>{tag.title}</p>
+                            <Typography
+                              variant="body1"
+                              mt={1}
+                              sx={{
+                                fontWeight: 'bold',
+                                color: 'green',
+                                display: 'flex',
+                                flexWrap: 'wrap',
+                                gap: '16px',
+                              }}
+                            >
+                              {leadDetail?.tagsList.map((tag) => (
+                                <p key={tag.id}>{tag}</p>
                               ))}
-                            </>
-                          ) : (
-                            'none'
-                          )}
-                        </Typography> */}
+                            </Typography>
                           </Box>
 
                           <Box
@@ -238,17 +242,21 @@ export default function LeadDetails({ leadDetail, categories, tags, handleUpdate
                             <Typography variant="h6" fontWeight="bold" mb={1}>
                               Categories
                             </Typography>
-                            {/* <Typography variant="body1" mt={1} sx={{ fontWeight: 'bold', color: 'green' }}>
-                          {lead ? (
-                            <>
-                              {lead.categories.map((tag) => (
-                                <p key={tag.id}>{tag.title}</p>
+                            <Typography
+                              variant="body1"
+                              mt={1}
+                              sx={{
+                                fontWeight: 'bold',
+                                color: 'green',
+                                display: 'flex',
+                                flexWrap: 'wrap',
+                                gap: '16px',
+                              }}
+                            >
+                              {leadDetail.categoriesList.map((tag) => (
+                                <p key={tag.id}>{tag}</p>
                               ))}
-                            </>
-                          ) : (
-                            'none'
-                          )}
-                        </Typography> */}
+                            </Typography>
                           </Box>
                         </Box>
                       </Box>
@@ -261,13 +269,13 @@ export default function LeadDetails({ leadDetail, categories, tags, handleUpdate
                             <Typography variant="h5" fontWeight="bold" mb={2}>
                               Notes
                             </Typography>
-                            {/* {notesLoading ? (
-                            <Typography variant="body1">Loading Notes...</Typography>
-                          ) : notesData && notesData.notes && notesData.notes.length > 0 ? (
-                            notesData.notes.map((note) => <SnackBar notes={notesData} type="Notes" />)
-                          ) : (
-                            <Typography variant="body1">No Notes</Typography>
-                          )} */}
+                            {notesLoading ? (
+                              <Typography variant="body1">Loading Notes...</Typography>
+                            ) : notesData && notesData.notes && notesData.notes.length > 0 ? (
+                              notesData.notes.map((note) => <SnackBar notes={notesData} type="Notes" />)
+                            ) : (
+                              <Typography variant="body1">No Notes</Typography>
+                            )}
                           </Box>
                         </Grid>
 

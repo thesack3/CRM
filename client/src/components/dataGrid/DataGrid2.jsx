@@ -658,6 +658,21 @@ export default function DataGridProCSV2(props) {
     console.log('columnbeforeslect----------------', visibleColumnsFieldList);
     localStorage.setItem('columns', JSON.stringify(visibleColumnsFieldList));
   };
+
+  const edidLead = async (values) => {
+    console.log('cell edit commit-----', values?.value, values?.field, values?.id);
+
+    if (values?.value) {
+      const { value, field, id } = values;
+      await updateLead({
+        variables: {
+          id,
+          [field]: value,
+        },
+      });
+    }
+  };
+
   return (
     <div style={{ height: 600, width: '100%' }}>
       <div
@@ -705,6 +720,7 @@ export default function DataGridProCSV2(props) {
         <Box sx={{ height: '100%' }}>
           <Box
             sx={{
+              marginBottom: '16px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'flex-end',
@@ -767,7 +783,7 @@ export default function DataGridProCSV2(props) {
               apiRef={apiRef}
               disableColumnMenu
               onCellEditCommit={(params, event) => {
-                console.log('cell edit commit', params);
+                edidLead(params);
               }}
               components={{
                 Toolbar: GridToolbar,
@@ -783,6 +799,7 @@ export default function DataGridProCSV2(props) {
               position: 'relative',
               bottom: '55px',
               marginLeft: '20px',
+              paddingTop: '8px',
             }}
           >
             <Typography variant="h6" sx={{ marginRight: '20px' }}>
@@ -796,7 +813,7 @@ export default function DataGridProCSV2(props) {
               variant="outlined"
               style={{ width: 80 }}
             >
-              {[5, 10, 25].map((size) => (
+              {[5, 10, 25, 50, 100, 200].map((size) => (
                 <MenuItem
                   key={size}
                   value={size}
