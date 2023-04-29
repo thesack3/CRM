@@ -391,7 +391,11 @@ const RootQuery = new GraphQLObjectType({
       type: new GraphQLList(LeadType),
       args: { skip: { type: GraphQLString }, take: { type: GraphQLString } },
       resolve(parent, args) {
-        return Lead.find().limit(Number(args?.take)).skip(Number(args?.skip)).exec();
+        return Lead.find()
+          .limit(Number(args?.take || 5))
+          .skip(Number(args?.skip))
+          .sort({ createdAt: "desc" })
+          .exec();
       },
     },
 

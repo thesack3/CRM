@@ -139,6 +139,8 @@ tags{
 Link
 Birthday
 HomeClosingDate
+tagsList
+categoriesList
 }
 }
 `;
@@ -168,8 +170,6 @@ const updateLeadMutation = gql`
       lastName
       tagsList
       categoriesList
-    
-      
     }
   }
 `;

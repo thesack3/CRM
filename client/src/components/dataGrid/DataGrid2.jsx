@@ -34,8 +34,16 @@ export default function DataGridProCSV2(props) {
   const [openSnack, setOpenSnack] = React.useState(false);
   const [responseData, setResponseData] = useState([]);
   const [rowSelectedUsers, setRowSelectedUsers] = useState(['dominiqmartinez13@gmail.com', 'unhashlabs@gmail.com']);
+  const [take, setTake] = useState('5');
 
-  const { loading: graphQLClientsLoading, error: graphQLClientsError, data, refetch } = useQuery(GET_LEADS);
+  const {
+    loading: graphQLClientsLoading,
+    error: graphQLClientsError,
+    data,
+    refetch,
+  } = useQuery(GET_LEADS, {
+    variables: { take },
+  });
   const { loading: categoryLoading, error, data: categoriesData } = useQuery(GET_CATEGORIES);
   const { data: tagData, loading: tagLoading } = useQuery(GET_TAGS);
 
@@ -775,7 +783,13 @@ export default function DataGridProCSV2(props) {
               style={{ width: 80 }}
             >
               {[5, 10, 25].map((size) => (
-                <MenuItem key={size} value={size}>
+                <MenuItem
+                  key={size}
+                  value={size}
+                  onClick={() => {
+                    setTake(size.toString());
+                  }}
+                >
                   {size}
                 </MenuItem>
               ))}
