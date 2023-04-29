@@ -44,7 +44,8 @@ export default function DataGridProCSV2(props) {
   const [responseData, setResponseData] = useState([]);
   const [rowSelectedUsers, setRowSelectedUsers] = useState(['dominiqmartinez13@gmail.com', 'unhashlabs@gmail.com']);
   const [take, setTake] = useState('5');
-
+  const [leadsRows1, setLeadRows1] = useState([]);
+  const [category, setCategory] = useState('');
   const {
     loading: graphQLClientsLoading,
     error: graphQLClientsError,
@@ -613,14 +614,21 @@ export default function DataGridProCSV2(props) {
       })
     : [];
 
+  useEffect(() => {
+    if (leadsRows.length) {
+      const filter = leadsRows?.filter((x) => categories.includes(...x.categoriesList));
+      setLeadRows1(filter);
+    }
+  }, [categories]);
+
+  console.log('leadsRows-----------------', leadsRows1);
+
   // get columns where hide is false
   const visible = [];
   columns.forEach((column) => {
     visible.push(column.field);
   });
-  console.log('visinle--col-----------------', visible);
   const leadsCols = leadsRows[0] ? Object.keys(leadsRows[0]) : [];
-  console.log('visinle----row---------------', leadsCols);
 
   // go over columns and get colums that does not have hide:true
   const visibleColumns = [];
@@ -629,7 +637,6 @@ export default function DataGridProCSV2(props) {
       visibleColumns.push(column.field);
     }
   });
-  console.log('visibleColumns-----------------', visibleColumns);
 
   // when page loads, check if columns are in local storage, if not, set them
   useEffect(() => {
@@ -746,7 +753,7 @@ export default function DataGridProCSV2(props) {
           {!gridDataLoading && !categoryLoading && (
             <DataGridPro
               sx={gridStyles}
-              rows={leadsRows}
+              rows={categories.length ? leadsRows1 : leadsRows}
               columns={columnsToShow}
               onColumnVisibilityModelChange={(e) => ColumnVisibilityChangeHandler(e)}
               editable
