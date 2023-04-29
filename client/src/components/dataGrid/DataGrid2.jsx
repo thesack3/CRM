@@ -612,13 +612,12 @@ export default function DataGridProCSV2(props) {
 
   useEffect(() => {
     if (leadsRows.length) {
-      const filter = leadsRows?.filter((x) => categories.includes(...x.categoriesList));
+      const filter = leadsRows?.filter((x) => x.categoriesList.includes(...categories));
       setLeadRows1(filter);
     }
   }, [categories]);
 
   const handleSearchInputChange = (event) => {
-    console.log('filter----------', event.target.value);
     const input = event.target.value;
     setSearchQuery(input);
     const filteredRows = leadsRows.filter((row) => {
