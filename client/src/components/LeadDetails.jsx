@@ -32,7 +32,7 @@ import { SEND_CALL } from '../mutations/sendCall';
 import SelectField from './SelectField';
 
 export default function LeadDetails({ leadDetail, categories, tags, handleUpdate }) {
-  const { isCall, setIsCall, userName, setUserName, setLeadId, leadId } = useContext(callContext);
+  const { isCall, setIsCall, userName, setUserName, setLeadId, leadId, categories:updatedCategories } = useContext(callContext);
   // console.log('data=-------------', leadId, leadDetail);
   const [isMessageModal, setIsMessageModal] = useState(false);
   const [open, setOpen] = React.useState(false);
@@ -158,7 +158,7 @@ export default function LeadDetails({ leadDetail, categories, tags, handleUpdate
                         </Typography>
                         <SelectField
                           data={leadDetail}
-                          list={categories && categories?.categories}
+                          list={updatedCategories && updatedCategories?.categories}
                           defaultValues={leadDetail?.categoriesList?.map((x) => ({
                             title: x,
                           }))}

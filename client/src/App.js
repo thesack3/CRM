@@ -2,7 +2,10 @@ import React, { useContext, useEffect, useState } from 'react';
 // routes
 
 import { LicenseInfo } from '@mui/x-license-pro';
+import { useQuery } from '@apollo/client';
+
 import gql from 'graphql-tag';
+
 import Router from './routes';
 import ThemeProvider from './theme';
 // components
@@ -11,6 +14,8 @@ import { StyledChart } from './components/chart';
 import CallBox from './components/CallBox/index';
 import { callContext } from './hooks/useCall';
 import './app.css';
+import { GET_TAGS } from './queries/tagQueries';
+import { GET_CATEGORIES } from './queries/categoryQueries';
 
 const VALIDATE_JWT_QUERY = gql`
   query ValidateJwt {
@@ -24,6 +29,15 @@ LicenseInfo.setLicenseKey(
 
 export default function App() {
   const { isCall, setCategories, setTags } = useContext(callContext);
+  const { data: categoriesData } = useQuery(GET_CATEGORIES);
+  const { data: tagData } = useQuery(GET_TAGS);
+
+  useEffect(() => {
+    (async () => {
+      setCategories(categoriesData);
+      setTags(tagData);
+    })();
+  }, [categoriesData, tagData]);
 
   useEffect(() => {
     const jwt = localStorage.getItem('jwt');
