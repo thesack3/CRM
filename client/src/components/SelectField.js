@@ -7,7 +7,7 @@ import { styled } from '@mui/material/styles';
 import { autocompleteClasses } from '@mui/material/Autocomplete';
 import { callContext } from '../hooks/useCall';
 
-export default function SelectField({ data, label, list, type, handleUpdate, defaultValues }) {
+export default function SelectField({ data, label, type, handleUpdate, defaultValues }) {
   const { categories, tags } = React.useContext(callContext);
   const {
     getRootProps,

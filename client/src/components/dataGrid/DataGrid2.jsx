@@ -5,12 +5,8 @@ import { useQuery, useMutation } from '@apollo/client';
 import { useMemo, useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import { DataGridPro, GridToolbar } from '@mui/x-data-grid-pro';
-import CellBox from '../CellBox';
 import { GET_LEADS } from '../../queries/leadQueries';
-import ProfileDetailsPage from '../ProfileDetailsPage';
 import { SEND_EMAILS_MUTATION } from '../../mutations/bulkEmail';
-import CategoryBoxView from '../inputs/SearchCategory';
-import TagBoxView from '../inputs/SearchTagBoxView';
 import AddLeadModal from '../modals/AddLead';
 import AddCSVLeadModal from '../modals/AddCSVLeadModal';
 import AddTagModal from '../modals/AddTag';
@@ -19,11 +15,7 @@ import CategoryGrid from '../inputs/CategorySearchBox';
 import { selectedCols } from '../../constants/arrays';
 import { gridStyles } from '../../constants/styles';
 import SelectField from '../SelectField';
-import { GET_CATEGORIES } from '../../queries/categoryQueries';
-import { GET_TAGS } from '../../queries/tagQueries';
 import { updateLeadMutation } from '../../mutations/leadMutations';
-import ProfileP from '../Profile/ProfileP';
-import UserModal from '../modals/UserModal';
 import CustomModal from '../modals/CustomModal';
 import LeadDetails from '../LeadDetails';
 import { callContext } from '../../hooks/useCall';
@@ -55,8 +47,6 @@ export default function DataGridProCSV2(props) {
   } = useQuery(GET_LEADS, {
     variables: { take },
   });
-  const { loading: categoryLoading, error, data: categoriesData } = useQuery(GET_CATEGORIES);
-  const { data: tagData, loading: tagLoading } = useQuery(GET_TAGS);
 
   const [sendEmails, { loading: Emailsloading, error: Emailerror, data: emaildata }] =
     useMutation(SEND_EMAILS_MUTATION);
@@ -167,12 +157,7 @@ export default function DataGridProCSV2(props) {
           // <Button variant="outlined" onClick={() => setProfileModal(true)}>
           //   Profile
           // </Button>
-          <LeadDetails
-            leadDetail={params.row}
-            categories={categoriesData}
-            tags={tagData}
-            handleUpdate={(value, id, type) => handleUpdate(value, id, type)}
-          />
+          <LeadDetails leadDetail={params.row} handleUpdate={(value, id, type) => handleUpdate(value, id, type)} />
         ),
         // renderCell: (params) => <ProfileDetailsPage row={params.row.Uid} {...{ params }} />,
 
@@ -504,7 +489,6 @@ export default function DataGridProCSV2(props) {
         renderCell: (params) => (
           <SelectTag
             data={params.row}
-            list={updatedTags && updatedTags?.tags}
             defaultValues={params?.row?.tagsList?.map((x) => ({
               title: x,
             }))}
@@ -534,7 +518,6 @@ export default function DataGridProCSV2(props) {
           >
             <SelectField
               data={params.row}
-              list={categoriesData && categoriesData?.categories}
               defaultValues={params?.row?.categoriesList?.map((x) => ({
                 title: x,
               }))}
@@ -764,7 +747,7 @@ export default function DataGridProCSV2(props) {
             />
           </Box>
 
-          {!gridDataLoading && !categoryLoading && (
+          {!gridDataLoading && (
             <DataGridPro
               sx={gridStyles}
               rows={categories.length || searchQuery ? leadsRows1 : leadsRows}
