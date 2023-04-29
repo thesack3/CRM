@@ -26,8 +26,12 @@ import ProfileP from '../Profile/ProfileP';
 import UserModal from '../modals/UserModal';
 import CustomModal from '../modals/CustomModal';
 import LeadDetails from '../LeadDetails';
+import { callContext } from '../../hooks/useCall';
+import SelectTag from '../SelectTag';
 
 export default function DataGridProCSV2(props) {
+  const { categories: updatedCategories, tags: updatedTags } = React.useContext(callContext);
+
   const [open, setOpen] = React.useState(false);
   const [profileModal, setProfileModal] = useState(false);
   const [refetchCategories, setRefetchCategories] = useState('');
@@ -497,9 +501,9 @@ export default function DataGridProCSV2(props) {
         width: 310,
         editable: true,
         renderCell: (params) => (
-          <SelectField
+          <SelectTag
             data={params.row}
-            list={tagData && tagData?.tags}
+            list={updatedTags && updatedTags?.tags}
             defaultValues={params?.row?.tagsList?.map((x) => ({
               title: x,
             }))}

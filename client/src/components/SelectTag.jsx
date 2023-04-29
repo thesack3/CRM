@@ -7,8 +7,8 @@ import { styled } from '@mui/material/styles';
 import { autocompleteClasses } from '@mui/material/Autocomplete';
 import { callContext } from '../hooks/useCall';
 
-export default function SelectField({ data, label, list, type, handleUpdate, defaultValues }) {
-  const { categories, tags } = React.useContext(callContext);
+export default function SelectTag({ data, label, list, type, handleUpdate, defaultValues }) {
+  const {  tags } = React.useContext(callContext);
   const {
     getRootProps,
     getInputLabelProps,
@@ -24,7 +24,7 @@ export default function SelectField({ data, label, list, type, handleUpdate, def
     id: 'customized-hook-demo',
     defaultValue: defaultValues,
     multiple: true,
-    options: categories?.categories || [],
+    options: tags?.tags || [],
     getOptionLabel: (option) => option.title,
     onChange: (e, selectedValue) => {
       handleUpdate(selectedValue, data.id, type);

@@ -30,9 +30,10 @@ import Iconify from './iconify/Iconify';
 import { callContext } from '../hooks/useCall';
 import { SEND_CALL } from '../mutations/sendCall';
 import SelectField from './SelectField';
+import SelectTag from './SelectTag';
 
 export default function LeadDetails({ leadDetail, categories, tags, handleUpdate }) {
-  const { isCall, setIsCall, userName, setUserName, setLeadId, leadId, categories:updatedCategories } = useContext(callContext);
+  const { isCall, setIsCall, userName, setUserName, setLeadId, leadId, categories:updatedCategories, tags:updatedTags } = useContext(callContext);
   // console.log('data=-------------', leadId, leadDetail);
   const [isMessageModal, setIsMessageModal] = useState(false);
   const [open, setOpen] = React.useState(false);
@@ -168,9 +169,9 @@ export default function LeadDetails({ leadDetail, categories, tags, handleUpdate
                         <Typography fontWeight={'bold'} marginTop={4}>
                           Tags
                         </Typography>
-                        <SelectField
+                        <SelectTag
                           data={leadDetail}
-                          list={tags && tags?.tags}
+                          list={updatedTags && updatedTags?.tags}
                           defaultValues={leadDetail?.tagsList?.map((x) => ({
                             title: x,
                           }))}
