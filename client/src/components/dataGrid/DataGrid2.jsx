@@ -46,6 +46,7 @@ export default function DataGridProCSV2(props) {
   const [take, setTake] = useState('5');
   const [leadsRows1, setLeadRows1] = useState([]);
   const [category, setCategory] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
   const {
     loading: graphQLClientsLoading,
     error: graphQLClientsError,
@@ -63,7 +64,6 @@ export default function DataGridProCSV2(props) {
 
   const [pageSize, setPageSize] = useState(5);
   const [rowId, setRowId] = useState(null);
-  const [searchQuery, setSearchQuery] = useState('');
   const [gridDataLoading, setGridDataLoading] = useState(true);
 
   const handleUpdate = async (values, id, type) => {
@@ -565,10 +565,6 @@ export default function DataGridProCSV2(props) {
     setResponseData(updatedData);
   };
 
-  const handleSearchInputChange = (event) => {
-    setSearchQuery(event.target.value);
-  };
-
   const [filteredData, setFilteredData] = useState([]);
   const handleCloseSnackbar = (event, reason) => {
     if (reason === 'clickaway') {
@@ -621,7 +617,24 @@ export default function DataGridProCSV2(props) {
     }
   }, [categories]);
 
-  console.log('leadsRows-----------------', leadsRows1);
+  const handleSearchInputChange = (event) => {
+    console.log('filter----------', event.target.value);
+    const input = event.target.value;
+    setSearchQuery(input);
+    const filteredRows = leadsRows.filter((row) => {
+      const matched = Object.values(row).some((value) => {
+        return String(value).toLowerCase().includes(input.toLowerCase());
+      });
+
+      const categoryMatched =
+        categories.length === 0 ||
+        categories.some((category) => {
+          return row.categories.includes(category);
+        });
+      return matched && categoryMatched;
+    });
+    setLeadRows1(filteredRows);
+  };
 
   // get columns where hide is false
   const visible = [];
@@ -654,6 +667,7 @@ export default function DataGridProCSV2(props) {
         // make object with column.field as key and column.hide as value
       }
     }
+
     const columnsToShow = {};
     columns.forEach((column) => {
       columnsToShow[column.field] = column.hide;
@@ -744,16 +758,17 @@ export default function DataGridProCSV2(props) {
             <TextField
               size="small"
               variant="outlined"
+              type={'search'}
               label="Search"
               value={searchQuery}
-              onChange={handleSearchInputChange}
+              onChange={(e) => handleSearchInputChange(e)}
             />
           </Box>
 
           {!gridDataLoading && !categoryLoading && (
             <DataGridPro
               sx={gridStyles}
-              rows={categories.length ? leadsRows1 : leadsRows}
+              rows={categories.length || searchQuery ? leadsRows1 : leadsRows}
               columns={columnsToShow}
               onColumnVisibilityModelChange={(e) => ColumnVisibilityChangeHandler(e)}
               editable

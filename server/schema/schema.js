@@ -885,6 +885,7 @@ const mutation = new GraphQLObjectType({
         id: { type: GraphQLNonNull(GraphQLID) },
         firstName: { type: GraphQLString },
         email: { type: GraphQLString },
+        phone: { type: GraphQLString },
         lastName: { type: GraphQLString },
         tagsList: { type: GraphQLList(GraphQLString) },
         categoriesList: { type: GraphQLList(GraphQLString) },
