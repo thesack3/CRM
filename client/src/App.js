@@ -2,10 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 // routes
 
 import { LicenseInfo } from '@mui/x-license-pro';
-import { InMemoryCache, ApolloClient, ApolloProvider, useQuery } from '@apollo/client';
-
 import gql from 'graphql-tag';
-
 import Router from './routes';
 import ThemeProvider from './theme';
 // components
@@ -26,60 +23,24 @@ LicenseInfo.setLicenseKey(
 );
 
 export default function App() {
-  const { isCall, userName } = useContext(callContext);
+  const { isCall, setCategories, setTags } = useContext(callContext);
+
   useEffect(() => {
     const jwt = localStorage.getItem('jwt');
     if (jwt) {
       //   setToken(jwt);
     }
-
     return () => {};
   }, []);
 
-  const cache = new InMemoryCache({
-    typePolicies: {
-      Query: {
-        fields: {
-          clients: {
-            merge(existing, incoming) {
-              return incoming;
-            },
-          },
-          projects: {
-            merge(existing, incoming) {
-              return incoming;
-            },
-          },
-          leads: {
-            merge(existing, incoming) {
-              return incoming;
-            },
-          },
-          users: {
-            merge(existing, incoming) {
-              return incoming;
-            },
-          },
-        },
-      },
-    },
-  });
-
-  const client = new ApolloClient({
-    uri: 'http://localhost:4000/graphql',
-    cache,
-  });
-  
   return (
     <>
-      <ApolloProvider client={client}>
-        <ThemeProvider>
-          {isCall === true ? <CallBox /> : ''}
-          <ScrollToTop />
-          <StyledChart />
-          <Router />
-        </ThemeProvider>
-      </ApolloProvider>
+      <ThemeProvider>
+        {isCall === true ? <CallBox /> : ''}
+        <ScrollToTop />
+        <StyledChart />
+        <Router />
+      </ThemeProvider>
     </>
   );
 }
