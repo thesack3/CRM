@@ -54,7 +54,6 @@ export default function DataGridProCSV2(props) {
 
   const [pageSize, setPageSize] = useState(5);
   const [rowId, setRowId] = useState(null);
-  const [gridDataLoading, setGridDataLoading] = useState(true);
 
   const handleUpdate = async (values, id, type) => {
     const entries = values?.map((x) => x.title);
@@ -655,7 +654,6 @@ export default function DataGridProCSV2(props) {
       columnsToShow[column.field] = column.hide;
     });
     setColumnsToShow(columns);
-    setGridDataLoading(false);
   }, []);
 
   const ColumnVisibilityChangeHandler = (obj) => {
@@ -747,25 +745,25 @@ export default function DataGridProCSV2(props) {
             />
           </Box>
 
-          {!gridDataLoading && (
-            <DataGridPro
-              sx={gridStyles}
-              rows={categories.length || searchQuery ? leadsRows1 : leadsRows}
-              columns={columnsToShow}
-              onColumnVisibilityModelChange={(e) => ColumnVisibilityChangeHandler(e)}
-              editable
-              editMode="cell"
-              apiRef={apiRef}
-              disableColumnMenu
-              onCellEditCommit={(params, event) => {
-                edidLead(params);
-              }}
-              components={{
-                Toolbar: GridToolbar,
-                gridRef,
-              }}
-            />
-          )}
+          <DataGridPro
+            sx={gridStyles}
+            rows={categories.length || searchQuery ? leadsRows1 : leadsRows}
+            columns={columnsToShow}
+            onColumnVisibilityModelChange={(e) => ColumnVisibilityChangeHandler(e)}
+            editable
+            editMode="cell"
+            apiRef={apiRef}
+            disableColumnMenu
+            key={Math.random().toString()}
+            onCellEditCommit={(params, event) => {
+              edidLead(params);
+            }}
+            components={{
+              Toolbar: GridToolbar,
+              gridRef,
+            }}
+          />
+
           <Box
             sx={{
               display: 'flex',
