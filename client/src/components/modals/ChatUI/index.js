@@ -13,8 +13,6 @@ import { SEND_CALL } from '../../../mutations/sendCall';
 
 const ChatUI = ({ handleProfile, lead }) => {
   const [message, setMessage] = useState('');
-  const [sender, setSender] = useState([]);
-  const [receiver, setReceiver] = useState([]);
   const { setIsCall, setUserName, setLeadId, leadId } = useContext(callContext);
 
   const {
@@ -98,7 +96,7 @@ const ChatUI = ({ handleProfile, lead }) => {
           {textData &&
             textData?.texts?.map((item) => (
               <>
-                {item.to === '+18443112751' ? (
+                {item.to === lead?.phone ? (
                   <Receive>{item.body}</Receive>
                 ) : (
                   <Grid
