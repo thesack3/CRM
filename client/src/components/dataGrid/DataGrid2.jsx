@@ -54,6 +54,7 @@ export default function DataGridProCSV2(props) {
 
   const [pageSize, setPageSize] = useState(5);
   const [rowId, setRowId] = useState(null);
+  const [gridDataLoading, setGridDataLoading] = useState(true);
 
   const handleUpdate = async (values, id, type) => {
     const entries = values?.map((x) => x.title);
@@ -634,9 +635,9 @@ export default function DataGridProCSV2(props) {
 
   // when page loads, check if columns are in local storage, if not, set them
   useEffect(() => {
+    console.log('useEffectisrunning');
     if (localStorage.getItem('columns')) {
       const visibleColumnsFieldList = JSON.parse(localStorage.getItem('columns'));
-
       if (visibleColumnsFieldList.length > 0) {
         columns.forEach((column) => {
           if (visibleColumnsFieldList.includes(column.field)) {
@@ -648,17 +649,43 @@ export default function DataGridProCSV2(props) {
         // make object with column.field as key and column.hide as value
       }
     }
-
     const columnsToShow = {};
     columns.forEach((column) => {
       columnsToShow[column.field] = column.hide;
     });
+    console.log('setColumnsas', columns);
     setColumnsToShow(columns);
+    setGridDataLoading(false);
   }, []);
 
   const ColumnVisibilityChangeHandler = (obj) => {
     const visibleColumnsFieldList = Object.keys(obj).filter((key) => obj[key]);
     localStorage.setItem('columns', JSON.stringify(visibleColumnsFieldList));
+    console.log('visibleColumnsFieldList', obj);
+    // visibleColumnsFieldList is an object containing column.field as key and column.hide as value
+    // go over columnstoShow and set hide property to true or false according to visibleColumnsFieldList
+
+    const columnsUpdated = columnsToShow.map((column) => {
+      console.log('currentCol', column.field);
+      if (obj[column.field]) {
+        column.hide = false;
+      } else {
+        column.hide = true;
+      }
+      return column;
+    });
+    setColumnsToShow(columnsUpdated);
+
+    // read hide property from columnsToShow and set it to respective column
+    // const columnsToShow = columns.map((column) => {
+    //   if (visibleColumnsFieldList[column.field]) {
+    //     column.hide = false;
+    //   } else {
+    //     column.hide = true;
+    //   }
+    //   return column;
+    // });
+    // setColumnsToShow(columnsToShow);
   };
 
   const edidLead = async (values) => {
@@ -745,25 +772,26 @@ export default function DataGridProCSV2(props) {
             />
           </Box>
 
-          <DataGridPro
-            sx={gridStyles}
-            rows={categories.length || searchQuery ? leadsRows1 : leadsRows}
-            columns={columnsToShow}
-            onColumnVisibilityModelChange={(e) => ColumnVisibilityChangeHandler(e)}
-            editable
-            editMode="cell"
-            apiRef={apiRef}
-            disableColumnMenu
-            key={Math.random().toString()}
-            onCellEditCommit={(params, event) => {
-              edidLead(params);
-            }}
-            components={{
-              Toolbar: GridToolbar,
-              gridRef,
-            }}
-          />
-
+          {!gridDataLoading && (
+            <DataGridPro
+              sx={gridStyles}
+              rows={categories.length || searchQuery ? leadsRows1 : leadsRows}
+              columns={columnsToShow}
+              onColumnVisibilityModelChange={(e) => ColumnVisibilityChangeHandler(e)}
+              editable
+              editMode="cell"
+              apiRef={apiRef}
+              disableColumnMenu
+              key={Math.random().toString()}
+              onCellEditCommit={(params, event) => {
+                edidLead(params);
+              }}
+              components={{
+                Toolbar: GridToolbar,
+                gridRef,
+              }}
+            />
+          )}
           <Box
             sx={{
               display: 'flex',

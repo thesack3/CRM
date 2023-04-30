@@ -9,6 +9,7 @@ import { callContext } from '../hooks/useCall';
 
 export default function SelectField({ data, label, type, handleUpdate, defaultValues }) {
   const { categories, tags } = React.useContext(callContext);
+  const [optionsList, setOptionsList] = React.useState([]);
   const {
     getRootProps,
     getInputLabelProps,
@@ -24,14 +25,20 @@ export default function SelectField({ data, label, type, handleUpdate, defaultVa
     id: 'customized-hook-demo',
     defaultValue: defaultValues,
     multiple: true,
-    options: categories?.categories || [],
+    options: optionsList,
     getOptionLabel: (option) => option.title,
     onChange: (e, selectedValue) => {
-      const value = selectedValue[selectedValue.length - 1].title;
-      if (data?.categoriesList.includes(value)) return;
+      // const value = selectedValue[selectedValue.length - 1].title;
+      // if (data?.categoriesList.includes(value)) return;
+      if (optionsList.includes(selectedValue)) return;
       handleUpdate(selectedValue, data.id, type);
     },
   });
+
+  React.useEffect(() => {
+    const mergedCategories = [...new Set([...categories?.categories, ...defaultValues])];
+    setOptionsList(mergedCategories);
+  }, [categories, data]);
 
   return (
     <Root>
