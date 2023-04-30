@@ -8,7 +8,7 @@ import { autocompleteClasses } from '@mui/material/Autocomplete';
 import { callContext } from '../hooks/useCall';
 
 export default function SelectTag({ data, label, list, type, handleUpdate, defaultValues }) {
-  const {  tags } = React.useContext(callContext);
+  const { tags } = React.useContext(callContext);
   const {
     getRootProps,
     getInputLabelProps,
@@ -27,6 +27,8 @@ export default function SelectTag({ data, label, list, type, handleUpdate, defau
     options: tags?.tags || [],
     getOptionLabel: (option) => option.title,
     onChange: (e, selectedValue) => {
+      const value = selectedValue[selectedValue.length - 1].title;
+      if (data?.tagsList.includes(value)) return;
       handleUpdate(selectedValue, data.id, type);
     },
   });
@@ -48,7 +50,7 @@ export default function SelectTag({ data, label, list, type, handleUpdate, defau
           {groupedOptions.map((option, index) => (
             <li {...getOptionProps({ option, index })}>
               <span>{option.title}</span>
-              <CheckIcon fontSize="small" />
+              <CheckIcon fontSize="16px" />
             </li>
           ))}
         </Listbox>
