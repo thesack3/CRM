@@ -185,15 +185,14 @@ export default function AddCSVLeadModal() {
     setOpen(false);
     setData(false);
   };
-
   return (
     <div>
       <Button variant="outlined" onClick={handleClickOpen}>
         Add Lead CSV
       </Button>
 
-      <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>New CSV Lead File</DialogTitle>
+      <Dialog open={open} onClose={handleClose} maxWidth="lg" fullWidth>
+        <DialogTitle textAlign={'center'}>New CSV Lead File</DialogTitle>
         <DialogContent className={styles.AddCSVLeadsModal}>
           <DialogContentText>Upload your lead CSV file here!</DialogContentText>
 
@@ -205,7 +204,7 @@ export default function AddCSVLeadModal() {
             <CsvUpload handleData={handleChildData} />
           </Button>
         </DialogContent>
-        <DialogActions>
+        <DialogActions sx={{ display: 'flex', justifyContent: 'center' }}>
           <Button onClick={handleClose} sx={{ color: 'red' }}>
             Cancel
           </Button>
