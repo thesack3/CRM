@@ -27,6 +27,8 @@ export default function SelectField({ data, label, type, handleUpdate, defaultVa
     options: categories?.categories || [],
     getOptionLabel: (option) => option.title,
     onChange: (e, selectedValue) => {
+      const value = selectedValue[selectedValue.length - 1].title;
+      if (data?.categoriesList.includes(value)) return;
       handleUpdate(selectedValue, data.id, type);
     },
   });

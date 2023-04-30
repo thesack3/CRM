@@ -8,3 +8,7 @@ wave {
 .css-1yi9dni-MuiDataGrid-root .MuiDataGrid-columnHeader, .css-1yi9dni-MuiDataGrid-root .MuiDataGrid-cell{
   padding: 0 0 !important;
 }
+
+.css-f09ijy svg{
+  font-size: 16px !important;
+}
