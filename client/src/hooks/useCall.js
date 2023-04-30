@@ -11,6 +11,8 @@ export const callContext = createContext({
   setCategories: () => {},
   tags: [],
   setTags: () => {},
+  refetch: '',
+  setRefetch: () => {},
 });
 
 const CallContextProvider = ({ children }) => {
@@ -19,6 +21,7 @@ const CallContextProvider = ({ children }) => {
   const [leadId, setLeadId] = useState(window.localStorage.getItem('leadId'));
   const [categories, setCategories] = useState([]);
   const [tags, setTags] = useState([]);
+  const [refetch, setRefetch] = useState('');
 
   const passedValues = {
     isCall,
@@ -26,11 +29,13 @@ const CallContextProvider = ({ children }) => {
     leadId,
     categories,
     tags,
+    refetch,
     setIsCall,
     setUserName,
     setLeadId,
     setCategories,
     setTags,
+    setRefetch,
   };
   return <callContext.Provider value={passedValues}>{children}</callContext.Provider>;
 };

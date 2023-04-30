@@ -13,8 +13,11 @@ import DialogTitle from '@mui/material/DialogTitle';
 import CsvUpload from '../DropBoxes/CsvUpload';
 import { ADD_LEAD } from '../../mutations/leadMutations';
 import { ADD_TAG } from '../../mutations/addTag';
+import { callContext } from '../../hooks/useCall';
 
 export default function AddTagModal({ callback }) {
+  const { setRefetch } = React.useContext(callContext);
+
   const [addLead, { loading, error, data }] = useMutation(ADD_TAG, {
     onCompleted: (data) => {
       console.log(data);
@@ -61,8 +64,7 @@ export default function AddTagModal({ callback }) {
           title: '',
           dateCreated: '',
         });
-
-        console.log(res);
+        setRefetch(new Date().getTime());
         setOpenSnack(true);
         setUploaded(false);
         console.log('Lead Submitted!');

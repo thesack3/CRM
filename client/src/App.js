@@ -28,9 +28,9 @@ LicenseInfo.setLicenseKey(
 );
 
 export default function App() {
-  const { isCall, setCategories, setTags } = useContext(callContext);
-  const { data: categoriesData } = useQuery(GET_CATEGORIES);
-  const { data: tagData } = useQuery(GET_TAGS);
+  const { isCall, setCategories, setTags, refetch: reload } = useContext(callContext);
+  const { data: categoriesData, refetch: categoriesRefetch } = useQuery(GET_CATEGORIES);
+  const { data: tagData, refetch: tagsRefetch } = useQuery(GET_TAGS);
 
   useEffect(() => {
     (async () => {
@@ -38,6 +38,15 @@ export default function App() {
       setTags(tagData);
     })();
   }, [categoriesData, tagData]);
+
+  useEffect(() => {
+    if (reload) {
+      (async () => {
+        await categoriesRefetch();
+        await tagsRefetch();
+      })();
+    }
+  }, [reload]);
 
   useEffect(() => {
     const jwt = localStorage.getItem('jwt');

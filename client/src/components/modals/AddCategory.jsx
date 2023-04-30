@@ -14,8 +14,10 @@ import CsvUpload from '../DropBoxes/CsvUpload';
 import { ADD_LEAD } from '../../mutations/leadMutations';
 // import {ADD_TAG} from '../../mutations/addTag';
 import { ADD_CATEGORY } from '../../mutations/addCategory';
+import { callContext } from '../../hooks/useCall';
 
 export default function AddCategoryModal({ callback }) {
+  const { setRefetch } = React.useContext(callContext);
   const [openSnack, setOpenSnack] = useState(false);
   const [uploadInProcess, setUploaded] = useState(false);
   const [open, setOpen] = React.useState(false);
@@ -50,7 +52,6 @@ export default function AddCategoryModal({ callback }) {
   };
 
   const handleLeadSubmit = (e) => {
-    console.log(formData);
     e.preventDefault();
     addLead({
       variables: formData,
@@ -61,7 +62,7 @@ export default function AddCategoryModal({ callback }) {
           dateCreated: '',
         });
 
-        console.log(res);
+        setRefetch(new Date().getTime());
         setUploaded(false);
         console.log('Lead Submitted!');
         callback();

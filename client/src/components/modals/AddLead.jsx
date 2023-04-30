@@ -134,7 +134,6 @@ export default function AddLeadModal({ handleRefetch }) {
           Birthday: '',
           HomeClosingDate: '',
         });
-
         console.log(res);
         setUploaded(false);
         console.log('Lead Submitted!');
