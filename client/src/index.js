@@ -40,8 +40,11 @@ const cache = new InMemoryCache({
   },
 });
 
+
+//  uri: 'http://localhost:4000/graphql',
+//    https://recrm.herokuapp.com/graphql
 const client = new ApolloClient({
-  uri: 'http://localhost:4000/graphql',
+  uri:  'https://recrm.herokuapp.com/graphql',
   cache,
 });
 
