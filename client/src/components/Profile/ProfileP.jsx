@@ -56,6 +56,9 @@ export default function ProfileP({ rowId }) {
   const [sendCall, { data, loading, error }] = useMutation(SEND_CALL, {
     variables: { toNumber: lead?.phone, msg: 'Call', leadId },
   });
+
+
+  //  GET CALLS
   const {
     loading: callsLoading,
     error: callsError,
@@ -64,7 +67,7 @@ export default function ProfileP({ rowId }) {
     variables: { leadId: selectedLead ? selectedLead.id : null },
     skip: !selectedLead,
   });
-
+//  GET ALERTS
   const {
     loading: ealertsLoading,
     error: ealertsError,
@@ -73,6 +76,9 @@ export default function ProfileP({ rowId }) {
     variables: { leadId: selectedLead ? selectedLead.id : null },
     skip: !selectedLead,
   });
+
+
+  //  GET NOTES
   const {
     loading: notesLoading,
     error: notesError,
