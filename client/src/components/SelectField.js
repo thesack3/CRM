@@ -9,7 +9,8 @@ import { callContext } from '../hooks/useCall';
 
 export default function SelectField({ data, label, type, handleUpdate, defaultValues }) {
   const { categories, tags } = React.useContext(callContext);
-  const [optionsList, setOptionsList] = React.useState([]);
+
+  const [optionsList, setOptionsList] = React.useState(defaultValues);
   const {
     getRootProps,
     getInputLabelProps,
@@ -28,9 +29,6 @@ export default function SelectField({ data, label, type, handleUpdate, defaultVa
     options: optionsList,
     getOptionLabel: (option) => option.title,
     onChange: (e, selectedValue) => {
-      // const value = selectedValue[selectedValue.length - 1].title;
-      // if (data?.categoriesList.includes(value)) return;
-      if (optionsList.includes(selectedValue)) return;
       handleUpdate(selectedValue, data.id, type);
     },
   });

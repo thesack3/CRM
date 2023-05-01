@@ -9,6 +9,8 @@ import { callContext } from '../hooks/useCall';
 
 export default function SelectTag({ data, label, type, handleUpdate, defaultValues }) {
   const { tags } = React.useContext(callContext);
+  const [optionsList, setOptionsList] = React.useState(defaultValues);
+
   const {
     getRootProps,
     getInputLabelProps,
@@ -24,14 +26,17 @@ export default function SelectTag({ data, label, type, handleUpdate, defaultValu
     id: 'customized-hook-demo',
     defaultValue: defaultValues,
     multiple: true,
-    options: tags?.tags || [],
+    options: optionsList || [],
     getOptionLabel: (option) => option.title,
     onChange: (e, selectedValue) => {
-      const value = selectedValue[selectedValue.length - 1].title;
-      if (data?.tagsList.includes(value)) return;
       handleUpdate(selectedValue, data.id, type);
     },
   });
+
+  React.useEffect(() => {
+    const mergedTags = [...new Set([...tags?.tags, ...defaultValues])];
+    setOptionsList(mergedTags);
+  }, [tags, data]);
 
   return (
     <Root>
