@@ -34,7 +34,7 @@ import { SEND_CALL } from '../mutations/sendCall';
 import SelectField from './SelectField';
 import SelectTag from './SelectTag';
 
-export default function LeadDetails({ leadDetail, handleUpdate }) {
+export default function LeadDetails({ leadDetail, handleUpdate, openModal, setOpenModal }) {
   const {
     setIsCall,
     setUserName,
@@ -91,19 +91,19 @@ export default function LeadDetails({ leadDetail, handleUpdate }) {
       console.log('Error-', error);
     }
   };
-  const [openModal, setOpenModal] = React.useState(false);
+  // const [openModal, setOpenModal] = React.useState(false);
 
   return (
     <>
       <Helmet>
         <title>RE CRM</title>
       </Helmet>
-      <Button variant="outlined" onClick={() => setOpenModal(true)}>
+      {/* <Button variant="outlined" onClick={() => setOpenModal(true)}>
         Profile
-      </Button>
+      </Button> */}
       <BootstrapDialog
         maxWidth={'lg'}
-        // onClose={() => setOpenModal(false)}
+        onClose={() => setOpenModal(false)}
         aria-labelledby="customized-dialog-title"
         open={openModal}
         fullWidth

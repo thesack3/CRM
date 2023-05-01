@@ -20,6 +20,7 @@ import CustomModal from '../modals/CustomModal';
 import LeadDetails from '../LeadDetails';
 import { callContext } from '../../hooks/useCall';
 import SelectTag from '../SelectTag';
+import AddNote from '../modals/AddNote';
 
 export default function DataGridProCSV2(props) {
   const { categories: updatedCategories, tags: updatedTags } = React.useContext(callContext);
@@ -39,6 +40,8 @@ export default function DataGridProCSV2(props) {
   const [leadsRows1, setLeadRows1] = useState([]);
   const [category, setCategory] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
+  const [openLeadDetails, setOpenLeadDetails] = useState(false);
+  const [currentParam, setCurrentParam] = useState(null);
   const {
     loading: graphQLClientsLoading,
     error: graphQLClientsError,
@@ -145,7 +148,6 @@ export default function DataGridProCSV2(props) {
       setResponseData(usersWithIds);
     }
   }, [props.UserData, data]);
-
   const columns = useMemo(
     () => [
       {
@@ -153,12 +155,21 @@ export default function DataGridProCSV2(props) {
         headerName: 'Profile',
         width: 150,
         editable: true,
-        renderCell: (params) => (
-          // <Button variant="outlined" onClick={() => setProfileModal(true)}>
-          //   Profile
-          // </Button>
-          <LeadDetails leadDetail={params.row} handleUpdate={(value, id, type) => handleUpdate(value, id, type)} />
-        ),
+        renderCell: (params) => {
+          // setCurrentParam(params.row);
+          return (
+            <Button
+              variant="outlined"
+              onClick={() => {
+                setOpenLeadDetails(true);
+                setCurrentParam(params.row);
+              }}
+            >
+              Profile
+            </Button>
+            // <LeadDetails leadDetail={params.row} handleUpdate={(value, id, type) => handleUpdate(value, id, type)} />
+          );
+        },
         // renderCell: (params) => <ProfileDetailsPage row={params.row.Uid} {...{ params }} />,
 
         hide: true,
@@ -702,6 +713,14 @@ export default function DataGridProCSV2(props) {
 
   return (
     <div style={{ height: 600, width: '100%' }}>
+      {currentParam && (
+        <LeadDetails
+          leadDetail={currentParam}
+          handleUpdate={(value, id, type) => handleUpdate(value, id, type)}
+          openModal={openLeadDetails}
+          setOpenModal={setOpenLeadDetails}
+        />
+      )}
       <div
         style={{
           display: 'flex',
@@ -718,6 +737,7 @@ export default function DataGridProCSV2(props) {
           <AddCSVLeadModal />
           <AddTagModal callback={() => setRefetchTag(new Date().getTime())} />
           <AddCategoryModal callback={() => setRefetchCategories(new Date().getTime())} />
+          {/* <AddNote /> */}
         </Box>
 
         <Box flex>
@@ -733,7 +753,6 @@ export default function DataGridProCSV2(props) {
           </Button>
         </Box>
       </div>
-
       <div style={{ height: 540, width: '100%' }}>
         {/* DATA GRID PRO  */}
         <Snackbar open={open} autoHideDuration={2000} onClose={() => setOpen(false)}>
