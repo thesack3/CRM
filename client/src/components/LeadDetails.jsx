@@ -103,7 +103,7 @@ export default function LeadDetails({ leadDetail, handleUpdate }) {
       </Button>
       <BootstrapDialog
         maxWidth={'lg'}
-        onClose={() => setOpenModal(false)}
+        // onClose={() => setOpenModal(false)}
         aria-labelledby="customized-dialog-title"
         open={openModal}
         fullWidth

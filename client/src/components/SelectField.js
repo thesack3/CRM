@@ -9,7 +9,6 @@ import { callContext } from '../hooks/useCall';
 
 export default function SelectField({ data, label, type, handleUpdate, defaultValues }) {
   const { categories, tags } = React.useContext(callContext);
-
   const [optionsList, setOptionsList] = React.useState(defaultValues);
   const {
     getRootProps,
@@ -26,7 +25,7 @@ export default function SelectField({ data, label, type, handleUpdate, defaultVa
     id: 'customized-hook-demo',
     defaultValue: defaultValues,
     multiple: true,
-    options: optionsList,
+    options: optionsList || [],
     getOptionLabel: (option) => option.title,
     onChange: (e, selectedValue) => {
       handleUpdate(selectedValue, data.id, type);
@@ -34,8 +33,12 @@ export default function SelectField({ data, label, type, handleUpdate, defaultVa
   });
 
   React.useEffect(() => {
-    const mergedCategories = [...new Set([...categories?.categories, ...defaultValues])];
-    setOptionsList(mergedCategories);
+    if (categories?.categories?.length === 0) return;
+    // filter out same values from categories and defaultValues
+    const filtered = categories?.categories.filter((category) => {
+      return !defaultValues.some((item) => item.title === category.title);
+    });
+    setOptionsList(filtered);
   }, [categories, data]);
 
   return (

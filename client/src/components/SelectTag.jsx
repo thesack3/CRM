@@ -34,8 +34,12 @@ export default function SelectTag({ data, label, type, handleUpdate, defaultValu
   });
 
   React.useEffect(() => {
-    const mergedTags = [...new Set([...tags?.tags, ...defaultValues])];
-    setOptionsList(mergedTags);
+    if (tags?.tags?.length === 0) return;
+    // filter out same values from tags and defaultValues
+    const filtered = tags?.tags.filter((tag) => {
+      return !defaultValues.some((item) => item.title === tag.title);
+    });
+    setOptionsList(filtered);
   }, [tags, data]);
 
   return (
