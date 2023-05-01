@@ -54,7 +54,7 @@ const ChatUI = ({ handleProfile, lead }) => {
   };
 
   return (
-    <Grid container spacing={3} padding={4} minHeight={'75vh'} alignItems="center" justifyContent={'center'}>
+    <Grid container spacing={3} padding={6} minHeight={'75vh'} alignItems="center" justifyContent={'center'}>
       <Grid xs={12} sx={{ backgroundColor: '#f5f7f2', height: '100%' }} padding={2} borderRadius={1.5}>
         <Header>
           <Box

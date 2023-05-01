@@ -13,10 +13,12 @@ import {
   Snackbar,
   DialogTitle,
   Dialog,
+  IconButton,
 } from '@mui/material';
 import { Helmet } from 'react-helmet-async';
 import { useTheme } from '@mui/system';
 import { useMutation, useQuery } from '@apollo/client';
+import CloseIcon from '@mui/icons-material/Close';
 
 import { GET_LEADS } from '../queries/leadQueries';
 import { GET_NOTES } from '../queries/noteQueries';
@@ -106,8 +108,20 @@ export default function LeadDetails({ leadDetail, handleUpdate }) {
         open={openModal}
         fullWidth
       >
+        <IconButton
+          aria-label="close"
+          onClick={() => setOpenModal(false)}
+          sx={{
+            position: 'absolute',
+            right: 4,
+            top: 4,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
         {leadDetail && (
-          <Container maxWidth="lg" sx={{ width: '70vw', minHeight: '75vh', paddingTop: '16px' }}>
+          <Container maxWidth="lg" sx={{ width: '70vw', minHeight: '75vh', padding: '16px' }}>
             {isMessageModal ? (
               <ChatUI handleProfile={() => setIsMessageModal(false)} lead={leadDetail} />
             ) : (
