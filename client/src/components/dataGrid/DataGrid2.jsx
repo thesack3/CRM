@@ -826,20 +826,13 @@ export default function DataGridProCSV2(props) {
             <TextField
               size="small"
               select
-              value={pageSize}
-              onChange={(e) => setPageSize(Number(e.target.value))}
+              value={take}
+              onChange={(e) => setTake(e.target.value.toString())}
               variant="outlined"
               style={{ width: 80 }}
             >
               {[10, 25, 50, 100, 200].map((size) => (
-                <MenuItem
-                  key={size}
-                  value={size}
-                  onClick={() => {
-                    setTake(size.toString());
-                    refetch();
-                  }}
-                >
+                <MenuItem key={size} value={size}>
                   {size}
                 </MenuItem>
               ))}
