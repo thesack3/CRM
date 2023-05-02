@@ -1,6 +1,6 @@
 // TODO: add subscription to update the table when a new lead is added, NEW_LEAD_SUBSCRIPTION
 import * as React from 'react';
-import { Button, MenuItem, TextField, Typography, Alert, Snackbar } from '@mui/material';
+import { Button, MenuItem, TextField, Typography, Alert, Snackbar, CircularProgress } from '@mui/material';
 import { useQuery, useMutation } from '@apollo/client';
 import { useMemo, useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
@@ -789,7 +789,7 @@ export default function DataGridProCSV2(props) {
             />
           </Box>
 
-          {!gridDataLoading && (
+          {!graphQLClientsLoading ? (
             <DataGridPro
               sx={gridStyles}
               rows={categories.length || searchQuery ? leadsRows1 : leadsRows}
@@ -808,6 +808,10 @@ export default function DataGridProCSV2(props) {
                 gridRef,
               }}
             />
+          ) : (
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+              <CircularProgress />
+            </Box>
           )}
           <Box
             sx={{
