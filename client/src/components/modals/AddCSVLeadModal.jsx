@@ -20,7 +20,7 @@ export default function AddCSVLeadModal({ callback }) {
   const [data, setData] = React.useState(false);
   const [loading, setLoading] = useState(false);
   const [openSnack, setOpenSnack] = useState(false);
-  const [counter, setCounter] = useState(0);
+  const [counter, setCounter] = useState(null);
 
   const [formData, setFormData] = useState({
     firstName: '',
@@ -168,6 +168,7 @@ export default function AddCSVLeadModal({ callback }) {
             setOpenSnack(true);
             handleClose();
             callback();
+            setCounter(null);
           }
         })
         .catch((err) => {
