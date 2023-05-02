@@ -106,77 +106,73 @@ export default function AddCSVLeadModal({ callback }) {
     console.log('Lead Submitted!');
   };
 
-  const handleUpload = async () => {
+  const handleUpload = () => {
     setLoading(true);
     if (!data) return setLoading(false);
     let count = 0;
-    console.log('data-------------', data);
-    try {
-      data.forEach((lead) => {
-        addLead({
-          variables: {
-            firstName: lead.FirstName,
-            email: lead.Emails,
-            lastName: lead.LastName,
-            description: lead.Description,
-            phone: lead.Phones,
-            phoneStatus: lead.PhoneStatus,
-            emailInvalid: lead.EmailInvalid,
-            GloballyOptedOutOfEmail: lead.GloballyOptedOutOfEmail,
-            GloballyOptedOutOfBuyerAgentEmail: lead.GloballyOptedOutOfBuyerAgentEmail,
-            GloballyOptedOutOfListingAgentEmail: lead.GloballyOptedOutOfListingAgentEmail,
-            GloballyOptedOutOfLenderEmail: lead.GloballyOptedOutOfLenderEmail,
-            GloballyOptedOutOfAlerts: lead.GloballyOptedOutOfAlerts,
-            OptInDate: lead.OptInDate,
-            BuyerAgentCategory: lead.BuyerAgentCategory,
-            ListingAgentCategory: lead.ListingAgentCategory,
-            LenderCategory: lead.LenderCategory,
-            BuyerAgent: lead.BuyerAgent,
-            ListingAgent: lead.ListingAgent,
-            Lender: lead.Lender,
-            OriginalSource: lead.OriginalSource,
-            OriginalCampaign: lead.OriginalCampaign,
-            LastAgentNote: lead.LastAgentNote,
-            eAlerts: lead.eAlerts,
-            VisitTotal: lead.VisitTotal,
-            listingviewcount: lead.listingviewcount,
-            AvgListingPrice: lead.AvgListingPrice,
-            NextCallDue: lead.NextCallDue,
-            LastAgentCallDate: lead.LastAgentCallDate,
-            LastLenderCallDate: lead.LastLenderCallDate,
-            FirstVisitDate: lead.FirstVisitDate,
-            LastVisitdDate: lead.LastVisitDate,
-            RegisterDate: lead.RegisterDate,
-            LeadType: lead.LeadType,
-            AgentSelected: lead.AgentSelected,
-            LenderOptIn: lead.LenderOptIn,
-            Address: lead.Address,
-            City: lead.City,
-            State: lead.State,
-            ZipCode: lead.ZipCode,
-            Tags: lead.Tags,
-            Link: lead.Link,
-            Birthday: lead.Birthday,
-            HomeClosingDate: lead.HomeClosingDate,
-          },
+    data.forEach((lead) => {
+      addLead({
+        variables: {
+          firstName: lead.FirstName,
+          email: lead.Emails,
+          lastName: lead.LastName,
+          description: lead.Description,
+          phone: lead.Phones,
+          phoneStatus: lead.PhoneStatus,
+          emailInvalid: lead.EmailInvalid,
+          GloballyOptedOutOfEmail: lead.GloballyOptedOutOfEmail,
+          GloballyOptedOutOfBuyerAgentEmail: lead.GloballyOptedOutOfBuyerAgentEmail,
+          GloballyOptedOutOfListingAgentEmail: lead.GloballyOptedOutOfListingAgentEmail,
+          GloballyOptedOutOfLenderEmail: lead.GloballyOptedOutOfLenderEmail,
+          GloballyOptedOutOfAlerts: lead.GloballyOptedOutOfAlerts,
+          OptInDate: lead.OptInDate,
+          BuyerAgentCategory: lead.BuyerAgentCategory,
+          ListingAgentCategory: lead.ListingAgentCategory,
+          LenderCategory: lead.LenderCategory,
+          BuyerAgent: lead.BuyerAgent,
+          ListingAgent: lead.ListingAgent,
+          Lender: lead.Lender,
+          OriginalSource: lead.OriginalSource,
+          OriginalCampaign: lead.OriginalCampaign,
+          LastAgentNote: lead.LastAgentNote,
+          eAlerts: lead.eAlerts,
+          VisitTotal: lead.VisitTotal,
+          listingviewcount: lead.listingviewcount,
+          AvgListingPrice: lead.AvgListingPrice,
+          NextCallDue: lead.NextCallDue,
+          LastAgentCallDate: lead.LastAgentCallDate,
+          LastLenderCallDate: lead.LastLenderCallDate,
+          FirstVisitDate: lead.FirstVisitDate,
+          LastVisitdDate: lead.LastVisitDate,
+          RegisterDate: lead.RegisterDate,
+          LeadType: lead.LeadType,
+          AgentSelected: lead.AgentSelected,
+          LenderOptIn: lead.LenderOptIn,
+          Address: lead.Address,
+          City: lead.City,
+          State: lead.State,
+          ZipCode: lead.ZipCode,
+          Tags: lead.Tags,
+          Link: lead.Link,
+          Birthday: lead.Birthday,
+          HomeClosingDate: lead.HomeClosingDate,
+        },
+      })
+        .then((res) => {
+          count += 1;
+          if (data.length === count) {
+            console.log('count in loop final-------', count);
+            setLoading(false);
+            setOpenSnack(true);
+            handleClose();
+            callback();
+          }
         })
-          .then((res) => {
-            count = count + 1;
-            if (data.length === count) {
-              console.log('count in loop final-------', count);
-              setLoading(false);
-              setOpenSnack(true);
-              handleClose();
-              callback();
-            }
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      });
-    } catch (error) {
-      console.log(error);
-    }
+        .catch((err) => {
+          console.log(err);
+        });
+    });
+    return count;
   };
 
   const handleChildData = (data) => {
