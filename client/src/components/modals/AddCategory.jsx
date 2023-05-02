@@ -17,13 +17,14 @@ import { ADD_CATEGORY } from '../../mutations/addCategory';
 import { callContext } from '../../hooks/useCall';
 
 export default function AddCategoryModal({ callback }) {
-  const { setRefetch } = React.useContext(callContext);
+  const { setRefetch, categories } = React.useContext(callContext);
   const [openSnack, setOpenSnack] = useState(false);
   const [uploadInProcess, setUploaded] = useState(false);
   const [open, setOpen] = React.useState(false);
+  const [catError, setCatError] = useState(false);
   const [formData, setFormData] = useState({
     title: '',
-    dateCreated: '',
+    dateCreated: new Date().toISOString(),
   });
 
   const [addLead, { loading, error, data }] = useMutation(ADD_CATEGORY, {
@@ -53,25 +54,36 @@ export default function AddCategoryModal({ callback }) {
 
   const handleLeadSubmit = (e) => {
     e.preventDefault();
-    addLead({
-      variables: formData,
-    })
-      .then((res) => {
-        setFormData({
-          title: '',
-          dateCreated: '',
-        });
-
-        setRefetch(new Date().getTime());
-        setUploaded(false);
-        console.log('Lead Submitted!');
-        callback();
-        handleClose();
-        setOpenSnack(true);
-      })
-      .catch((err) => {
-        console.log(err);
+    const existedCategories = categories?.categories?.map((category) => category.title.toLowerCase());
+    if (existedCategories?.includes(formData?.title?.toLowerCase())) {
+      setOpenSnack(true);
+      setCatError(true);
+      handleClose();
+      setFormData({
+        title: '',
+        dateCreated: new Date().toISOString().toString(),
       });
+    } else {
+      addLead({
+        variables: formData,
+      })
+        .then((res) => {
+          setFormData({
+            title: '',
+            dateCreated: new Date().toISOString().toString(),
+          });
+          setCatError(false);
+          setRefetch(new Date().getTime());
+          setUploaded(false);
+          console.log('Lead Submitted!');
+          callback();
+          handleClose();
+          setOpenSnack(true);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
   };
 
   return (
@@ -146,8 +158,8 @@ onChange={handleChange}
         </div>
       )}
       <Snackbar open={openSnack} autoHideDuration={2000} onClose={() => setOpenSnack(false)}>
-        <Alert onClose={() => setOpenSnack(false)} severity="success" sx={{ width: '100%' }}>
-          Tag Updated
+        <Alert onClose={() => setOpenSnack(false)} severity={catError ? 'error' : 'success'} sx={{ width: '100%' }}>
+          {catError ? 'Category already exists' : 'Category Added'}
         </Alert>
       </Snackbar>
     </>

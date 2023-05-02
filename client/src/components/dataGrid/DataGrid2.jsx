@@ -36,7 +36,7 @@ export default function DataGridProCSV2(props) {
   const [openSnack, setOpenSnack] = React.useState(false);
   const [responseData, setResponseData] = useState([]);
   const [rowSelectedUsers, setRowSelectedUsers] = useState(['dominiqmartinez13@gmail.com', 'unhashlabs@gmail.com']);
-  const [take, setTake] = useState('5');
+  const [take, setTake] = useState('10');
   const [leadsRows1, setLeadRows1] = useState([]);
   const [category, setCategory] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
@@ -55,7 +55,7 @@ export default function DataGridProCSV2(props) {
     useMutation(SEND_EMAILS_MUTATION);
   const [updateLead] = useMutation(updateLeadMutation);
 
-  const [pageSize, setPageSize] = useState(5);
+  const [pageSize, setPageSize] = useState(10);
   const [rowId, setRowId] = useState(null);
   const [gridDataLoading, setGridDataLoading] = useState(true);
 
@@ -833,12 +833,13 @@ export default function DataGridProCSV2(props) {
               variant="outlined"
               style={{ width: 80 }}
             >
-              {[5, 10, 25, 50, 100, 200].map((size) => (
+              {[10, 25, 50, 100, 200].map((size) => (
                 <MenuItem
                   key={size}
                   value={size}
                   onClick={() => {
                     setTake(size.toString());
+                    refetch();
                   }}
                 >
                   {size}

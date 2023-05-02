@@ -16,7 +16,7 @@ import { ADD_TAG } from '../../mutations/addTag';
 import { callContext } from '../../hooks/useCall';
 
 export default function AddTagModal({ callback }) {
-  const { setRefetch } = React.useContext(callContext);
+  const { setRefetch, tags } = React.useContext(callContext);
 
   const [addLead, { loading, error, data }] = useMutation(ADD_TAG, {
     onCompleted: (data) => {
@@ -27,11 +27,11 @@ export default function AddTagModal({ callback }) {
 
   const [formData, setFormData] = useState({
     title: '',
-    dateCreated: '',
+    dateCreated: new Date().toISOString().toString(),
   });
 
   const [uploadInProcess, setUploaded] = useState(false);
-
+  const [tagError, setTagError] = useState(false);
   const [open, setOpen] = React.useState(false);
   const [openSnack, setOpenSnack] = useState(false);
 
@@ -54,8 +54,18 @@ export default function AddTagModal({ callback }) {
   };
 
   const handleLeadSubmit = (e) => {
-    console.log(formData);
     e.preventDefault();
+    const existedTags = tags?.tags?.map((tag) => tag.title.toLowerCase());
+    if (existedTags?.includes(formData?.title?.toLowerCase())) {
+      setOpenSnack(true);
+      setTagError(true);
+      setFormData({
+        title: '',
+        dateCreated: new Date().toISOString().toString(),
+      });
+      handleClose();
+      return;
+    }
     addLead({
       variables: formData,
     })
@@ -64,6 +74,7 @@ export default function AddTagModal({ callback }) {
           title: '',
           dateCreated: '',
         });
+        setTagError(false);
         setRefetch(new Date().getTime());
         setOpenSnack(true);
         setUploaded(false);
@@ -148,8 +159,8 @@ onChange={handleChange}
       )}
 
       <Snackbar open={openSnack} autoHideDuration={2000} onClose={() => setOpenSnack(false)}>
-        <Alert onClose={() => setOpenSnack(false)} severity="success" sx={{ width: '100%' }}>
-          Tag Updated
+        <Alert onClose={() => setOpenSnack(false)} severity={tagError ? 'error' : 'success'} sx={{ width: '100%' }}>
+          {tagError ? 'Tag already exists!' : 'Tag added!'}
         </Alert>
       </Snackbar>
     </>
