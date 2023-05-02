@@ -40,26 +40,18 @@ export default function CategoryGrid(props) {
 
   useEffect(() => {
     if (data) {
-      console.log(data);
-
-      // alert("category data");
-
       const categoyList = data.categories.map((category) => {
         return category.title;
       });
 
       setCategoryList(categoyList);
-
-      // alert("data");
-      // selectedCategories(data.categories);
-      // setLeads(data);
     }
   }, [data]);
 
   console.log('Active toggled buttons:', getActiveToggles());
 
   return (
-    <Box sx={{ width: '70vw', display:"inline-flex", overflow:"scroll", gap: '20px' }}>
+    <Box sx={{ width: '70vw', display: 'inline-flex', overflow: 'scroll', gap: '20px' }}>
       {categoryList.map((category, index) => {
         const opacity = selectedCategories.includes(category) ? 1 : 0.5;
         return (
