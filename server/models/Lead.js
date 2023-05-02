@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 const LeadSchema = new mongoose.Schema({
   firstName: {
     type: String,
-    required: true,
+    required: false,
   },
   lastName: {
     type: String,
@@ -13,7 +13,7 @@ const LeadSchema = new mongoose.Schema({
   },
   email: {
     type: String,
-    required: true,
+    required: false,
   },
   phone: {
     type: String,
