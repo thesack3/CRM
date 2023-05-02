@@ -171,8 +171,6 @@ export default function DataGridProCSV2(props) {
           );
         },
         // renderCell: (params) => <ProfileDetailsPage row={params.row.Uid} {...{ params }} />,
-
-        hide: true,
       },
       {
         field: 'firstName',
