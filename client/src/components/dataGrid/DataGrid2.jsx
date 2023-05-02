@@ -760,7 +760,7 @@ export default function DataGridProCSV2(props) {
             Updated Lead!
           </Alert>
         </Snackbar>
-        <Box sx={{ position: 'relative', top: '30px', overflowX: 'scroll', width: '100%' }}>
+        <Box sx={{ marginTop: '16px' }}>
           <CategoryGrid remote={(e) => setCategories(e)} callback={refetchCategories} />
         </Box>
         <Box sx={{ height: '100%' }}>

@@ -59,7 +59,7 @@ export default function CategoryGrid(props) {
   console.log('Active toggled buttons:', getActiveToggles());
 
   return (
-    <Box sx={{ width: '100%', overflowX: 'scroll', display: 'flex', gap: '20px' }}>
+    <Box sx={{ width: '70vw', display:"inline-flex", overflow:"scroll", gap: '20px' }}>
       {categoryList.map((category, index) => {
         const opacity = selectedCategories.includes(category) ? 1 : 0.5;
         return (
