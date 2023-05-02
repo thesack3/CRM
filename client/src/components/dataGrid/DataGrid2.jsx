@@ -736,7 +736,7 @@ export default function DataGridProCSV2(props) {
           {/* {profileModal && <ProfileP />} */}
           {profileModal && <CustomModal />}
           {/* // TODO PUT BACK */}
-          <AddCSVLeadModal callback={handleRefetch()} />
+          <AddCSVLeadModal callback={handleRefetch} />
           <AddTagModal callback={() => setRefetchTag(new Date().getTime())} />
           <AddCategoryModal callback={() => setRefetchCategories(new Date().getTime())} />
           {/* <AddNote /> */}
