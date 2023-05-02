@@ -5,6 +5,9 @@ const colors = require("colors");
 //   DEVELOPMENT
 //  require("dotenv").config();
 
+const { MessagingResponse } = require('twilio').twiml;
+
+
 const schema = require("./schema/schema");
 const connectDB = require("./config/db");
 const cors = require("cors");
@@ -24,5 +27,23 @@ app.use(
     graphiql: process.env.NODE_ENV === "development",
   })
 );
+
+
+
+
+app.post('/sms', (req, res) => {
+  const twiml = new MessagingResponse();
+
+  twiml.message('Thanks for contacting Ryan Hossack real estate. We will get back to you as soon as a represetnative is available.');
+
+  res.type('text/xml').send(twiml.toString());
+
+  console.log(req.body.From);
+  console.log(req.body.Body);
+
+
+
+});
+
 
 app.listen(port, console.log(`Server running on port ${port}`));
