@@ -732,7 +732,7 @@ export default function DataGridProCSV2(props) {
         }}
       >
         <Box sx={{ display: 'flex', flexDirection: 'row', gap: '16px' }}>
-          <AddLeadModal handleRefetch={refetch} />
+          <AddLeadModal handleRefetch={handleRefetch} />
           {/* {profileModal && <ProfileP />} */}
           {profileModal && <CustomModal />}
           {/* // TODO PUT BACK */}

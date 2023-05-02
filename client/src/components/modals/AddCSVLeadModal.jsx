@@ -20,6 +20,7 @@ export default function AddCSVLeadModal({ callback }) {
   const [data, setData] = React.useState(false);
   const [loading, setLoading] = useState(false);
   const [openSnack, setOpenSnack] = useState(false);
+  const [counter, setCounter] = useState(0);
 
   const [formData, setFormData] = useState({
     firstName: '',
@@ -160,6 +161,7 @@ export default function AddCSVLeadModal({ callback }) {
       })
         .then((res) => {
           count += 1;
+          setCounter(count);
           if (data.length === count) {
             console.log('count in loop final-------', count);
             setLoading(false);
@@ -170,6 +172,9 @@ export default function AddCSVLeadModal({ callback }) {
         })
         .catch((err) => {
           console.log(err);
+          setLoading(false);
+          handleClose();
+          callback();
         });
     });
     return count;
@@ -192,6 +197,9 @@ export default function AddCSVLeadModal({ callback }) {
     setData(false);
     setLoading(false);
   };
+
+  console.log('counter-----------', counter);
+
   return (
     <div>
       <Button variant="outlined" onClick={handleClickOpen}>
@@ -223,9 +231,9 @@ export default function AddCSVLeadModal({ callback }) {
             loading={loading}
             loadingPosition="end"
             variant="text"
-            sx={{ width: '150px' }}
+            sx={{ width: '170px' }}
           >
-            <span>Upload Leads</span>
+            <span>Upload Leads {counter && counter}</span>
           </LoadingButton>
         </DialogActions>
       </Dialog>
