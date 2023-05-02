@@ -4,7 +4,6 @@ import { Box, FormControl, Grid, OutlinedInput, Paper, Typography, Button } from
 import LoadingButton from '@mui/lab/LoadingButton';
 import SendIcon from '@mui/icons-material/Send';
 import { styled } from '@mui/material/styles';
-import { display } from '@mui/system';
 import Iconify from '../../iconify';
 import { callContext } from '../../../hooks/useCall';
 import { SEND_SMS } from '../../../mutations/sendSms';
@@ -96,9 +95,7 @@ const ChatUI = ({ handleProfile, lead }) => {
           {textData &&
             textData?.texts?.map((item) => (
               <>
-                {item.to === lead?.phone ? (
-                  <Receive>{item.body}</Receive>
-                ) : (
+                {item.to.substring(2) === lead?.phone?.replace(/\D/g, '') ? (
                   <Grid
                     key={item.dateCreated}
                     xs={12}
@@ -108,6 +105,17 @@ const ChatUI = ({ handleProfile, lead }) => {
                   >
                     <Send>{item.body}</Send>
                   </Grid>
+                ) : (
+                  <Box
+                    key={item.dateCreated}
+                    xs={12}
+                    display={'inline-flex'}
+                    flexDirection={{ xs: 'column', sm: 'row' }}
+                    justifyContent={'flex-start'}
+                    maxWidth={'275px'}
+                  >
+                    <Receive>{item.body}</Receive>
+                  </Box>
                 )}
               </>
             ))}
@@ -171,7 +179,7 @@ const Header = styled(Paper)(({ theme }) => ({
 const Send = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#ccf1fabf',
   ...theme.typography.body2,
-  padding: theme.spacing(1),
+  padding: theme.spacing(2),
   textAlign: 'left',
   color: theme.palette.text.secondary,
   maxWidth: '270px',
@@ -183,10 +191,12 @@ const Send = styled(Paper)(({ theme }) => ({
 const Receive = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#ccf6c4ba',
   ...theme.typography.body2,
-  padding: theme.spacing(1),
+  padding: theme.spacing(2),
   textAlign: 'left',
   color: theme.palette.text.secondary,
   marginTop: 20,
   maxWidth: '270px',
   minHeight: '50px',
+  display: 'flex',
+  alignItems: 'center',
 }));
