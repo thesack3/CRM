@@ -712,7 +712,7 @@ export default function DataGridProCSV2(props) {
   };
 
   return (
-    <div style={{ height: 600, width: '100%' }}>
+    <div style={{ height: 700, width: '100%' }}>
       {currentParam && (
         <LeadDetails
           leadDetail={currentParam}
@@ -753,7 +753,7 @@ export default function DataGridProCSV2(props) {
           </Button>
         </Box>
       </div>
-      <div style={{ height: 540, width: '100%' }}>
+      <div style={{ height: 690, width: '100%' }}>
         {/* DATA GRID PRO  */}
         <Snackbar open={open} autoHideDuration={2000} onClose={() => setOpen(false)}>
           <Alert onClose={() => setOpen(false)} severity="success" sx={{ width: '100%' }}>
