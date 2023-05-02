@@ -709,6 +709,10 @@ export default function DataGridProCSV2(props) {
     }
   };
 
+  const handleRefetch = async () => {
+    await refetch();
+  };
+
   return (
     <div style={{ height: 700, width: '100%' }}>
       {currentParam && (
@@ -732,7 +736,7 @@ export default function DataGridProCSV2(props) {
           {/* {profileModal && <ProfileP />} */}
           {profileModal && <CustomModal />}
           {/* // TODO PUT BACK */}
-          <AddCSVLeadModal />
+          <AddCSVLeadModal callback={handleRefetch()} />
           <AddTagModal callback={() => setRefetchTag(new Date().getTime())} />
           <AddCategoryModal callback={() => setRefetchCategories(new Date().getTime())} />
           {/* <AddNote /> */}
