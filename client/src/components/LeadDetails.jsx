@@ -57,26 +57,15 @@ export default function LeadDetails({ leadDetail, handleUpdate, openModal, setOp
   });
 
   const { loading: callsLoading, data: callsData } = useQuery(GET_CALLS, {
-    variables: { leadId: selectedLead ? selectedLead.id : null },
-    skip: !selectedLead,
-  });
-
-  const {
-    loading: ealertsLoading,
-    error: ealertsError,
-    data: ealertsData,
-  } = useQuery(GET_EALERTS, {
-    variables: { leadId: selectedLead ? selectedLead.id : null },
-    skip: !selectedLead,
-  });
-
-  const {
-    loading: notesLoading,
-    error: notesError,
-    data: notesData,
-  } = useQuery(GET_NOTES, {
     variables: { leadId },
   });
+  const { loading: ealertsLoading, data: ealertsData } = useQuery(GET_EALERTS, {
+    variables: { leadId },
+  });
+  const { loading: notesLoading, data: notesData } = useQuery(GET_NOTES, {
+    variables: { leadId },
+  });
+
   const handleClose = (event, reason) => {
     if (reason === 'clickaway') {
       return;

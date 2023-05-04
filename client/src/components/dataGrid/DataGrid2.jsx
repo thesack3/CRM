@@ -21,6 +21,8 @@ import LeadDetails from '../LeadDetails';
 import { callContext } from '../../hooks/useCall';
 import SelectTag from '../SelectTag';
 import AddNote from '../modals/AddNote';
+import AddCSVCall from '../modals/AddCSVCalls';
+import AddeAlert from '../modals/AddeAlert';
 
 export default function DataGridProCSV2(props) {
   const { categories: updatedCategories, tags: updatedTags, setLeadId } = React.useContext(callContext);
@@ -161,7 +163,7 @@ export default function DataGridProCSV2(props) {
             <Button
               variant="outlined"
               onClick={() => {
-                setLeadId(params?.row?.id)
+                setLeadId(params?.row?.id);
                 setOpenLeadDetails(true);
                 setCurrentParam(params.row);
               }}
@@ -740,7 +742,9 @@ export default function DataGridProCSV2(props) {
           <AddCSVLeadModal callback={handleRefetch} />
           <AddTagModal callback={() => setRefetchTag(new Date().getTime())} />
           <AddCategoryModal callback={() => setRefetchCategories(new Date().getTime())} />
-          <AddNote />
+          <AddNote callback={handleRefetch} />
+          <AddCSVCall callback={handleRefetch} />
+          <AddeAlert callback={handleRefetch} />
         </Box>
 
         <Box flex>

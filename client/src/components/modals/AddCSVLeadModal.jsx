@@ -81,9 +81,6 @@ export default function AddCSVLeadModal({ callback }) {
   const handleLeadSubmit = (e) => {
     e.preventDefault();
 
-    //    Loop through the data and submit each lead
-    //     using the Apollo Client
-
     addLead({
       variables: formData,
     })
@@ -94,8 +91,6 @@ export default function AddCSVLeadModal({ callback }) {
           lastName: '',
           description: '',
           phone: '',
-
-          //      ...rest of the form fields
         });
         console.log(res);
       })

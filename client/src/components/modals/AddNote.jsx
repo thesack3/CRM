@@ -1,16 +1,9 @@
 import * as React from 'react';
-import { useState, useEffect } from 'react';
-import { useMutation, useQuery } from '@apollo/client';
-
+import { useState } from 'react';
+import { useMutation } from '@apollo/client';
 import Button from '@mui/material/Button';
 import { Alert, Snackbar } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
-
-import { BsCheck } from 'react-icons/bs';
-import TextField from '@mui/material/TextField';
-import { useDemoData } from '@mui/x-data-grid-generator';
-import { DataGridPro } from '@mui/x-data-grid-pro';
-import { Box } from '@mui/system';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -19,12 +12,9 @@ import DialogTitle from '@mui/material/DialogTitle';
 import CsvUpload from '../DropBoxes/CsvUpload';
 import DataGridCSV from '../dataGrid/DataGridCSV';
 import styles from './AddCSVLeadsModal.module.css';
-import { ADD_LEAD } from '../../mutations/leadMutations';
-import { ADD_EALERT } from '../../mutations/eAlertMutations';
 import { ADD_NOTE } from '../../mutations/noteMutations';
-import { GET_LEADS } from '../../queries/leadQueries';
 
-export default function AddNote() {
+export default function AddNote({ callback }) {
   const [open, setOpen] = React.useState(false);
   const [data, setData] = React.useState([]);
   const [openSnack, setOpenSnack] = useState(false);
@@ -38,15 +28,18 @@ export default function AddNote() {
   // };
 
   const handleUpload = async () => {
+    if (!data.length) return;
     const updatedData = JSON.stringify(data);
     try {
       await addNote({
         variables: { notes: updatedData },
       });
-      setOpenSnack(true);
       handleClose();
+      setOpenSnack(true);
+      callback();
     } catch (error) {
       console.log(error);
+      handleClose();
     }
   };
 
@@ -60,7 +53,7 @@ export default function AddNote() {
 
   const handleClose = () => {
     setOpen(false);
-    setData([]); // reset data state when the dialog is closed
+    setData([]);
   };
 
   return (

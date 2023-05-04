@@ -1007,74 +1007,156 @@ const mutation = new GraphQLObjectType({
     },
     //Add Call
     addCall: {
-      type: CallType,
+      type: GraphQLNonNull(GraphQLString),
       args: {
-        contactId: { type: GraphQLNonNull(GraphQLString) },
-        FirstName: { type: GraphQLNonNull(GraphQLString) },
-        LastName: { type: GraphQLNonNull(GraphQLString) },
-        DateCreated: { type: GraphQLNonNull(GraphQLString) },
-        BuyerAgent: { type: GraphQLNonNull(GraphQLString) },
-        ListingAgent: { type: GraphQLNonNull(GraphQLString) },
-        UserID: { type: GraphQLNonNull(GraphQLString) },
-        AssociatedopportunityID: { type: GraphQLNonNull(GraphQLString) },
-        CallDetails: { type: GraphQLNonNull(GraphQLString) },
-        ContactPhoneID: { type: GraphQLNonNull(GraphQLString) },
-        LogType: { type: GraphQLNonNull(GraphQLString) },
-        MediaURL: { type: GraphQLNonNull(GraphQLString) },
-        CallStartTime: { type: GraphQLNonNull(GraphQLString) },
-        CallEndTime: { type: GraphQLNonNull(GraphQLString) },
-        leadId: { type: GraphQLNonNull(GraphQLID) },
+        calls: { type: GraphQLNonNull(GraphQLString) },
       },
-      resolve(parent, args) {
-        const NEWCall = new Call({
-          contactId: args.contactId,
-          FirstName: args.FirstName,
-          LastName: args.LastName,
-          DateCreated: args.DateCreated,
-          BuyerAgent: args.BuyerAgent,
-          ListingAgent: args.ListingAgent,
-          UserID: args.UserID,
-          AssociatedopportunityID: args.AssociatedopportunityID,
-          CallDetails: args.CallDetails,
-          ContactPhoneID: args.ContactPhoneID,
-          LogType: args.LogType,
-          MediaURL: args.MediaURL,
-          CallStartTime: args.CallStartTime,
-          CallEndTime: args.CallEndTime,
-          leadId: args.leadId,
-        });
-        return NEWCall.save();
+
+      async resolve(parent, { calls }) {
+        try {
+          calls = JSON.parse(calls);
+          //create async map function for args
+          const result = await calls.map(async (arg) => {
+            const lead = await Lead.findOne({
+              firstName: arg.FirstName,
+              lastName: arg.LastName,
+            });
+            if (!lead || !lead.firstName) return;
+            if (lead) {
+              const newCall = new Call({
+                contactId: arg.contactId || "",
+                FirstName: arg.FirstName || "",
+                LastName: arg.LastName || "",
+                DateCreated: arg.DateCreated || "",
+                BuyerAgent: arg.BuyerAgent || "",
+                ListingAgent: arg.ListingAgent || "",
+                UserID: arg.UserID || "",
+                AssociatedopportunityID: arg.AssociatedopportunityID || "",
+                CallDetails: arg.CallDetails || "",
+                ContactPhoneID: arg.ContactPhoneID || "",
+                LogType: arg.LogType || "",
+                MediaURL: arg.MediaURL || "",
+                CallStartTime: arg.CallStartTime || "",
+                CallEndTime: arg.CallEndTime || "",
+                leadId: lead._id,
+              });
+              const response = await newCall.save();
+              return response;
+            }
+          });
+          Promise.all(result);
+          return "Calls added successfully";
+        } catch (error) {
+          console.log(error);
+        }
       },
+
+      // type: CallType,
+      // args: {
+      //   contactId: { type: GraphQLNonNull(GraphQLString) },
+      //   FirstName: { type: GraphQLNonNull(GraphQLString) },
+      //   LastName: { type: GraphQLNonNull(GraphQLString) },
+      //   DateCreated: { type: GraphQLNonNull(GraphQLString) },
+      //   BuyerAgent: { type: GraphQLNonNull(GraphQLString) },
+      //   ListingAgent: { type: GraphQLNonNull(GraphQLString) },
+      //   UserID: { type: GraphQLNonNull(GraphQLString) },
+      //   AssociatedopportunityID: { type: GraphQLNonNull(GraphQLString) },
+      //   CallDetails: { type: GraphQLNonNull(GraphQLString) },
+      //   ContactPhoneID: { type: GraphQLNonNull(GraphQLString) },
+      //   LogType: { type: GraphQLNonNull(GraphQLString) },
+      //   MediaURL: { type: GraphQLNonNull(GraphQLString) },
+      //   CallStartTime: { type: GraphQLNonNull(GraphQLString) },
+      //   CallEndTime: { type: GraphQLNonNull(GraphQLString) },
+      //   leadId: { type: GraphQLNonNull(GraphQLID) },
+      // },
+      // resolve(parent, args) {
+      //   const NEWCall = new Call({
+      //     contactId: args.contactId,
+      //     FirstName: args.FirstName,
+      //     LastName: args.LastName,
+      //     DateCreated: args.DateCreated,
+      //     BuyerAgent: args.BuyerAgent,
+      //     ListingAgent: args.ListingAgent,
+      //     UserID: args.UserID,
+      //     AssociatedopportunityID: args.AssociatedopportunityID,
+      //     CallDetails: args.CallDetails,
+      //     ContactPhoneID: args.ContactPhoneID,
+      //     LogType: args.LogType,
+      //     MediaURL: args.MediaURL,
+      //     CallStartTime: args.CallStartTime,
+      //     CallEndTime: args.CallEndTime,
+      //     leadId: args.leadId,
+      //   });
+      //   return NEWCall.save();
+      // },
     },
     //Add EAlert
     addEAlert: {
-      type: EAlertType,
+      type: GraphQLNonNull(GraphQLString),
       args: {
-        contactId: { type: GraphQLNonNull(GraphQLString) },
-        FirstName: { type: GraphQLNonNull(GraphQLString) },
-        LastName: { type: GraphQLNonNull(GraphQLString) },
-        SearchName: { type: GraphQLNonNull(GraphQLString) },
-        QueryString: { type: GraphQLNonNull(GraphQLString) },
-        EmailFrequency: { type: GraphQLNonNull(GraphQLString) },
-        BuyerAgent: { type: GraphQLNonNull(GraphQLString) },
-        ListingAgent: { type: GraphQLNonNull(GraphQLString) },
-        leadId: { type: GraphQLNonNull(GraphQLID) },
+        alerts: { type: GraphQLNonNull(GraphQLString) },
       },
 
-      resolve(parent, args) {
-        const eAlert = new EAlert({
-          contactId: args.contactId,
-          FirstName: args.FirstName,
-          LastName: args.LastName,
-          SearchName: args.SearchName,
-          QueryString: args.QueryString,
-          EmailFrequency: args.EmailFrequency,
-          BuyerAgent: args.BuyerAgent,
-          ListingAgent: args.ListingAgent,
-          leadId: args.leadId,
-        });
-        return eAlert.save();
+      async resolve(parent, { alerts }) {
+        try {
+          alerts = JSON.parse(alerts);
+          //create async map function for args
+          const result = await alerts.map(async (arg) => {
+            const lead = await Lead.findOne({
+              firstName: arg.FirstName,
+              lastName: arg.LastName,
+            });
+            if (!lead || !lead.firstName) return;
+            if (lead) {
+              const newEAlert = new EAlert({
+                contactId: arg.contactId || "",
+                FirstName: arg.FirstName || "",
+                LastName: arg.LastName || "",
+                SearchName: arg.SearchName || "",
+                QueryString: arg.QueryString || "",
+                EmailFrequency: arg.EmailFrequency || "",
+                BuyerAgent: arg.BuyerAgent || "",
+                ListingAgent: arg.ListingAgent || "",
+                leadId: lead._id,
+              });
+              const response = await newEAlert.save();
+              return response;
+            }
+          });
+          Promise.all(result);
+          return "Calls eAlerts successfully";
+        } catch (error) {
+          console.log(error);
+        }
       },
+
+      // type: EAlertType,
+      // args: {
+      //   contactId: { type: GraphQLNonNull(GraphQLString) },
+      //   FirstName: { type: GraphQLNonNull(GraphQLString) },
+      //   LastName: { type: GraphQLNonNull(GraphQLString) },
+      //   SearchName: { type: GraphQLNonNull(GraphQLString) },
+      //   QueryString: { type: GraphQLNonNull(GraphQLString) },
+      //   EmailFrequency: { type: GraphQLNonNull(GraphQLString) },
+      //   BuyerAgent: { type: GraphQLNonNull(GraphQLString) },
+      //   ListingAgent: { type: GraphQLNonNull(GraphQLString) },
+      //   leadId: { type: GraphQLNonNull(GraphQLID) },
+      // },
+
+      // resolve(parent, args) {
+      //   const eAlert = new EAlert({
+      //     contactId: args.contactId,
+      //     FirstName: args.FirstName,
+      //     LastName: args.LastName,
+      //     SearchName: args.SearchName,
+      //     QueryString: args.QueryString,
+      //     EmailFrequency: args.EmailFrequency,
+      //     BuyerAgent: args.BuyerAgent,
+      //     ListingAgent: args.ListingAgent,
+      //     leadId: args.leadId,
+      //   });
+      //   return eAlert.save();
+      // },
     },
     //Add Note
     addNote: {
@@ -1113,28 +1195,6 @@ const mutation = new GraphQLObjectType({
               });
               return await newNote.save();
             }
-            // else {
-            //   console.log("esle-----------------");
-            //   if (!arg.FirstName || !arg.LastName) return;
-            //   const newLead = await Lead.create({
-            //     firstName: arg.FirstName,
-            //     lastName: arg.LastName,
-            //   });
-            //   console.log("esle new Lead-----------------", newLead);
-
-            //   const newNote = new Note({
-            //     contactId: arg.contactId || "",
-            //     FirstName: newLead.firstName || "",
-            //     LastName: newLead.lastName || "",
-            //     Notes: arg.Notes || "",
-            //     BuyerAgent: arg.BuyerAgent || "",
-            //     ListingAgent: arg.ListingAgent || "",
-            //     leadId: newLead._id,
-            //   });
-            //   console.log("esle new note-----------------", newNote);
-
-            //   return await newNote.save();
-            // }
           });
           Promise.all(result);
           return "Notes added successfully";
