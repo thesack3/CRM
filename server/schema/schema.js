@@ -155,6 +155,22 @@ const NoteType = new GraphQLObjectType({
   }),
 });
 
+//  Note Type for multiple notes
+const MultipleNotesType = new GraphQLList(NoteType);
+
+// Note Input Type
+const NoteInputType = new GraphQLInputObjectType({
+  name: "NoteInput",
+  fields: () => ({
+    contactId: { type: GraphQLString },
+    FirstName: { type: GraphQLString },
+    LastName: { type: GraphQLString },
+    Notes: { type: GraphQLString },
+    BuyerAgent: { type: GraphQLString },
+    ListingAgent: { type: GraphQLString },
+  }),
+});
+
 const TextType = new GraphQLObjectType({
   name: "Text",
   fields: () => ({
@@ -402,11 +418,11 @@ const RootQuery = new GraphQLObjectType({
     lead: {
       type: LeadType,
       args: { id: { type: GraphQLID } },
+
       resolve(parent, args) {
-        console.log("resolving lead", args.id);
         return Lead.findById(args.id)
           .then((result) => {
-            console.log("found lead", result);
+            // console.log("found lead", result);
             return result;
           })
           .catch((error) => {
@@ -1062,28 +1078,80 @@ const mutation = new GraphQLObjectType({
     },
     //Add Note
     addNote: {
-      type: NoteType,
+      type: GraphQLNonNull(GraphQLString),
       args: {
-        contactId: { type: GraphQLNonNull(GraphQLString) },
-        FirstName: { type: GraphQLNonNull(GraphQLString) },
-        LastName: { type: GraphQLNonNull(GraphQLString) },
-        Notes: { type: GraphQLNonNull(GraphQLString) },
-        BuyerAgent: { type: GraphQLNonNull(GraphQLString) },
-        ListingAgent: { type: GraphQLNonNull(GraphQLString) },
-        leadId: { type: GraphQLNonNull(GraphQLID) },
+        notes: { type: GraphQLNonNull(GraphQLString) },
       },
+      // args: {
+      //   contactId: { type: GraphQLNonNull(GraphQLString) },
+      //   FirstName: { type: GraphQLNonNull(GraphQLString) },
+      //   LastName: { type: GraphQLNonNull(GraphQLString) },
+      //   Notes: { type: GraphQLNonNull(GraphQLString) },
+      //   BuyerAgent: { type: GraphQLNonNull(GraphQLString) },
+      //   ListingAgent: { type: GraphQLNonNull(GraphQLString) },
+      // },
 
-      resolve(parent, args) {
-        const NewNote = new Note({
-          contactId: args.contactId,
-          FirstName: args.FirstName,
-          LastName: args.LastName,
-          Notes: args.Notes,
-          BuyerAgent: args.BuyerAgent,
-          ListingAgent: args.ListingAgent,
-          leadId: args.leadId,
-        });
-        return NewNote.save();
+      async resolve(parent, { notes }) {
+        try {
+          notes = JSON.parse(notes);
+          //create async map function for args
+          const result = await notes.map(async (arg) => {
+            const lead = await Lead.findOne({
+              firstName: arg.FirstName,
+              lastName: arg.LastName,
+            });
+            if (!lead || !lead.firstName) return;
+            if (lead) {
+              const newNote = new Note({
+                contactId: arg.contactId || "",
+                FirstName: lead.firstName || "",
+                LastName: lead.lastName || "",
+                Notes: arg.Notes || "",
+                BuyerAgent: arg.BuyerAgent || "",
+                ListingAgent: arg.ListingAgent || "",
+                leadId: lead._id,
+              });
+              return await newNote.save();
+            }
+            // else {
+            //   console.log("esle-----------------");
+            //   if (!arg.FirstName || !arg.LastName) return;
+            //   const newLead = await Lead.create({
+            //     firstName: arg.FirstName,
+            //     lastName: arg.LastName,
+            //   });
+            //   console.log("esle new Lead-----------------", newLead);
+
+            //   const newNote = new Note({
+            //     contactId: arg.contactId || "",
+            //     FirstName: newLead.firstName || "",
+            //     LastName: newLead.lastName || "",
+            //     Notes: arg.Notes || "",
+            //     BuyerAgent: arg.BuyerAgent || "",
+            //     ListingAgent: arg.ListingAgent || "",
+            //     leadId: newLead._id,
+            //   });
+            //   console.log("esle new note-----------------", newNote);
+
+            //   return await newNote.save();
+            // }
+          });
+          Promise.all(result);
+          return "Notes added successfully";
+        } catch (error) {
+          console.log(error);
+        }
+
+        // const NewNote = new Note({
+        //   contactId: args.contactId,
+        //   FirstName: args.FirstName,
+        //   LastName: args.LastName,
+        //   Notes: args.Notes,
+        //   BuyerAgent: args.BuyerAgent,
+        //   ListingAgent: args.ListingAgent,
+        //   leadId: args.leadId,
+        // });
+        // return NewNote.save();
       },
     },
     //Delete a project

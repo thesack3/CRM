@@ -23,7 +23,7 @@ import SelectTag from '../SelectTag';
 import AddNote from '../modals/AddNote';
 
 export default function DataGridProCSV2(props) {
-  const { categories: updatedCategories, tags: updatedTags } = React.useContext(callContext);
+  const { categories: updatedCategories, tags: updatedTags, setLeadId } = React.useContext(callContext);
 
   const [open, setOpen] = React.useState(false);
   const [profileModal, setProfileModal] = useState(false);
@@ -161,6 +161,7 @@ export default function DataGridProCSV2(props) {
             <Button
               variant="outlined"
               onClick={() => {
+                setLeadId(params?.row?.id)
                 setOpenLeadDetails(true);
                 setCurrentParam(params.row);
               }}
@@ -739,7 +740,7 @@ export default function DataGridProCSV2(props) {
           <AddCSVLeadModal callback={handleRefetch} />
           <AddTagModal callback={() => setRefetchTag(new Date().getTime())} />
           <AddCategoryModal callback={() => setRefetchCategories(new Date().getTime())} />
-          {/* <AddNote /> */}
+          <AddNote />
         </Box>
 
         <Box flex>

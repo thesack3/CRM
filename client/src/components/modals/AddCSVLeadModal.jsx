@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { useMutation } from '@apollo/client';
 import LoadingButton from '@mui/lab/LoadingButton';
 import { Alert, Snackbar } from '@mui/material';
-import SendIcon from '@mui/icons-material/Send';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -163,7 +162,6 @@ export default function AddCSVLeadModal({ callback }) {
           count += 1;
           setCounter(count);
           if (data.length === count) {
-            console.log('count in loop final-------', count);
             setLoading(false);
             setOpenSnack(true);
             handleClose();
@@ -199,8 +197,6 @@ export default function AddCSVLeadModal({ callback }) {
     setLoading(false);
   };
 
-  console.log('counter-----------', counter);
-
   return (
     <div>
       <Button variant="outlined" onClick={handleClickOpen}>
@@ -224,11 +220,9 @@ export default function AddCSVLeadModal({ callback }) {
           <Button onClick={handleClose} sx={{ color: 'red' }}>
             Cancel
           </Button>
-          {/* <Button onClick={handleUpload}>Upload Leads</Button> */}
           <LoadingButton
             size="large"
             onClick={handleUpload}
-            // endIcon={<SendIcon />}
             loading={loading}
             loadingPosition="end"
             variant="text"

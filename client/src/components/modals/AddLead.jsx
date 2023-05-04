@@ -740,7 +740,7 @@ export default function AddLeadModal({ handleRefetch }) {
           </Dialog>
           <Snackbar open={openSnack} autoHideDuration={2000} onClose={() => setOpenSnack(false)}>
             <Alert onClose={() => setOpenSnack(false)} severity="success" sx={{ width: '100%' }}>
-              Tag Updated
+              Lead Added!
             </Alert>
           </Snackbar>
         </div>

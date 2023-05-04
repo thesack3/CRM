@@ -43,6 +43,7 @@ export default function LeadDetails({ leadDetail, handleUpdate, openModal, setOp
     categories: updatedCategories,
     tags: updatedTags,
   } = useContext(callContext);
+
   const [isMessageModal, setIsMessageModal] = useState(false);
   const [open, setOpen] = React.useState(false);
 
@@ -68,15 +69,14 @@ export default function LeadDetails({ leadDetail, handleUpdate, openModal, setOp
     variables: { leadId: selectedLead ? selectedLead.id : null },
     skip: !selectedLead,
   });
+
   const {
     loading: notesLoading,
     error: notesError,
     data: notesData,
   } = useQuery(GET_NOTES, {
-    variables: { leadId: selectedLead ? selectedLead.id : null },
-    skip: !selectedLead,
+    variables: { leadId },
   });
-
   const handleClose = (event, reason) => {
     if (reason === 'clickaway') {
       return;
