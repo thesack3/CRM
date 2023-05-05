@@ -616,6 +616,7 @@ export default function DataGridProCSV2(props) {
   const handleSearchInputChange = (event) => {
     const input = event.target.value;
     setSearchQuery(input);
+    if (!allLeads?.leads?.length) return;
     const filteredRows = allLeads?.leads?.filter((row) => {
       const matched = Object.values(row).some((value) => {
         return String(value).toLowerCase().includes(input.toLowerCase());
