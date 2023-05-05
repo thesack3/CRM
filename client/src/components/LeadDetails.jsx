@@ -47,7 +47,6 @@ export default function LeadDetails({ leadDetail, handleUpdate, openModal, setOp
   const [isMessageModal, setIsMessageModal] = useState(false);
   const [open, setOpen] = React.useState(false);
 
-  const [selectedLead, setSelectedLead] = useState(null);
 
   const [arrayCell, setArrayCell] = useState(null);
   const theme = useTheme();
@@ -56,15 +55,37 @@ export default function LeadDetails({ leadDetail, handleUpdate, openModal, setOp
     variables: { toNumber: '9099945730', msg: 'Call', leadId },
   });
 
-  const { loading: callsLoading, data: callsData } = useQuery(GET_CALLS, {
+  const {
+    loading: callsLoading,
+    data: callsData,
+    refetch: refetchCalls,
+  } = useQuery(GET_CALLS, {
     variables: { leadId },
   });
-  const { loading: ealertsLoading, data: ealertsData } = useQuery(GET_EALERTS, {
+  const {
+    loading: ealertsLoading,
+    data: ealertsData,
+    refetch: refetchAlerts,
+  } = useQuery(GET_EALERTS, {
     variables: { leadId },
   });
-  const { loading: notesLoading, data: notesData } = useQuery(GET_NOTES, {
+  const {
+    loading: notesLoading,
+    data: notesData,
+    refetch: refetchNotes,
+  } = useQuery(GET_NOTES, {
     variables: { leadId },
   });
+
+  useEffect(() => {
+    if (openModal) {
+      (async () => {
+        await refetchAlerts();
+        await refetchCalls();
+        await refetchNotes();
+      })();
+    }
+  }, [openModal]);
 
   const handleClose = (event, reason) => {
     if (reason === 'clickaway') {
@@ -80,7 +101,6 @@ export default function LeadDetails({ leadDetail, handleUpdate, openModal, setOp
       console.log('Error-', error);
     }
   };
-  // const [openModal, setOpenModal] = React.useState(false);
 
   return (
     <>
