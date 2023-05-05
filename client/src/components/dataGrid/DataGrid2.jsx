@@ -52,6 +52,7 @@ export default function DataGridProCSV2(props) {
   } = useQuery(GET_LEADS, {
     variables: { take },
   });
+  const { data: allLeads, refetch: allLeadsRefetch } = useQuery(GET_LEADS);
 
   const [sendEmails, { loading: Emailsloading, error: Emailerror, data: emaildata }] =
     useMutation(SEND_EMAILS_MUTATION);
@@ -606,8 +607,8 @@ export default function DataGridProCSV2(props) {
     : [];
 
   useEffect(() => {
-    if (leadsRows.length) {
-      const filter = leadsRows?.filter((x) => x.categoriesList.includes(...categories));
+    if (allLeads?.leads?.length) {
+      const filter = allLeads?.leads?.filter((x) => x.categoriesList.includes(...categories));
       setLeadRows1(filter);
     }
   }, [categories]);
@@ -615,7 +616,7 @@ export default function DataGridProCSV2(props) {
   const handleSearchInputChange = (event) => {
     const input = event.target.value;
     setSearchQuery(input);
-    const filteredRows = leadsRows.filter((row) => {
+    const filteredRows = allLeads?.leads?.filter((row) => {
       const matched = Object.values(row).some((value) => {
         return String(value).toLowerCase().includes(input.toLowerCase());
       });

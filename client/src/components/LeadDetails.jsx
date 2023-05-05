@@ -47,7 +47,6 @@ export default function LeadDetails({ leadDetail, handleUpdate, openModal, setOp
   const [isMessageModal, setIsMessageModal] = useState(false);
   const [open, setOpen] = React.useState(false);
 
-
   const [arrayCell, setArrayCell] = useState(null);
   const theme = useTheme();
 
