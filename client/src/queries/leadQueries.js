@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
 const GET_LEADS = gql`
-  query Leads($take: String, $skip: String) {
-    leads(take: $take, skip: $skip) {
+  query Leads($take: String, $skip: String, $filter: String) {
+    leads(take: $take, skip: $skip, filter: $filter) {
       id
       firstName
       email

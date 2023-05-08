@@ -44,15 +44,17 @@ export default function DataGridProCSV2(props) {
   const [searchQuery, setSearchQuery] = useState('');
   const [openLeadDetails, setOpenLeadDetails] = useState(false);
   const [currentParam, setCurrentParam] = useState(null);
+  const [filter, setFilter] = useState('');
+
   const {
     loading: graphQLClientsLoading,
     error: graphQLClientsError,
     data,
     refetch,
   } = useQuery(GET_LEADS, {
-    variables: { take },
+    variables: { skip: '', take, filter },
   });
-  const { data: allLeads, refetch: allLeadsRefetch } = useQuery(GET_LEADS);
+  // const { data: allLeads, refetch: allLeadsRefetch } = useQuery(GET_LEADS);
 
   const [sendEmails, { loading: Emailsloading, error: Emailerror, data: emaildata }] =
     useMutation(SEND_EMAILS_MUTATION);
@@ -568,23 +570,23 @@ export default function DataGridProCSV2(props) {
     }
     setOpenSnack(false);
   };
-  useEffect(() => {
-    const filteredRows = responseData.filter((row) => {
-      const matched = Object.values(row).some((value) => {
-        return String(value).toLowerCase().includes(searchQuery.toLowerCase());
-      });
+  // useEffect(() => {
+  //   const filteredRows = responseData.filter((row) => {
+  //     const matched = Object.values(row).some((value) => {
+  //       return String(value).toLowerCase().includes(searchQuery.toLowerCase());
+  //     });
 
-      const categoryMatched =
-        categories.length === 0 ||
-        categories.some((category) => {
-          return row.categories.includes(category);
-        });
+  //     const categoryMatched =
+  //       categories.length === 0 ||
+  //       categories.some((category) => {
+  //         return row.categories.includes(category);
+  //       });
 
-      return matched && categoryMatched;
-    });
+  //     return matched && categoryMatched;
+  //   });
 
-    setFilteredData(filteredRows);
-  }, [responseData, searchQuery, categories]);
+  //   setFilteredData(filteredRows);
+  // }, [responseData, searchQuery, categories]);
 
   // ...
 
@@ -606,31 +608,12 @@ export default function DataGridProCSV2(props) {
       })
     : [];
 
-  useEffect(() => {
-    if (allLeads?.leads?.length) {
-      const filter = allLeads?.leads?.filter((x) => x.categoriesList.includes(...categories));
-      setLeadRows1(filter);
-    }
-  }, [categories]);
-
-  const handleSearchInputChange = (event) => {
-    const input = event.target.value;
-    setSearchQuery(input);
-    if (!allLeads?.leads?.length) return;
-    const filteredRows = allLeads?.leads?.filter((row) => {
-      const matched = Object.values(row).some((value) => {
-        return String(value).toLowerCase().includes(input.toLowerCase());
-      });
-
-      const categoryMatched =
-        categories.length === 0 ||
-        categories.some((category) => {
-          return row.categories.includes(category);
-        });
-      return matched && categoryMatched;
-    });
-    setLeadRows1(filteredRows);
-  };
+  // useEffect(() => {
+  //   if (allLeads?.leads?.length) {
+  //     const filter = allLeads?.leads?.filter((x) => x.categoriesList.includes(...categories));
+  //     setLeadRows1(filter);
+  //   }
+  // }, [categories]);
 
   // get columns where hide is false
   const visible = [];
@@ -718,6 +701,22 @@ export default function DataGridProCSV2(props) {
     await refetch();
   };
 
+  const handleSearchInputChange = (event) => {
+    const input = event.target.value;
+    setSearchQuery(input);
+    if (!input) {
+      setFilter('');
+      setTake('10');
+    }
+  };
+
+  const handleKeyPress = async (e) => {
+    if (e.key === 'Enter') {
+      setFilter(searchQuery);
+      setTake('');
+    }
+  };
+
   return (
     <div style={{ height: 700, width: '100%' }}>
       {currentParam && (
@@ -796,6 +795,7 @@ export default function DataGridProCSV2(props) {
               type={'search'}
               label="Search"
               value={searchQuery}
+              onKeyPress={handleKeyPress}
               onChange={(e) => handleSearchInputChange(e)}
             />
           </Box>
@@ -803,7 +803,7 @@ export default function DataGridProCSV2(props) {
           {!graphQLClientsLoading ? (
             <DataGridPro
               sx={gridStyles}
-              rows={categories.length || searchQuery ? leadsRows1 : leadsRows}
+              rows={categories.length || searchQuery ? data?.leads : leadsRows}
               columns={columnsToShow}
               onColumnVisibilityModelChange={(e) => ColumnVisibilityChangeHandler(e)}
               editable
