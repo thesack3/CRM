@@ -411,7 +411,7 @@ const RootQuery = new GraphQLObjectType({
         filter: { type: GraphQLString },
       },
       async resolve(parent, args) {
-        // filter record by firstname, lastname, email, phone, address, city, state, zip, tagslist, categorieslist, phoneStatus, leadType, lender, GloballyOptedOutOfBuyerAgentEmail, GloballyOptedOutOfEmail, BuyerAgentCategory
+        // filter record by firstname, lastname, email, phone, address, city, state, zip, phoneStatus, leadType, lender, GloballyOptedOutOfBuyerAgentEmail, GloballyOptedOutOfEmail, BuyerAgentCategory
 
         return Lead.find({
           $or: [
