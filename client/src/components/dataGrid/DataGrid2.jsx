@@ -52,7 +52,7 @@ export default function DataGridProCSV2(props) {
     data,
     refetch,
   } = useQuery(GET_LEADS, {
-    variables: { skip: '', take, filter },
+    variables: { skip: '', take, filter, category: categories },
   });
   // const { data: allLeads, refetch: allLeadsRefetch } = useQuery(GET_LEADS);
 
@@ -113,46 +113,46 @@ export default function DataGridProCSV2(props) {
 
   const apiRef = React.useRef(null);
 
-  const handleRowSelection = (params) => {
-    const selectedEmails = params.map((id) => {
-      const row = responseData.find((r) => r.id === id);
-      return row.email;
-    });
-    setRowSelectedUsers(selectedEmails);
-  };
+  // const handleRowSelection = (params) => {
+  //   const selectedEmails = params.map((id) => {
+  //     const row = responseData.find((r) => r.id === id);
+  //     return row.email;
+  //   });
+  //   setRowSelectedUsers(selectedEmails);
+  // };
 
-  useEffect(() => {
-    if (data?.leads) {
-      // console.log(props.UserData)
+  // useEffect(() => {
+  //   if (data?.leads) {
+  //     // console.log(props.UserData)
 
-      const usersWithIds = data.leads.map((user, index) => {
-        const Tags = user.tags.map((item, index) => {
-          return item.title;
-        });
+  //     const usersWithIds = data.leads.map((user, index) => {
+  //       const Tags = user.tags.map((item, index) => {
+  //         return item.title;
+  //       });
 
-        const Categories = user.categories.map((item, index) => {
-          return item.title;
-        });
+  //       const Categories = user.categories.map((item, index) => {
+  //         return item.title;
+  //       });
 
-        const OGTags = user.tags.map((item, index) => {
-          return item.id;
-        });
+  //       const OGTags = user.tags.map((item, index) => {
+  //         return item.id;
+  //       });
 
-        const OGCategories = user.categories.map((item, index) => {
-          return item.id;
-        });
+  //       const OGCategories = user.categories.map((item, index) => {
+  //         return item.id;
+  //       });
 
-        console.log(Categories);
-        console.log(Tags);
+  //       console.log(Categories);
+  //       console.log(Tags);
 
-        // alert("user!")
+  //       // alert("user!")
 
-        return { ...user, Uid: index, tags: Tags, categories: Categories, ogTags: OGTags, ogCategories: OGCategories };
-      });
+  //       return { ...user, Uid: index, tags: Tags, categories: Categories, ogTags: OGTags, ogCategories: OGCategories };
+  //     });
 
-      setResponseData(usersWithIds);
-    }
-  }, [props.UserData, data]);
+  //     setResponseData(usersWithIds);
+  //   }
+  // }, [props.UserData, data]);
   const columns = useMemo(
     () => [
       {
@@ -552,16 +552,16 @@ export default function DataGridProCSV2(props) {
     setPageSize(params.pageSize);
   };
 
-  const handleEditRowsModelChange = (params) => {
-    const updatedData = [...responseData];
-    params.forEach((cell) => {
-      const { field, id, value } = cell;
-      const row = updatedData.find((r) => r.id === id);
-      row[field] = value;
-    });
+  // const handleEditRowsModelChange = (params) => {
+  //   const updatedData = [...responseData];
+  //   params.forEach((cell) => {
+  //     const { field, id, value } = cell;
+  //     const row = updatedData.find((r) => r.id === id);
+  //     row[field] = value;
+  //   });
 
-    setResponseData(updatedData);
-  };
+  //   setResponseData(updatedData);
+  // };
 
   const [filteredData, setFilteredData] = useState([]);
   const handleCloseSnackbar = (event, reason) => {
@@ -607,13 +607,6 @@ export default function DataGridProCSV2(props) {
         return { ...rest, profile: 'hello' };
       })
     : [];
-
-  // useEffect(() => {
-  //   if (allLeads?.leads?.length) {
-  //     const filter = allLeads?.leads?.filter((x) => x.categoriesList.includes(...categories));
-  //     setLeadRows1(filter);
-  //   }
-  // }, [categories]);
 
   // get columns where hide is false
   const visible = [];
@@ -713,7 +706,7 @@ export default function DataGridProCSV2(props) {
   const handleKeyPress = async (e) => {
     if (e.key === 'Enter') {
       setFilter(searchQuery);
-      setTake('');
+      setCategories([]);
     }
   };
 

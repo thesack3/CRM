@@ -409,66 +409,32 @@ const RootQuery = new GraphQLObjectType({
         skip: { type: GraphQLString },
         take: { type: GraphQLString },
         filter: { type: GraphQLString },
+        category: { type: GraphQLList(GraphQLString) },
       },
       async resolve(parent, args) {
-        // filter record by firstname, lastname, email, phone, address, city, state, zip, phoneStatus, leadType, lender, GloballyOptedOutOfBuyerAgentEmail, GloballyOptedOutOfEmail, BuyerAgentCategory
-
+        // find by categoryList
+        if (args && args.category.length) {
+          const searchRegexes = args.category.map((term) => term && new RegExp(term, "i"));
+          return Lead.find({
+            // categoriesList: {
+            //   $elemMatch: { $regex: new RegExp(args.category, "i") },
+            // },
+            categoriesList: { $in: searchRegexes },
+          });
+        }
         return Lead.find({
           $or: [
-            { firstName: { $regex: args.filter } },
-            { lastName: { $regex: args.filter } },
-            { email: { $regex: args.filter } },
-            { phone: { $regex: args.filter } },
-            { Address: { $regex: args.filter } },
-            { City: { $regex: args.filter } },
-            { State: { $regex: args.filter } },
-            { ZipCode: { $regex: args.filter } },
-            { phoneStatus: { $regex: args.filter } },
-            { LeadType: { $regex: args.filter } },
-            { Lender: { $regex: args.filter } },
-            { GloballyOptedOutOfBuyerAgentEmail: { $regex: args.filter } },
-            {
-              GloballyOptedOutOfEmail: { $regex: args.filter },
-            },
-            {
-              BuyerAgentCategory: { $regex: args.filter },
-            },
+            { firstName: { $regex: new RegExp(args.filter, "i") } },
+            { lastName: { $regex: new RegExp(args.filter, "i") } },
+            { email: { $regex: new RegExp(args.filter, "i") } },
+            { phone: { $regex: new RegExp(args.filter, "i") } },
+            // { firstName: { $regex: args.filter } },
           ],
         })
           .limit(Number(args?.take || ""))
           .skip(Number(args?.skip))
           .sort({ createdAt: "desc" })
           .exec();
-
-        // const filter = await Lead.find({
-        //   $or: [
-        //     { firstName: args.filter },
-        //     { lastName: args.filter },
-        //     { email: args.filter },
-        //     { phone: args.filter },
-        //     { Address: args.filter },
-        //     { City: args.filter },
-        //     { State: args.filter },
-        //     { ZipCode: args.filter },
-        //     { phoneStatus: args.filter },
-        //     { LeadType: args.filter },
-        //     { Lender: args.filter },
-        //     { GloballyOptedOutOfBuyerAgentEmail: args.filter },
-        //     {
-        //       GloballyOptedOutOfEmail: args.filter,
-        //     },
-        //     {
-        //       BuyerAgentCategory: args.filter,
-        //     },
-        //     // { tagsList: tagsList.includes(args.filter) },
-        //     // { categoriesList: categoriesList.includes(args.filter) },
-        //   ],
-        // })
-        //   .limit(Number(args?.take || ""))
-        //   .skip(Number(args?.skip || ""))
-        //   .sort({ createdAt: "desc" })
-        //   .exec();
-        // return filter;
       },
     },
 
