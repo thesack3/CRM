@@ -55,7 +55,7 @@ export default function DataGridProCSV2(props) {
     data,
     refetch,
   } = useQuery(GET_LEADS, {
-    variables: { skip: '', take, filter, category: categories, column: column, sort: sort },
+    variables: { skip: '', take, filter, category: categories, column, sort },
   });
   // const { data: allLeads, refetch: allLeadsRefetch } = useQuery(GET_LEADS);
 
@@ -707,9 +707,8 @@ export default function DataGridProCSV2(props) {
   };
 
   const handleKeyPress = async (e) => {
-    debugger;
     if (e.key === 'Enter') {
-      tableSearch ? setFilter(tableSearch) : setFilter(searchQuery);
+      setFilter(searchQuery);
       setCategories([]);
     }
   };
@@ -719,7 +718,6 @@ export default function DataGridProCSV2(props) {
   // };
 
   function handleFilterModelChange(filterModel) {
-    debugger;
     if (!filterModel.items[0].value) return;
     setTableSerach(filterModel.items[0].value);
     console.log(filterModel); // Log updated filter model object
@@ -828,7 +826,7 @@ export default function DataGridProCSV2(props) {
               // filterModel={filterModel}
               // onFilterModelChange={handleFilterModelChange}
               sortModel={sortModel}
-              onSortModelChange={handleSortModelChange}
+              onSortModelChange={(e) => handleSortModelChange(e)}
               key={Math.random().toString()}
               onCellEditCommit={(params, event) => {
                 edidLead(params);
