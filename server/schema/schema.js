@@ -410,6 +410,8 @@ const RootQuery = new GraphQLObjectType({
         take: { type: GraphQLString },
         filter: { type: GraphQLString },
         category: { type: GraphQLList(GraphQLString) },
+        sort: { type: GraphQLString },
+        column: { type: GraphQLString },
       },
       async resolve(parent, args) {
         // find by categoryList
@@ -422,18 +424,30 @@ const RootQuery = new GraphQLObjectType({
             categoriesList: { $in: searchRegexes },
           });
         }
+
+        let sortCriteria = {};
+        // get leads keys
+        const keys = Object.keys(Lead.schema.paths);
+        // get leads keys that are not _id, __v, categoriesList, tagsList
+        const leadKeys = keys.filter(
+          (key) => !["_id", "__v", "categoriesList", "tagsList"].includes(key)
+        );
+        // if column is in leadKeys, then sort by that column
+        if (args.column && leadKeys.includes(args.column)) {
+          sortCriteria[args.column] = args.sort === "desc" ? -1 : 1;
+        }
+
         return Lead.find({
           $or: [
             { firstName: { $regex: new RegExp(args.filter, "i") } },
             { lastName: { $regex: new RegExp(args.filter, "i") } },
             { email: { $regex: new RegExp(args.filter, "i") } },
             { phone: { $regex: new RegExp(args.filter, "i") } },
-            // { firstName: { $regex: args.filter } },
           ],
         })
           .limit(Number(args?.take || ""))
           .skip(Number(args?.skip))
-          .sort({ createdAt: "desc" })
+          .sort(args.column ? sortCriteria : { createdAt: -1 })
           .exec();
       },
     },

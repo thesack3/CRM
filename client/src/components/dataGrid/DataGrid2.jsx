@@ -26,7 +26,10 @@ import AddeAlert from '../modals/AddeAlert';
 
 export default function DataGridProCSV2(props) {
   const { categories: updatedCategories, tags: updatedTags, setLeadId } = React.useContext(callContext);
-
+  const [tableSearch, setTableSerach] = useState('');
+  const [sortModel, setSortModel] = useState([{ field: 'name', sort: 'asc' }]);
+  const [sort, setSort] = useState('');
+  const [column, setColumn] = useState('');
   const [open, setOpen] = React.useState(false);
   const [profileModal, setProfileModal] = useState(false);
   const [refetchCategories, setRefetchCategories] = useState('');
@@ -52,7 +55,7 @@ export default function DataGridProCSV2(props) {
     data,
     refetch,
   } = useQuery(GET_LEADS, {
-    variables: { skip: '', take, filter, category: categories },
+    variables: { skip: '', take, filter, category: categories, column: column, sort: sort },
   });
   // const { data: allLeads, refetch: allLeadsRefetch } = useQuery(GET_LEADS);
 
@@ -704,11 +707,30 @@ export default function DataGridProCSV2(props) {
   };
 
   const handleKeyPress = async (e) => {
+    debugger;
     if (e.key === 'Enter') {
-      setFilter(searchQuery);
+      tableSearch ? setFilter(tableSearch) : setFilter(searchQuery);
       setCategories([]);
     }
   };
+
+  // const filterModel = {
+  //   items: [{ columnField: 'firstName', operatorValue: 'contains', value: 'John' }],
+  // };
+
+  function handleFilterModelChange(filterModel) {
+    debugger;
+    if (!filterModel.items[0].value) return;
+    setTableSerach(filterModel.items[0].value);
+    console.log(filterModel); // Log updated filter model object
+  }
+
+  function handleSortModelChange(newSortModel) {
+    if (!newSortModel.length) return;
+    setSort(newSortModel[0].sort);
+    setColumn(newSortModel[0].field);
+    setSortModel(newSortModel);
+  }
 
   return (
     <div style={{ height: 700, width: '100%' }}>
@@ -803,6 +825,10 @@ export default function DataGridProCSV2(props) {
               editMode="cell"
               apiRef={apiRef}
               disableColumnMenu
+              // filterModel={filterModel}
+              // onFilterModelChange={handleFilterModelChange}
+              sortModel={sortModel}
+              onSortModelChange={handleSortModelChange}
               key={Math.random().toString()}
               onCellEditCommit={(params, event) => {
                 edidLead(params);
