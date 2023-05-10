@@ -736,7 +736,6 @@ export default function DataGridProCSV2() {
 
   const handlePageSizeChange = (newPageSize) => {
     setPageSize(newPageSize);
-    ƒ;
   };
 
   return (
@@ -846,8 +845,8 @@ export default function DataGridProCSV2() {
               page={page} // set the initial page to 1
               rowCount={data?.leads?.count} // set the total number of rows to the length of the rows array
               paginationMode="server" // paginate on the client-side
-              onPageChange={handlePageChange} // handle page changes
-              onPageSizeChange={handlePageSizeChange} // handle page size changes
+              onPageChange={(value) => handlePageChange(value)} // handle page changes
+              onPageSizeChange={(value) => handlePageSizeChange(value)} // handle page size changes
             />
           ) : (
             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
