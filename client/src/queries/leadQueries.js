@@ -2,8 +2,8 @@ import { gql } from '@apollo/client';
 
 const GET_LEADS = gql`
   query Leads(
-    $take: String
-    $skip: String
+    $take: Int
+    $skip: Int
     $filter: String
     $category: [String]
     $column: String
@@ -19,61 +19,64 @@ const GET_LEADS = gql`
       sort: $sort
       filterModel: $filterModel
     ) {
-      id
-      firstName
-      email
-      lastName
-      phone
-      phoneStatus
-      description
-      emailInvalid
-      GloballyOptedOutOfEmail
-      GloballyOptedOutOfBuyerAgentEmail
-      GloballyOptedOutOfListingAgentEmail
-      GloballyOptedOutOfLenderEmail
-      GloballyOptedOutOfAlerts
-      OptInDate
-      BuyerAgentCategory
-      ListingAgentCategory
-      LenderCategory
-      BuyerAgent
-      ListingAgent
-      Lender
-      OriginalSource
-      OriginalCampaign
-      LastAgentNote
-      eAlerts
-      VisitTotal
-      listingviewcount
-      AvgListingPrice
-      NextCallDue
-      LastAgentCallDate
-      LastLenderCallDate
-      FirstVisitDate
-      LastVisitDate
-      RegisterDate
-      LeadType
-      AgentSelected
-      LenderOptIn
-      Address
-      City
-      State
-      ZipCode
-      tagsList
-      categoriesList
-      tags {
+      count
+      rows {
         id
-        title
-        dateCreated
+        firstName
+        email
+        lastName
+        phone
+        phoneStatus
+        description
+        emailInvalid
+        GloballyOptedOutOfEmail
+        GloballyOptedOutOfBuyerAgentEmail
+        GloballyOptedOutOfListingAgentEmail
+        GloballyOptedOutOfLenderEmail
+        GloballyOptedOutOfAlerts
+        OptInDate
+        BuyerAgentCategory
+        ListingAgentCategory
+        LenderCategory
+        BuyerAgent
+        ListingAgent
+        Lender
+        OriginalSource
+        OriginalCampaign
+        LastAgentNote
+        eAlerts
+        VisitTotal
+        listingviewcount
+        AvgListingPrice
+        NextCallDue
+        LastAgentCallDate
+        LastLenderCallDate
+        FirstVisitDate
+        LastVisitDate
+        RegisterDate
+        LeadType
+        AgentSelected
+        LenderOptIn
+        Address
+        City
+        State
+        ZipCode
+        tagsList
+        categoriesList
+        tags {
+          id
+          title
+          dateCreated
+        }
+        categories {
+          id
+          title
+          dateCreated
+        }
+        Link
+        Birthday
+        HomeClosingDate
       }
-      categories {
-        id
-        title
-        dateCreated
-      }
-      Link
-      Birthday
-      HomeClosingDate
     }
   }
 `;

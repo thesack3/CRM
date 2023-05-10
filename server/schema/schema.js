@@ -15,6 +15,7 @@ const {
   GraphQLNonNull,
   GraphQLEnumType,
   GraphQLBoolean,
+  GraphQLInt,
 } = require("graphql");
 const User = require("../models/User");
 const Note = require("../models/Note");
@@ -413,10 +414,17 @@ const RootQuery = new GraphQLObjectType({
       },
     },
     leads: {
-      type: new GraphQLList(LeadType),
+      // type of data we are returning with count and leads
+      type: new GraphQLObjectType({
+        name: "Leads",
+        fields: () => ({
+          count: { type: GraphQLInt },
+          rows: { type: new GraphQLList(LeadType) },
+        }),
+      }),
       args: {
-        skip: { type: GraphQLString },
-        take: { type: GraphQLString },
+        skip: { type: GraphQLInt },
+        take: { type: GraphQLInt },
         filter: { type: GraphQLString },
         category: { type: GraphQLList(GraphQLString) },
         sort: { type: GraphQLString },
@@ -438,12 +446,18 @@ const RootQuery = new GraphQLObjectType({
         }
 
         let sortCriteria = {};
+
         // get leads keys
         const keys = Object.keys(Lead.schema.paths);
         // get leads keys that are not _id, __v, categoriesList, tagsList
         const leadKeys = keys.filter(
           (key) => !["_id", "__v", "categoriesList", "tagsList"].includes(key)
         );
+
+        // if column is in leadKeys, then sort by that column
+        if (args.column && leadKeys.includes(args.column)) {
+          sortCriteria[args.column] = args.sort === "desc" ? -1 : 1;
+        }
 
         // filter record by contains, equals, etc.
         const query = {};
@@ -489,19 +503,15 @@ const RootQuery = new GraphQLObjectType({
           filterModel?.operatorValue === "isNotEmpty"
         ) {
           const response = await Lead.find(query)
-            .limit(Number(args?.take || ""))
-            .skip(Number(args?.skip))
+            .limit(args?.take)
+            .skip(args?.skip)
             .sort(args.column ? sortCriteria : { createdAt: -1 })
             .exec();
           return response;
         }
 
-        // if column is in leadKeys, then sort by that column
-        if (args.column && leadKeys.includes(args.column)) {
-          sortCriteria[args.column] = args.sort === "desc" ? -1 : 1;
-        }
-
-        return await Lead.find({
+        const totalCount = await Lead.countDocuments();
+        const leads = await Lead.find({
           $or: [
             { firstName: { $regex: new RegExp(args.filter, "i") } },
             { lastName: { $regex: new RegExp(args.filter, "i") } },
@@ -509,10 +519,11 @@ const RootQuery = new GraphQLObjectType({
             { phone: { $regex: new RegExp(args.filter, "i") } },
           ],
         })
-          .limit(Number(args?.take || ""))
-          .skip(Number(args?.skip))
+          .limit(args?.take)
+          .skip(args?.skip)
           .sort(args.column ? sortCriteria : { createdAt: -1 })
           .exec();
+        return { count: totalCount, rows: leads };
       },
     },
 

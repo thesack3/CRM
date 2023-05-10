@@ -28,7 +28,6 @@ export default function DataGridProCSV2() {
   const [sortModel, setSortModel] = useState([{ field: 'name', sort: 'asc' }]);
   const [sort, setSort] = useState('');
   const [column, setColumn] = useState('');
-  const [open, setOpen] = React.useState(false);
   const [profileModal] = useState(false);
   const [refetchCategories, setRefetchCategories] = useState('');
   const [, setRefetchTag] = useState('');
@@ -43,20 +42,30 @@ export default function DataGridProCSV2() {
   const [currentParam, setCurrentParam] = useState(null);
   const [filter, setFilter] = useState('');
   const [filterModel, setFilterModel] = useState({});
+  const [page, setPage] = React.useState(0);
+  const [pageSize, setPageSize] = React.useState(10);
+  const [skip, setSkip] = React.useState(0);
 
   const {
     loading: graphQLClientsLoading,
     data,
     refetch,
   } = useQuery(GET_LEADS, {
-    variables: { skip: '', take, filter, category: categories, column, sort, filterModel: JSON.stringify(filterModel) },
+    variables: {
+      skip,
+      take: pageSize,
+      filter,
+      category: categories,
+      column,
+      sort,
+      filterModel: JSON.stringify(filterModel),
+    },
   });
   // const { data: allLeads, refetch: allLeadsRefetch } = useQuery(GET_LEADS);
 
   const [sendEmails] = useMutation(SEND_EMAILS_MUTATION);
   const [updateLead] = useMutation(updateLeadMutation);
 
-  const [, setPageSize] = useState(10);
   const [rowId] = useState(null);
   const [, setGridDataLoading] = useState(true);
 
@@ -542,10 +551,6 @@ export default function DataGridProCSV2() {
     [rowId, data]
   );
 
-  const handlePageSizeChange = (params) => {
-    setPageSize(params.pageSize);
-  };
-
   // const handleEditRowsModelChange = (params) => {
   //   const updatedData = [...responseData];
   //   params.forEach((cell) => {
@@ -584,19 +589,14 @@ export default function DataGridProCSV2() {
 
   // ...
 
-  <DataGridPro
-    rows={filteredData}
-    // ...
-  />;
-
   // const handleVisibility=()=>{
   //  const a= columns.filter((column) => selectedColumns.includes(column.field))
   //  console.log('a-------------------', a);
   // }
 
   // remove categories and tags from data.leads and make new array
-  const leadsRows = data?.leads
-    ? data.leads.map((lead) => {
+  const leadsRows = data?.leads?.rows
+    ? data.leads.rows.map((lead) => {
         const { __typename, ...rest } = lead;
         return { ...rest, profile: 'hello' };
       })
@@ -724,7 +724,20 @@ export default function DataGridProCSV2() {
     setColumn(newSortModel[0].field);
     setSortModel(newSortModel);
     setFilterModel({});
+    setSkip(0);
+    setPage(0);
+    setPageSize(10);
   }
+
+  const handlePageChange = (newPage) => {
+    setSkip(newPage * pageSize);
+    setPage(newPage);
+  };
+
+  const handlePageSizeChange = (newPageSize) => {
+    setPageSize(newPageSize);
+    ƒ;
+  };
 
   return (
     <div style={{ height: 700, width: '100%' }}>
@@ -771,12 +784,6 @@ export default function DataGridProCSV2() {
         </Box>
       </div>
       <div style={{ height: 690, width: '100%' }}>
-        {/* DATA GRID PRO  */}
-        <Snackbar open={open} autoHideDuration={2000} onClose={() => setOpen(false)}>
-          <Alert onClose={() => setOpen(false)} severity="success" sx={{ width: '100%' }}>
-            Updated Lead!
-          </Alert>
-        </Snackbar>
         <Box sx={{ marginTop: '16px' }}>
           <CategoryGrid remote={(e) => setCategories(e)} callback={refetchCategories} />
         </Box>
@@ -812,7 +819,7 @@ export default function DataGridProCSV2() {
           {!graphQLClientsLoading ? (
             <DataGridPro
               sx={gridStyles}
-              rows={categories.length || searchQuery ? data?.leads : leadsRows}
+              rows={categories.length || searchQuery ? data?.leads?.rows : leadsRows}
               columns={columnsToShow}
               onColumnVisibilityModelChange={(e) => ColumnVisibilityChangeHandler(e)}
               editable
@@ -834,13 +841,20 @@ export default function DataGridProCSV2() {
                   disableRemoveAllButton: false,
                 },
               }}
+              pagination="true" // enable pagination
+              pageSize={pageSize} // set the page size to 10
+              page={page} // set the initial page to 1
+              rowCount={data?.leads?.count} // set the total number of rows to the length of the rows array
+              paginationMode="server" // paginate on the client-side
+              onPageChange={handlePageChange} // handle page changes
+              onPageSizeChange={handlePageSizeChange} // handle page size changes
             />
           ) : (
             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
               <CircularProgress />
             </Box>
           )}
-          <Box
+          {/* <Box
             sx={{
               display: 'flex',
               alignItems: 'center',
@@ -868,7 +882,7 @@ export default function DataGridProCSV2() {
                 </MenuItem>
               ))}
             </TextField>
-          </Box>
+          </Box> */}
           <Snackbar open={openSnack} autoHideDuration={2000} onClose={handleCloseSnackbar}>
             <Alert
               onClose={handleCloseSnackbar}
