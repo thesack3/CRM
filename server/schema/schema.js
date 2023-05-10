@@ -483,8 +483,6 @@ const RootQuery = new GraphQLObjectType({
           query[filterModel?.columnField] = { $in: filterModel?.value };
         }
 
-        console.log("query--------------", query);
-
         if (
           (filterModel && filterModel?.value) ||
           filterModel?.operatorValue === "isEmpty" ||
@@ -495,7 +493,6 @@ const RootQuery = new GraphQLObjectType({
             .skip(Number(args?.skip))
             .sort(args.column ? sortCriteria : { createdAt: -1 })
             .exec();
-          console.log("response--------------", response);
           return response;
         }
 

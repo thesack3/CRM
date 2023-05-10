@@ -12,7 +12,6 @@ import AddCSVLeadModal from '../modals/AddCSVLeadModal';
 import AddTagModal from '../modals/AddTag';
 import AddCategoryModal from '../modals/AddCategory';
 import CategoryGrid from '../inputs/CategorySearchBox';
-import { selectedCols } from '../../constants/arrays';
 import { gridStyles } from '../../constants/styles';
 import SelectField from '../SelectField';
 import { updateLeadMutation } from '../../mutations/leadMutations';
@@ -24,26 +23,21 @@ import AddNote from '../modals/AddNote';
 import AddCSVCall from '../modals/AddCSVCalls';
 import AddeAlert from '../modals/AddeAlert';
 
-export default function DataGridProCSV2(props) {
-  const { categories: updatedCategories, tags: updatedTags, setLeadId } = React.useContext(callContext);
-  const [tableSearch, setTableSerach] = useState('');
+export default function DataGridProCSV2() {
+  const { setLeadId } = React.useContext(callContext);
   const [sortModel, setSortModel] = useState([{ field: 'name', sort: 'asc' }]);
   const [sort, setSort] = useState('');
   const [column, setColumn] = useState('');
   const [open, setOpen] = React.useState(false);
-  const [profileModal, setProfileModal] = useState(false);
+  const [profileModal] = useState(false);
   const [refetchCategories, setRefetchCategories] = useState('');
-  const [refetchTag, setRefetchTag] = useState('');
+  const [, setRefetchTag] = useState('');
   const [categories, setCategories] = useState([]);
-  const [selectedColumns, setSelectedColumns] = useState(selectedCols);
   const [columnsToShow, setColumnsToShow] = useState([]);
-  const [gridRef, setGridRef] = useState({});
+  const [gridRef] = useState({});
   const [openSnack, setOpenSnack] = React.useState(false);
-  const [responseData, setResponseData] = useState([]);
-  const [rowSelectedUsers, setRowSelectedUsers] = useState(['dominiqmartinez13@gmail.com', 'unhashlabs@gmail.com']);
+  const [rowSelectedUsers] = useState(['dominiqmartinez13@gmail.com', 'unhashlabs@gmail.com']);
   const [take, setTake] = useState('10');
-  const [leadsRows1, setLeadRows1] = useState([]);
-  const [category, setCategory] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [openLeadDetails, setOpenLeadDetails] = useState(false);
   const [currentParam, setCurrentParam] = useState(null);
@@ -52,7 +46,6 @@ export default function DataGridProCSV2(props) {
 
   const {
     loading: graphQLClientsLoading,
-    error: graphQLClientsError,
     data,
     refetch,
   } = useQuery(GET_LEADS, {
@@ -60,13 +53,12 @@ export default function DataGridProCSV2(props) {
   });
   // const { data: allLeads, refetch: allLeadsRefetch } = useQuery(GET_LEADS);
 
-  const [sendEmails, { loading: Emailsloading, error: Emailerror, data: emaildata }] =
-    useMutation(SEND_EMAILS_MUTATION);
+  const [sendEmails] = useMutation(SEND_EMAILS_MUTATION);
   const [updateLead] = useMutation(updateLeadMutation);
 
-  const [pageSize, setPageSize] = useState(10);
-  const [rowId, setRowId] = useState(null);
-  const [gridDataLoading, setGridDataLoading] = useState(true);
+  const [, setPageSize] = useState(10);
+  const [rowId] = useState(null);
+  const [, setGridDataLoading] = useState(true);
 
   const handleUpdate = async (values, id, type) => {
     const entries = values?.map((x) => x.title);
@@ -89,16 +81,14 @@ export default function DataGridProCSV2(props) {
     refetch();
   };
 
-  const handleCellEditStart = (params) => {
-    console.log('Cell edit started:', params);
-    // alert(`Cell edit started: row ${params.id}, field ${params.field}`);
-  };
+  // const handleCellEditStart = (params) => {
+  //   console.log('Cell edit started:', params);
+  //   // alert(`Cell edit started: row ${params.id}, field ${params.field}`);
+  // };
 
-  const handleCellEditCommit = (params, getRow) => {
-    console.log('Cell edit commited:', params);
-  };
-
-  const rows = [];
+  // const handleCellEditCommit = (params, getRow) => {
+  //   console.log('Cell edit commited:', params);
+  // };
 
   const handleSendEmails = async (Emails, Subject, Body) => {
     try {
@@ -830,16 +820,19 @@ export default function DataGridProCSV2(props) {
               apiRef={apiRef}
               disableColumnMenu
               // filterModel={filterModel}
-              onFilterModelChange={handleFilterModelChange}
+              onFilterModelChange={(value) => handleFilterModelChange(value)}
               sortModel={sortModel}
               onSortModelChange={(e) => handleSortModelChange(e)}
               key={Math.random().toString()}
               onCellEditCommit={(params, event) => {
                 updateLeadField(params);
               }}
-              components={{
-                Toolbar: GridToolbar,
-                gridRef,
+              components={{ Toolbar: GridToolbar, gridRef }}
+              componentsProps={{
+                filterPanel: {
+                  disableAddFilterButton: true,
+                  disableRemoveAllButton: false,
+                },
               }}
             />
           ) : (
