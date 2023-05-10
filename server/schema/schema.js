@@ -263,6 +263,15 @@ const LeadType = new GraphQLObjectType({
   }),
 });
 
+const FilterModelTypes = new GraphQLObjectType({
+  name: "FilterModelTypes",
+  fields: () => ({
+    columnField: { type: GraphQLString },
+    operatorValue: { type: GraphQLString },
+    value: { type: GraphQLString },
+  }),
+});
+
 const TagType = new GraphQLObjectType({
   name: "Tag",
   fields: () => ({
@@ -412,8 +421,11 @@ const RootQuery = new GraphQLObjectType({
         category: { type: GraphQLList(GraphQLString) },
         sort: { type: GraphQLString },
         column: { type: GraphQLString },
+        filterModel: { type: GraphQLString },
       },
       async resolve(parent, args) {
+        const filterModel = JSON.parse(args.filterModel);
+
         // find by categoryList
         if (args && args.category.length) {
           const searchRegexes = args.category.map((term) => term && new RegExp(term, "i"));
@@ -432,12 +444,67 @@ const RootQuery = new GraphQLObjectType({
         const leadKeys = keys.filter(
           (key) => !["_id", "__v", "categoriesList", "tagsList"].includes(key)
         );
+
+        // filter record by contains, equals, etc.
+        const query = {};
+
+        // Filter records based on a field that contains a specific value
+        if (filterModel?.operatorValue === "contains") {
+          query[filterModel?.columnField] = { $regex: `.*${filterModel?.value}.*`, $options: "i" };
+        }
+
+        // Filter records based on a field that equals a specific value
+        if (filterModel?.operatorValue === "equals") {
+          query[filterModel?.columnField] = filterModel?.value;
+        }
+
+        // Filter records based on a field that starts with a specific value
+        if (filterModel?.operatorValue === "startsWith") {
+          query[filterModel?.columnField] = { $regex: `^${filterModel?.value}`, $options: "i" };
+        }
+
+        // Filter records based on a field that ends with a specific value
+        if (filterModel?.operatorValue === "endsWith") {
+          query[filterModel?.columnField] = { $regex: `${filterModel?.value}$`, $options: "i" };
+        }
+
+        // Filter records based on a field that is not empty
+        if (filterModel?.operatorValue === "isNotEmpty") {
+          query[filterModel?.columnField] = { $ne: "" };
+        }
+
+        // Filter records based on a field that is empty
+        if (filterModel?.operatorValue === "isEmpty") {
+          query[filterModel?.columnField] = "";
+        }
+
+        // Filter records on whole database
+        if (filterModel?.operatorValue === "isAnyOf") {
+          query[filterModel?.columnField] = { $in: filterModel?.value };
+        }
+
+        console.log("query--------------", query);
+
+        if (
+          (filterModel && filterModel?.value) ||
+          filterModel?.operatorValue === "isEmpty" ||
+          filterModel?.operatorValue === "isNotEmpty"
+        ) {
+          const response = await Lead.find(query)
+            .limit(Number(args?.take || ""))
+            .skip(Number(args?.skip))
+            .sort(args.column ? sortCriteria : { createdAt: -1 })
+            .exec();
+          console.log("response--------------", response);
+          return response;
+        }
+
         // if column is in leadKeys, then sort by that column
         if (args.column && leadKeys.includes(args.column)) {
           sortCriteria[args.column] = args.sort === "desc" ? -1 : 1;
         }
 
-        return Lead.find({
+        return await Lead.find({
           $or: [
             { firstName: { $regex: new RegExp(args.filter, "i") } },
             { lastName: { $regex: new RegExp(args.filter, "i") } },

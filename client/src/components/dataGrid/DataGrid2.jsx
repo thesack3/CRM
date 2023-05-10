@@ -48,6 +48,7 @@ export default function DataGridProCSV2(props) {
   const [openLeadDetails, setOpenLeadDetails] = useState(false);
   const [currentParam, setCurrentParam] = useState(null);
   const [filter, setFilter] = useState('');
+  const [filterModel, setFilterModel] = useState({});
 
   const {
     loading: graphQLClientsLoading,
@@ -55,7 +56,7 @@ export default function DataGridProCSV2(props) {
     data,
     refetch,
   } = useQuery(GET_LEADS, {
-    variables: { skip: '', take, filter, category: categories, column, sort },
+    variables: { skip: '', take, filter, category: categories, column, sort, filterModel: JSON.stringify(filterModel) },
   });
   // const { data: allLeads, refetch: allLeadsRefetch } = useQuery(GET_LEADS);
 
@@ -681,8 +682,8 @@ export default function DataGridProCSV2(props) {
     // setColumnsToShow(columnsToShow);
   };
 
-  const edidLead = async (values) => {
-    if (values?.value) {
+  const updateLeadField = async (values) => {
+    if (values?.field) {
       const { value, field, id } = values;
       await updateLead({
         variables: {
@@ -703,6 +704,7 @@ export default function DataGridProCSV2(props) {
     if (!input) {
       setFilter('');
       setTake('10');
+      setFilterModel({});
     }
   };
 
@@ -713,21 +715,25 @@ export default function DataGridProCSV2(props) {
     }
   };
 
-  // const filterModel = {
-  //   items: [{ columnField: 'firstName', operatorValue: 'contains', value: 'John' }],
-  // };
-
-  function handleFilterModelChange(filterModel) {
-    if (!filterModel.items[0].value) return;
-    setTableSerach(filterModel.items[0].value);
-    console.log(filterModel); // Log updated filter model object
+  // fiter mui data grid pro with db
+  function handleFilterModelChange(newFilterModel) {
+    setSort('');
+    if (
+      !newFilterModel.items[0].value &&
+      newFilterModel.items[0].operatorValue !== 'isEmpty' &&
+      newFilterModel.items[0].operatorValue !== 'isNotEmpty'
+    )
+      return;
+    setFilterModel(newFilterModel.items[0]);
   }
 
+  // sorting
   function handleSortModelChange(newSortModel) {
     if (!newSortModel.length) return;
     setSort(newSortModel[0].sort);
     setColumn(newSortModel[0].field);
     setSortModel(newSortModel);
+    setFilterModel({});
   }
 
   return (
@@ -824,12 +830,12 @@ export default function DataGridProCSV2(props) {
               apiRef={apiRef}
               disableColumnMenu
               // filterModel={filterModel}
-              // onFilterModelChange={handleFilterModelChange}
+              onFilterModelChange={handleFilterModelChange}
               sortModel={sortModel}
               onSortModelChange={(e) => handleSortModelChange(e)}
               key={Math.random().toString()}
               onCellEditCommit={(params, event) => {
-                edidLead(params);
+                updateLeadField(params);
               }}
               components={{
                 Toolbar: GridToolbar,
