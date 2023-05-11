@@ -434,15 +434,18 @@ const RootQuery = new GraphQLObjectType({
       async resolve(parent, args) {
         const filterModel = JSON.parse(args.filterModel);
 
+        const totalCount = await Lead.countDocuments();
+
         // find by categoryList
         if (args && args.category.length) {
           const searchRegexes = args.category.map((term) => term && new RegExp(term, "i"));
-          return Lead.find({
+          const response = await Lead.find({
             // categoriesList: {
             //   $elemMatch: { $regex: new RegExp(args.category, "i") },
             // },
             categoriesList: { $in: searchRegexes },
           });
+          return { count: totalCount, rows: response };
         }
 
         let sortCriteria = {};
@@ -507,10 +510,9 @@ const RootQuery = new GraphQLObjectType({
             .skip(args?.skip)
             .sort(args.column ? sortCriteria : { createdAt: -1 })
             .exec();
-          return response;
+          return { count: totalCount, rows: response };
         }
 
-        const totalCount = await Lead.countDocuments();
         const leads = await Lead.find({
           $or: [
             { firstName: { $regex: new RegExp(args.filter, "i") } },
