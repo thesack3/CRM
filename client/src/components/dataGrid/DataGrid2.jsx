@@ -837,9 +837,9 @@ export default function DataGridProCSV2() {
               componentsProps={{
                 filterPanel: {
                   disableAddFilterButton: true,
-                  disableRemoveAllButton: false,
                 },
               }}
+              rowsPerPageOptions={[10, 25, 50, 100, 200]}
               pagination="true" // enable pagination
               pageSize={pageSize} // set the page size to 10
               page={page} // set the initial page to 1
