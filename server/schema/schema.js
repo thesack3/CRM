@@ -1018,33 +1018,59 @@ const mutation = new GraphQLObjectType({
       async resolve(parent, args) {
         // convert string to array
         const leads = JSON.parse(args.leads);
-        // if leads are exist, filter them by firstName and lastName
-        const existLeads = await Lead.find({
-          $and: [
-            { firstName: { $in: leads.map((lead) => lead.firstName) } },
-            { lastName: { $in: leads.map((lead) => lead.lastName) } },
-          ],
-        });
-        // filter leads by exist leads
-        const filteredLeads = leads.filter(
-          // find leads which are not exist in database or firstName and lastName
-          (lead) =>
-            !existLeads.find(
-              (existLead) =>
-                existLead.firstName === lead.firstName &&
-                existLead.lastName === lead.lastName &&
-                existLead.email === lead.email
-            )
-        );
-        // add leads to database which are not exist in database
-        try {
-          if (!filteredLeads.length) return "All leads are exist in database";
-          const result = await Lead.insertMany(filteredLeads);
-          return result;
-        } catch (error) {
-          console.error(error);
-          throw new Error("Error adding leads");
+
+        // use another way to save leads to database if leads are more than 100 leads and filter leads which are exist in database
+        if (leads.length > 100) {
+          // use upsert data to save leads to database but upsertMany is not supported in mongoose
+          // so we need to use bulkWrite to save leads to database
+          const bulkWrite = leads.map((lead) => ({
+            updateOne: {
+              filter: {
+                firstName: lead.firstName,
+                lastName: lead.lastName,
+              },
+              update: lead,
+
+              upsert: true,
+            },
+          }));
+          await Lead.bulkWrite(bulkWrite);
         }
+
+        // // count of save leads and existed leads
+        // let saveCount = 0;
+        // let existCount = 0;
+
+        // // find leads which are exist in database
+        // const existLeads = await Lead.find({
+        //   $and: [
+        //     { firstName: { $in: leads.map((lead) => lead.firstName) } },
+        //     { lastName: { $in: leads.map((lead) => lead.lastName) } },
+        //   ],
+        // });
+        // existCount = existLeads.length;
+
+        // // filter leads by exist leads
+        // const filteredLeads = leads.filter(
+        //   // find leads which are not exist in database or firstName and lastName
+        //   (lead) =>
+        //     !existLeads.find(
+        //       (existLead) =>
+        //         existLead.firstName === lead.firstName &&
+        //         existLead.lastName === lead.lastName &&
+        //         existLead.email === lead.email
+        //     )
+        // );
+        // // add leads to database which are not exist in database
+        // try {
+        //   if (!filteredLeads.length) return "All leads are exist in database";
+        //   saveCount = filteredLeads.length;
+        //   await Lead.insertMany(filteredLeads);
+        //   return { messsage: "Leads added successfully", saveCount, existCount };
+        // } catch (error) {
+        //   console.error(error);
+        //   throw new Error("Error adding leads");
+        // }
       },
     },
 

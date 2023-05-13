@@ -18,18 +18,54 @@ export default function AddCSVLeadModal({ callback }) {
   const [open, setOpen] = React.useState(false);
   const [data, setData] = React.useState([]);
   const [openSnack, setOpenSnack] = useState(false);
+  const [count, setCount] = useState(0);
 
   const [addLeadsCsv, { loading, error }] = useMutation(ADD_LEADS_CSV);
 
   const handleUpload = async () => {
     try {
       if (!data.length) return;
-      await addLeadsCsv({
-        variables: {
-          leads: JSON.stringify(data),
-        },
-      });
+      // send 1000 leads per request
+      const batchSize = 600;
+      const numBatches = Math.ceil(data.length / batchSize);
+
+      for (let i = 0; i < numBatches; i++) {
+        console.log('request count----', i);
+        const start = i * batchSize;
+        const end = start + batchSize;
+        const batch = data.slice(start, end);
+
+        // Send a POST request for each batch of users
+
+        const response = await addLeadsCsv({
+          variables: {
+            leads: JSON.stringify(batch),
+          },
+        });
+      }
+
+      // divide data into 10 parts to avoid timeout error on heroku server (30s)
+      // const dataLength = data.length;
+      // let findCount = 0;
+
+      // const dataPart = Math.ceil(dataLength / 35);
+      // for (let i = 0; i < dataLength; i += dataPart) {
+      //   const dataSlice = data.slice(i, i + dataPart);
+      //   const response = await addLeadsCsv({
+      //     variables: {
+      //       leads: JSON.stringify(dataSlice),
+      //     },
+      //   });
+      //   // findCount += response.data.saveCount;
+      // }
+
+      // await addLeadsCsv({
+      //   variables: {
+      //     leads: JSON.stringify(data),
+      //   },
+      // });
       setOpenSnack(true);
+      // setCount(findCount);
       handleClose();
       callback();
     } catch (error) {
