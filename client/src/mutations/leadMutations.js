@@ -173,4 +173,12 @@ const updateLeadMutation = gql`
   }
 `;
 
-export { ADD_LEAD, updateLeadMutation };
+const ADD_LEADS_CSV = gql`
+  mutation addLeadsCsv($leads: String!) {
+    addLeadsCsv(leads: $leads) {
+      id
+    }
+  }
+`;
+
+export { ADD_LEAD, ADD_LEADS_CSV, updateLeadMutation };

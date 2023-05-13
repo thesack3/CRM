@@ -1009,6 +1009,68 @@ const mutation = new GraphQLObjectType({
       },
     },
 
+    // add multiple leads at once from list of arrays in stringfy format
+    addLeadsCsv: {
+      type: new GraphQLList(LeadType),
+      args: {
+        leads: { type: GraphQLString },
+      },
+      async resolve(parent, args) {
+        // convert string to array
+        const leads = JSON.parse(args.leads);
+        // if leads are exist, filter them by firstName and lastName
+        const existLeads = await Lead.find({
+          $and: [
+            { firstName: { $in: leads.map((lead) => lead.firstName) } },
+            { lastName: { $in: leads.map((lead) => lead.lastName) } },
+          ],
+        });
+        // filter leads by exist leads
+        const filteredLeads = leads.filter(
+          // find leads which are not exist in database or firstName and lastName
+          (lead) =>
+            !existLeads.find(
+              (existLead) =>
+                existLead.firstName === lead.firstName &&
+                existLead.lastName === lead.lastName &&
+                existLead.email === lead.email
+            )
+        );
+        // add leads to database which are not exist in database
+        try {
+          if (!filteredLeads.length) return "All leads are exist in database";
+          const result = await Lead.insertMany(filteredLeads);
+          return result;
+        } catch (error) {
+          console.error(error);
+          throw new Error("Error adding leads");
+        }
+      },
+    },
+
+    // delete leads by id and all found in database
+    deleteLeads: {
+      type: new GraphQLList(LeadType),
+      args: {
+        ids: { type: GraphQLList(GraphQLString) },
+        deleteAll: { type: GraphQLBoolean },
+      },
+      async resolve(parent, args) {
+        const query = args.deleteAll ? {} : { _id: { $in: args.ids } };
+        const leadsCount = await Lead.countDocuments(query);
+        if (!leadsCount) throw new Error("No leads found");
+        try {
+          await Lead.deleteMany(query);
+          return `${
+            args.deleteAll ? "All leads deleted successfully" : " Delete seleted ids successfully "
+          }`;
+        } catch (error) {
+          console.error(error);
+          throw new Error("Error deleting leads");
+        }
+      },
+    },
+
     updateLead: {
       type: LeadType,
       args: {
@@ -1164,45 +1226,6 @@ const mutation = new GraphQLObjectType({
           console.log(error);
         }
       },
-
-      // type: CallType,
-      // args: {
-      //   contactId: { type: GraphQLNonNull(GraphQLString) },
-      //   FirstName: { type: GraphQLNonNull(GraphQLString) },
-      //   LastName: { type: GraphQLNonNull(GraphQLString) },
-      //   DateCreated: { type: GraphQLNonNull(GraphQLString) },
-      //   BuyerAgent: { type: GraphQLNonNull(GraphQLString) },
-      //   ListingAgent: { type: GraphQLNonNull(GraphQLString) },
-      //   UserID: { type: GraphQLNonNull(GraphQLString) },
-      //   AssociatedopportunityID: { type: GraphQLNonNull(GraphQLString) },
-      //   CallDetails: { type: GraphQLNonNull(GraphQLString) },
-      //   ContactPhoneID: { type: GraphQLNonNull(GraphQLString) },
-      //   LogType: { type: GraphQLNonNull(GraphQLString) },
-      //   MediaURL: { type: GraphQLNonNull(GraphQLString) },
-      //   CallStartTime: { type: GraphQLNonNull(GraphQLString) },
-      //   CallEndTime: { type: GraphQLNonNull(GraphQLString) },
-      //   leadId: { type: GraphQLNonNull(GraphQLID) },
-      // },
-      // resolve(parent, args) {
-      //   const NEWCall = new Call({
-      //     contactId: args.contactId,
-      //     FirstName: args.FirstName,
-      //     LastName: args.LastName,
-      //     DateCreated: args.DateCreated,
-      //     BuyerAgent: args.BuyerAgent,
-      //     ListingAgent: args.ListingAgent,
-      //     UserID: args.UserID,
-      //     AssociatedopportunityID: args.AssociatedopportunityID,
-      //     CallDetails: args.CallDetails,
-      //     ContactPhoneID: args.ContactPhoneID,
-      //     LogType: args.LogType,
-      //     MediaURL: args.MediaURL,
-      //     CallStartTime: args.CallStartTime,
-      //     CallEndTime: args.CallEndTime,
-      //     leadId: args.leadId,
-      //   });
-      //   return NEWCall.save();
-      // },
     },
     //Add EAlert
     addEAlert: {
@@ -1243,34 +1266,6 @@ const mutation = new GraphQLObjectType({
           console.log(error);
         }
       },
-
-      // type: EAlertType,
-      // args: {
-      //   contactId: { type: GraphQLNonNull(GraphQLString) },
-      //   FirstName: { type: GraphQLNonNull(GraphQLString) },
-      //   LastName: { type: GraphQLNonNull(GraphQLString) },
-      //   SearchName: { type: GraphQLNonNull(GraphQLString) },
-      //   QueryString: { type: GraphQLNonNull(GraphQLString) },
-      //   EmailFrequency: { type: GraphQLNonNull(GraphQLString) },
-      //   BuyerAgent: { type: GraphQLNonNull(GraphQLString) },
-      //   ListingAgent: { type: GraphQLNonNull(GraphQLString) },
-      //   leadId: { type: GraphQLNonNull(GraphQLID) },
-      // },
-
-      // resolve(parent, args) {
-      //   const eAlert = new EAlert({
-      //     contactId: args.contactId,
-      //     FirstName: args.FirstName,
-      //     LastName: args.LastName,
-      //     SearchName: args.SearchName,
-      //     QueryString: args.QueryString,
-      //     EmailFrequency: args.EmailFrequency,
-      //     BuyerAgent: args.BuyerAgent,
-      //     ListingAgent: args.ListingAgent,
-      //     leadId: args.leadId,
-      //   });
-      //   return eAlert.save();
-      // },
     },
     //Add Note
     addNote: {
@@ -1278,14 +1273,6 @@ const mutation = new GraphQLObjectType({
       args: {
         notes: { type: GraphQLNonNull(GraphQLString) },
       },
-      // args: {
-      //   contactId: { type: GraphQLNonNull(GraphQLString) },
-      //   FirstName: { type: GraphQLNonNull(GraphQLString) },
-      //   LastName: { type: GraphQLNonNull(GraphQLString) },
-      //   Notes: { type: GraphQLNonNull(GraphQLString) },
-      //   BuyerAgent: { type: GraphQLNonNull(GraphQLString) },
-      //   ListingAgent: { type: GraphQLNonNull(GraphQLString) },
-      // },
 
       async resolve(parent, { notes }) {
         try {
@@ -1315,17 +1302,6 @@ const mutation = new GraphQLObjectType({
         } catch (error) {
           console.log(error);
         }
-
-        // const NewNote = new Note({
-        //   contactId: args.contactId,
-        //   FirstName: args.FirstName,
-        //   LastName: args.LastName,
-        //   Notes: args.Notes,
-        //   BuyerAgent: args.BuyerAgent,
-        //   ListingAgent: args.ListingAgent,
-        //   leadId: args.leadId,
-        // });
-        // return NewNote.save();
       },
     },
     //Delete a project

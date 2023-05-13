@@ -12,174 +12,34 @@ import DialogTitle from '@mui/material/DialogTitle';
 import CsvUpload from '../DropBoxes/CsvUpload';
 import DataGridCSV from '../dataGrid/DataGridCSV';
 import styles from './AddCSVLeadsModal.module.css';
-import { ADD_LEAD } from '../../mutations/leadMutations';
+import { ADD_LEAD, ADD_LEADS_CSV } from '../../mutations/leadMutations';
 
 export default function AddCSVLeadModal({ callback }) {
   const [open, setOpen] = React.useState(false);
-  const [data, setData] = React.useState(false);
-  const [loading, setLoading] = useState(false);
+  const [data, setData] = React.useState([]);
   const [openSnack, setOpenSnack] = useState(false);
-  const [counter, setCounter] = useState(null);
 
-  const [formData, setFormData] = useState({
-    firstName: '',
-    email: '',
-    lastName: '',
-    phone: '',
-    phoneStatus: '',
-    descritpion: '',
-    emailInvalid: '',
-    GloballyOptedOutOfEmail: '',
-    GloballyOptedOutOfBuyerAgentEmail: '',
-    GloballyOptedOutOfListingAgentEmail: '',
-    GloballyOptedOutOfLenderEmail: '',
-    GloballyOptedOutOfAlerts: '',
-    OptInDate: '',
-    BuyerAgentCategory: '',
-    ListingAgentCategory: '',
-    LenderCategory: '',
-    BuyerAgent: '',
-    ListingAgent: '',
-    Lender: '',
-    OriginalSource: '',
-    OriginalCampaign: '',
-    LastAgentNote: '',
-    eAlerts: '',
-    VisitTotal: '',
-    listingviewcount: '',
-    AvgListingPrice: '',
-    NextCallDue: '',
-    LastAgentCallDate: '',
-    LastLenderCallDate: '',
-    FirstVisitDate: '',
-    LastVisitDate: '',
-    RegisterDate: '',
-    LeadType: '',
-    AgentSelected: '',
-    LenderOptIn: '',
-    Address: '',
-    City: '',
-    State: '',
-    ZipCode: '',
-    Tags: [],
-    Link: '',
-    Birthday: '',
-    HomeClosingDate: '',
-  });
+  const [addLeadsCsv, { loading, error }] = useMutation(ADD_LEADS_CSV);
 
-  const [addLead, { Leadloading, error, Leaddata }] = useMutation(ADD_LEAD);
-
-  const handleChange = (event) => {
-    setFormData({
-      ...formData,
-      [event.target.name]: event.target.value,
-    });
-  };
-
-  //
-
-  const handleLeadSubmit = (e) => {
-    e.preventDefault();
-
-    addLead({
-      variables: formData,
-    })
-      .then((res) => {
-        setFormData({
-          firstName: '',
-          email: '',
-          lastName: '',
-          description: '',
-          phone: '',
-        });
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-
-    console.log('Lead Submitted!');
-  };
-
-  const handleUpload = () => {
-    setLoading(true);
-    if (!data) return setLoading(false);
-    let count = 0;
-    data.forEach((lead) => {
-      addLead({
+  const handleUpload = async () => {
+    try {
+      if (!data.length) return;
+      await addLeadsCsv({
         variables: {
-          firstName: lead.FirstName,
-          email: lead.Emails,
-          lastName: lead.LastName,
-          description: lead.Description,
-          phone: lead.Phones,
-          phoneStatus: lead.PhoneStatus,
-          emailInvalid: lead.EmailInvalid,
-          GloballyOptedOutOfEmail: lead.GloballyOptedOutOfEmail,
-          GloballyOptedOutOfBuyerAgentEmail: lead.GloballyOptedOutOfBuyerAgentEmail,
-          GloballyOptedOutOfListingAgentEmail: lead.GloballyOptedOutOfListingAgentEmail,
-          GloballyOptedOutOfLenderEmail: lead.GloballyOptedOutOfLenderEmail,
-          GloballyOptedOutOfAlerts: lead.GloballyOptedOutOfAlerts,
-          OptInDate: lead.OptInDate,
-          BuyerAgentCategory: lead.BuyerAgentCategory,
-          ListingAgentCategory: lead.ListingAgentCategory,
-          LenderCategory: lead.LenderCategory,
-          BuyerAgent: lead.BuyerAgent,
-          ListingAgent: lead.ListingAgent,
-          Lender: lead.Lender,
-          OriginalSource: lead.OriginalSource,
-          OriginalCampaign: lead.OriginalCampaign,
-          LastAgentNote: lead.LastAgentNote,
-          eAlerts: lead.eAlerts,
-          VisitTotal: lead.VisitTotal,
-          listingviewcount: lead.listingviewcount,
-          AvgListingPrice: lead.AvgListingPrice,
-          NextCallDue: lead.NextCallDue,
-          LastAgentCallDate: lead.LastAgentCallDate,
-          LastLenderCallDate: lead.LastLenderCallDate,
-          FirstVisitDate: lead.FirstVisitDate,
-          LastVisitdDate: lead.LastVisitDate,
-          RegisterDate: lead.RegisterDate,
-          LeadType: lead.LeadType,
-          AgentSelected: lead.AgentSelected,
-          LenderOptIn: lead.LenderOptIn,
-          Address: lead.Address,
-          City: lead.City,
-          State: lead.State,
-          ZipCode: lead.ZipCode,
-          Tags: lead.Tags,
-          Link: lead.Link,
-          Birthday: lead.Birthday,
-          HomeClosingDate: lead.HomeClosingDate,
+          leads: JSON.stringify(data),
         },
-      })
-        .then((res) => {
-          count += 1;
-          setCounter(count);
-          if (data.length === count) {
-            setLoading(false);
-            setOpenSnack(true);
-            handleClose();
-            callback();
-            setCounter(null);
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-          setLoading(false);
-          handleClose();
-          callback();
-        });
-    });
-    return count;
+      });
+      setOpenSnack(true);
+      handleClose();
+      callback();
+    } catch (error) {
+      console.log(error);
+      handleClose();
+    }
   };
 
   const handleChildData = (data) => {
     setData(data);
-
-    //  console.log('Bulk Action data from child');
-
-    //  console.log(data);
   };
 
   const handleClickOpen = () => {
@@ -189,7 +49,6 @@ export default function AddCSVLeadModal({ callback }) {
   const handleClose = () => {
     setOpen(false);
     setData(false);
-    setLoading(false);
   };
 
   return (
@@ -205,8 +64,6 @@ export default function AddCSVLeadModal({ callback }) {
 
           {data ? <DataGridCSV UserData={data} /> : <p>Upload a CSV file</p>}
 
-          {/* <DataGridCSV data={data} />        */}
-
           <Button variant="outlined" onClick={handleClickOpen}>
             <CsvUpload handleData={handleChildData} />
           </Button>
@@ -221,9 +78,9 @@ export default function AddCSVLeadModal({ callback }) {
             loading={loading}
             loadingPosition="end"
             variant="text"
-            sx={{ width: '170px' }}
+            sx={{ width: '160px' }}
           >
-            <span>Upload Leads {counter && counter}</span>
+            <span>Upload Leads</span>
           </LoadingButton>
         </DialogActions>
       </Dialog>
