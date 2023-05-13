@@ -1011,7 +1011,14 @@ const mutation = new GraphQLObjectType({
 
     // add multiple leads at once from list of arrays in stringfy format
     addLeadsCsv: {
-      type: new GraphQLList(LeadType),
+      type: new GraphQLObjectType({
+        name: "addLeadsCsv",
+        fields: () => ({
+          count: { type: GraphQLInt },
+          // leads: { type: new GraphQLList(LeadType) },
+        }),
+      }),
+
       args: {
         leads: { type: GraphQLString },
       },
@@ -1019,8 +1026,7 @@ const mutation = new GraphQLObjectType({
         // convert string to array
         const leads = JSON.parse(args.leads);
 
-        // use another way to save leads to database if leads are more than 100 leads and filter leads which are exist in database
-        if (leads.length > 100) {
+        if (leads.length) {
           // use upsert data to save leads to database but upsertMany is not supported in mongoose
           // so we need to use bulkWrite to save leads to database
           const bulkWrite = leads.map((lead) => ({
@@ -1030,11 +1036,15 @@ const mutation = new GraphQLObjectType({
                 lastName: lead.lastName,
               },
               update: lead,
-
               upsert: true,
             },
           }));
-          await Lead.bulkWrite(bulkWrite);
+
+          // return upserted leads count
+          const response = await (await Lead.bulkWrite(bulkWrite)).result.nUpserted;
+          return { count: response };
+
+          // get upserted count
         }
 
         // // count of save leads and existed leads
@@ -1076,7 +1086,12 @@ const mutation = new GraphQLObjectType({
 
     // delete leads by id and all found in database
     deleteLeads: {
-      type: new GraphQLList(LeadType),
+      type: new GraphQLObjectType({
+        name: "deleteLeads",
+        fields: () => ({
+          message: { type: GraphQLString },
+        }),
+      }),
       args: {
         ids: { type: GraphQLList(GraphQLString) },
         deleteAll: { type: GraphQLBoolean },
@@ -1087,9 +1102,13 @@ const mutation = new GraphQLObjectType({
         if (!leadsCount) throw new Error("No leads found");
         try {
           await Lead.deleteMany(query);
-          return `${
-            args.deleteAll ? "All leads deleted successfully" : " Delete seleted ids successfully "
-          }`;
+          return {
+            message: `${
+              args.deleteAll
+                ? "All leads deleted successfully"
+                : " Delete seleted ids successfully "
+            }`,
+          };
         } catch (error) {
           console.error(error);
           throw new Error("Error deleting leads");

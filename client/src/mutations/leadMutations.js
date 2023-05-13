@@ -176,7 +176,7 @@ const updateLeadMutation = gql`
 const ADD_LEADS_CSV = gql`
   mutation addLeadsCsv($leads: String!) {
     addLeadsCsv(leads: $leads) {
-      id
+      count
     }
   }
 `;

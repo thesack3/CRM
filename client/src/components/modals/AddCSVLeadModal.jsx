@@ -26,44 +26,24 @@ export default function AddCSVLeadModal({ callback }) {
     try {
       if (!data.length) return;
       // send 1000 leads per request
-      const batchSize = 600;
+      const batchSize = 400;
       const numBatches = Math.ceil(data.length / batchSize);
-
+      let response;
+      // eslint-disable-next-line no-plusplus
       for (let i = 0; i < numBatches; i++) {
-        console.log('request count----', i);
         const start = i * batchSize;
         const end = start + batchSize;
         const batch = data.slice(start, end);
 
-        // Send a POST request for each batch of users
-
-        const response = await addLeadsCsv({
+        // eslint-disable-next-line no-await-in-loop
+        response = await addLeadsCsv({
           variables: {
             leads: JSON.stringify(batch),
           },
         });
       }
+      if (response) setCount(response.data.addLeadsCsv.count);
 
-      // divide data into 10 parts to avoid timeout error on heroku server (30s)
-      // const dataLength = data.length;
-      // let findCount = 0;
-
-      // const dataPart = Math.ceil(dataLength / 35);
-      // for (let i = 0; i < dataLength; i += dataPart) {
-      //   const dataSlice = data.slice(i, i + dataPart);
-      //   const response = await addLeadsCsv({
-      //     variables: {
-      //       leads: JSON.stringify(dataSlice),
-      //     },
-      //   });
-      //   // findCount += response.data.saveCount;
-      // }
-
-      // await addLeadsCsv({
-      //   variables: {
-      //     leads: JSON.stringify(data),
-      //   },
-      // });
       setOpenSnack(true);
       // setCount(findCount);
       handleClose();
@@ -123,7 +103,7 @@ export default function AddCSVLeadModal({ callback }) {
 
       <Snackbar open={openSnack} autoHideDuration={2000} onClose={() => setOpenSnack(false)}>
         <Alert onClose={() => setOpenSnack(false)} severity="success" sx={{ width: '100%' }}>
-          Csv Updated
+          {count} leads added!
         </Alert>
       </Snackbar>
     </div>
