@@ -111,7 +111,7 @@ export default function CustomDialog({ details, open, onClose }) {
                 {details.contactId || '-'}
               </Typography>
             </Box>
-            {details?.__typename == 'Ealert' && (
+            {details?.__typename === 'Ealert' && (
               <Box
                 sx={{
                   display: 'flex',
@@ -129,7 +129,7 @@ export default function CustomDialog({ details, open, onClose }) {
                 </Typography>
               </Box>
             )}
-            {details?.__typename == 'Call' && (
+            {details?.__typename === 'Call' && (
               <Box>
                 <Box
                   sx={{
@@ -229,7 +229,7 @@ export default function CustomDialog({ details, open, onClose }) {
                 </Box>
               </Box>
             )}
-            {details?.__typename != 'Call' && (
+            {details?.__typename !== 'Call' && (
               <Box
                 sx={{
                   display: 'flex',
