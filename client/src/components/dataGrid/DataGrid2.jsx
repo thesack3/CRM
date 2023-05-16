@@ -1,9 +1,10 @@
 // TODO: add subscription to update the table when a new lead is added, NEW_LEAD_SUBSCRIPTION
 import * as React from 'react';
-import { Button, MenuItem, TextField, Typography, Alert, Snackbar, CircularProgress } from '@mui/material';
+import { Button, TextField, Typography, Alert, Snackbar, CircularProgress } from '@mui/material';
 import { useQuery, useMutation } from '@apollo/client';
 import { useMemo, useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
+import { useNavigate } from 'react-router-dom';
 import { DataGridPro, GridToolbar } from '@mui/x-data-grid-pro';
 import { GET_LEADS } from '../../queries/leadQueries';
 import { SEND_EMAILS_MUTATION } from '../../mutations/bulkEmail';
@@ -24,6 +25,7 @@ import AddCSVCall from '../modals/AddCSVCalls';
 import AddeAlert from '../modals/AddeAlert';
 
 export default function DataGridProCSV2() {
+  const navigate = useNavigate();
   const { setLeadId } = React.useContext(callContext);
   const [sortModel, setSortModel] = useState([{ field: 'name', sort: 'asc' }]);
   const [sort, setSort] = useState('');
@@ -116,46 +118,6 @@ export default function DataGridProCSV2() {
 
   const apiRef = React.useRef(null);
 
-  // const handleRowSelection = (params) => {
-  //   const selectedEmails = params.map((id) => {
-  //     const row = responseData.find((r) => r.id === id);
-  //     return row.email;
-  //   });
-  //   setRowSelectedUsers(selectedEmails);
-  // };
-
-  // useEffect(() => {
-  //   if (data?.leads) {
-  //     // console.log(props.UserData)
-
-  //     const usersWithIds = data.leads.map((user, index) => {
-  //       const Tags = user.tags.map((item, index) => {
-  //         return item.title;
-  //       });
-
-  //       const Categories = user.categories.map((item, index) => {
-  //         return item.title;
-  //       });
-
-  //       const OGTags = user.tags.map((item, index) => {
-  //         return item.id;
-  //       });
-
-  //       const OGCategories = user.categories.map((item, index) => {
-  //         return item.id;
-  //       });
-
-  //       console.log(Categories);
-  //       console.log(Tags);
-
-  //       // alert("user!")
-
-  //       return { ...user, Uid: index, tags: Tags, categories: Categories, ogTags: OGTags, ogCategories: OGCategories };
-  //     });
-
-  //     setResponseData(usersWithIds);
-  //   }
-  // }, [props.UserData, data]);
   const columns = useMemo(
     () => [
       {
@@ -164,22 +126,20 @@ export default function DataGridProCSV2() {
         width: 150,
         editable: true,
         renderCell: (params) => {
-          // setCurrentParam(params.row);
           return (
             <Button
               variant="outlined"
               onClick={() => {
                 setLeadId(params?.row?.id);
-                setOpenLeadDetails(true);
-                setCurrentParam(params.row);
+                navigate(`/dashboard/lead/${params?.row?.id}`);
+                // setOpenLeadDetails(true);
+                // setCurrentParam(params.row);
               }}
             >
               Profile
             </Button>
-            // <LeadDetails leadDetail={params.row} handleUpdate={(value, id, type) => handleUpdate(value, id, type)} />
           );
         },
-        // renderCell: (params) => <ProfileDetailsPage row={params.row.Uid} {...{ params }} />,
       },
       {
         field: 'firstName',
@@ -853,35 +813,7 @@ export default function DataGridProCSV2() {
               <CircularProgress />
             </Box>
           )}
-          {/* <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'start',
-              position: 'relative',
-              bottom: '55px',
-              marginLeft: '20px',
-              paddingTop: '8px',
-            }}
-          >
-            <Typography variant="h6" sx={{ marginRight: '20px' }}>
-              Rows per page:
-            </Typography>
-            <TextField
-              size="small"
-              select
-              value={take}
-              onChange={(e) => setTake(e.target.value.toString())}
-              variant="outlined"
-              style={{ width: 80 }}
-            >
-              {[10, 25, 50, 100, 200].map((size) => (
-                <MenuItem key={size} value={size}>
-                  {size}
-                </MenuItem>
-              ))}
-            </TextField>
-          </Box> */}
+
           <Snackbar open={openSnack} autoHideDuration={2000} onClose={handleCloseSnackbar}>
             <Alert
               onClose={handleCloseSnackbar}

@@ -26,7 +26,7 @@ export default function AddCSVLeadModal({ callback }) {
     try {
       if (!data.length) return;
       // send 1000 leads per request
-      const batchSize = 400;
+      const batchSize = 200;
       const numBatches = Math.ceil(data.length / batchSize);
       let response;
       // eslint-disable-next-line no-plusplus

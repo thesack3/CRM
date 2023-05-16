@@ -15,6 +15,7 @@ import NonVerifiedPage from './pages/NonVerified';
 import ProfilePage from './pages/ProfilePage';
 import Website from './components/Website/index';
 import HomeList from './components/HomeList';
+import LeadDetailPage from './pages/LeadDetailPage';
 
 // ----------------------------------------------------------------------
 
@@ -29,6 +30,7 @@ export default function Router() {
         { path: 'user', element: <UserPage /> },
         { path: 'products', element: <ProductsPage /> },
         { path: 'leads', element: <BlogPage /> },
+        { path: 'lead/:id', element: <LeadDetailPage /> },
         { path: 'profile', element: <ProfilePage /> },
       ],
     },
@@ -38,17 +40,17 @@ export default function Router() {
     },
     {
       path: 'verifyemail/:token',
-      element: <VerifyPage  />,
+      element: <VerifyPage />,
       // element: <NonVerifiedPage />,
     },
     {
       path: 'home',
-      element: <Website  />,
+      element: <Website />,
       // element: <NonVerifiedPage />,
     },
     {
       path: 'listings',
-      element: <HomeList  />,
+      element: <HomeList />,
       // element: <NonVerifiedPage />,
     },
     {
@@ -71,12 +73,3 @@ export default function Router() {
 
   return routes;
 }
-
-
-
-
-
-
-
-
-

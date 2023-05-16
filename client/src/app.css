@@ -16,3 +16,6 @@ wave {
 .css-4rdffl-MuiDataGrid-panelFooter {
   display: none !important;
 }
+.cardBgColor {
+  background-color: #edeff1;
+}

@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client';
 
-const GET_LEADS = gql`
+export const GET_LEADS = gql`
   query Leads(
     $take: Int
     $skip: Int
@@ -81,6 +81,68 @@ const GET_LEADS = gql`
   }
 `;
 
+export const GET_LEAD = gql`
+  query Lead($id: ID) {
+    lead(id: $id) {
+      id
+      firstName
+      email
+      lastName
+      phone
+      phoneStatus
+      description
+      emailInvalid
+      GloballyOptedOutOfEmail
+      GloballyOptedOutOfBuyerAgentEmail
+      GloballyOptedOutOfListingAgentEmail
+      GloballyOptedOutOfLenderEmail
+      GloballyOptedOutOfAlerts
+      OptInDate
+      BuyerAgentCategory
+      ListingAgentCategory
+      LenderCategory
+      BuyerAgent
+      ListingAgent
+      Lender
+      OriginalSource
+      OriginalCampaign
+      LastAgentNote
+      eAlerts
+      VisitTotal
+      listingviewcount
+      AvgListingPrice
+      NextCallDue
+      LastAgentCallDate
+      LastLenderCallDate
+      FirstVisitDate
+      LastVisitDate
+      RegisterDate
+      LeadType
+      AgentSelected
+      LenderOptIn
+      Address
+      City
+      State
+      ZipCode
+      tagsList
+      categoriesList
+      tags {
+        id
+        title
+        dateCreated
+      }
+      categories {
+        id
+        title
+        dateCreated
+      }
+      Link
+      Birthday
+      HomeClosingDate
+    }
+  }
+`;
+
 export const NEW_LEAD_SUBSCRIPTION = gql`
   subscription OnNewLead {
     newLead {
@@ -92,5 +154,3 @@ export const NEW_LEAD_SUBSCRIPTION = gql`
     }
   }
 `;
-
-export { GET_LEADS };
