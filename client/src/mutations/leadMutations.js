@@ -152,6 +152,21 @@ const updateLeadMutation = gql`
     $phone: String
     $tagsList: [String]
     $categoriesList: [String]
+    $description: String
+    $phoneStatus: String
+    $emailInvalid: String
+    $GloballyOptedOutOfBuyerAgentEmail: String
+    $GloballyOptedOutOfListingAgentEmail: String
+    $GloballyOptedOutOfLenderEmail: String
+    $GloballyOptedOutOfAlerts: String
+    $ListingAgent: String
+    $Lender: String
+    $OriginalSource: String
+    $ZipCode: String
+    $State: String
+    $Address: String
+    $Birthday: String
+    $HomeClosingDate: String
   ) {
     updateLead(
       id: $id
@@ -161,6 +176,21 @@ const updateLeadMutation = gql`
       phone: $phone
       tagsList: $tagsList
       categoriesList: $categoriesList
+      description: $description
+      phoneStatus: $phoneStatus
+      emailInvalid: $emailInvalid
+      GloballyOptedOutOfBuyerAgentEmail: $GloballyOptedOutOfBuyerAgentEmail
+      GloballyOptedOutOfListingAgentEmail: $GloballyOptedOutOfListingAgentEmail
+      GloballyOptedOutOfLenderEmail: $GloballyOptedOutOfLenderEmail
+      GloballyOptedOutOfAlerts: $GloballyOptedOutOfAlerts
+      ListingAgent: $ListingAgent
+      Lender: $Lender
+      OriginalSource: $OriginalSource
+      ZipCode: $ZipCode
+      State: $State
+      Address: $Address
+      Birthday: $Birthday
+      HomeClosingDate: $HomeClosingDate
     ) {
       id
       firstName
@@ -169,6 +199,9 @@ const updateLeadMutation = gql`
       phone
       tagsList
       categoriesList
+      description
+      phoneStatus
+      emailInvalid
     }
   }
 `;

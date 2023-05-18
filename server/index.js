@@ -2,8 +2,8 @@ const express = require("express");
 const { graphqlHTTP } = require("express-graphql");
 const colors = require("colors");
 
-// DEVELOPMENT
-require("dotenv").config();
+// // DEVELOPMENT
+// require("dotenv").config();
 
 const { MessagingResponse } = require("twilio").twiml;
 

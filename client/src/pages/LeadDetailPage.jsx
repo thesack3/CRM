@@ -109,6 +109,20 @@ const LeadDetailPage = () => {
     }
   };
 
+  const handleInputChange = async (event) => {
+    const { value } = event.target;
+    setDescription(value);
+  };
+
+  const handleBlur = async () => {
+    await updateLead({
+      variables: {
+        id,
+        description,
+      },
+    });
+  };
+
   return (
     <Grid sx={{ overflow: 'hidden' }}>
       {isMessageModal && data?.lead && (
@@ -138,7 +152,7 @@ const LeadDetailPage = () => {
             </DialogTitle>
             <DialogContentText id="alert-dialog-description">This will make a call if you press yes.</DialogContentText>
           </DialogContent>
-          <DialogActions sx={{ justifyContent: 'center', gap:"12px", padding: '6px 5px 18px 5px' }}>
+          <DialogActions sx={{ justifyContent: 'center', gap: '12px', padding: '6px 5px 18px 5px' }}>
             <Button onClick={() => setConfirmCall(false)} variant="outlined" sx={{ padding: '6px 16px' }}>
               Cancel
             </Button>
@@ -197,7 +211,8 @@ const LeadDetailPage = () => {
               <textarea
                 // eslint-disable-next-line no-unneeded-ternary
                 value={description}
-                onChange={(e) => setDescription(e.target.value)}
+                onChange={(e) => handleInputChange(e)}
+                onBlur={() => handleBlur()}
                 style={{
                   width: '100%',
                   height: '100%',
