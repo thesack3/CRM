@@ -163,6 +163,13 @@ export default function DataGridProCSV2() {
         editable: true,
       },
       {
+        field: 'description',
+        headerName: 'Description',
+        width: 180,
+        editable: true,
+        type: 'text',
+      },
+      {
         field: 'phone',
         headerName: 'Phone',
         width: 180,
