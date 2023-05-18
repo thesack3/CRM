@@ -1,7 +1,21 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useMutation, useQuery } from '@apollo/client';
-import { Box, Typography, Avatar, styled, alpha, Button, Grid, Dialog } from '@mui/material';
+import {
+  Box,
+  Typography,
+  Avatar,
+  styled,
+  alpha,
+  Button,
+  Grid,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+} from '@mui/material';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import { TimelineConnector, TimelineDot, TimelineSeparator } from '@mui/lab';
 import account from '../_mock/account';
 import Iconify from '../components/iconify';
@@ -50,6 +64,7 @@ const LeadDetailPage = () => {
   const [open, setOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [isMessageModal, setIsMessageModal] = useState(false);
+  const [confirmCall, setConfirmCall] = useState(false);
 
   useEffect(() => {
     if (data?.lead?.description) {
@@ -108,6 +123,46 @@ const LeadDetailPage = () => {
           <ChatUI handleProfile={() => setIsMessageModal(false)} lead={data?.lead} />
         </Dialog>
       )}
+      {/* Call confirmation dialog */}
+      {confirmCall && (
+        <Dialog
+          open={confirmCall}
+          onClose={() => setConfirmCall(false)}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogContent sx={{ textAlign: 'center', padding: '18px 25px' }}>
+            <ErrorOutlineIcon sx={{ fontSize: 50, color: '#f8bb86' }} />
+            <DialogTitle id="alert-dialog-title" style={{ textAlign: 'center', padding: '4px' }}>
+              {'Are you sure?'}
+            </DialogTitle>
+            <DialogContentText id="alert-dialog-description">This will make a call if you press yes.</DialogContentText>
+          </DialogContent>
+          <DialogActions sx={{ justifyContent: 'center', gap:"12px", padding: '6px 5px 18px 5px' }}>
+            <Button onClick={() => setConfirmCall(false)} variant="outlined" sx={{ padding: '6px 16px' }}>
+              Cancel
+            </Button>
+            <Button
+              onClick={() => {
+                setConfirmCall(false);
+                setIsCall(true);
+                setUserName(data?.lead?.firstName || '');
+                setLeadId(id || '');
+                window.localStorage.setItem('leadId', id || '');
+                window.localStorage.setItem('isCall', true);
+                window.localStorage.setItem('userName', data?.lead?.firstName || '');
+                handleCall();
+              }}
+              autoFocus
+              variant="contained"
+              sx={{ backgroundColor: '#00bfa5', color: 'white', padding: '6px 10px' }}
+            >
+              Yes, Call Now
+            </Button>
+          </DialogActions>
+        </Dialog>
+      )}
+
       <Grid container margin="24px">
         <Grid item xs={11.1}>
           <StyledAccount>
@@ -125,13 +180,7 @@ const LeadDetailPage = () => {
                 href=""
                 className={styles.callButtonV2}
                 onClick={() => {
-                  setIsCall(true);
-                  setUserName(data?.lead?.firstName || '');
-                  setLeadId(id || '');
-                  window.localStorage.setItem('leadId', id || '');
-                  window.localStorage.setItem('isCall', true);
-                  window.localStorage.setItem('userName', data?.lead?.firstName || '');
-                  handleCall();
+                  setConfirmCall(true);
                 }}
               >
                 <Iconify icon="eva:phone-fill" color="#18712" width={22} height={22} />
