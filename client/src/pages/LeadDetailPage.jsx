@@ -131,15 +131,15 @@ const LeadDetailPage = () => {
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
-          <DialogContent sx={{ textAlign: 'center', padding: '18px 25px 10px 25px' }}>
+          <DialogContent sx={{ textAlign: 'center', padding: '18px 25px' }}>
             <ErrorOutlineIcon sx={{ fontSize: 50, color: '#f8bb86' }} />
             <DialogTitle id="alert-dialog-title" style={{ textAlign: 'center', padding: '4px' }}>
               {'Are you sure?'}
             </DialogTitle>
             <DialogContentText id="alert-dialog-description">This will make a call if you press yes.</DialogContentText>
           </DialogContent>
-          <DialogActions sx={{ justifyContent: 'center', padding: '6px 5px 18px 5px' }}>
-            <Button onClick={() => setConfirmCall(false)} variant="outlined" sx={{ padding: '3px 10px' }}>
+          <DialogActions sx={{ justifyContent: 'center', gap:"12px", padding: '6px 5px 18px 5px' }}>
+            <Button onClick={() => setConfirmCall(false)} variant="outlined" sx={{ padding: '6px 16px' }}>
               Cancel
             </Button>
             <Button
@@ -155,7 +155,7 @@ const LeadDetailPage = () => {
               }}
               autoFocus
               variant="contained"
-              sx={{ backgroundColor: '#00bfa5', color: 'white', padding: '3px 10px' }}
+              sx={{ backgroundColor: '#00bfa5', color: 'white', padding: '6px 10px' }}
             >
               Yes, Call Now
             </Button>
