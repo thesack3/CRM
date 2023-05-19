@@ -50,17 +50,17 @@ const client = new ApolloClient({
 });
 
 root.render(
-  <HelmetProvider>
-    <BrowserRouter>
-      <ApolloProvider client={client}>
-        {/* <Provider store={store}> */}
+  <Provider store={store}>
+    <HelmetProvider>
+      <BrowserRouter>
+        <ApolloProvider client={client}>
           <CallContextProvider>
             <App />
           </CallContextProvider>
-        {/* </Provider> */}
-      </ApolloProvider>
-    </BrowserRouter>
-  </HelmetProvider>
+        </ApolloProvider>
+      </BrowserRouter>
+    </HelmetProvider>
+  </Provider>
 );
 
 // If you want to enable client cache, register instead.

@@ -13,6 +13,7 @@ const alertSlice = createSlice({
   initialState,
   reducers: {
     setAlert: (state, action) => {
+      debugger;
       state.message = action.payload.message;
       state.type = action.payload.type;
       state.open = true;

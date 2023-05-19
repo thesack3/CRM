@@ -1,13 +1,11 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { useAutocomplete } from '@mui/base/AutocompleteUnstyled';
 import CheckIcon from '@mui/icons-material/Check';
-import CloseIcon from '@mui/icons-material/Close';
+import { useAutocomplete } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { autocompleteClasses } from '@mui/material/Autocomplete';
 import { useQuery, useMutation, gql } from '@apollo/client';
-import { GET_TAGS, GET_TAG } from '../../queries/tagQueries';
 import { GET_CATEGORIES } from '../../queries/categoryQueries';
 import { updateLeadMutation } from '../../mutations/leadMutations';
 

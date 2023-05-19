@@ -5,11 +5,13 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { selectAlert } from '../redux/slice/alertSlice';
 
-const SuccessAlert = () => {
+export const SuccessAlert = () => {
   const { message, type, open } = useSelector(selectAlert);
 
+  console.log('message---------------', message, type, open);
+
   return (
-    <Snackbar open={open} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
+    <Snackbar open={open} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
       <Alert severity={type} variant="filled">
         {message}
       </Alert>

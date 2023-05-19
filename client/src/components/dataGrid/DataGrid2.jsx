@@ -23,8 +23,11 @@ import SelectTag from '../SelectTag';
 import AddNote from '../modals/AddNote';
 import AddCSVCall from '../modals/AddCSVCalls';
 import AddeAlert from '../modals/AddeAlert';
+import { setAlert } from '../../redux/slice/alertSlice';
+import { useDispatch } from 'react-redux';
 
 export default function DataGridProCSV2() {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const { setLeadId } = React.useContext(callContext);
   const [sortModel, setSortModel] = useState([{ field: 'name', sort: 'asc' }]);
@@ -642,12 +645,15 @@ export default function DataGridProCSV2() {
   const updateLeadField = async (values) => {
     if (values?.field) {
       const { value, field, id } = values;
-      await updateLead({
+      const response = await updateLead({
         variables: {
           id,
           [field]: value,
         },
       });
+      if (response) {
+        dispatch(setAlert({ type: 'success', message: 'Lead updated successfully' }));
+      }
     }
   };
 
