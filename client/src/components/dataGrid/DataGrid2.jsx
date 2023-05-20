@@ -1,6 +1,6 @@
 // TODO: add subscription to update the table when a new lead is added, NEW_LEAD_SUBSCRIPTION
 import * as React from 'react';
-import { Button, TextField, Typography, Alert, Snackbar, CircularProgress } from '@mui/material';
+import { Button, TextField, Typography, CircularProgress } from '@mui/material';
 import { useQuery, useMutation } from '@apollo/client';
 import { useMemo, useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
@@ -643,17 +643,21 @@ export default function DataGridProCSV2() {
   };
 
   const updateLeadField = async (values) => {
-    if (values?.field) {
-      const { value, field, id } = values;
-      const response = await updateLead({
-        variables: {
-          id,
-          [field]: value,
-        },
-      });
-      if (response) {
-        dispatch(setAlert({ type: 'success', message: 'Lead updated successfully' }));
+    try {
+      if (values?.field) {
+        const { value, field, id } = values;
+        const response = await updateLead({
+          variables: {
+            id,
+            [field]: value,
+          },
+        });
+        if (response) {
+          dispatch(setAlert({ type: 'success', message: 'Lead updated successfully' }));
+        }
       }
+    } catch (error) {
+      dispatch(setAlert({ type: 'error', message: error.message }));
     }
   };
 
@@ -826,16 +830,6 @@ export default function DataGridProCSV2() {
               <CircularProgress />
             </Box>
           )}
-
-          <Snackbar open={openSnack} autoHideDuration={2000} onClose={handleCloseSnackbar}>
-            <Alert
-              onClose={handleCloseSnackbar}
-              severity="success"
-              sx={{ width: '90vw', backgroundColor: 'green', color: 'white' }}
-            >
-              Updated Lead!
-            </Alert>
-          </Snackbar>
         </Box>
       </div>
     </div>
