@@ -134,17 +134,12 @@ const LeadDetailPage = () => {
           maxWidth="lg"
           fullWidth
         >
-          <ChatUI handleProfile={() => setIsMessageModal(false)} lead={data?.lead} />
+          <ChatUI handleProfile={() => setIsMessageModal(false)} lead={data?.lead} setConfirmCall={setConfirmCall} />
         </Dialog>
       )}
       {/* Call confirmation dialog */}
       {confirmCall && (
-        <Dialog
-          open={confirmCall}
-          onClose={() => setConfirmCall(false)}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
+        <Dialog open={confirmCall} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
           <DialogContent sx={{ textAlign: 'center', padding: '18px 25px' }}>
             <ErrorOutlineIcon sx={{ fontSize: 50, color: '#f8bb86' }} />
             <DialogTitle id="alert-dialog-title" style={{ textAlign: 'center', padding: '4px' }}>

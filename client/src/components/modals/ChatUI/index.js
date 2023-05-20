@@ -10,7 +10,7 @@ import { SEND_SMS } from '../../../mutations/sendSms';
 import { GET_SMS_TEXT } from '../../../queries/textQueries';
 import { SEND_CALL } from '../../../mutations/sendCall';
 
-const ChatUI = ({ handleProfile, lead }) => {
+const ChatUI = ({ handleProfile, lead, setConfirmCall }) => {
   const [message, setMessage] = useState('');
   const { setIsCall, setUserName, setLeadId, leadId } = useContext(callContext);
 
@@ -44,14 +44,6 @@ const ChatUI = ({ handleProfile, lead }) => {
     }
   };
 
-  const handleCall = async () => {
-    try {
-      await sendCall();
-    } catch (error) {
-      console.log('Error-', error);
-    }
-  };
-
   return (
     <Grid container spacing={3} padding={6} minHeight={'75vh'} alignItems="center" justifyContent={'center'}>
       <Grid xs={12} sx={{ backgroundColor: '#f5f7f2', height: '100%' }} padding={2} borderRadius={1.5}>
@@ -71,18 +63,7 @@ const ChatUI = ({ handleProfile, lead }) => {
               {lead?.firstName || '-'}
             </Typography>
           </Box>
-          <Button
-            sx={{ borderRadius: '100px' }}
-            onClick={async () => {
-              setIsCall(true);
-              setUserName(lead?.firstName || '');
-              setLeadId(lead?.id || '');
-              window.localStorage.setItem('leadId', lead?.id || '');
-              window.localStorage.setItem('isCall', true);
-              window.localStorage.setItem('userName', lead?.firstName || '');
-              await handleCall();
-            }}
-          >
+          <Button onClick={() => setConfirmCall(true)} sx={{ borderRadius: '100px' }}>
             <Iconify icon="eva:phone-fill" color="#18712" width={22} height={22} />
           </Button>
         </Header>
