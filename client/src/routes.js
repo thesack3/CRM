@@ -16,6 +16,7 @@ import ProfilePage from './pages/ProfilePage';
 import Website from './components/Website/index';
 import HomeList from './components/HomeList';
 import LeadDetailPage from './pages/LeadDetailPage';
+import NotesPage from './pages/NotesPage';
 
 // ----------------------------------------------------------------------
 
@@ -32,6 +33,7 @@ export default function Router() {
         { path: 'leads', element: <BlogPage /> },
         { path: 'lead/:id', element: <LeadDetailPage /> },
         { path: 'profile', element: <ProfilePage /> },
+        { path: 'notes', element: <NotesPage /> },
       ],
     },
     {
