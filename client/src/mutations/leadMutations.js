@@ -214,4 +214,12 @@ const ADD_LEADS_CSV = gql`
   }
 `;
 
-export { ADD_LEAD, ADD_LEADS_CSV, updateLeadMutation };
+const DELETE_LEADS = gql`
+  mutation deleteLeads($ids: [ID], $deleteAll: Boolean) {
+    deleteLeads(ids: $ids, deleteAll: $deleteAll) {
+      message
+    }
+  }
+`;
+
+export { ADD_LEAD, ADD_LEADS_CSV, updateLeadMutation, DELETE_LEADS };

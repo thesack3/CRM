@@ -16,7 +16,7 @@ import AddCategoryModal from '../modals/AddCategory';
 import CategoryGrid from '../inputs/CategorySearchBox';
 import { gridStyles } from '../../constants/styles';
 import SelectField from '../SelectField';
-import { updateLeadMutation } from '../../mutations/leadMutations';
+import { DELETE_LEADS, updateLeadMutation } from '../../mutations/leadMutations';
 import CustomModal from '../modals/CustomModal';
 import LeadDetails from '../LeadDetails';
 import { callContext } from '../../hooks/useCall';
@@ -70,6 +70,7 @@ export default function DataGridProCSV2() {
 
   const [sendEmails] = useMutation(SEND_EMAILS_MUTATION);
   const [updateLead] = useMutation(updateLeadMutation);
+  const [deleteLeads] = useMutation(DELETE_LEADS);
 
   const [rowId] = useState(null);
   const [, setGridDataLoading] = useState(true);
@@ -715,6 +716,51 @@ export default function DataGridProCSV2() {
     setPageSize(newPageSize);
   };
 
+  let selectIds = [];
+
+  const handleSelectionModelChange = async (newSelection) => {
+    selectIds = newSelection;
+  };
+
+  const deleteAll = async () => {
+    const confirm = window.confirm('Are you sure you want to delete all leads?');
+    if (!confirm) return;
+    try {
+      const response = await deleteLeads({
+        variables: {
+          deleteAll: true,
+        },
+      });
+      if (response) {
+        dispatch(setAlert({ type: 'success', message: 'Lead deleted successfully' }));
+        await refetch();
+      }
+    } catch (error) {
+      dispatch(setAlert({ type: 'error', message: error.message }));
+    }
+  };
+
+  // disable eslint for now
+  // eslint-disable-next-line no-unused-vars
+  const deleteById = async () => {
+    if (!selectIds.length) return dispatch(setAlert({ type: 'info', message: 'Please select a lead' }));
+
+    try {
+      const response = await deleteLeads({
+        variables: {
+          ids: selectIds,
+        },
+      });
+      if (response) {
+        dispatch(setAlert({ type: 'success', message: 'Lead deleted successfully' }));
+        await refetch();
+      }
+    } catch (error) {
+      dispatch(setAlert({ type: 'error', message: error.message }));
+    }
+    return null;
+  };
+
   return (
     <div style={{ height: 700, width: '100%' }}>
       {currentParam && (
@@ -774,10 +820,18 @@ export default function DataGridProCSV2() {
               top: '60px',
               right: '16px',
               zIndex: '2',
-              maxWidth: '330px',
+              // maxWidth: '330px',
               marginLeft: 'auto',
             }}
           >
+            <Box sx={{ display: 'flex', gap: '1rem', marginRight: '1rem' }}>
+              <Button onClick={() => deleteAll()} variant="outlined">
+                Delete All
+              </Button>
+              <Button onClick={() => deleteById()} variant="outlined">
+                Delete
+              </Button>
+            </Box>
             <Typography variant="h6" style={{ marginRight: 16 }}>
               User Fields
             </Typography>
@@ -802,6 +856,9 @@ export default function DataGridProCSV2() {
               editMode="cell"
               apiRef={apiRef}
               disableColumnMenu
+              checkboxSelection
+              // selectionModel={selectedIds}
+              onSelectionModelChange={(e) => handleSelectionModelChange(e)}
               // filterModel={filterModel}
               onFilterModelChange={(value) => handleFilterModelChange(value)}
               sortModel={sortModel}

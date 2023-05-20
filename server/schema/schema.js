@@ -1108,7 +1108,7 @@ const mutation = new GraphQLObjectType({
         }),
       }),
       args: {
-        ids: { type: GraphQLList(GraphQLString) },
+        ids: { type: GraphQLList(GraphQLID) },
         deleteAll: { type: GraphQLBoolean },
       },
       async resolve(parent, args) {
