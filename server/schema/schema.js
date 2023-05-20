@@ -24,6 +24,7 @@ const Category = require("../models/Category");
 const EAlert = require("../models/EAlert");
 const Call = require("../models/Call");
 const Text = require("../models/Text");
+const Reminder = require("../models/Reminder");
 
 const TwilioMSGType = new GraphQLObjectType({
   name: "TwilioMSG",
@@ -1381,6 +1382,42 @@ const mutation = new GraphQLObjectType({
         }
       },
     },
+    // reminder mutation to add reminders to the database
+
+    addReminder: {
+      type: new GraphQLObjectType({
+        name: "Reminder",
+        fields: () => ({
+          title: { type: GraphQLString },
+          note: { type: GraphQLString },
+          date: { type: GraphQLString },
+          time: { type: GraphQLString },
+          type: { type: GraphQLString },
+          user: UserType,
+        }),
+      }),
+      args: {
+        title: { type: GraphQLNonNull(GraphQLString) },
+        note: { type: GraphQLNonNull(GraphQLString) },
+        date: { type: GraphQLNonNull(GraphQLString) },
+        time: { type: GraphQLNonNull(GraphQLString) },
+        type: { type: GraphQLNonNull(GraphQLString) },
+        userId: { type: GraphQLNonNull(GraphQLID) },
+      },
+
+      async resolve(parent, args) {
+        const result = await Reminder.create({
+          title: args.title,
+          note: args.note,
+          date: args.date,
+          time: args.time,
+          type: args.type,
+          userId: args.userId,
+        });
+        return result;
+      },
+    },
+
     //Delete a project
     deleteProject: {
       type: ProjectType,
