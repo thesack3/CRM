@@ -25,6 +25,7 @@ const EAlert = require("../models/EAlert");
 const Call = require("../models/Call");
 const Text = require("../models/Text");
 const Reminder = require("../models/Reminder");
+const ReminderType = require("./types");
 
 const TwilioMSGType = new GraphQLObjectType({
   name: "TwilioMSG",
@@ -588,6 +589,21 @@ const RootQuery = new GraphQLObjectType({
         return Category.find();
       },
     },
+    // get all reminders
+    reminders: {
+      type: new GraphQLList(ReminderType),
+      async resolve(parent, args) {
+        return await Reminder.find();
+      },
+    },
+    // get reminder by id
+    // reminder: {
+    //   type: ReminderType,
+    //   args: { id: { type: GraphQLID } },
+    //   async resolve(parent, args) {
+    //     return await Reminder.findById(args.id);
+    //   },
+    // },
   },
 });
 
@@ -1385,15 +1401,7 @@ const mutation = new GraphQLObjectType({
     // reminder mutation to add reminders to the database
 
     addReminder: {
-      type: new GraphQLObjectType({
-        name: "Reminder",
-        fields: () => ({
-          title: { type: GraphQLString },
-          note: { type: GraphQLString },
-          date: { type: GraphQLString },
-          type: { type: GraphQLString },
-        }),
-      }),
+      type: ReminderType,
       args: {
         title: { type: GraphQLString },
         note: { type: GraphQLString },

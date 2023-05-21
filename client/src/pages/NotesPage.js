@@ -15,15 +15,17 @@ import {
   DialogContent,
   DialogActions,
   Autocomplete,
+  CircularProgress,
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import EditNoteIcon from '@mui/icons-material/EditNote';
-import { useMutation } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import { useDispatch } from 'react-redux';
 import { ADD_REMINDER } from '../mutations/reminder';
 import { setAlert } from '../redux/slice/alertSlice';
+import { GET_REMINDERS } from '../queries/reminder';
 
 const NotesPage = () => {
   const dispatch = useDispatch();
@@ -34,6 +36,8 @@ const NotesPage = () => {
     note: '',
     date: '',
   });
+  // get reminders
+  const { loading, data, refetch } = useQuery(GET_REMINDERS);
 
   // handle mutation
   const [addReminder] = useMutation(ADD_REMINDER);
@@ -51,7 +55,7 @@ const NotesPage = () => {
           title: value.title,
           note: value.note,
           date: value.date,
-          type: type,
+          type,
         },
       });
       setValue({
@@ -61,6 +65,7 @@ const NotesPage = () => {
       });
       setType('Personal');
       dispatch(setAlert({ type: 'success', message: 'Reminder added successfully' }));
+      await refetch();
     } catch (error) {
       dispatch(setAlert({ type: 'error', payload: error.message }));
     } finally {
@@ -177,34 +182,37 @@ const NotesPage = () => {
         </Button>
       </Box>
       {/* Notes */}
-      <Card sx={{ padding: '20px', backgroundColor: '#E8EBEE' }}>
-        <Grid container spacing={3}>
-          {Array.from({ length: 10 }).map((_, i) => (
-            <Grid item xs={12} sm={6} md={3} key={i}>
-              <Card sx={{ padding: '20px', backgroundColor: '#F9FAFB' }}>
-                <Typography variant="h6">Title</Typography>
-                <Typography variant="body2">
-                  Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus esse consequatur autem qui
-                  possimus ipsam recusandae fuga saepe nemo dolor error quis in, quo consequuntur.
-                </Typography>
-
-                <Box display="flex" alignItems="center" gap="5px" marginTop="10px" flexWrap="wrap">
-                  <Chip
-                    avatar={
-                      <Avatar>
-                        <AccessTimeIcon />
-                      </Avatar>
-                    }
-                    label="Dec 15 22, 12:44"
-                    size="small"
-                  />
-                  <Chip label="Family" size="small" />
-                  <Chip label="Personal" size="small" />
-                </Box>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
+      <Card sx={{ padding: '20px', backgroundColor: '#E8EBEE', minHeight: '78vh' }}>
+        {loading ? (
+          <Box display="flex" alignItems="center" justifyContent="center" height="100%">
+            <CircularProgress />
+          </Box>
+        ) : (
+          <Grid container spacing={3}>
+            {data &&
+              data?.reminders?.length &&
+              data.reminders.map((item) => (
+                <Grid item xs={12} sm={6} md={3} key={item.title}>
+                  <Card sx={{ padding: '20px', backgroundColor: '#F9FAFB', minHeight: '180px' }}>
+                    <Typography variant="h6">{item.title}</Typography>
+                    <Typography variant="body2">{item.note}</Typography>
+                    <Box display="flex" alignItems="center" gap="5px" marginTop="10px" flexWrap="wrap">
+                      <Chip
+                        avatar={
+                          <Avatar>
+                            <AccessTimeIcon />
+                          </Avatar>
+                        }
+                        label={item.date}
+                        size="small"
+                      />
+                      <Chip label={item.type} size="small" />
+                    </Box>
+                  </Card>
+                </Grid>
+              ))}
+          </Grid>
+        )}
       </Card>
     </Container>
   );
