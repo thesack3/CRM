@@ -1391,18 +1391,15 @@ const mutation = new GraphQLObjectType({
           title: { type: GraphQLString },
           note: { type: GraphQLString },
           date: { type: GraphQLString },
-          time: { type: GraphQLString },
           type: { type: GraphQLString },
-          user: UserType,
         }),
       }),
       args: {
-        title: { type: GraphQLNonNull(GraphQLString) },
-        note: { type: GraphQLNonNull(GraphQLString) },
-        date: { type: GraphQLNonNull(GraphQLString) },
-        time: { type: GraphQLNonNull(GraphQLString) },
-        type: { type: GraphQLNonNull(GraphQLString) },
-        userId: { type: GraphQLNonNull(GraphQLID) },
+        title: { type: GraphQLString },
+        note: { type: GraphQLString },
+        date: { type: GraphQLString },
+        type: { type: GraphQLString },
+        userId: { type: GraphQLID },
       },
 
       async resolve(parent, args) {
@@ -1410,7 +1407,7 @@ const mutation = new GraphQLObjectType({
           title: args.title,
           note: args.note,
           date: args.date,
-          time: args.time,
+          time: args.date,
           type: args.type,
           userId: args.userId,
         });

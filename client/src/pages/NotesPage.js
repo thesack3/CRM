@@ -20,9 +20,53 @@ import SearchIcon from '@mui/icons-material/Search';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import EditNoteIcon from '@mui/icons-material/EditNote';
+import { useMutation } from '@apollo/client';
+import { useDispatch } from 'react-redux';
+import { ADD_REMINDER } from '../mutations/reminder';
+import { setAlert } from '../redux/slice/alertSlice';
 
 const NotesPage = () => {
+  const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
+  const [type, setType] = useState('Personal');
+  const [value, setValue] = useState({
+    title: '',
+    note: '',
+    date: '',
+  });
+
+  // handle mutation
+  const [addReminder] = useMutation(ADD_REMINDER);
+
+  // handle change
+  const handleChange = (e, a) => {
+    setValue({ ...value, [e.target.name]: e.target.value });
+  };
+
+  // handle submit
+  const handleSubmit = async () => {
+    try {
+      await addReminder({
+        variables: {
+          title: value.title,
+          note: value.note,
+          date: value.date,
+          type: type,
+        },
+      });
+      setValue({
+        title: '',
+        note: '',
+        date: '',
+      });
+      setType('Personal');
+      dispatch(setAlert({ type: 'success', message: 'Reminder added successfully' }));
+    } catch (error) {
+      dispatch(setAlert({ type: 'error', payload: error.message }));
+    } finally {
+      setOpen(false);
+    }
+  };
 
   return (
     <Container>
@@ -33,27 +77,48 @@ const NotesPage = () => {
             id="alert-dialog-title"
             sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
           >
-            {'Add Task'} <EditNoteIcon />
+            Add Task <EditNoteIcon />
           </DialogTitle>
 
           <DialogContent>
             <Grid container spacing={2}>
               <Grid item xs={12}>
-                <TextField label="Title" variant="outlined" fullWidth size="small" />
+                <TextField
+                  label="Title"
+                  variant="outlined"
+                  fullWidth
+                  size="small"
+                  name="title"
+                  value={value.title}
+                  onChange={(e) => handleChange(e)}
+                />
               </Grid>
               <Grid item xs={12}>
-                <TextField label="Take a note" rows={4} multiline variant="outlined" fullWidth size="small" />
+                <TextField
+                  label="Take a note"
+                  rows={4}
+                  multiline
+                  variant="outlined"
+                  fullWidth
+                  size="small"
+                  name="note"
+                  value={value.note}
+                  onChange={(e) => handleChange(e)}
+                />
               </Grid>
               <Grid item xs={6}>
                 <TextField
                   label="Date"
-                  type="date"
+                  type="datetime-local"
                   variant="outlined"
                   fullWidth
                   size="small"
                   InputLabelProps={{
                     shrink: true,
                   }}
+                  name="date"
+                  value={value.date}
+                  onChange={(e) => handleChange(e)}
                 />
               </Grid>
               <Grid item xs={6}>
@@ -62,15 +127,22 @@ const NotesPage = () => {
                   renderInput={(params) => (
                     <TextField {...params} label="Type" variant="outlined" fullWidth size="small" />
                   )}
+                  value={type}
+                  onChange={(_, value) => setType(value)}
                 />
               </Grid>
             </Grid>
           </DialogContent>
-          <DialogActions sx={{ justifyContent: 'center', gap: '5px', padding: '6px 5px 18px 5px' }}>
-            <Button onClick={() => setOpen(false)} variant="outlined" sx={{ padding: '6px 10px' }}>
+          <DialogActions sx={{ justifyContent: 'right', gap: '5px' }}>
+            <Button onClick={() => setOpen(false)} variant="outlined" sx={{ padding: '5px 16px' }}>
               Cancel
             </Button>
-            <Button variant="contained" sx={{ backgroundColor: '#00bfa5', color: 'white', padding: '6px 10px' }}>
+            <Button
+              variant="contained"
+              sx={{ padding: '6px 26px', color: '#fff' }}
+              color="success"
+              onClick={() => handleSubmit()}
+            >
               Save
             </Button>
           </DialogActions>
