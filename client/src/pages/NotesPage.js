@@ -21,6 +21,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import EditNoteIcon from '@mui/icons-material/EditNote';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import { useMutation, useQuery } from '@apollo/client';
 import { useDispatch } from 'react-redux';
 import { ADD_REMINDER } from '../mutations/reminder';
@@ -30,6 +31,8 @@ import { GET_REMINDERS } from '../queries/reminder';
 const NotesPage = () => {
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
+  const [noteModal, setNoteModal] = useState(false);
+  const [selectedNote, setSelectedNote] = useState(null);
   const [type, setType] = useState('Personal');
   const [value, setValue] = useState({
     title: '',
@@ -38,6 +41,7 @@ const NotesPage = () => {
   });
   // get reminders
   const { loading, data, refetch } = useQuery(GET_REMINDERS);
+  console.log(data);
 
   // handle mutation
   const [addReminder] = useMutation(ADD_REMINDER);
@@ -71,6 +75,12 @@ const NotesPage = () => {
     } finally {
       setOpen(false);
     }
+  };
+
+  // handle single note
+  const handleSingleNote = (item) => {
+    setNoteModal(true);
+    setSelectedNote(item);
   };
 
   return (
@@ -153,31 +163,79 @@ const NotesPage = () => {
           </DialogActions>
         </Dialog>
       )}
+      {/* Open task dialog */}
+      {noteModal && (
+        <Dialog open={noteModal} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
+          <DialogContent>
+            {selectedNote && (
+              <Box display="flex" flexDirection="column" gap="10px">
+                <Typography variant="h6">{selectedNote.title}</Typography>
+                <Typography variant="body2">{selectedNote.note}</Typography>
+                <Box display="flex" alignItems="center" gap="5px" marginTop="10px" flexWrap="wrap">
+                  <Chip
+                    avatar={
+                      <Avatar>
+                        <AccessTimeIcon />
+                      </Avatar>
+                    }
+                    label={selectedNote.date}
+                    size="small"
+                  />
+                  <Chip label={selectedNote.type} size="small" />
+                </Box>
+              </Box>
+            )}
+          </DialogContent>
+          <DialogActions sx={{ justifyContent: 'right', gap: '5px' }}>
+            <Button onClick={() => setNoteModal(false)} variant="outlined" sx={{ padding: '5px 16px' }}>
+              Close
+            </Button>
+            <Button
+              variant="contained"
+              sx={{ padding: '6px 26px', color: '#fff' }}
+              color="success"
+              onClick={() => handleSubmit()}
+            >
+              Edit
+            </Button>
+          </DialogActions>
+        </Dialog>
+      )}
       {/* Page Header */}
-      <Box display="flex" alignItems="center" justifyContent="space-between" marginBottom="30px">
+      <Box display="flex" alignItems="center" justifyContent="space-between" gap="5px" marginBottom="30px">
         <Typography variant="h4">Notes</Typography>
-        <Box display="flex" alignItems="center" gap="5px">
-          <TextField
-            id="search"
-            type="search"
-            label="Search"
-            size="small"
-            sx={{
-              width: 600,
-              '& .MuiInputBase-root': {
-                borderRadius: 20,
-              },
-            }}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
-            }}
-          />
-        </Box>
-        <Button onClick={() => setOpen(true)} variant="contained" endIcon={<AddCircleOutlineIcon />}>
+        <TextField
+          id="search"
+          type="search"
+          label="Search"
+          size="small"
+          sx={{
+            width: 600,
+            '& .MuiInputBase-root': {
+              borderRadius: 20,
+            },
+          }}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <SearchIcon />
+              </InputAdornment>
+            ),
+          }}
+        />
+        <Autocomplete
+          options={['Personal', 'Family', 'Work', 'Frinds', 'Priority']}
+          renderInput={(params) => <TextField {...params} label="Type" variant="outlined" fullWidth size="small" />}
+          value={type}
+          onChange={(_, value) => setType(value)}
+          sx={{ width: 200 }}
+        />
+        <Button
+          onClick={() => setOpen(true)}
+          sx={{ whiteSpace: 'nowrap', minWidth: 100 }}
+          variant="contained"
+          endIcon={<AddCircleOutlineIcon />}
+        >
           Add Task
         </Button>
       </Box>
@@ -193,9 +251,22 @@ const NotesPage = () => {
               data?.reminders?.length &&
               data.reminders.map((item) => (
                 <Grid item xs={12} sm={6} md={3} key={item.title}>
-                  <Card sx={{ padding: '20px', backgroundColor: '#F9FAFB', minHeight: '180px' }}>
-                    <Typography variant="h6">{item.title}</Typography>
-                    <Typography variant="body2">{item.note}</Typography>
+                  <Card
+                    onClick={() => handleSingleNote(item)}
+                    sx={{
+                      padding: '20px',
+                      backgroundColor: '#F9FAFB',
+                      minHeight: '180px',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'space-between',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    <Box>
+                      <Typography variant="h6">{item.title}</Typography>
+                      <Typography variant="body2">{item.note}</Typography>
+                    </Box>
                     <Box display="flex" alignItems="center" gap="5px" marginTop="10px" flexWrap="wrap">
                       <Chip
                         avatar={
@@ -208,6 +279,7 @@ const NotesPage = () => {
                       />
                       <Chip label={item.type} size="small" />
                     </Box>
+                    <DeleteForeverIcon sx={{ marginLeft: 'auto' }} />
                   </Card>
                 </Grid>
               ))}
