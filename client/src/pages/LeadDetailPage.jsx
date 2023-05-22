@@ -173,7 +173,7 @@ const LeadDetailPage = () => {
       )}
 
       <Grid container margin="24px">
-        <Grid item xs={11.1}>
+        <Grid item xs={12} md={4}>
           <StyledAccount>
             <Avatar sx={{ width: '100px', height: '100px' }} src={account.photoURL} alt="photoURL" />
             <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -197,6 +197,22 @@ const LeadDetailPage = () => {
               <Button href="" className={styles.callButtonV2} onClick={() => setIsMessageModal(true)}>
                 <Iconify icon="eva:email-fill" color="#18712" width={22} height={22} />
               </Button>
+            </Box>
+          </StyledAccount>
+        </Grid>
+        <Grid item xs={12} md={7.1} sx={{ maxHeight: '270px', overflow: 'hidden' }}>
+          <StyledAccount>
+            <Box
+              display="grid"
+              gridTemplateColumns="repeat(auto-fill, minmax(300px, 1fr))"
+              gridGap="10px"
+              alignItems="flex-start"
+            >
+              {Object.entries(data?.lead).map(([key, value]) => (
+                <Typography variant="body2" key={key}>
+                  {`${key}: ${value}`}
+                </Typography>
+              ))}
             </Box>
           </StyledAccount>
         </Grid>
