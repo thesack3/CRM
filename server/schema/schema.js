@@ -24,6 +24,8 @@ const Category = require("../models/Category");
 const EAlert = require("../models/EAlert");
 const Call = require("../models/Call");
 const Text = require("../models/Text");
+const Reminder = require("../models/Reminder");
+const ReminderType = require("./types");
 
 const TwilioMSGType = new GraphQLObjectType({
   name: "TwilioMSG",
@@ -587,6 +589,21 @@ const RootQuery = new GraphQLObjectType({
         return Category.find();
       },
     },
+    // get all reminders
+    reminders: {
+      type: new GraphQLList(ReminderType),
+      async resolve(parent, args) {
+        return await Reminder.find();
+      },
+    },
+    // get reminder by id
+    // reminder: {
+    //   type: ReminderType,
+    //   args: { id: { type: GraphQLID } },
+    //   async resolve(parent, args) {
+    //     return await Reminder.findById(args.id);
+    //   },
+    // },
   },
 });
 
@@ -605,7 +622,8 @@ const mutation = new GraphQLObjectType({
       async resolve(parent, args) {
         // Your AccountSID and Auth Token from console.twilio.com
         const accountSid = "ACc1d129072adcdd2b82563d7c50f996ce";
-        const authToken = "0a8da2b96fc12fa62f5b4f510197b9bc";
+        const authToken = "59c688db8aa4b85a1f3756b59b468d45";
+        // const authToken = "0a8da2b96fc12fa62f5b4f510197b9bc";
 
         const client = require("twilio")(accountSid, authToken);
 
@@ -655,7 +673,8 @@ const mutation = new GraphQLObjectType({
       async resolve(parent, args) {
         // Your AccountSID and Auth Token from console.twilio.com
         const accountSid = "ACc1d129072adcdd2b82563d7c50f996ce";
-        const authToken = "0a8da2b96fc12fa62f5b4f510197b9bc";
+        const authToken = "59c688db8aa4b85a1f3756b59b468d45";
+        // const authToken = "0a8da2b96fc12fa62f5b4f510197b9bc";
 
         const client = require("twilio")(accountSid, authToken);
 
@@ -1106,7 +1125,7 @@ const mutation = new GraphQLObjectType({
         }),
       }),
       args: {
-        ids: { type: GraphQLList(GraphQLString) },
+        ids: { type: GraphQLList(GraphQLID) },
         deleteAll: { type: GraphQLBoolean },
       },
       async resolve(parent, args) {
@@ -1379,6 +1398,31 @@ const mutation = new GraphQLObjectType({
         }
       },
     },
+    // reminder mutation to add reminders to the database
+
+    addReminder: {
+      type: ReminderType,
+      args: {
+        title: { type: GraphQLString },
+        note: { type: GraphQLString },
+        date: { type: GraphQLString },
+        type: { type: GraphQLString },
+        userId: { type: GraphQLID },
+      },
+
+      async resolve(parent, args) {
+        const result = await Reminder.create({
+          title: args.title,
+          note: args.note,
+          date: args.date,
+          time: args.date,
+          type: args.type,
+          userId: args.userId,
+        });
+        return result;
+      },
+    },
+
     //Delete a project
     deleteProject: {
       type: ProjectType,

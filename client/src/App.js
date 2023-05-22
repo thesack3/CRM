@@ -16,6 +16,7 @@ import { callContext } from './hooks/useCall';
 import './app.css';
 import { GET_TAGS } from './queries/tagQueries';
 import { GET_CATEGORIES } from './queries/categoryQueries';
+import { Alerts } from './components/Alerts';
 
 const VALIDATE_JWT_QUERY = gql`
   query ValidateJwt {
@@ -62,6 +63,7 @@ export default function App() {
         {isCall === true ? <CallBox /> : ''}
         <ScrollToTop />
         <StyledChart />
+        <Alerts />
         <Router />
       </ThemeProvider>
     </>

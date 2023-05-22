@@ -1,11 +1,13 @@
 import ReactDOM from 'react-dom/client';
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
+import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import * as serviceWorker from './serviceWorker';
 import reportWebVitals from './reportWebVitals';
 import CallContextProvider from './hooks/useCall';
 import App from './App';
+import store from './redux/store';
 
 // ----------------------------------------------------------------------
 
@@ -48,15 +50,17 @@ const client = new ApolloClient({
 });
 
 root.render(
-  <HelmetProvider>
-    <BrowserRouter>
-      <ApolloProvider client={client}>
-        <CallContextProvider>
-          <App />
-        </CallContextProvider>
-      </ApolloProvider>
-    </BrowserRouter>
-  </HelmetProvider>
+  <Provider store={store}>
+    <HelmetProvider>
+      <BrowserRouter>
+        <ApolloProvider client={client}>
+          <CallContextProvider>
+            <App />
+          </CallContextProvider>
+        </ApolloProvider>
+      </BrowserRouter>
+    </HelmetProvider>
+  </Provider>
 );
 
 // If you want to enable client cache, register instead.

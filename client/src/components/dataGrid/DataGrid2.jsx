@@ -1,8 +1,9 @@
 // TODO: add subscription to update the table when a new lead is added, NEW_LEAD_SUBSCRIPTION
 import * as React from 'react';
-import { Button, TextField, Typography, Alert, Snackbar, CircularProgress } from '@mui/material';
+import { Button, TextField, Typography, CircularProgress } from '@mui/material';
 import { useQuery, useMutation } from '@apollo/client';
 import { useMemo, useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import Box from '@mui/material/Box';
 import { useNavigate } from 'react-router-dom';
 import { DataGridPro, GridToolbar } from '@mui/x-data-grid-pro';
@@ -15,7 +16,7 @@ import AddCategoryModal from '../modals/AddCategory';
 import CategoryGrid from '../inputs/CategorySearchBox';
 import { gridStyles } from '../../constants/styles';
 import SelectField from '../SelectField';
-import { updateLeadMutation } from '../../mutations/leadMutations';
+import { DELETE_LEADS, updateLeadMutation } from '../../mutations/leadMutations';
 import CustomModal from '../modals/CustomModal';
 import LeadDetails from '../LeadDetails';
 import { callContext } from '../../hooks/useCall';
@@ -23,8 +24,10 @@ import SelectTag from '../SelectTag';
 import AddNote from '../modals/AddNote';
 import AddCSVCall from '../modals/AddCSVCalls';
 import AddeAlert from '../modals/AddeAlert';
+import { setAlert } from '../../redux/slice/alertSlice';
 
 export default function DataGridProCSV2() {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const { setLeadId } = React.useContext(callContext);
   const [sortModel, setSortModel] = useState([{ field: 'name', sort: 'asc' }]);
@@ -67,6 +70,7 @@ export default function DataGridProCSV2() {
 
   const [sendEmails] = useMutation(SEND_EMAILS_MUTATION);
   const [updateLead] = useMutation(updateLeadMutation);
+  const [deleteLeads] = useMutation(DELETE_LEADS);
 
   const [rowId] = useState(null);
   const [, setGridDataLoading] = useState(true);
@@ -640,14 +644,21 @@ export default function DataGridProCSV2() {
   };
 
   const updateLeadField = async (values) => {
-    if (values?.field) {
-      const { value, field, id } = values;
-      await updateLead({
-        variables: {
-          id,
-          [field]: value,
-        },
-      });
+    try {
+      if (values?.field) {
+        const { value, field, id } = values;
+        const response = await updateLead({
+          variables: {
+            id,
+            [field]: value,
+          },
+        });
+        if (response) {
+          dispatch(setAlert({ type: 'success', message: 'Lead updated successfully' }));
+        }
+      }
+    } catch (error) {
+      dispatch(setAlert({ type: 'error', message: error.message }));
     }
   };
 
@@ -703,6 +714,51 @@ export default function DataGridProCSV2() {
 
   const handlePageSizeChange = (newPageSize) => {
     setPageSize(newPageSize);
+  };
+
+  let selectIds = [];
+
+  const handleSelectionModelChange = async (newSelection) => {
+    selectIds = newSelection;
+  };
+
+  const deleteAll = async () => {
+    const confirm = window.confirm('Are you sure you want to delete all leads?');
+    if (!confirm) return;
+    try {
+      const response = await deleteLeads({
+        variables: {
+          deleteAll: true,
+        },
+      });
+      if (response) {
+        dispatch(setAlert({ type: 'success', message: 'Lead deleted successfully' }));
+        await refetch();
+      }
+    } catch (error) {
+      dispatch(setAlert({ type: 'error', message: error.message }));
+    }
+  };
+
+  // disable eslint for now
+  // eslint-disable-next-line no-unused-vars
+  const deleteById = async () => {
+    if (!selectIds.length) return dispatch(setAlert({ type: 'info', message: 'Please select a lead' }));
+
+    try {
+      const response = await deleteLeads({
+        variables: {
+          ids: selectIds,
+        },
+      });
+      if (response) {
+        dispatch(setAlert({ type: 'success', message: 'Lead deleted successfully' }));
+        await refetch();
+      }
+    } catch (error) {
+      dispatch(setAlert({ type: 'error', message: error.message }));
+    }
+    return null;
   };
 
   return (
@@ -764,10 +820,18 @@ export default function DataGridProCSV2() {
               top: '60px',
               right: '16px',
               zIndex: '2',
-              maxWidth: '330px',
+              // maxWidth: '330px',
               marginLeft: 'auto',
             }}
           >
+            <Box sx={{ display: 'flex', gap: '1rem', marginRight: '1rem' }}>
+              <Button onClick={() => deleteAll()} variant="outlined">
+                Delete All
+              </Button>
+              <Button onClick={() => deleteById()} variant="outlined">
+                Delete
+              </Button>
+            </Box>
             <Typography variant="h6" style={{ marginRight: 16 }}>
               User Fields
             </Typography>
@@ -792,6 +856,9 @@ export default function DataGridProCSV2() {
               editMode="cell"
               apiRef={apiRef}
               disableColumnMenu
+              checkboxSelection
+              // selectionModel={selectedIds}
+              onSelectionModelChange={(e) => handleSelectionModelChange(e)}
               // filterModel={filterModel}
               onFilterModelChange={(value) => handleFilterModelChange(value)}
               sortModel={sortModel}
@@ -820,16 +887,6 @@ export default function DataGridProCSV2() {
               <CircularProgress />
             </Box>
           )}
-
-          <Snackbar open={openSnack} autoHideDuration={2000} onClose={handleCloseSnackbar}>
-            <Alert
-              onClose={handleCloseSnackbar}
-              severity="success"
-              sx={{ width: '90vw', backgroundColor: 'green', color: 'white' }}
-            >
-              Updated Lead!
-            </Alert>
-          </Snackbar>
         </Box>
       </div>
     </div>

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import { useAutocomplete } from '@mui/base/AutocompleteUnstyled';
+import { useAutocomplete } from '@mui/material';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import { styled } from '@mui/material/styles';
@@ -10,7 +10,6 @@ import { updateLeadMutation } from '../../mutations/leadMutations';
 
 export default function AutoSelect({ data, label, list, type, handleUpdate, defaultValues }) {
   // const dvalue = data.categories.map((x) => ({ title: x.title || 'd' }));
-  console.log('dvalue----------', list);
   const {
     getRootProps,
     getInputLabelProps,
@@ -32,7 +31,6 @@ export default function AutoSelect({ data, label, list, type, handleUpdate, defa
       handleUpdate(value, data.id, type);
     },
   });
-  console.log('values----------------', value);
   return (
     <Root>
       <div {...getRootProps()}>
