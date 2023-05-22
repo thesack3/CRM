@@ -85,7 +85,7 @@ app.post("/addLead", async (req, res) => {
     City: req.body.City,
     State: req.body.State,
     ZipCode: req.body.ZipCode,
-    tags: req.body.tags,
+    // tags: req.body.tags,
     Link: req.body.Link,
     Birthday: req.body.Birthday,
     HomeClosingDate: req.body.HomeClosingDate,
