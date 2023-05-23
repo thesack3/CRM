@@ -820,6 +820,7 @@ export default function DataGridProCSV2() {
               top: '60px',
               right: '16px',
               zIndex: '2',
+              width: '60%',
               // maxWidth: '330px',
               marginLeft: 'auto',
             }}
