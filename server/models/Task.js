@@ -2,7 +2,7 @@
 
 const mongoose = require("mongoose");
 
-const ReminderSchema = new mongoose.Schema({
+const TaskSchema = new mongoose.Schema({
   title: {
     type: String,
   },
@@ -28,4 +28,4 @@ const ReminderSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model("Reminder", ReminderSchema);
+module.exports = mongoose.model("Task", TaskSchema);

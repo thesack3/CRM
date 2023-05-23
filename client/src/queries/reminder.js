@@ -1,9 +1,9 @@
 import { gql } from '@apollo/client';
 
 // get all reminders
-export const GET_REMINDERS = gql`
-  query reminders {
-    reminders {
+export const GET_TASKS = gql`
+  query tasks {
+    tasks {
       id
       title
       note
@@ -16,9 +16,9 @@ export const GET_REMINDERS = gql`
 `;
 
 // get single reminder
-export const GET_REMINDER = gql`
-  query reminders($id: ID) {
-    reminder(id: $id) {
+export const GET_TASK = gql`
+  query task($id: ID) {
+    task(id: $id) {
       id
       title
       note
