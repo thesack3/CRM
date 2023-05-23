@@ -33,7 +33,7 @@ export default function Router() {
         { path: 'leads', element: <BlogPage /> },
         { path: 'lead/:id', element: <LeadDetailPage /> },
         { path: 'profile', element: <ProfilePage /> },
-        { path: 'notes', element: <NotesPage /> },
+        { path: 'tasks', element: <NotesPage /> },
       ],
     },
     {

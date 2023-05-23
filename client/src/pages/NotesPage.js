@@ -184,7 +184,7 @@ const NotesPage = () => {
       {noteModal && (
         <Dialog
           open={noteModal}
-          size="md"
+          size="sm"
           fullWidth
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
@@ -230,7 +230,7 @@ const NotesPage = () => {
       )}
       {/* Page Header */}
       <Box display="flex" alignItems="center" justifyContent="space-between" gap="5px" marginBottom="30px">
-        <Typography variant="h4">Notes</Typography>
+        <Typography variant="h4">Tasks</Typography>
         <TextField
           id="search"
           type="search"

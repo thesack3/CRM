@@ -22,8 +22,8 @@ const navConfig = [
     icon: icon('ic_van'),
   },
   {
-    title: 'Notes',
-    path: '/dashboard/notes',
+    title: 'Tasks',
+    path: '/dashboard/tasks',
     icon: icon('ic_note'),
   },
 
