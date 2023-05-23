@@ -41,13 +41,15 @@ const NotesPage = () => {
   });
   // get tasks
   const { loading, data, refetch } = useQuery(GET_TASKS);
-  console.log(data);
 
   // handle mutation
   const [addTask] = useMutation(ADD_TASK);
 
   // handle change
   const handleChange = (e, a) => {
+    if (selectedNote) {
+      setSelectedNote({ title: e.target.value, note: e.target.value, date: e.target.value });
+    }
     setValue({ ...value, [e.target.name]: e.target.value });
   };
 
@@ -79,8 +81,15 @@ const NotesPage = () => {
 
   // handle single note
   const handleSingleNote = (item) => {
+    console.log(item, 'item');
     setNoteModal(true);
     setSelectedNote(item);
+  };
+
+  // handle edit note
+  const handleEditNote = () => {
+    setNoteModal(false);
+    setOpen(true);
   };
 
   return (
@@ -92,10 +101,10 @@ const NotesPage = () => {
             id="alert-dialog-title"
             sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
           >
-            Add Task <EditNoteIcon />
+            {selectedNote ? 'Edit Task' : 'Add Task'} <EditNoteIcon />
           </DialogTitle>
 
-          <DialogContent>
+          <DialogContent sx={{ overflowY: 'unset' }}>
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <TextField
@@ -104,7 +113,8 @@ const NotesPage = () => {
                   fullWidth
                   size="small"
                   name="title"
-                  value={value.title}
+                  sx={{ zIndex: '9999999' }}
+                  value={selectedNote ? selectedNote.title : value.title}
                   onChange={(e) => handleChange(e)}
                 />
               </Grid>
@@ -117,7 +127,7 @@ const NotesPage = () => {
                   fullWidth
                   size="small"
                   name="note"
-                  value={value.note}
+                  value={selectedNote ? selectedNote.note : value.note}
                   onChange={(e) => handleChange(e)}
                 />
               </Grid>
@@ -132,7 +142,7 @@ const NotesPage = () => {
                     shrink: true,
                   }}
                   name="date"
-                  value={value.date}
+                  value={selectedNote ? selectedNote.date : value.date}
                   onChange={(e) => handleChange(e)}
                 />
               </Grid>
@@ -149,7 +159,14 @@ const NotesPage = () => {
             </Grid>
           </DialogContent>
           <DialogActions sx={{ justifyContent: 'right', gap: '5px' }}>
-            <Button onClick={() => setOpen(false)} variant="outlined" sx={{ padding: '5px 16px' }}>
+            <Button
+              onClick={() => {
+                setOpen(false);
+                setSelectedNote(null);
+              }}
+              variant="outlined"
+              sx={{ padding: '5px 16px' }}
+            >
               Cancel
             </Button>
             <Button
@@ -165,12 +182,22 @@ const NotesPage = () => {
       )}
       {/* Open task dialog */}
       {noteModal && (
-        <Dialog open={noteModal} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
+        <Dialog
+          open={noteModal}
+          size="md"
+          fullWidth
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
           <DialogContent>
             {selectedNote && (
-              <Box display="flex" flexDirection="column" gap="10px">
-                <Typography variant="h6">{selectedNote.title}</Typography>
-                <Typography variant="body2">{selectedNote.note}</Typography>
+              <Box display="flex" minHeight="200px" flexDirection="column" gap="10px" justifyContent="space-between">
+                <Box>
+                  <Typography variant="h6">{selectedNote.title}</Typography>
+                  <Typography variant="body2" sx={{ marginTop: '10px' }}>
+                    {selectedNote.note}
+                  </Typography>
+                </Box>
                 <Box display="flex" alignItems="center" gap="5px" marginTop="10px" flexWrap="wrap">
                   <Chip
                     avatar={
@@ -194,7 +221,7 @@ const NotesPage = () => {
               variant="contained"
               sx={{ padding: '6px 26px', color: '#fff' }}
               color="success"
-              onClick={() => handleSubmit()}
+              onClick={handleEditNote}
             >
               Edit
             </Button>
@@ -256,11 +283,14 @@ const NotesPage = () => {
                     sx={{
                       padding: '20px',
                       backgroundColor: '#F9FAFB',
-                      minHeight: '180px',
+                      minHeight: '200px',
                       display: 'flex',
                       flexDirection: 'column',
                       justifyContent: 'space-between',
                       cursor: 'pointer',
+                      '&:hover .delete-icon': {
+                        opacity: 1,
+                      },
                     }}
                   >
                     <Box>
@@ -278,8 +308,11 @@ const NotesPage = () => {
                         size="small"
                       />
                       <Chip label={item.type} size="small" />
+                      <DeleteForeverIcon
+                        className="delete-icon"
+                        sx={{ marginLeft: 'auto', opacity: 0, transition: 'opacity 0.3s' }}
+                      />
                     </Box>
-                    <DeleteForeverIcon sx={{ marginLeft: 'auto' }} />
                   </Card>
                 </Grid>
               ))}
