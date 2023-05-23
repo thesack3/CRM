@@ -603,7 +603,7 @@ const LeadDetailPage = () => {
             </Box>
           </StyledInformation>
         </Grid>
-        <Grid container spacing={2} marginTop={'24px'}></Grid>
+        <Grid container spacing={2} marginTop={'24px'}/>
       </Grid>
       <Grid container>
         <Grid xs={12}>
