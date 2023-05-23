@@ -24,8 +24,8 @@ const Category = require("../models/Category");
 const EAlert = require("../models/EAlert");
 const Call = require("../models/Call");
 const Text = require("../models/Text");
-const Reminder = require("../models/Reminder");
-const ReminderType = require("./types");
+const TaskTypes = require("./types");
+const Task = require("../models/Task");
 
 const TwilioMSGType = new GraphQLObjectType({
   name: "TwilioMSG",
@@ -589,21 +589,21 @@ const RootQuery = new GraphQLObjectType({
         return Category.find();
       },
     },
-    // get all reminders
-    reminders: {
-      type: new GraphQLList(ReminderType),
+    // get all tasks
+    tasks: {
+      type: new GraphQLList(TaskTypes),
       async resolve(parent, args) {
-        return await Reminder.find();
+        return await Task.find();
       },
     },
-    // get reminder by id
-    // reminder: {
-    //   type: ReminderType,
-    //   args: { id: { type: GraphQLID } },
-    //   async resolve(parent, args) {
-    //     return await Reminder.findById(args.id);
-    //   },
-    // },
+    // get task by id
+    task: {
+      type: TaskTypes,
+      args: { id: { type: GraphQLID } },
+      async resolve(parent, args) {
+        return await Task.findById(args.id);
+      },
+    },
   },
 });
 
@@ -1398,10 +1398,9 @@ const mutation = new GraphQLObjectType({
         }
       },
     },
-    // reminder mutation to add reminders to the database
-
-    addReminder: {
-      type: ReminderType,
+    // task mutation to add tasks to the database
+    addTask: {
+      type: TaskTypes,
       args: {
         title: { type: GraphQLString },
         note: { type: GraphQLString },
@@ -1411,7 +1410,7 @@ const mutation = new GraphQLObjectType({
       },
 
       async resolve(parent, args) {
-        const result = await Reminder.create({
+        const result = await Task.create({
           title: args.title,
           note: args.note,
           date: args.date,
@@ -1419,6 +1418,45 @@ const mutation = new GraphQLObjectType({
           type: args.type,
           userId: args.userId,
         });
+        return result;
+      },
+    },
+    // task mutation to update tasks in the database
+    updateTask: {
+      type: TaskTypes,
+      args: {
+        id: { type: GraphQLID },
+        title: { type: GraphQLString },
+        note: { type: GraphQLString },
+        date: { type: GraphQLString },
+        type: { type: GraphQLString },
+        userId: { type: GraphQLID },
+      },
+      async resolve(parent, args) {
+        const result = await Task.findByIdAndUpdate(
+          args.id,
+          {
+            title: args.title,
+            note: args.note,
+            date: args.date,
+            time: args.date,
+            type: args.type,
+            userId: args.userId,
+          },
+          { new: true }
+        );
+        return result;
+      },
+    },
+
+    // delete task mutation
+    deleteTask: {
+      type: TaskTypes,
+      args: {
+        id: { type: GraphQLID },
+      },
+      async resolve(parent, args) {
+        const result = await Task.findByIdAndDelete(args.id);
         return result;
       },
     },

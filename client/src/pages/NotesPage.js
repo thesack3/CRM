@@ -24,9 +24,9 @@ import EditNoteIcon from '@mui/icons-material/EditNote';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import { useMutation, useQuery } from '@apollo/client';
 import { useDispatch } from 'react-redux';
-import { ADD_REMINDER } from '../mutations/reminder';
+import { ADD_TASK } from '../mutations/reminder';
 import { setAlert } from '../redux/slice/alertSlice';
-import { GET_REMINDERS } from '../queries/reminder';
+import { GET_TASKS } from '../queries/reminder';
 
 const NotesPage = () => {
   const dispatch = useDispatch();
@@ -39,12 +39,12 @@ const NotesPage = () => {
     note: '',
     date: '',
   });
-  // get reminders
-  const { loading, data, refetch } = useQuery(GET_REMINDERS);
+  // get tasks
+  const { loading, data, refetch } = useQuery(GET_TASKS);
   console.log(data);
 
   // handle mutation
-  const [addReminder] = useMutation(ADD_REMINDER);
+  const [addTask] = useMutation(ADD_TASK);
 
   // handle change
   const handleChange = (e, a) => {
@@ -54,7 +54,7 @@ const NotesPage = () => {
   // handle submit
   const handleSubmit = async () => {
     try {
-      await addReminder({
+      await addTask({
         variables: {
           title: value.title,
           note: value.note,
@@ -68,7 +68,7 @@ const NotesPage = () => {
         date: '',
       });
       setType('Personal');
-      dispatch(setAlert({ type: 'success', message: 'Reminder added successfully' }));
+      dispatch(setAlert({ type: 'success', message: 'Task added successfully' }));
       await refetch();
     } catch (error) {
       dispatch(setAlert({ type: 'error', payload: error.message }));
@@ -248,8 +248,8 @@ const NotesPage = () => {
         ) : (
           <Grid container spacing={3}>
             {data &&
-              data?.reminders?.length &&
-              data.reminders.map((item) => (
+              data?.tasks?.length &&
+              data.tasks.map((item) => (
                 <Grid item xs={12} sm={6} md={3} key={item.title}>
                   <Card
                     onClick={() => handleSingleNote(item)}

@@ -1,7 +1,7 @@
 // write graphql types for schema here
 
 const graphql = require("graphql");
-const { GraphQLObjectType, GraphQLString, GraphQLID } = graphql;
+const { GraphQLObjectType, GraphQLString, GraphQLID, GraphQLList } = graphql;
 
 const ReminderType = new GraphQLObjectType({
   name: "Reminder",
