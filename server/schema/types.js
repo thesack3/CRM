@@ -1,9 +1,10 @@
 // write graphql types for schema here
 
 const graphql = require("graphql");
-const { GraphQLObjectType, GraphQLString, GraphQLID, GraphQLList } = graphql;
+const User = require("../models/User");
+const { GraphQLObjectType, GraphQLString, GraphQLID, GraphQLBoolean } = graphql;
 
-const ReminderType = new GraphQLObjectType({
+const TaskTypes = new GraphQLObjectType({
   name: "Reminder",
   fields: () => ({
     id: { type: GraphQLID },
@@ -13,13 +14,31 @@ const ReminderType = new GraphQLObjectType({
     time: { type: GraphQLString },
     type: { type: GraphQLString },
     createdAt: { type: GraphQLString },
-    // user: {
-    //   type: require("./UserType"),
-    //   resolve(parent, args) {
-    //     return User.findById(parent.user);
-    //   },
-    // },
+    user: {
+      type: UserTypeUp,
+      resolve(parent, args) {
+        return User.findById(parent.user);
+      },
+    },
   }),
 });
 
-module.exports = ReminderType;
+// Task list types
+
+
+//User Type
+const UserTypeUp = new GraphQLObjectType({
+  name: "UserUp",
+  fields: () => ({
+    id: { type: GraphQLID },
+    email: { type: GraphQLString },
+    password: { type: GraphQLString },
+    verificationToken: { type: GraphQLBoolean },
+    emailVerified: { type: GraphQLBoolean },
+  }),
+});
+
+// export multiple types
+module.exports = TaskTypes;
+// module.exports = TaskListTypeUp;
+// module.exports = UserTypeUp;

@@ -26,6 +26,7 @@ const Call = require("../models/Call");
 const Text = require("../models/Text");
 const TaskTypes = require("./types");
 const Task = require("../models/Task");
+const TaskType = require("../models/TaskType");
 
 const TwilioMSGType = new GraphQLObjectType({
   name: "TwilioMSG",
@@ -290,6 +291,14 @@ const CategoryType = new GraphQLObjectType({
     id: { type: GraphQLID },
     title: { type: GraphQLString },
     dateCreated: { type: GraphQLString },
+  }),
+});
+
+const TaskListType = new GraphQLObjectType({
+  name: "TaskListType",
+  fields: () => ({
+    id: { type: GraphQLID },
+    name: { type: GraphQLString },
   }),
 });
 
@@ -602,6 +611,16 @@ const RootQuery = new GraphQLObjectType({
       args: { id: { type: GraphQLID } },
       async resolve(parent, args) {
         return await Task.findById(args.id);
+      },
+    },
+    // get all tasks by userId
+    taskTypes: {
+      type: new GraphQLList(TaskListType),
+      args: { userId: { type: GraphQLID } },
+      async resolve(parent, args) {
+        // use when user is logged in
+        // return await TaskType.find({ user: args.userId });
+        return await TaskType.find();
       },
     },
   },
@@ -1189,6 +1208,7 @@ const mutation = new GraphQLObjectType({
         }
       },
     },
+
     sendEmails: {
       type: new GraphQLList(EmailType),
       args: {
@@ -1408,15 +1428,32 @@ const mutation = new GraphQLObjectType({
         type: { type: GraphQLString },
         userId: { type: GraphQLID },
       },
-
       async resolve(parent, args) {
+        const dateUp = args?.date?.split("T")[0];
+        const timeUp = args?.date?.split("T")[1];
+
+        // add tasktype to the database if it doesn't exist already for the user that is logged in
+
+        // use when user is logged in
+        // const taskType = await TaskType.findOne({ name: args.type, user: args.userId });
+
+        const taskType = await TaskType.findOne({ name: args.type });
+        if (!taskType) {
+          const newTaskType = new TaskType({
+            name: args.type,
+            user: args.userId,
+          });
+          await newTaskType.save();
+        }
+
         const result = await Task.create({
           title: args.title,
           note: args.note,
-          date: args.date,
-          time: args.date,
+          date: new Date(dateUp),
+          time: timeUp,
           type: args.type,
-          userId: args.userId,
+          // use when user is logged in
+          // user: args.userId,
         });
         return result;
       },
@@ -1433,6 +1470,15 @@ const mutation = new GraphQLObjectType({
         userId: { type: GraphQLID },
       },
       async resolve(parent, args) {
+        const taskType = await TaskType.findOne({ name: args.type });
+        if (!taskType) {
+          const newTaskType = new TaskType({
+            name: args.type,
+            user: args.userId,
+          });
+          await newTaskType.save();
+        }
+
         const result = await Task.findByIdAndUpdate(
           args.id,
           {
@@ -1441,7 +1487,8 @@ const mutation = new GraphQLObjectType({
             date: args.date,
             time: args.date,
             type: args.type,
-            userId: args.userId,
+            // use when user is logged in
+            // userId: args.userId,
           },
           { new: true }
         );
