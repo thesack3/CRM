@@ -23,9 +23,6 @@ const TaskTypes = new GraphQLObjectType({
   }),
 });
 
-// Task list types
-
-
 //User Type
 const UserTypeUp = new GraphQLObjectType({
   name: "UserUp",
@@ -38,7 +35,4 @@ const UserTypeUp = new GraphQLObjectType({
   }),
 });
 
-// export multiple types
 module.exports = TaskTypes;
-// module.exports = TaskListTypeUp;
-// module.exports = UserTypeUp;

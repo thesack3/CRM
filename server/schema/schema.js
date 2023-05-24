@@ -623,6 +623,22 @@ const RootQuery = new GraphQLObjectType({
         return await TaskType.find();
       },
     },
+    // send notification for today's tasks to user
+    notifications: {
+      type: TaskTypes,
+      args: { userId: { type: GraphQLID } },
+      async resolve(parent, args) {
+        const tasks = await Task.find({
+          date: new Date().toLocaleDateString(),
+        });
+        // get user's email from tasks
+
+        // const userEmails = tasks.map((task) => task.user);
+
+        console.log("tasks----------------------", tasks);
+        return tasks;
+      },
+    },
   },
 });
 
@@ -1445,11 +1461,11 @@ const mutation = new GraphQLObjectType({
           });
           await newTaskType.save();
         }
-
+        console.log("date----------------", new Date(dateUp).toLocaleDateString());
         const result = await Task.create({
           title: args.title,
           note: args.note,
-          date: new Date(dateUp),
+          date: new Date(dateUp).toLocaleDateString(),
           time: timeUp,
           type: args.type,
           // use when user is logged in
@@ -1484,7 +1500,7 @@ const mutation = new GraphQLObjectType({
           {
             title: args.title,
             note: args.note,
-            date: args.date,
+            date: new Date(args.date),
             time: args.date,
             type: args.type,
             // use when user is logged in
