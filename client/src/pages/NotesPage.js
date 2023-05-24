@@ -16,15 +16,16 @@ import {
   DialogActions,
   Autocomplete,
   CircularProgress,
+  IconButton,
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import EditNoteIcon from '@mui/icons-material/EditNote';
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { useMutation, useQuery } from '@apollo/client';
 import { useDispatch } from 'react-redux';
-import { ADD_TASK } from '../mutations/reminder';
+import { ADD_TASK, UPDATE_TASK, DELETE_TASK } from '../mutations/reminder';
 import { setAlert } from '../redux/slice/alertSlice';
 import { GET_TASKS } from '../queries/reminder';
 
@@ -33,6 +34,7 @@ const NotesPage = () => {
   const [open, setOpen] = useState(false);
   const [noteModal, setNoteModal] = useState(false);
   const [selectedNote, setSelectedNote] = useState(null);
+  console.log(selectedNote);
   const [type, setType] = useState('Personal');
   const [value, setValue] = useState({
     title: '',
@@ -44,11 +46,13 @@ const NotesPage = () => {
 
   // handle mutation
   const [addTask] = useMutation(ADD_TASK);
+  const [updateTask] = useMutation(UPDATE_TASK);
+  const [deleteTask] = useMutation(DELETE_TASK);
 
   // handle change
   const handleChange = (e, a) => {
     if (selectedNote) {
-      setSelectedNote({ title: e.target.value, note: e.target.value, date: e.target.value });
+      setSelectedNote({ ...selectedNote, [e.target.name]: e.target.value });
     }
     setValue({ ...value, [e.target.name]: e.target.value });
   };
@@ -79,9 +83,54 @@ const NotesPage = () => {
     }
   };
 
+  // handle update
+  const handleUpdate = async () => {
+    try {
+      await updateTask({
+        variables: {
+          id: selectedNote.id,
+          title: selectedNote.title,
+          note: selectedNote.note,
+          date: selectedNote.date,
+          type,
+        },
+      });
+      setSelectedNote(null);
+      setValue({
+        title: '',
+        note: '',
+        date: '',
+      });
+      setType('Personal');
+      dispatch(setAlert({ type: 'success', message: 'Task updated successfully' }));
+      await refetch();
+    } catch (error) {
+      dispatch(setAlert({ type: 'error', payload: error.message }));
+    } finally {
+      setOpen(false);
+    }
+  };
+
+  // handle delete
+  const handleDelete = async (item) => {
+    try {
+      await deleteTask({
+        variables: {
+          id: item.id,
+        },
+      });
+
+      dispatch(setAlert({ type: 'success', message: 'Task deleted successfully' }));
+      await refetch();
+    } catch (error) {
+      dispatch(setAlert({ type: 'error', payload: error.message }));
+    } finally {
+      setOpen(false);
+    }
+  };
+
   // handle single note
   const handleSingleNote = (item) => {
-    console.log(item, 'item');
     setNoteModal(true);
     setSelectedNote(item);
   };
@@ -169,14 +218,25 @@ const NotesPage = () => {
             >
               Cancel
             </Button>
-            <Button
-              variant="contained"
-              sx={{ padding: '6px 26px', color: '#fff' }}
-              color="success"
-              onClick={() => handleSubmit()}
-            >
-              Save
-            </Button>
+            {selectedNote ? (
+              <Button
+                variant="contained"
+                sx={{ padding: '6px 26px', color: '#fff' }}
+                color="success"
+                onClick={() => handleUpdate()}
+              >
+                Update
+              </Button>
+            ) : (
+              <Button
+                variant="contained"
+                sx={{ padding: '6px 26px', color: '#fff' }}
+                color="success"
+                onClick={() => handleSubmit()}
+              >
+                Save
+              </Button>
+            )}
           </DialogActions>
         </Dialog>
       )}
@@ -214,7 +274,14 @@ const NotesPage = () => {
             )}
           </DialogContent>
           <DialogActions sx={{ justifyContent: 'right', gap: '5px' }}>
-            <Button onClick={() => setNoteModal(false)} variant="outlined" sx={{ padding: '5px 16px' }}>
+            <Button
+              onClick={() => {
+                setNoteModal(false);
+                setSelectedNote(null);
+              }}
+              variant="outlined"
+              sx={{ padding: '5px 16px' }}
+            >
               Close
             </Button>
             <Button
@@ -274,7 +341,7 @@ const NotesPage = () => {
           </Box>
         ) : (
           <Grid container spacing={3}>
-            {data &&
+            {(data &&
               data?.tasks?.length &&
               data.tasks.map((item) => (
                 <Grid item xs={12} sm={6} md={3} key={item.title}>
@@ -297,7 +364,14 @@ const NotesPage = () => {
                       <Typography variant="h6">{item.title}</Typography>
                       <Typography variant="body2">{item.note}</Typography>
                     </Box>
-                    <Box display="flex" alignItems="center" gap="5px" marginTop="10px" flexWrap="wrap">
+                    <Box
+                      display="flex"
+                      alignItems="center"
+                      gap="5px"
+                      marginTop="10px"
+                      paddingRight="5px"
+                      flexWrap="wrap"
+                    >
                       <Chip
                         avatar={
                           <Avatar>
@@ -308,14 +382,25 @@ const NotesPage = () => {
                         size="small"
                       />
                       <Chip label={item.type} size="small" />
-                      <DeleteForeverIcon
+                      <IconButton
                         className="delete-icon"
                         sx={{ marginLeft: 'auto', opacity: 0, transition: 'opacity 0.3s' }}
-                      />
+                        aria-label="delete"
+                        onClick={(event) => {
+                          event.stopPropagation(); // Stop event propagation
+                          handleDelete(item);
+                        }}
+                      >
+                        <DeleteIcon sx={{ color: 'rgb(244 63 94)' }} />
+                      </IconButton>
                     </Box>
                   </Card>
                 </Grid>
-              ))}
+              ))) || (
+              <Typography sx={{ padding: '10px' }} variant="paragraph">
+                Record is empty!
+              </Typography>
+            )}
           </Grid>
         )}
       </Card>
