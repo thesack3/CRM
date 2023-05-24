@@ -1,22 +1,21 @@
 const express = require("express");
 const { graphqlHTTP } = require("express-graphql");
 const colors = require("colors");
+const nodemailer = require("nodemailer");
+const cors = require("cors");
+const bodyParser = require("body-parser");
+const { MessagingResponse } = require("twilio").twiml;
+const schema = require("./schema/schema");
+const connectDB = require("./config/db");
+const Lead = require("./models/Lead");
 
 // // DEVELOPMENT
 // require("dotenv").config();
-
-const { MessagingResponse } = require("twilio").twiml;
-
-const schema = require("./schema/schema");
-const connectDB = require("./config/db");
-const cors = require("cors");
 
 const port = process.env.PORT || 4000;
 
 const app = express();
 
-const bodyParser = require("body-parser");
-const Lead = require("./models/Lead");
 app.use(bodyParser.json({ limit: "50mb" }));
 app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
 
@@ -37,8 +36,41 @@ app.use(
   })
 );
 
-// post route for add lead
+// write method for cron job sending emails and notifications
 
+app.post("/notification", async (req, res) => {
+  // send email to user with node mailer
+
+  // create reusable transporter object using the default gmail account
+  const transporter = nodemailer.createTransport({
+    host: "smtp.porkbun.com",
+    port: 587,
+    secure: false,
+    auth: {
+      user: process.env.EMAIL,
+      pass: process.env.PASSWORD,
+    },
+  });
+
+  const mailOptions = {
+    from: process.env.EMAIL,
+    to: "raza8r@gmail.com",
+    subject: "Task Notification",
+    text: "That was easy!",
+    html: `<h1>Task Notification</h1>
+    <p>Thanks,</p>`,
+  };
+  transporter.sendMail(mailOptions, function (error, info) {
+    if (error) {
+      console.log("Error---!", error);
+    } else {
+      console.log("Email sent: " + info.response);
+      res.send(200, info.response);
+    }
+  });
+});
+
+// post route for add lead
 app.post("/addLead", async (req, res) => {
   if (!req.body.firstName) return res.status(400).send("First Name is required");
   if (!req.body.email) return res.status(400).send("Email is required");
@@ -108,3 +140,11 @@ app.post("/sms", (req, res) => {
 });
 
 app.listen(port, console.log(`Server running on port ${port}`));
+
+// html: `<h1>Task Notification</h1>
+// <p>Hi ${req.body.firstName},</p>
+// <p>You have a task due on ${req.body.date}.</p>
+// <p>Task: ${req.body.task}</p>
+// <p>Notes: ${req.body.notes}</p>
+// <p>Thanks,</p>
+// <p>Ryan Hossack Real Estate</p>`,
