@@ -9,7 +9,7 @@ import { Link, Stack, IconButton, InputAdornment, TextField, Checkbox } from '@m
 import { LoadingButton } from '@mui/lab';
 import { useMutation } from '@apollo/client';
 
-import { REGISTER_USER , LOGIN_USER } from '../../../mutations/userMutations';
+import { REGISTER_USER } from '../../../mutations/userMutations';
 import {GET_USERS} from '../../../queries/userQueries';
 
 
@@ -19,7 +19,7 @@ import Iconify from '../../../components/iconify';
 
 // ----------------------------------------------------------------------
 
-export default function LoginForm() {
+export default function Signupform() {
   const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = useState(false);
@@ -31,15 +31,15 @@ export default function LoginForm() {
   
 
 
-  const [loginUser] = useMutation(LOGIN_USER, {
+  const [registerUser] = useMutation(REGISTER_USER, {
     variables: { email, password},
-    update(cache, {data: {loginUser}}){
+    update(cache, {data: {registerUser}}){
       const {users} = cache.readQuery({
         query: GET_USERS
     });
     cache.writeQuery({
         query: GET_USERS,
-        data: {users: [...users, loginUser]},
+        data: {users: [...users, registerUser]},
     });
     }
   });
@@ -48,10 +48,13 @@ export default function LoginForm() {
   const handleClick = () => {
     // navigate('/dashboard', { replace: true });
     // navigate('/verify', { replace: true });
-    navigate('/', { replace: true });
+    navigate('/nonverified', { replace: true });
 
 
-    loginUser({variables: {email, password}})
+
+
+
+    registerUser({variables: {email, password}})
     .then((res) => {
       console.log(res);
     })
@@ -62,6 +65,13 @@ export default function LoginForm() {
     // console.log(password)
 
  
+
+
+
+
+
+
+
 
 
 

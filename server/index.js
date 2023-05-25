@@ -10,7 +10,7 @@ const connectDB = require("./config/db");
 const Lead = require("./models/Lead");
 
 // // DEVELOPMENT
-// require("dotenv").config();
+require("dotenv").config();
 
 const port = process.env.PORT || 4000;
 

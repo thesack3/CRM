@@ -17,6 +17,7 @@ import Website from './components/Website/index';
 import HomeList from './components/HomeList';
 import LeadDetailPage from './pages/LeadDetailPage';
 import NotesPage from './pages/NotesPage';
+import SignUpPage from './pages/SignUpPage';
 
 // ----------------------------------------------------------------------
 
@@ -39,6 +40,10 @@ export default function Router() {
     {
       path: 'login',
       element: <LoginPage />,
+    },
+    {
+      path: 'signup',
+      element: <SignUpPage />,
     },
     {
       path: 'verifyemail/:token',

@@ -9,7 +9,7 @@ import { useState } from 'react';
 import { GET_USERS } from '../queries/userQueries';
 
 
-import { REGISTER_USER } from '../mutations/userMutations';
+import { REGISTER_USER, LOGIN_USER} from '../mutations/userMutations';
 
 // hooks
 import useResponsive from '../hooks/useResponsive';
@@ -18,7 +18,7 @@ import Logo from '../components/logo';
 import Iconify from '../components/iconify';
 // sections
 import { LoginForm } from '../sections/auth/login';
-
+import { Signupform} from '../sections/auth/signup';
 // ----------------------------------------------------------------------
 
 const StyledRoot = styled('div')(({ theme }) => ({
@@ -49,7 +49,7 @@ const StyledContent = styled('div')(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-export default function LoginPage() {
+export default function SignUpPage() {
   const mdUp = useResponsive('up', 'md');
 
 
@@ -83,7 +83,7 @@ export default function LoginPage() {
         <Container maxWidth="sm">
           <StyledContent>
             <Typography variant="h4" gutterBottom>
-              Log in to CRM
+              Sign up to CRM
             </Typography>
 
             <Typography variant="body2" sx={{ mb: 5 }}>
@@ -111,7 +111,7 @@ export default function LoginPage() {
               </Typography>
             </Divider>
 
-            <LoginForm />
+            <Signupform />
           </StyledContent>
         </Container>
       </StyledRoot>
