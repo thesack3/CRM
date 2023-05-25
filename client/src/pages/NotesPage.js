@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import {
   Grid,
   Container,
@@ -34,8 +34,12 @@ const NotesPage = () => {
   const [open, setOpen] = useState(false);
   const [noteModal, setNoteModal] = useState(false);
   const [selectedNote, setSelectedNote] = useState(null);
+  const [filteredTask, setFilteredTask] = useState([]);
+  const [typeData, setTypeData] = useState([]);
+  const [searchValue, setSearchValue] = useState('');
   const [addType, setAddType] = useState(false);
   const [type, setType] = useState('');
+  const [searchType, setSearchType] = useState('');
   const [value, setValue] = useState({
     title: '',
     note: '',
@@ -149,6 +153,45 @@ const NotesPage = () => {
     setOpen(true);
   };
 
+  // set types from api
+  useEffect(() => {
+    if (types) {
+      setTypeData(types.taskTypes.map((task) => task.name));
+    }
+  }, [types, type]);
+
+  // search filter
+  useEffect(() => {
+    if (data) {
+      let filteredTasks = data.tasks;
+      filteredTasks = filteredTasks.filter((t) => t.title.toLowerCase().includes(searchValue.toLowerCase()));
+
+      if (searchType) {
+        filteredTasks = filteredTasks.filter((t) => t.type.toLowerCase().includes(searchType.toLowerCase()));
+      }
+
+      setFilteredTask(filteredTasks);
+    }
+  }, [data, searchValue, searchType]);
+
+  // debounce function
+  const debounce = (func, delay) => {
+    let timerId;
+    return (...args) => {
+      clearTimeout(timerId);
+      timerId = setTimeout(() => {
+        func(...args);
+      }, delay);
+    };
+  };
+
+  const debouncedSetSearchValue = useCallback(
+    debounce((value) => {
+      setSearchValue(value);
+    }, 300),
+    []
+  );
+
   return (
     <Container>
       {/* Add task dialog */}
@@ -215,7 +258,7 @@ const NotesPage = () => {
                   />
                 ) : (
                   <Autocomplete
-                    options={types && types?.taskTypes.map((task) => task.name)}
+                    options={typeData}
                     renderInput={(params) => (
                       <TextField {...params} label="Type" variant="outlined" fullWidth size="small" />
                     )}
@@ -236,8 +279,8 @@ const NotesPage = () => {
               onClick={() => {
                 setOpen(false);
                 setAddType(false);
-
                 setSelectedNote(null);
+                setType('');
               }}
               variant="outlined"
               sx={{ padding: '5px 16px' }}
@@ -314,6 +357,7 @@ const NotesPage = () => {
           type="search"
           label="Search"
           size="small"
+          onChange={(e) => debouncedSetSearchValue(e.target.value)}
           sx={{
             width: 600,
             '& .MuiInputBase-root': {
@@ -329,10 +373,10 @@ const NotesPage = () => {
           }}
         />
         <Autocomplete
-          options={['Personal', 'Family', 'Work', 'Frinds', 'Priority']}
+          options={typeData}
           renderInput={(params) => <TextField {...params} label="Type" variant="outlined" fullWidth size="small" />}
-          value={type}
-          onChange={(_, value) => setType(value)}
+          value={searchType}
+          onChange={(_, value) => setSearchType(value)}
           sx={{ width: 200 }}
         />
         <Button
@@ -352,9 +396,9 @@ const NotesPage = () => {
           </Box>
         ) : (
           <Grid container spacing={3}>
-            {(data &&
-              data?.tasks?.length &&
-              data.tasks.map((item) => (
+            {(filteredTask &&
+              filteredTask.length &&
+              filteredTask.map((item) => (
                 <Grid item xs={12} sm={6} md={3} key={item.title}>
                   <Card
                     onClick={() => handleSingleNote(item)}
