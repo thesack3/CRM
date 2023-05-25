@@ -1443,6 +1443,7 @@ const mutation = new GraphQLObjectType({
         date: { type: GraphQLString },
         type: { type: GraphQLString },
         userId: { type: GraphQLID },
+        leadId: { type: GraphQLID },
       },
       async resolve(parent, args) {
         const dateUp = args?.date?.split("T")[0];
@@ -1461,15 +1462,14 @@ const mutation = new GraphQLObjectType({
           });
           await newTaskType.save();
         }
-        console.log("date----------------", new Date(dateUp).toLocaleDateString());
         const result = await Task.create({
           title: args.title,
           note: args.note,
           date: new Date(dateUp).toLocaleDateString(),
           time: timeUp,
           type: args.type,
-          // use when user is logged in
-          // user: args.userId,
+          user: args.userId ? args.userId : null,
+          lead: args.leadId ? args.leadId : null,
         });
         return result;
       },
@@ -1484,8 +1484,11 @@ const mutation = new GraphQLObjectType({
         date: { type: GraphQLString },
         type: { type: GraphQLString },
         userId: { type: GraphQLID },
+        leadId: { type: GraphQLID },
       },
       async resolve(parent, args) {
+        const dateUp = args?.date?.split("T")[0];
+        const timeUp = args?.date?.split("T")[1];
         const taskType = await TaskType.findOne({ name: args.type });
         if (!taskType) {
           const newTaskType = new TaskType({
@@ -1494,17 +1497,16 @@ const mutation = new GraphQLObjectType({
           });
           await newTaskType.save();
         }
-
         const result = await Task.findByIdAndUpdate(
           args.id,
           {
             title: args.title,
             note: args.note,
             date: new Date(args.date),
-            time: args.date,
-            type: args.type,
-            // use when user is logged in
-            // userId: args.userId,
+            date: new Date(dateUp).toLocaleDateString(),
+            time: timeUp,
+            user: args.userId ? args.userId : null,
+            lead: args.leadId ? args.leadId : null,
           },
           { new: true }
         );
