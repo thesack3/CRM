@@ -27,15 +27,15 @@ import { useMutation, useQuery } from '@apollo/client';
 import { useDispatch } from 'react-redux';
 import { ADD_TASK, UPDATE_TASK, DELETE_TASK } from '../mutations/reminder';
 import { setAlert } from '../redux/slice/alertSlice';
-import { GET_TASKS } from '../queries/reminder';
+import { GET_TASKS, TASK_TYPES } from '../queries/reminder';
 
 const NotesPage = () => {
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
   const [noteModal, setNoteModal] = useState(false);
   const [selectedNote, setSelectedNote] = useState(null);
-  console.log(selectedNote);
-  const [type, setType] = useState('Personal');
+  const [addType, setAddType] = useState(false);
+  const [type, setType] = useState('');
   const [value, setValue] = useState({
     title: '',
     note: '',
@@ -43,6 +43,11 @@ const NotesPage = () => {
   });
   // get tasks
   const { loading, data, refetch } = useQuery(GET_TASKS);
+  // get task types
+  const { loading: typeLoading, data: types } = useQuery(TASK_TYPES, {
+    variables: { userId: '' },
+  });
+  console.log(types.taskTypes);
 
   // handle mutation
   const [addTask] = useMutation(ADD_TASK);
@@ -73,7 +78,9 @@ const NotesPage = () => {
         note: '',
         date: '',
       });
-      setType('Personal');
+      setAddType(false);
+      setType('');
+
       dispatch(setAlert({ type: 'success', message: 'Task added successfully' }));
       await refetch();
     } catch (error) {
@@ -101,7 +108,9 @@ const NotesPage = () => {
         note: '',
         date: '',
       });
-      setType('Personal');
+      setAddType(false);
+      setType('');
+
       dispatch(setAlert({ type: 'success', message: 'Task updated successfully' }));
       await refetch();
     } catch (error) {
@@ -195,15 +204,31 @@ const NotesPage = () => {
                   onChange={(e) => handleChange(e)}
                 />
               </Grid>
-              <Grid item xs={6}>
-                <Autocomplete
-                  options={['Personal', 'Family', 'Work', 'Frinds', 'Priority']}
-                  renderInput={(params) => (
-                    <TextField {...params} label="Type" variant="outlined" fullWidth size="small" />
-                  )}
-                  value={type}
-                  onChange={(_, value) => setType(value)}
-                />
+              <Grid item xs={5}>
+                {addType ? (
+                  <TextField
+                    label="Add new type"
+                    variant="outlined"
+                    fullWidth
+                    size="small"
+                    value={type}
+                    onChange={(e) => setType(e.target.value)}
+                  />
+                ) : (
+                  <Autocomplete
+                    options={types?.taskTypes.map((task) => task.name)}
+                    renderInput={(params) => (
+                      <TextField {...params} label="Type" variant="outlined" fullWidth size="small" />
+                    )}
+                    value={type}
+                    onChange={(_, value) => setType(value)}
+                  />
+                )}
+              </Grid>
+              <Grid item xs={1}>
+                <IconButton aria-label="add-type" onClick={() => setAddType(true)}>
+                  <AddCircleOutlineIcon />
+                </IconButton>
               </Grid>
             </Grid>
           </DialogContent>
@@ -211,6 +236,8 @@ const NotesPage = () => {
             <Button
               onClick={() => {
                 setOpen(false);
+                setAddType(false);
+
                 setSelectedNote(null);
               }}
               variant="outlined"
@@ -219,21 +246,11 @@ const NotesPage = () => {
               Cancel
             </Button>
             {selectedNote ? (
-              <Button
-                variant="contained"
-                sx={{ padding: '6px 26px', color: '#fff' }}
-                color="success"
-                onClick={() => handleUpdate()}
-              >
+              <Button variant="contained" sx={{ padding: '6px 26px', color: '#fff' }} onClick={() => handleUpdate()}>
                 Update
               </Button>
             ) : (
-              <Button
-                variant="contained"
-                sx={{ padding: '6px 26px', color: '#fff' }}
-                color="success"
-                onClick={() => handleSubmit()}
-              >
+              <Button variant="contained" sx={{ padding: '6px 26px', color: '#fff' }} onClick={() => handleSubmit()}>
                 Save
               </Button>
             )}
@@ -284,12 +301,7 @@ const NotesPage = () => {
             >
               Close
             </Button>
-            <Button
-              variant="contained"
-              sx={{ padding: '6px 26px', color: '#fff' }}
-              color="success"
-              onClick={handleEditNote}
-            >
+            <Button variant="contained" sx={{ padding: '6px 26px', color: '#fff' }} onClick={handleEditNote}>
               Edit
             </Button>
           </DialogActions>

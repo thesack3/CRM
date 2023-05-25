@@ -29,3 +29,12 @@ export const GET_TASK = gql`
     }
   }
 `;
+
+// new task type
+export const TASK_TYPES = gql`
+  query TaskTypes($userId: ID) {
+    taskTypes(userId: $userId) {
+      name
+    }
+  }
+`;
