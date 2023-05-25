@@ -216,7 +216,7 @@ const NotesPage = () => {
                   />
                 ) : (
                   <Autocomplete
-                    options={['Personal', 'Family', 'Work', 'Frinds', 'Priority']}
+                    options={types?.taskTypes}
                     renderInput={(params) => (
                       <TextField {...params} label="Type" variant="outlined" fullWidth size="small" />
                     )}
