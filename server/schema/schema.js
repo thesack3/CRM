@@ -772,7 +772,7 @@ const mutation = new GraphQLObjectType({
         const unhashedPassword = await bcrypt.compare(args.password, hashedPassword);
         console.log(unhashedPassword);
 
-        //CREATE UNIQUE JSON WEB TOKEN FOR USER TO VERIFY EMAIL
+        //CREATE UNIQUE JSON WEB TOKEN FOR USER TO VERIfFY EMAIL
         const user = new User({
           email: args.email,
           password: hashedPassword,
@@ -908,7 +908,7 @@ const mutation = new GraphQLObjectType({
         email: { type: GraphQLNonNull(GraphQLString) },
         password: { type: GraphQLNonNull(GraphQLString) },
       },
-      resolve(parent, args) {
+       async resolve(parent, args) {
         // Find the user with the provided email
         return User.findOne({ email: args.email }).then((user) => {
           // If the user does not exist, return an error
@@ -929,8 +929,7 @@ const mutation = new GraphQLObjectType({
                 id: user.id,
                 email: user.email,
               },
-              secret,
-              { expiresIn: "1h" }
+              process.env.TOKEN_SECRET
             );
 
             // Return the user and JWT
