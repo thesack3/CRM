@@ -47,7 +47,6 @@ const NotesPage = () => {
   const { loading: typeLoading, data: types } = useQuery(TASK_TYPES, {
     variables: { userId: '' },
   });
-  console.log(types.taskTypes);
 
   // handle mutation
   const [addTask] = useMutation(ADD_TASK);
@@ -216,7 +215,7 @@ const NotesPage = () => {
                   />
                 ) : (
                   <Autocomplete
-                    options={types?.taskTypes.map((task) => task.name)}
+                    options={types && types?.taskTypes.map((task) => task.name)}
                     renderInput={(params) => (
                       <TextField {...params} label="Type" variant="outlined" fullWidth size="small" />
                     )}
