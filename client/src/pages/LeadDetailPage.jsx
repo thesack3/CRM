@@ -9,13 +9,19 @@ import {
   alpha,
   Button,
   Grid,
+  TextField,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogContentText,
   DialogActions,
+  Autocomplete,
+  Tooltip,
+  Zoom,
 } from '@mui/material';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import EditNoteIcon from '@mui/icons-material/EditNote';
 import { TimelineConnector, TimelineDot, TimelineSeparator } from '@mui/lab';
 import account from '../_mock/account';
 import Iconify from '../components/iconify';
@@ -66,6 +72,12 @@ const LeadDetailPage = () => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [isMessageModal, setIsMessageModal] = useState(false);
   const [confirmCall, setConfirmCall] = useState(false);
+  const [type, setType] = useState('Personal');
+  const [value, setValue] = useState({
+    title: '',
+    note: '',
+    date: '',
+  });
 
   useEffect(() => {
     if (data?.lead?.description) {
@@ -173,6 +185,93 @@ const LeadDetailPage = () => {
         </Dialog>
       )}
 
+      {/* Add task dialog */}
+      {open && (
+        <Dialog open={open} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
+          <DialogTitle
+            id="alert-dialog-title"
+            sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+          >
+            Add Task <EditNoteIcon />
+          </DialogTitle>
+
+          <DialogContent sx={{ overflowY: 'unset' }}>
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <TextField
+                  label="Title"
+                  variant="outlined"
+                  fullWidth
+                  size="small"
+                  name="title"
+                  sx={{ zIndex: '9999999' }}
+                  value={value.title}
+                  onChange={(e) => handleChange(e)}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  label="Take a note"
+                  rows={4}
+                  multiline
+                  variant="outlined"
+                  fullWidth
+                  size="small"
+                  name="note"
+                  value={value.note}
+                  onChange={(e) => handleChange(e)}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  label="Date"
+                  type="datetime-local"
+                  variant="outlined"
+                  fullWidth
+                  size="small"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  name="date"
+                  value={value.date}
+                  onChange={(e) => handleChange(e)}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <Autocomplete
+                  options={['Personal', 'Family', 'Work', 'Frinds', 'Priority']}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Type" variant="outlined" fullWidth size="small" />
+                  )}
+                  value={type}
+                  onChange={(_, value) => setType(value)}
+                />
+              </Grid>
+            </Grid>
+          </DialogContent>
+          <DialogActions sx={{ justifyContent: 'right', gap: '5px' }}>
+            <Button
+              onClick={() => {
+                setOpen(false);
+              }}
+              variant="outlined"
+              sx={{ padding: '5px 16px' }}
+            >
+              Cancel
+            </Button>
+
+            <Button
+              variant="contained"
+              sx={{ padding: '6px 26px', color: '#fff' }}
+              color="success"
+              onClick={() => handleSubmit()}
+            >
+              Save
+            </Button>
+          </DialogActions>
+        </Dialog>
+      )}
+
       <Grid container margin="24px">
         {/* left columns */}
         <Grid item xs={12} md={4}>
@@ -202,6 +301,11 @@ const LeadDetailPage = () => {
                   <Button href="" className={styles.callButtonV2} onClick={() => setIsMessageModal(true)}>
                     <Iconify icon="eva:email-fill" color="#18712" width={22} height={22} />
                   </Button>
+                  <Tooltip title="Add Task" arrow TransitionComponent={Zoom}>
+                    <Button href="" className={styles.callButtonV2} onClick={() => setOpen(true)}>
+                      <AddCircleOutlineIcon />
+                    </Button>
+                  </Tooltip>
                 </Box>
               </StyledAccount>
             </Grid>
@@ -603,7 +707,7 @@ const LeadDetailPage = () => {
             </Box>
           </StyledInformation>
         </Grid>
-        <Grid container spacing={2} marginTop={'24px'}/>
+        <Grid container spacing={2} marginTop={'24px'} />
       </Grid>
       <Grid container>
         <Grid xs={12}>
