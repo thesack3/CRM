@@ -2,12 +2,13 @@ import ReactDOM from 'react-dom/client';
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
+import { PersistGate } from 'redux-persist/integration/react';
 import { HelmetProvider } from 'react-helmet-async';
 import * as serviceWorker from './serviceWorker';
 import reportWebVitals from './reportWebVitals';
 import CallContextProvider from './hooks/useCall';
 import App from './App';
-import store from './redux/store';
+import { store, persistor } from './redux/store';
 
 // ----------------------------------------------------------------------
 
@@ -44,22 +45,24 @@ const cache = new InMemoryCache({
 
 //    https://recrm.herokuapp.com/graphql
 const client = new ApolloClient({
-  //  uri: 'http://localhost:4000/graphql',
+  // uri: 'http://localhost:4000/graphql',
   uri: 'https://recrm.herokuapp.com/graphql',
   cache,
 });
 
 root.render(
   <Provider store={store}>
-    <HelmetProvider>
-      <BrowserRouter>
-        <ApolloProvider client={client}>
-          <CallContextProvider>
-            <App />
-          </CallContextProvider>
-        </ApolloProvider>
-      </BrowserRouter>
-    </HelmetProvider>
+    <PersistGate loading={null} persistor={persistor}>
+      <HelmetProvider>
+        <BrowserRouter>
+          <ApolloProvider client={client}>
+            <CallContextProvider>
+              <App />
+            </CallContextProvider>
+          </ApolloProvider>
+        </BrowserRouter>
+      </HelmetProvider>
+    </PersistGate>
   </Provider>
 );
 
