@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useMutation, useQuery } from '@apollo/client';
+import { useDispatch } from 'react-redux';
 import {
   Box,
   Typography,
@@ -17,12 +18,15 @@ import {
   DialogActions,
   Autocomplete,
   Tooltip,
+  IconButton,
   Zoom,
 } from '@mui/material';
+
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import { TimelineConnector, TimelineDot, TimelineSeparator } from '@mui/lab';
+import { setAlert } from '../redux/slice/alertSlice';
 import account from '../_mock/account';
 import Iconify from '../components/iconify';
 import styles from '../Styles/Messages.module.css';
@@ -40,9 +44,10 @@ import ChatUI from '../components/modals/ChatUI';
 import { SEND_CALL } from '../mutations/sendCall';
 import { callContext } from '../hooks/useCall';
 import { ADD_LEAD_TASK } from '../mutations/reminder';
-import { TASK_TYPES } from '';
+import { TASK_TYPES } from '../queries/reminder';
 
 const LeadDetailPage = () => {
+  const dispatch = useDispatch();
   const param = useParams();
   const { id } = param;
   const { setIsCall, setUserName, setLeadId } = useContext(callContext);
@@ -51,7 +56,6 @@ const LeadDetailPage = () => {
   const { data, loading, error } = useQuery(GET_LEAD, {
     variables: { id },
   });
-  console.log(data?.lead);
   const { data: calls, loading: callLoading } = useQuery(GET_CALLS, {
     variables: { leadId: id },
   });
@@ -73,7 +77,7 @@ const LeadDetailPage = () => {
   const { loading: typeLoading, data: types } = useQuery(TASK_TYPES, {
     variables: { userId: '' },
   });
-  const [addTask] = useMutation(ADD_TASK);
+  const [addTask] = useMutation(ADD_LEAD_TASK);
 
   const [description, setDescription] = useState('');
   const [open, setOpen] = useState(false);
@@ -81,6 +85,7 @@ const LeadDetailPage = () => {
   const [isMessageModal, setIsMessageModal] = useState(false);
   const [confirmCall, setConfirmCall] = useState(false);
   const [typeData, setTypeData] = useState([]);
+  const [addType, setAddType] = useState(false);
   const [type, setType] = useState('');
   const [value, setValue] = useState({
     title: '',
@@ -145,6 +150,11 @@ const LeadDetailPage = () => {
     });
   };
 
+  // handle change
+  const handleChange = (e, a) => {
+    setValue({ ...value, [e.target.name]: e.target.value });
+  };
+
   // handle task submit with leadID
   const handleSubmit = async () => {
     try {
@@ -154,8 +164,8 @@ const LeadDetailPage = () => {
           note: value.note,
           date: value.date,
           type,
-          userId: userId,
-          leadId: leadId,
+          userId: '',
+          leadId: id,
         },
       });
       setValue({
@@ -163,7 +173,9 @@ const LeadDetailPage = () => {
         note: '',
         date: '',
       });
-      setType('Personal');
+      setAddType(false);
+      setType('');
+
       dispatch(setAlert({ type: 'success', message: 'Task added successfully' }));
       await refetch();
     } catch (error) {
@@ -313,8 +325,6 @@ const LeadDetailPage = () => {
               onClick={() => {
                 setOpen(false);
                 setAddType(false);
-
-                setSelectedNote(null);
                 setType('');
               }}
               variant="outlined"
