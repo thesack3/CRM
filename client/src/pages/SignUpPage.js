@@ -1,15 +1,14 @@
-
-import { Link, Container, Typography, Divider, Stack, Button } from '@mui/material';
+import { useState } from 'react';
 import { useMutation } from '@apollo/client';
+import { useNavigate } from 'react-router-dom';
 // @mui
 import { styled } from '@mui/material/styles';
+import { Link, Container, Typography, Divider, Stack, Button } from '@mui/material';
 import { Helmet } from 'react-helmet-async';
 
-import { useState } from 'react';
 import { GET_USERS } from '../queries/userQueries';
 
-
-import { REGISTER_USER, LOGIN_USER} from '../mutations/userMutations';
+import { REGISTER_USER, LOGIN_USER } from '../mutations/userMutations';
 
 // hooks
 import useResponsive from '../hooks/useResponsive';
@@ -18,7 +17,7 @@ import Logo from '../components/logo';
 import Iconify from '../components/iconify';
 // sections
 import { LoginForm } from '../sections/auth/login';
-import { Signupform} from '../sections/auth/signup';
+import { Signupform } from '../sections/auth/signup';
 // ----------------------------------------------------------------------
 
 const StyledRoot = styled('div')(({ theme }) => ({
@@ -50,11 +49,8 @@ const StyledContent = styled('div')(({ theme }) => ({
 // ----------------------------------------------------------------------
 
 export default function SignUpPage() {
+  const navigate = useNavigate();
   const mdUp = useResponsive('up', 'md');
-
-
-
-
 
   return (
     <>
@@ -87,8 +83,10 @@ export default function SignUpPage() {
             </Typography>
 
             <Typography variant="body2" sx={{ mb: 5 }}>
-              Don’t have an account? {''}
-              <Link variant="subtitle2">Register here</Link>
+              Already have an account? &nbsp;
+              <Link variant="subtitle2" sx={{ cursor: 'pointer' }} onClick={() => navigate('/login')}>
+                Login here
+              </Link>
             </Typography>
 
             <Stack direction="row" spacing={2}>

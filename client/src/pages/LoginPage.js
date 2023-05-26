@@ -1,13 +1,12 @@
-
-import { Link, Container, Typography, Divider, Stack, Button } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import { useMutation } from '@apollo/client';
 // @mui
+import { Link, Container, Typography, Divider, Stack, Button } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { Helmet } from 'react-helmet-async';
 
 import { useState } from 'react';
 import { GET_USERS } from '../queries/userQueries';
-
 
 import { REGISTER_USER } from '../mutations/userMutations';
 
@@ -50,11 +49,8 @@ const StyledContent = styled('div')(({ theme }) => ({
 // ----------------------------------------------------------------------
 
 export default function LoginPage() {
+  const navigate = useNavigate();
   const mdUp = useResponsive('up', 'md');
-
-
-
-
 
   return (
     <>
@@ -88,7 +84,9 @@ export default function LoginPage() {
 
             <Typography variant="body2" sx={{ mb: 5 }}>
               Don’t have an account? {''}
-              <Link variant="subtitle2">Register here</Link>
+              <Link variant="subtitle2" sx={{ cursor: 'pointer' }} onClick={() => navigate('/signup')}>
+                Register here
+              </Link>
             </Typography>
 
             <Stack direction="row" spacing={2}>
