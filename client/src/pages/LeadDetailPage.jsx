@@ -39,6 +39,8 @@ import { updateLeadMutation } from '../mutations/leadMutations';
 import ChatUI from '../components/modals/ChatUI';
 import { SEND_CALL } from '../mutations/sendCall';
 import { callContext } from '../hooks/useCall';
+import { ADD_LEAD_TASK } from '../mutations/reminder';
+import { TASK_TYPES } from '';
 
 const LeadDetailPage = () => {
   const param = useParams();
@@ -67,12 +69,19 @@ const LeadDetailPage = () => {
     variables: { toNumber: data?.lead?.phone || '', msg: 'Call', leadId: id },
   });
 
+  // get task types
+  const { loading: typeLoading, data: types } = useQuery(TASK_TYPES, {
+    variables: { userId: '' },
+  });
+  const [addTask] = useMutation(ADD_TASK);
+
   const [description, setDescription] = useState('');
   const [open, setOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [isMessageModal, setIsMessageModal] = useState(false);
   const [confirmCall, setConfirmCall] = useState(false);
-  const [type, setType] = useState('Personal');
+  const [typeData, setTypeData] = useState([]);
+  const [type, setType] = useState('');
   const [value, setValue] = useState({
     title: '',
     note: '',
@@ -136,6 +145,41 @@ const LeadDetailPage = () => {
     });
   };
 
+  // handle task submit with leadID
+  const handleSubmit = async () => {
+    try {
+      await addTask({
+        variables: {
+          title: value.title,
+          note: value.note,
+          date: value.date,
+          type,
+          userId: userId,
+          leadId: leadId,
+        },
+      });
+      setValue({
+        title: '',
+        note: '',
+        date: '',
+      });
+      setType('Personal');
+      dispatch(setAlert({ type: 'success', message: 'Task added successfully' }));
+      await refetch();
+    } catch (error) {
+      dispatch(setAlert({ type: 'error', payload: error.message }));
+    } finally {
+      setOpen(false);
+    }
+  };
+
+  // set types from api
+  useEffect(() => {
+    if (types) {
+      setTypeData(types.taskTypes.map((task) => task.name));
+    }
+  }, [types, type]);
+
   return (
     <Grid sx={{ overflow: 'hidden' }}>
       {isMessageModal && data?.lead && (
@@ -194,7 +238,6 @@ const LeadDetailPage = () => {
           >
             Add Task <EditNoteIcon />
           </DialogTitle>
-
           <DialogContent sx={{ overflowY: 'unset' }}>
             <Grid container spacing={2}>
               <Grid item xs={12}>
@@ -237,15 +280,31 @@ const LeadDetailPage = () => {
                   onChange={(e) => handleChange(e)}
                 />
               </Grid>
-              <Grid item xs={6}>
-                <Autocomplete
-                  options={['Personal', 'Family', 'Work', 'Frinds', 'Priority']}
-                  renderInput={(params) => (
-                    <TextField {...params} label="Type" variant="outlined" fullWidth size="small" />
-                  )}
-                  value={type}
-                  onChange={(_, value) => setType(value)}
-                />
+              <Grid item xs={5}>
+                {addType ? (
+                  <TextField
+                    label="Add new type"
+                    variant="outlined"
+                    fullWidth
+                    size="small"
+                    value={type}
+                    onChange={(e) => setType(e.target.value)}
+                  />
+                ) : (
+                  <Autocomplete
+                    options={typeData}
+                    renderInput={(params) => (
+                      <TextField {...params} label="Type" variant="outlined" fullWidth size="small" />
+                    )}
+                    value={type}
+                    onChange={(_, value) => setType(value)}
+                  />
+                )}
+              </Grid>
+              <Grid item xs={1}>
+                <IconButton aria-label="add-type" onClick={() => setAddType(true)}>
+                  <AddCircleOutlineIcon />
+                </IconButton>
               </Grid>
             </Grid>
           </DialogContent>
@@ -253,19 +312,17 @@ const LeadDetailPage = () => {
             <Button
               onClick={() => {
                 setOpen(false);
+                setAddType(false);
+
+                setSelectedNote(null);
+                setType('');
               }}
               variant="outlined"
               sx={{ padding: '5px 16px' }}
             >
               Cancel
             </Button>
-
-            <Button
-              variant="contained"
-              sx={{ padding: '6px 26px', color: '#fff' }}
-              color="success"
-              onClick={() => handleSubmit()}
-            >
+            <Button variant="contained" sx={{ padding: '6px 26px', color: '#fff' }} onClick={() => handleSubmit()}>
               Save
             </Button>
           </DialogActions>
