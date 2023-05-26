@@ -99,6 +99,13 @@ const LeadDetailPage = () => {
     }
   }, [data]);
 
+  // set types from api
+  useEffect(() => {
+    if (types) {
+      setTypeData(types.taskTypes.map((task) => task.name));
+    }
+  }, [types, type]);
+
   const handleClose = () => {
     setOpen(false);
   };
@@ -177,20 +184,13 @@ const LeadDetailPage = () => {
       setType('');
 
       dispatch(setAlert({ type: 'success', message: 'Task added successfully' }));
-      await refetch();
+      // await refetch();
     } catch (error) {
       dispatch(setAlert({ type: 'error', payload: error.message }));
     } finally {
       setOpen(false);
     }
   };
-
-  // set types from api
-  useEffect(() => {
-    if (types) {
-      setTypeData(types.taskTypes.map((task) => task.name));
-    }
-  }, [types, type]);
 
   return (
     <Grid sx={{ overflow: 'hidden' }}>

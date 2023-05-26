@@ -24,7 +24,6 @@ const Category = require("../models/Category");
 const EAlert = require("../models/EAlert");
 const Call = require("../models/Call");
 const Text = require("../models/Text");
-const TaskTypes = require("./types");
 const Task = require("../models/Task");
 const TaskType = require("../models/TaskType");
 
@@ -299,6 +298,31 @@ const TaskListType = new GraphQLObjectType({
   fields: () => ({
     id: { type: GraphQLID },
     name: { type: GraphQLString },
+  }),
+});
+
+const TaskTypes = new GraphQLObjectType({
+  name: "Reminder",
+  fields: () => ({
+    _id: { type: GraphQLID },
+    title: { type: GraphQLString },
+    note: { type: GraphQLString },
+    date: { type: GraphQLString },
+    time: { type: GraphQLString },
+    type: { type: GraphQLString },
+    createdAt: { type: GraphQLString },
+    user: {
+      type: UserType,
+      resolve(parent, args) {
+        return User.findById(parent.user);
+      },
+    },
+    lead: {
+      type: LeadType,
+      resolve(parent, args) {
+        return Lead.findById(parent.lead);
+      },
+    },
   }),
 });
 
@@ -602,7 +626,21 @@ const RootQuery = new GraphQLObjectType({
     tasks: {
       type: new GraphQLList(TaskTypes),
       async resolve(parent, args) {
-        return await Task.find();
+        // delete all task
+        const response = await Task.find();
+
+        let result = [];
+        for (let i = 0; i < response.length; i++) {
+          const task = response[i];
+          let task1 = task;
+          // find lead by id
+          if (task.lead) {
+            let lead = await Lead.findById(task.lead);
+            task1 = { ...task._doc, lead };
+          }
+          result.push(task1);
+        }
+        return result;
       },
     },
     // get task by id
@@ -620,7 +658,8 @@ const RootQuery = new GraphQLObjectType({
       async resolve(parent, args) {
         // use when user is logged in
         // return await TaskType.find({ user: args.userId });
-        return await TaskType.find();
+        const response = await TaskType.find();
+        return response;
       },
     },
     // send notification for today's tasks to user
@@ -908,7 +947,7 @@ const mutation = new GraphQLObjectType({
         email: { type: GraphQLNonNull(GraphQLString) },
         password: { type: GraphQLNonNull(GraphQLString) },
       },
-       async resolve(parent, args) {
+      async resolve(parent, args) {
         // Find the user with the provided email
         return User.findOne({ email: args.email }).then((user) => {
           // If the user does not exist, return an error

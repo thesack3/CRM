@@ -4,13 +4,23 @@ import { gql } from '@apollo/client';
 export const GET_TASKS = gql`
   query tasks {
     tasks {
-      id
+      _id
       title
       note
       date
       time
       type
       createdAt
+      user {
+        id
+        email
+      }
+      lead {
+        id
+        firstName
+        lastName
+        email
+      }
     }
   }
 `;

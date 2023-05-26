@@ -7,7 +7,7 @@ const { LeadType } = require("./schema");
 const { GraphQLObjectType, GraphQLString, GraphQLID, GraphQLBoolean } = graphql;
 
 const TaskTypes = new GraphQLObjectType({
-  name: "Reminder",
+  name: "ReminderUp",
   fields: () => ({
     id: { type: GraphQLID },
     title: { type: GraphQLString },

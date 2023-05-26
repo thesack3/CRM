@@ -18,6 +18,7 @@ import {
   CircularProgress,
   DialogContentText,
   IconButton,
+  Link,
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
@@ -27,11 +28,13 @@ import EditNoteIcon from '@mui/icons-material/EditNote';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useMutation, useQuery } from '@apollo/client';
 import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { ADD_TASK, UPDATE_TASK, DELETE_TASK } from '../mutations/reminder';
 import { setAlert } from '../redux/slice/alertSlice';
 import { GET_TASKS, TASK_TYPES } from '../queries/reminder';
 
 const NotesPage = () => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
   const [noteModal, setNoteModal] = useState(false);
@@ -60,8 +63,29 @@ const NotesPage = () => {
   const [updateTask] = useMutation(UPDATE_TASK);
   const [deleteTask] = useMutation(DELETE_TASK);
 
+  // search filter
+  useEffect(() => {
+    if (data) {
+      let filteredTasks = data.tasks;
+      filteredTasks = filteredTasks.filter((t) => t.title.toLowerCase().includes(searchValue.toLowerCase()));
+
+      if (searchType) {
+        filteredTasks = filteredTasks.filter((t) => t.type.toLowerCase().includes(searchType.toLowerCase()));
+      }
+
+      setFilteredTask(filteredTasks);
+    }
+  }, [data, searchValue, searchType]);
+
+  // set types from api
+  useEffect(() => {
+    if (types) {
+      setTypeData(types.taskTypes.map((task) => task.name));
+    }
+  }, [types, type]);
+
   // handle change
-  const handleChange = (e, a) => {
+  const handleChange = (e) => {
     if (selectedNote) {
       setSelectedNote({ ...selectedNote, [e.target.name]: e.target.value });
     }
@@ -156,27 +180,6 @@ const NotesPage = () => {
     setNoteModal(false);
     setOpen(true);
   };
-
-  // set types from api
-  useEffect(() => {
-    if (types) {
-      setTypeData(types.taskTypes.map((task) => task.name));
-    }
-  }, [types, type]);
-
-  // search filter
-  useEffect(() => {
-    if (data) {
-      let filteredTasks = data.tasks;
-      filteredTasks = filteredTasks.filter((t) => t.title.toLowerCase().includes(searchValue.toLowerCase()));
-
-      if (searchType) {
-        filteredTasks = filteredTasks.filter((t) => t.type.toLowerCase().includes(searchType.toLowerCase()));
-      }
-
-      setFilteredTask(filteredTasks);
-    }
-  }, [data, searchValue, searchType]);
 
   // debounce function
   const debounce = (func, delay) => {
@@ -357,6 +360,16 @@ const NotesPage = () => {
                     size="small"
                   />
                   <Chip label={selectedNote.type} size="small" />
+                  <Link
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      e.preventDefault();
+                      navigate(`/dashboard/lead/${selectedNote.lead.id}`);
+                    }}
+                    sx={{ cursor: 'pointer' }}
+                  >
+                    {selectedNote?.lead?.firstName}
+                  </Link>
                 </Box>
               </Box>
             )}
@@ -466,6 +479,15 @@ const NotesPage = () => {
                         size="small"
                       />
                       <Chip label={item.type} size="small" />
+                      <Link
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          e.preventDefault();
+                          navigate(`/dashboard/lead/${item.lead.id}`);
+                        }}
+                      >
+                        {item?.lead && item.lead.firstName}
+                      </Link>
                       <IconButton
                         className="delete-icon"
                         sx={{ marginLeft: 'auto', opacity: 0, transition: 'opacity 0.3s' }}
