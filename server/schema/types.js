@@ -1,7 +1,9 @@
 // write graphql types for schema here
 
 const graphql = require("graphql");
+const Lead = require("../models/Lead");
 const User = require("../models/User");
+const { LeadType } = require("./schema");
 const { GraphQLObjectType, GraphQLString, GraphQLID, GraphQLBoolean } = graphql;
 
 const TaskTypes = new GraphQLObjectType({
@@ -20,6 +22,12 @@ const TaskTypes = new GraphQLObjectType({
         return User.findById(parent.user);
       },
     },
+    lead: {
+      type: LeadTypeUp,
+      resolve(parent, args) {
+        return Lead.findById(parent.lead);
+      },
+    },
   }),
 });
 
@@ -32,6 +40,17 @@ const UserTypeUp = new GraphQLObjectType({
     password: { type: GraphQLString },
     verificationToken: { type: GraphQLBoolean },
     emailVerified: { type: GraphQLBoolean },
+  }),
+});
+
+const LeadTypeUp = new GraphQLObjectType({
+  name: "LeadUp",
+  fields: () => ({
+    id: { type: GraphQLID },
+    firstName: { type: GraphQLString },
+    lastName: { type: GraphQLString },
+    email: { type: GraphQLString },
+    phone: { type: GraphQLString },
   }),
 });
 

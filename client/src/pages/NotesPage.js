@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import {
   Grid,
   Container,
@@ -27,15 +27,19 @@ import { useMutation, useQuery } from '@apollo/client';
 import { useDispatch } from 'react-redux';
 import { ADD_TASK, UPDATE_TASK, DELETE_TASK } from '../mutations/reminder';
 import { setAlert } from '../redux/slice/alertSlice';
-import { GET_TASKS } from '../queries/reminder';
+import { GET_TASKS, TASK_TYPES } from '../queries/reminder';
 
 const NotesPage = () => {
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
   const [noteModal, setNoteModal] = useState(false);
   const [selectedNote, setSelectedNote] = useState(null);
-  console.log(selectedNote);
-  const [type, setType] = useState('Personal');
+  const [filteredTask, setFilteredTask] = useState([]);
+  const [typeData, setTypeData] = useState([]);
+  const [searchValue, setSearchValue] = useState('');
+  const [addType, setAddType] = useState(false);
+  const [type, setType] = useState('');
+  const [searchType, setSearchType] = useState('');
   const [value, setValue] = useState({
     title: '',
     note: '',
@@ -43,6 +47,10 @@ const NotesPage = () => {
   });
   // get tasks
   const { loading, data, refetch } = useQuery(GET_TASKS);
+  // get task types
+  const { loading: typeLoading, data: types } = useQuery(TASK_TYPES, {
+    variables: { userId: '' },
+  });
 
   // handle mutation
   const [addTask] = useMutation(ADD_TASK);
@@ -73,7 +81,9 @@ const NotesPage = () => {
         note: '',
         date: '',
       });
-      setType('Personal');
+      setAddType(false);
+      setType('');
+
       dispatch(setAlert({ type: 'success', message: 'Task added successfully' }));
       await refetch();
     } catch (error) {
@@ -101,7 +111,9 @@ const NotesPage = () => {
         note: '',
         date: '',
       });
-      setType('Personal');
+      setAddType(false);
+      setType('');
+
       dispatch(setAlert({ type: 'success', message: 'Task updated successfully' }));
       await refetch();
     } catch (error) {
@@ -140,6 +152,45 @@ const NotesPage = () => {
     setNoteModal(false);
     setOpen(true);
   };
+
+  // set types from api
+  useEffect(() => {
+    if (types) {
+      setTypeData(types.taskTypes.map((task) => task.name));
+    }
+  }, [types, type]);
+
+  // search filter
+  useEffect(() => {
+    if (data) {
+      let filteredTasks = data.tasks;
+      filteredTasks = filteredTasks.filter((t) => t.title.toLowerCase().includes(searchValue.toLowerCase()));
+
+      if (searchType) {
+        filteredTasks = filteredTasks.filter((t) => t.type.toLowerCase().includes(searchType.toLowerCase()));
+      }
+
+      setFilteredTask(filteredTasks);
+    }
+  }, [data, searchValue, searchType]);
+
+  // debounce function
+  const debounce = (func, delay) => {
+    let timerId;
+    return (...args) => {
+      clearTimeout(timerId);
+      timerId = setTimeout(() => {
+        func(...args);
+      }, delay);
+    };
+  };
+
+  const debouncedSetSearchValue = useCallback(
+    debounce((value) => {
+      setSearchValue(value);
+    }, 300),
+    []
+  );
 
   return (
     <Container>
@@ -195,15 +246,31 @@ const NotesPage = () => {
                   onChange={(e) => handleChange(e)}
                 />
               </Grid>
-              <Grid item xs={6}>
-                <Autocomplete
-                  options={['Personal', 'Family', 'Work', 'Frinds', 'Priority']}
-                  renderInput={(params) => (
-                    <TextField {...params} label="Type" variant="outlined" fullWidth size="small" />
-                  )}
-                  value={type}
-                  onChange={(_, value) => setType(value)}
-                />
+              <Grid item xs={5}>
+                {addType ? (
+                  <TextField
+                    label="Add new type"
+                    variant="outlined"
+                    fullWidth
+                    size="small"
+                    value={type}
+                    onChange={(e) => setType(e.target.value)}
+                  />
+                ) : (
+                  <Autocomplete
+                    options={typeData}
+                    renderInput={(params) => (
+                      <TextField {...params} label="Type" variant="outlined" fullWidth size="small" />
+                    )}
+                    value={type}
+                    onChange={(_, value) => setType(value)}
+                  />
+                )}
+              </Grid>
+              <Grid item xs={1}>
+                <IconButton aria-label="add-type" onClick={() => setAddType(true)}>
+                  <AddCircleOutlineIcon />
+                </IconButton>
               </Grid>
             </Grid>
           </DialogContent>
@@ -211,7 +278,9 @@ const NotesPage = () => {
             <Button
               onClick={() => {
                 setOpen(false);
+                setAddType(false);
                 setSelectedNote(null);
+                setType('');
               }}
               variant="outlined"
               sx={{ padding: '5px 16px' }}
@@ -219,21 +288,11 @@ const NotesPage = () => {
               Cancel
             </Button>
             {selectedNote ? (
-              <Button
-                variant="contained"
-                sx={{ padding: '6px 26px', color: '#fff' }}
-                color="success"
-                onClick={() => handleUpdate()}
-              >
+              <Button variant="contained" sx={{ padding: '6px 26px', color: '#fff' }} onClick={() => handleUpdate()}>
                 Update
               </Button>
             ) : (
-              <Button
-                variant="contained"
-                sx={{ padding: '6px 26px', color: '#fff' }}
-                color="success"
-                onClick={() => handleSubmit()}
-              >
+              <Button variant="contained" sx={{ padding: '6px 26px', color: '#fff' }} onClick={() => handleSubmit()}>
                 Save
               </Button>
             )}
@@ -284,12 +343,7 @@ const NotesPage = () => {
             >
               Close
             </Button>
-            <Button
-              variant="contained"
-              sx={{ padding: '6px 26px', color: '#fff' }}
-              color="success"
-              onClick={handleEditNote}
-            >
+            <Button variant="contained" sx={{ padding: '6px 26px', color: '#fff' }} onClick={handleEditNote}>
               Edit
             </Button>
           </DialogActions>
@@ -303,6 +357,7 @@ const NotesPage = () => {
           type="search"
           label="Search"
           size="small"
+          onChange={(e) => debouncedSetSearchValue(e.target.value)}
           sx={{
             width: 600,
             '& .MuiInputBase-root': {
@@ -318,10 +373,10 @@ const NotesPage = () => {
           }}
         />
         <Autocomplete
-          options={['Personal', 'Family', 'Work', 'Frinds', 'Priority']}
+          options={typeData}
           renderInput={(params) => <TextField {...params} label="Type" variant="outlined" fullWidth size="small" />}
-          value={type}
-          onChange={(_, value) => setType(value)}
+          value={searchType}
+          onChange={(_, value) => setSearchType(value)}
           sx={{ width: 200 }}
         />
         <Button
@@ -341,9 +396,9 @@ const NotesPage = () => {
           </Box>
         ) : (
           <Grid container spacing={3}>
-            {(data &&
-              data?.tasks?.length &&
-              data.tasks.map((item) => (
+            {(filteredTask &&
+              filteredTask.length &&
+              filteredTask.map((item) => (
                 <Grid item xs={12} sm={6} md={3} key={item.title}>
                   <Card
                     onClick={() => handleSingleNote(item)}

@@ -26,6 +26,11 @@ const TaskSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   },
+  lead: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Lead",
+    required: false,
+  },
 });
 
 module.exports = mongoose.model("Task", TaskSchema);

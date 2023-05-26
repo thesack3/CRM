@@ -64,8 +64,8 @@ const [verifyEmail, { data, loading, error }] = useMutation(VERIFY_EMAIL);
   const VerifyEmail = ({ userToken }) => {
 
 
-alert("Verifying email!");
-    alert(userToken);
+    console.log("Verifying email!");
+    console.log(userToken);
 
 
     verifyEmail({
