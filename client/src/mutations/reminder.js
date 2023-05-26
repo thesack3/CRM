@@ -11,6 +11,28 @@ export const ADD_TASK = gql`
   }
 `;
 
+// add task with lead id
+export const ADD_LEAD_TASK = gql`
+  mutation AddTask($title: String, $note: String, $date: String, $type: String, $userId: ID!, $leadId: ID) {
+    addTask(title: $title, note: $note, date: $date, type: $type, userId: $userId, leadId: $leadId) {
+      id
+      title
+      note
+      date
+      type
+      user {
+        id
+      }
+      lead {
+        id
+        firstName
+        lastName
+        email
+      }
+    }
+  }
+`;
+
 export const UPDATE_TASK = gql`
   mutation UpateTask($id: ID, $title: String, $note: String, $date: String, $type: String) {
     updateTask(id: $id, title: $title, note: $note, date: $date, type: $type) {

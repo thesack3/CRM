@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useMutation, useQuery } from '@apollo/client';
+import { useDispatch } from 'react-redux';
 import {
   Box,
   Typography,
@@ -9,14 +10,23 @@ import {
   alpha,
   Button,
   Grid,
+  TextField,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogContentText,
   DialogActions,
+  Autocomplete,
+  Tooltip,
+  IconButton,
+  Zoom,
 } from '@mui/material';
+
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import EditNoteIcon from '@mui/icons-material/EditNote';
 import { TimelineConnector, TimelineDot, TimelineSeparator } from '@mui/lab';
+import { setAlert } from '../redux/slice/alertSlice';
 import account from '../_mock/account';
 import Iconify from '../components/iconify';
 import styles from '../Styles/Messages.module.css';
@@ -33,8 +43,11 @@ import { updateLeadMutation } from '../mutations/leadMutations';
 import ChatUI from '../components/modals/ChatUI';
 import { SEND_CALL } from '../mutations/sendCall';
 import { callContext } from '../hooks/useCall';
+import { ADD_LEAD_TASK } from '../mutations/reminder';
+import { TASK_TYPES } from '../queries/reminder';
 
 const LeadDetailPage = () => {
+  const dispatch = useDispatch();
   const param = useParams();
   const { id } = param;
   const { setIsCall, setUserName, setLeadId } = useContext(callContext);
@@ -43,7 +56,6 @@ const LeadDetailPage = () => {
   const { data, loading, error } = useQuery(GET_LEAD, {
     variables: { id },
   });
-  console.log(data?.lead);
   const { data: calls, loading: callLoading } = useQuery(GET_CALLS, {
     variables: { leadId: id },
   });
@@ -61,11 +73,25 @@ const LeadDetailPage = () => {
     variables: { toNumber: data?.lead?.phone || '', msg: 'Call', leadId: id },
   });
 
+  // get task types
+  const { loading: typeLoading, data: types } = useQuery(TASK_TYPES, {
+    variables: { userId: '' },
+  });
+  const [addTask] = useMutation(ADD_LEAD_TASK);
+
   const [description, setDescription] = useState('');
   const [open, setOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [isMessageModal, setIsMessageModal] = useState(false);
   const [confirmCall, setConfirmCall] = useState(false);
+  const [typeData, setTypeData] = useState([]);
+  const [addType, setAddType] = useState(false);
+  const [type, setType] = useState('');
+  const [value, setValue] = useState({
+    title: '',
+    note: '',
+    date: '',
+  });
 
   useEffect(() => {
     if (data?.lead?.description) {
@@ -124,6 +150,48 @@ const LeadDetailPage = () => {
     });
   };
 
+  // handle change
+  const handleChange = (e, a) => {
+    setValue({ ...value, [e.target.name]: e.target.value });
+  };
+
+  // handle task submit with leadID
+  const handleSubmit = async () => {
+    try {
+      await addTask({
+        variables: {
+          title: value.title,
+          note: value.note,
+          date: value.date,
+          type,
+          userId: '',
+          leadId: id,
+        },
+      });
+      setValue({
+        title: '',
+        note: '',
+        date: '',
+      });
+      setAddType(false);
+      setType('');
+
+      dispatch(setAlert({ type: 'success', message: 'Task added successfully' }));
+      await refetch();
+    } catch (error) {
+      dispatch(setAlert({ type: 'error', payload: error.message }));
+    } finally {
+      setOpen(false);
+    }
+  };
+
+  // set types from api
+  useEffect(() => {
+    if (types) {
+      setTypeData(types.taskTypes.map((task) => task.name));
+    }
+  }, [types, type]);
+
   return (
     <Grid sx={{ overflow: 'hidden' }}>
       {isMessageModal && data?.lead && (
@@ -173,6 +241,104 @@ const LeadDetailPage = () => {
         </Dialog>
       )}
 
+      {/* Add task dialog */}
+      {open && (
+        <Dialog open={open} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
+          <DialogTitle
+            id="alert-dialog-title"
+            sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+          >
+            Add Task <EditNoteIcon />
+          </DialogTitle>
+          <DialogContent sx={{ overflowY: 'unset' }}>
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <TextField
+                  label="Title"
+                  variant="outlined"
+                  fullWidth
+                  size="small"
+                  name="title"
+                  sx={{ zIndex: '9999999' }}
+                  value={value.title}
+                  onChange={(e) => handleChange(e)}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  label="Take a note"
+                  rows={4}
+                  multiline
+                  variant="outlined"
+                  fullWidth
+                  size="small"
+                  name="note"
+                  value={value.note}
+                  onChange={(e) => handleChange(e)}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  label="Date"
+                  type="datetime-local"
+                  variant="outlined"
+                  fullWidth
+                  size="small"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  name="date"
+                  value={value.date}
+                  onChange={(e) => handleChange(e)}
+                />
+              </Grid>
+              <Grid item xs={5}>
+                {addType ? (
+                  <TextField
+                    label="Add new type"
+                    variant="outlined"
+                    fullWidth
+                    size="small"
+                    value={type}
+                    onChange={(e) => setType(e.target.value)}
+                  />
+                ) : (
+                  <Autocomplete
+                    options={typeData}
+                    renderInput={(params) => (
+                      <TextField {...params} label="Type" variant="outlined" fullWidth size="small" />
+                    )}
+                    value={type}
+                    onChange={(_, value) => setType(value)}
+                  />
+                )}
+              </Grid>
+              <Grid item xs={1}>
+                <IconButton aria-label="add-type" onClick={() => setAddType(true)}>
+                  <AddCircleOutlineIcon />
+                </IconButton>
+              </Grid>
+            </Grid>
+          </DialogContent>
+          <DialogActions sx={{ justifyContent: 'right', gap: '5px' }}>
+            <Button
+              onClick={() => {
+                setOpen(false);
+                setAddType(false);
+                setType('');
+              }}
+              variant="outlined"
+              sx={{ padding: '5px 16px' }}
+            >
+              Cancel
+            </Button>
+            <Button variant="contained" sx={{ padding: '6px 26px', color: '#fff' }} onClick={() => handleSubmit()}>
+              Save
+            </Button>
+          </DialogActions>
+        </Dialog>
+      )}
+
       <Grid container margin="24px">
         {/* left columns */}
         <Grid item xs={12} md={4}>
@@ -202,6 +368,11 @@ const LeadDetailPage = () => {
                   <Button href="" className={styles.callButtonV2} onClick={() => setIsMessageModal(true)}>
                     <Iconify icon="eva:email-fill" color="#18712" width={22} height={22} />
                   </Button>
+                  <Tooltip title="Add Task" arrow TransitionComponent={Zoom}>
+                    <Button href="" className={styles.callButtonV2} onClick={() => setOpen(true)}>
+                      <AddCircleOutlineIcon />
+                    </Button>
+                  </Tooltip>
                 </Box>
               </StyledAccount>
             </Grid>
@@ -603,7 +774,7 @@ const LeadDetailPage = () => {
             </Box>
           </StyledInformation>
         </Grid>
-        <Grid container spacing={2} marginTop={'24px'}/>
+        <Grid container spacing={2} marginTop={'24px'} />
       </Grid>
       <Grid container>
         <Grid xs={12}>
