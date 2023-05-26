@@ -16,9 +16,11 @@ import {
   DialogActions,
   Autocomplete,
   CircularProgress,
+  DialogContentText,
   IconButton,
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import EditNoteIcon from '@mui/icons-material/EditNote';
@@ -38,6 +40,7 @@ const NotesPage = () => {
   const [typeData, setTypeData] = useState([]);
   const [searchValue, setSearchValue] = useState('');
   const [addType, setAddType] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
   const [type, setType] = useState('');
   const [searchType, setSearchType] = useState('');
   const [value, setValue] = useState({
@@ -137,7 +140,8 @@ const NotesPage = () => {
     } catch (error) {
       dispatch(setAlert({ type: 'error', payload: error.message }));
     } finally {
-      setOpen(false);
+      setConfirmDelete(false);
+      setSelectedNote(false);
     }
   };
 
@@ -194,6 +198,31 @@ const NotesPage = () => {
 
   return (
     <Container>
+      {/* confirm delete task dialog */}
+      {confirmDelete && (
+        <Dialog open={confirmDelete} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
+          <DialogContent sx={{ textAlign: 'center', padding: '18px 25px' }}>
+            <ErrorOutlineIcon sx={{ fontSize: 50, color: '#f8bb86' }} />
+            <DialogTitle id="alert-dialog-title" style={{ textAlign: 'center', padding: '4px' }}>
+              {'Are you sure?'}
+            </DialogTitle>
+            <DialogContentText id="alert-dialog-description">This will delete the task permanently.</DialogContentText>
+          </DialogContent>
+          <DialogActions sx={{ justifyContent: 'center', gap: '12px', padding: '6px 5px 18px 5px' }}>
+            <Button onClick={() => setConfirmDelete(false)} variant="outlined" sx={{ padding: '6px 16px' }}>
+              Cancel
+            </Button>
+            <Button
+              onClick={() => handleDelete(selectedNote)}
+              autoFocus
+              variant="contained"
+              sx={{ color: 'white', padding: '6px 10px' }}
+            >
+              Yes, Delete Now
+            </Button>
+          </DialogActions>
+        </Dialog>
+      )}
       {/* Add task dialog */}
       {open && (
         <Dialog open={open} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
@@ -443,7 +472,8 @@ const NotesPage = () => {
                         aria-label="delete"
                         onClick={(event) => {
                           event.stopPropagation(); // Stop event propagation
-                          handleDelete(item);
+                          setSelectedNote(item);
+                          setConfirmDelete(true);
                         }}
                       >
                         <DeleteIcon sx={{ color: 'rgb(244 63 94)' }} />
