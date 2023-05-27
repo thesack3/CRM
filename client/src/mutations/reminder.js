@@ -15,7 +15,7 @@ export const ADD_TASK = gql`
 export const ADD_LEAD_TASK = gql`
   mutation AddTask($title: String, $note: String, $date: String, $type: String, $userId: ID!, $leadId: ID) {
     addTask(title: $title, note: $note, date: $date, type: $type, userId: $userId, leadId: $leadId) {
-      id
+      _id
       title
       note
       date
@@ -36,7 +36,7 @@ export const ADD_LEAD_TASK = gql`
 export const UPDATE_TASK = gql`
   mutation UpateTask($id: ID, $title: String, $note: String, $date: String, $type: String) {
     updateTask(id: $id, title: $title, note: $note, date: $date, type: $type) {
-      id
+      _id
       title
       note
       date
@@ -48,7 +48,7 @@ export const UPDATE_TASK = gql`
 export const DELETE_TASK = gql`
   mutation DeleteTask($id: ID) {
     deleteTask(id: $id) {
-      id
+      _id
     }
   }
 `;

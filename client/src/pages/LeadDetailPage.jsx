@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useMutation, useQuery } from '@apollo/client';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   Box,
   Typography,
@@ -47,6 +47,7 @@ import { ADD_LEAD_TASK } from '../mutations/reminder';
 import { TASK_TYPES } from '../queries/reminder';
 
 const LeadDetailPage = () => {
+  const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const param = useParams();
   const { id } = param;
@@ -171,7 +172,7 @@ const LeadDetailPage = () => {
           note: value.note,
           date: value.date,
           type,
-          userId: '',
+          userId: user?.id || '',
           leadId: id,
         },
       });

@@ -8,8 +8,10 @@ const { MessagingResponse } = require("twilio").twiml;
 const schema = require("./schema/schema");
 const connectDB = require("./config/db");
 const Lead = require("./models/Lead");
+const Task = require("./models/Task");
+const User = require("./models/User");
 
-// // DEVELOPMENT
+// // // DEVELOPMENT
 // require("dotenv").config();
 
 const port = process.env.PORT || 4000;
@@ -39,35 +41,50 @@ app.use(
 // write method for cron job sending emails and notifications
 
 app.post("/notification", async (req, res) => {
-  // send email to user with node mailer
-
-  // create reusable transporter object using the default gmail account
-  const transporter = nodemailer.createTransport({
-    host: "smtp.porkbun.com",
-    port: 587,
-    secure: false,
-    auth: {
-      user: process.env.EMAIL,
-      pass: process.env.PASSWORD,
-    },
+  const tasks = await Task.find({
+    date: new Date().toLocaleDateString(),
   });
-
-  const mailOptions = {
-    from: process.env.EMAIL,
-    to: "raza8r@gmail.com",
-    subject: "Task Notification",
-    text: "That was easy!",
-    html: `<h1>Task Notification</h1>
-    <p>Thanks,</p>`,
-  };
-  transporter.sendMail(mailOptions, function (error, info) {
-    if (error) {
-      console.log("Error---!", error);
-    } else {
-      console.log("Email sent: " + info.response);
-      res.send(200, info.response);
+  for (let i = 0; i < tasks.length; i++) {
+    const task = tasks[i];
+    let updatedTask = task;
+    // find lead by id
+    let user = null;
+    if (task.user) {
+      user = await User.findById(task.user);
     }
-  });
+    updatedTask = { ...task._doc, user, date: task.date.toLocaleDateString() };
+
+    // create reusable transporter object using the default gmail account
+    const transporter = nodemailer.createTransport({
+      host: "smtp.porkbun.com",
+      port: 587,
+      secure: false,
+      auth: {
+        user: process.env.EMAIL,
+        pass: process.env.PASSWORD,
+      },
+    });
+
+    const mailOptions = {
+      from: process.env.EMAIL,
+      to: updatedTask.user.email,
+      subject: "Task Notification",
+      text: "That was easy!",
+      html: `<h1>Task Notification</h1>
+      <p>Title: ${updatedTask.title}</p>
+      <p>Note: ${updatedTask.note}</p>
+      <p>Date: ${updatedTask.date}, ${updatedTask.time}</p>
+      <p>Thanks</p>`,
+    };
+    transporter.sendMail(mailOptions, function (error, info) {
+      if (error) {
+        console.log("Error---!", error);
+      } else {
+        console.log("Email sent: " + info.response);
+        res.send(200, info.response);
+      }
+    });
+  }
 });
 
 // post route for add lead

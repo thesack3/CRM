@@ -27,13 +27,14 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useMutation, useQuery } from '@apollo/client';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { ADD_TASK, UPDATE_TASK, DELETE_TASK } from '../mutations/reminder';
 import { setAlert } from '../redux/slice/alertSlice';
 import { GET_TASKS, TASK_TYPES } from '../queries/reminder';
 
 const NotesPage = () => {
+  const { user } = useSelector((state) => state.auth);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
