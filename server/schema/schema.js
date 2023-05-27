@@ -628,17 +628,18 @@ const RootQuery = new GraphQLObjectType({
       type: new GraphQLList(TaskTypes),
       async resolve(parent, args) {
         // delete all task
-        const response = await Task.find();
+        const response = await Task.find().sort({ date: -1 });
 
         let result = [];
         for (let i = 0; i < response.length; i++) {
           const task = response[i];
           let task1 = task;
           // find lead by id
+          let lead = null;
           if (task.lead) {
-            let lead = await Lead.findById(task.lead);
-            task1 = { ...task._doc, lead };
+            lead = await Lead.findById(task.lead);
           }
+          task1 = { ...task._doc, lead, date: task.date.toLocaleDateString() };
           result.push(task1);
         }
         return result;
