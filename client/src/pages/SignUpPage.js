@@ -8,7 +8,7 @@ import { Helmet } from 'react-helmet-async';
 
 import { GET_USERS } from '../queries/userQueries';
 
-import { REGISTER_USER, LOGIN_USER } from '../mutations/userMutations';
+import { REGISTER_USER } from '../mutations/userMutations';
 
 // hooks
 import useResponsive from '../hooks/useResponsive';

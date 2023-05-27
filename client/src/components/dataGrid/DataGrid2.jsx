@@ -135,7 +135,7 @@ export default function DataGridProCSV2() {
               variant="outlined"
               onClick={() => {
                 setLeadId(params?.row?.id);
-                navigate(`/dashboard/lead/${params?.row?.id}`);
+                navigate(`/lead/${params?.row?.id}`);
                 // setOpenLeadDetails(true);
                 // setCurrentParam(params.row);
               }}

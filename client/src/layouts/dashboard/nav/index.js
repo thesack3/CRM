@@ -1,22 +1,16 @@
 import PropTypes from 'prop-types';
 import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import { useLocation } from 'react-router-dom';
-// @mui
 import { styled, alpha } from '@mui/material/styles';
 import { Box, Link, Button, Drawer, Typography, Avatar, Stack } from '@mui/material';
-// mock
 import account from '../../../_mock/account';
-// hooks
-// import useResponsive from '../../../hooks/useResponsive';
-// components
 import Logo from '../../../components/logo';
 import Scrollbar from '../../../components/scrollbar';
 import NavSection from '../../../components/nav-section';
-//
 import navConfig from './config';
 import useResponsive from '../../../hooks/useResponsive';
-
-// ----------------------------------------------------------------------
+import { logout } from '../../../redux/slice/authSlice';
 
 const NAV_WIDTH = 200;
 
@@ -28,14 +22,13 @@ const StyledAccount = styled('div')(({ theme }) => ({
   backgroundColor: alpha(theme.palette.grey[500], 0.12),
 }));
 
-// ----------------------------------------------------------------------
-
 Nav.propTypes = {
   openNav: PropTypes.bool,
   onCloseNav: PropTypes.func,
 };
 
 export default function Nav({ openNav, onCloseNav }) {
+  const dispatch = useDispatch();
   const { pathname } = useLocation();
 
   const isDesktop = useResponsive('up', 'lg');
@@ -46,6 +39,10 @@ export default function Nav({ openNav, onCloseNav }) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
+
+  const handleLogout = () => {
+    dispatch(logout());
+  };
 
   const renderContent = (
     <Scrollbar
@@ -87,18 +84,15 @@ export default function Nav({ openNav, onCloseNav }) {
             src="/assets/illustrations/illustration_avatar.png"
             sx={{ width: 100, position: 'absolute', top: -50 }}
           />
-
           <Box sx={{ textAlign: 'center' }}>
             <Typography gutterBottom variant="h6">
               Get more?
             </Typography>
-
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
               How' are you?
             </Typography>
           </Box>
-
-          <Button href="/login" variant="contained">
+          <Button onClick={() => handleLogout()} variant="contained">
             Log out
           </Button>
         </Stack>

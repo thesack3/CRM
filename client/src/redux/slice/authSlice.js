@@ -6,8 +6,9 @@ const initialState = {
   user: {
     id: '',
     email: '',
-    password: '',
+    emailVerified: false,
   },
+  token: '',
   isAuth: false,
   loading: false,
   error: null,
@@ -21,7 +22,8 @@ const authSlice = createSlice({
       state.loading = true;
     },
     loginSuccess: (state, action) => {
-      state.user = action.payload;
+      state.user = action.payload.user;
+      state.token = action.payload.token;
       state.isAuth = true;
       state.loading = false;
       state.error = null;
@@ -32,6 +34,7 @@ const authSlice = createSlice({
     },
     logout: (state) => {
       state.user = null;
+      state.token = null;
       state.isAuth = false;
       state.loading = false;
       state.error = null;

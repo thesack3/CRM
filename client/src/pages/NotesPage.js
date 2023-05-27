@@ -364,7 +364,7 @@ const NotesPage = () => {
                     onClick={(e) => {
                       e.stopPropagation();
                       e.preventDefault();
-                      navigate(`/dashboard/lead/${selectedNote.lead.id}`);
+                      navigate(`/lead/${selectedNote.lead.id}`);
                     }}
                     sx={{ cursor: 'pointer' }}
                   >
@@ -483,7 +483,7 @@ const NotesPage = () => {
                         onClick={(e) => {
                           e.stopPropagation();
                           e.preventDefault();
-                          navigate(`/dashboard/lead/${item.lead.id}`);
+                          navigate(`/lead/${item.lead.id}`);
                         }}
                       >
                         {item?.lead && item.lead.firstName}

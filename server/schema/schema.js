@@ -64,6 +64,7 @@ const UserType = new GraphQLObjectType({
     id: { type: GraphQLID },
     email: { type: GraphQLString },
     password: { type: GraphQLString },
+    emailVerificationToken: { type: GraphQLString },
     verificationToken: { type: GraphQLBoolean },
     emailVerified: { type: GraphQLBoolean },
   }),
@@ -796,31 +797,19 @@ const mutation = new GraphQLObjectType({
       },
       async resolve(parent, args) {
         const existingUser = await User.findOne({ email: args.email });
-
         if (existingUser) {
           throw new Error("User already exists");
         }
         if (args.password.length < 6) {
           throw new Error("Password must be at least 6 characters");
         }
-
         const hashedPassword = await bcrypt.hash(args.password, 10);
-
-        console.log(args.password);
-        console.log(hashedPassword);
-        const unhashedPassword = await bcrypt.compare(args.password, hashedPassword);
-        console.log(unhashedPassword);
-
-        //CREATE UNIQUE JSON WEB TOKEN FOR USER TO VERIfFY EMAIL
         const user = new User({
           email: args.email,
           password: hashedPassword,
         });
-
         const token = jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET);
-
-        //USE NODEMAILER TO SEND EMAIL WITH TOKEN TO USER
-
+        user.emailVerificationToken = token;
         const transporter = nodemailer.createTransport({
           host: "smtp.porkbun.com",
           port: 587,
@@ -849,7 +838,6 @@ const mutation = new GraphQLObjectType({
             '">here</a>.<br>',
           // html: 'Hello,<br><br>' + 'Please verify your account by clicking the link: <a href="' + process.env.BASE_URL +'\/verify\/' + '">here</a>.<br>'
         };
-
         transporter.sendMail(mailOptions, function (err, info) {
           if (err) {
             console.log(err);
@@ -857,12 +845,10 @@ const mutation = new GraphQLObjectType({
             console.log("A verification email has been sent to " + user.email + ".");
           }
         });
-
         return user.save();
       },
     },
 
-    //Verify Email
     //Verify Email
     verifyEmail: {
       type: UserType,
@@ -870,46 +856,49 @@ const mutation = new GraphQLObjectType({
         token: { type: GraphQLNonNull(GraphQLString) },
       },
       async resolve(parent, args) {
-        try {
-          //VERIFY EMAIL BY DECODING ITS JWT TOKEN
-          const decoded = jwt.verify(args.token, process.env.TOKEN_SECRET);
-          const user = await User.findOne({
-            _id: decoded._id,
-            emailVerificationToken: args.token,
-          });
-          if (!user) {
-            return {
-              success: false,
-              message: "We were unable to find a user for this token.",
-              user: null,
-            };
-          }
-          if (user.emailVerified) {
-            return {
-              success: false,
-              message: "This user has already been verified.",
-              user: null,
-            };
-          }
-          user.emailVerified = true;
-          user.emailVerificationToken = undefined;
-          await user.save();
-          return {
-            success: true,
-            message: "The account has been verified. Please log in.",
-            user: {
-              id: user.id,
-              email: user.email,
-              emailVerified: true,
-            },
-          };
-        } catch (err) {
+        // Verify and decode the user's token
+        const decoded = jwt.verify(args.token, process.env.TOKEN_SECRET);
+        const user = await User.findOne({
+          _id: decoded._id,
+          emailVerificationToken: args.token,
+        });
+        if (!user) {
           return {
             success: false,
-            message: err.message,
+            message: "We were unable to find a user for this token.",
             user: null,
           };
         }
+        if (user.emailVerified) {
+          return {
+            success: false,
+            message: "This user has already been verified.",
+            user: null,
+          };
+        }
+        user.emailVerified = true;
+        user.emailVerificationToken = undefined;
+        const result = await user.save();
+        return result;
+      },
+    },
+
+    // Delete Users for testing
+
+    deleteUser: {
+      type: new GraphQLObjectType({
+        name: "DeleteUser",
+        fields: () => ({
+          message: { type: GraphQLString },
+        }),
+      }),
+      args: {
+        userId: { type: GraphQLID },
+      },
+
+      async resolve(parent, args) {
+        const user = await User.deleteMany();
+        return { message: "User deleted" };
       },
     },
 
@@ -942,42 +931,31 @@ const mutation = new GraphQLObjectType({
     },
     //Login User
     loginUser: {
-      type: UserType,
+      type: new GraphQLObjectType({
+        name: "LoginUser",
+        fields: () => ({
+          user: { type: UserType },
+          token: { type: GraphQLString },
+        }),
+      }),
       args: {
         email: { type: GraphQLNonNull(GraphQLString) },
         password: { type: GraphQLNonNull(GraphQLString) },
       },
       async resolve(parent, args) {
-        // Find the user with the provided email
-        return User.findOne({ email: args.email }).then((user) => {
-          // If the user does not exist, return an error
-          if (!user) {
-            throw new Error("No user found with that email");
-          }
-
-          // Compare the provided password to the hashed password stored in the database
-          return bcrypt.compare(args.password, user.password).then((isMatch) => {
-            // If the password is incorrect, return an error
-            if (!isMatch) {
-              throw new Error("Incorrect password");
-            }
-
-            // Generate a JWT for the user
-            const jwt = jwt.sign(
-              {
-                id: user.id,
-                email: user.email,
-              },
-              process.env.TOKEN_SECRET
-            );
-
-            // Return the user and JWT
-            return {
-              user,
-              jwt,
-            };
-          });
-        });
+        const user = await User.findOne({ email: args.email });
+        if (!user) {
+          throw new Error("No user with that email");
+        }
+        if (!user.emailVerified) {
+          throw new Error("Please verify your email");
+        }
+        const isMatch = await bcrypt.compare(args.password, user.password);
+        if (!isMatch) {
+          throw new Error("Incorrect password");
+        }
+        const token = jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET);
+        return { user, token };
       },
     },
     addClient: {
@@ -1148,44 +1126,7 @@ const mutation = new GraphQLObjectType({
           // return upserted leads count
           const response = await (await Lead.bulkWrite(bulkWrite)).result.nUpserted;
           return { count: response };
-
-          // get upserted count
         }
-
-        // // count of save leads and existed leads
-        // let saveCount = 0;
-        // let existCount = 0;
-
-        // // find leads which are exist in database
-        // const existLeads = await Lead.find({
-        //   $and: [
-        //     { firstName: { $in: leads.map((lead) => lead.firstName) } },
-        //     { lastName: { $in: leads.map((lead) => lead.lastName) } },
-        //   ],
-        // });
-        // existCount = existLeads.length;
-
-        // // filter leads by exist leads
-        // const filteredLeads = leads.filter(
-        //   // find leads which are not exist in database or firstName and lastName
-        //   (lead) =>
-        //     !existLeads.find(
-        //       (existLead) =>
-        //         existLead.firstName === lead.firstName &&
-        //         existLead.lastName === lead.lastName &&
-        //         existLead.email === lead.email
-        //     )
-        // );
-        // // add leads to database which are not exist in database
-        // try {
-        //   if (!filteredLeads.length) return "All leads are exist in database";
-        //   saveCount = filteredLeads.length;
-        //   await Lead.insertMany(filteredLeads);
-        //   return { messsage: "Leads added successfully", saveCount, existCount };
-        // } catch (error) {
-        //   console.error(error);
-        //   throw new Error("Error adding leads");
-        // }
       },
     },
 
