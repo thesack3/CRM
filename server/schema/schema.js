@@ -676,7 +676,6 @@ const RootQuery = new GraphQLObjectType({
 
         // const userEmails = tasks.map((task) => task.user);
 
-        console.log("tasks----------------------", tasks);
         return tasks;
       },
     },
@@ -697,9 +696,8 @@ const mutation = new GraphQLObjectType({
 
       async resolve(parent, args) {
         // Your AccountSID and Auth Token from console.twilio.com
-        const accountSid = "ACc1d129072adcdd2b82563d7c50f996ce";
-        const authToken = "59c688db8aa4b85a1f3756b59b468d45";
-        // const authToken = "0a8da2b96fc12fa62f5b4f510197b9bc";
+        const accountSid = process.env.TWILIO_ACCOUNT_SID;
+        const authToken = process.env.TWILIO_AUTH_TOKEN;
 
         const client = require("twilio")(accountSid, authToken);
 
@@ -748,9 +746,8 @@ const mutation = new GraphQLObjectType({
 
       async resolve(parent, args) {
         // Your AccountSID and Auth Token from console.twilio.com
-        const accountSid = "ACc1d129072adcdd2b82563d7c50f996ce";
-        const authToken = "59c688db8aa4b85a1f3756b59b468d45";
-        // const authToken = "0a8da2b96fc12fa62f5b4f510197b9bc";
+        const accountSid = process.env.TWILIO_ACCOUNT_SID;
+        const authToken = process.env.TWILIO_AUTH_TOKEN;
 
         const client = require("twilio")(accountSid, authToken);
 
