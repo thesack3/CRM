@@ -903,7 +903,6 @@ const LeadDetailPage = () => {
           </Grid>
         </Grid>
       </Grid>
-
       {selectedItem && <CustomDialog open={open} onClose={handleClose} details={selectedItem} />}
     </Grid>
   );
