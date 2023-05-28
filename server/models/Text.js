@@ -18,5 +18,4 @@ const TextSchema = new mongoose.Schema({
     ref: "Lead",
   },
 });
-
 module.exports = mongoose.model("Text", TextSchema);
