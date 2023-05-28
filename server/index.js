@@ -145,6 +145,9 @@ app.post("/addLead", async (req, res) => {
 });
 
 app.post("/sms", async (req, res) => {
+  console.log("Request-------------------------------1", req);
+  console.log("Request Body-------------------------------2", req.body);
+  console.log("Response Body-------------------------------3", res);
   const twiml = new MessagingResponse();
   const phoneNumber = req.body.from.replace(/\D/g, "");
   const lead = await Lead.findOne({ phone: { $regex: `.*${phoneNumber}.*`, $options: "i" } });
@@ -167,11 +170,15 @@ app.post("/smsList", async (req, res) => {
   const accountSid = process.env.TWILIO_ACCOUNT_SID;
   const authToken = process.env.TWILIO_AUTH_TOKEN;
   const client = require("twilio")(accountSid, authToken);
-  client.messages
-    .list({ limit: 20 })
-    .then((messages) => messages.forEach((m) => console.log(m.sid)));
+  let messagesIds = [];
+  client.messages.list({ limit: 20 }).then((messages) =>
+    messages.forEach((m) => {
+      console.log(m.sid);
+      messagesIds.push(m.sid);
+    })
+  );
 
-  res.send(200, "success");
+  res.send(200, { success: true, messagesIds });
 });
 
 app.listen(port, console.log(`Server running on port ${port}`));
