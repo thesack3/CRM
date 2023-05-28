@@ -32,7 +32,7 @@ import Iconify from '../components/iconify';
 import styles from '../Styles/Messages.module.css';
 import SelectField from '../components/SelectField';
 import { GET_LEAD } from '../queries/leadQueries';
-import { GET_CALLS } from '../queries/callQueries';
+import { GET_CALLS, GET_VOICE_CALLS } from '../queries/callQueries';
 import { GET_NOTES } from '../queries/noteQueries';
 import { GET_SMS_TEXT } from '../queries/textQueries';
 import { GET_EALERTS } from '../queries/eAlertQueries';
@@ -45,7 +45,6 @@ import { SEND_CALL } from '../mutations/sendCall';
 import { callContext } from '../hooks/useCall';
 import { ADD_LEAD_TASK } from '../mutations/reminder';
 import { TASK_TYPES } from '../queries/reminder';
-import { GET_VOICE_CALLS } from '../queries/callQueries';
 
 const LeadDetailPage = () => {
   const { user } = useSelector((state) => state.auth);
