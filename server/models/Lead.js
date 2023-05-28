@@ -200,4 +200,12 @@ const LeadSchema = new mongoose.Schema({
   },
 });
 
+// Define a pre-save middleware to sanitize the phoneNumber field
+LeadSchema.pre("save", function (next) {
+  if (this.phone) {
+    this.phone = this.phone.replace(/\D/g, ""); // Remove all non-numeric characters
+  }
+  next();
+});
+
 module.exports = mongoose.model("Lead", LeadSchema);

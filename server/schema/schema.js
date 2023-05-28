@@ -732,8 +732,6 @@ const mutation = new GraphQLObjectType({
 
             return twilioMSG;
           });
-
-        //   return projects;
       },
     },
     sendSMS: {
@@ -743,14 +741,11 @@ const mutation = new GraphQLObjectType({
         msg: { type: GraphQLString },
         leadId: { type: GraphQLID },
       },
-
       async resolve(parent, args) {
         // Your AccountSID and Auth Token from console.twilio.com
         const accountSid = process.env.TWILIO_ACCOUNT_SID;
         const authToken = process.env.TWILIO_AUTH_TOKEN;
-
         const client = require("twilio")(accountSid, authToken);
-
         return client.messages
           .create({
             body: args.msg,
@@ -758,8 +753,6 @@ const mutation = new GraphQLObjectType({
             from: process.env.SENDER_PHONE_NUMBER, // From a valid Twilio number
           })
           .then((message) => {
-            // console.log(message.sid)
-            console.log(message);
             const twilioMSG = {
               date_Updated: message.dateUpdated,
               date_Sent: message.dateSent,
@@ -769,7 +762,6 @@ const mutation = new GraphQLObjectType({
               body: message.body,
               status: message.status,
             };
-
             const newText = new Text({
               body: twilioMSG.body,
               to: twilioMSG.to,
@@ -777,13 +769,9 @@ const mutation = new GraphQLObjectType({
               dateCreated: twilioMSG.date_Updated,
               leadId: args.leadId,
             });
-
             newText.save();
-
             return twilioMSG;
           });
-
-        //   return projects;
       },
     },
     //Email Verification Register User

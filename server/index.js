@@ -10,6 +10,7 @@ const connectDB = require("./config/db");
 const Lead = require("./models/Lead");
 const Task = require("./models/Task");
 const User = require("./models/User");
+const Text = require("./models/Text");
 
 // // // DEVELOPMENT
 // require("dotenv").config();
@@ -143,25 +144,22 @@ app.post("/addLead", async (req, res) => {
   res.send(200, response);
 });
 
-app.post("/sms", (req, res) => {
+app.post("/sms", async (req, res) => {
   const twiml = new MessagingResponse();
-
+  const lead = await Lead.findOne({ phone: req.body.from });
+  if (lead) {
+    const result = await Text.create({
+      body: req.body.message,
+      to: process.env.SENDER_PHONE_NUMBER,
+      from: req.body.from,
+      dateCreated: new Date(),
+      leadId: lead._id,
+    });
+  }
   twiml.message(
     "Thanks for contacting Ryan Hossack real estate. We will get back to you as soon as a represetnative is available."
   );
-
   res.type("text/xml").send(twiml.toString());
-
-  console.log(req.body.From);
-  console.log(req.body.Body);
 });
 
 app.listen(port, console.log(`Server running on port ${port}`));
-
-// html: `<h1>Task Notification</h1>
-// <p>Hi ${req.body.firstName},</p>
-// <p>You have a task due on ${req.body.date}.</p>
-// <p>Task: ${req.body.task}</p>
-// <p>Notes: ${req.body.notes}</p>
-// <p>Thanks,</p>
-// <p>Ryan Hossack Real Estate</p>`,
