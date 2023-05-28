@@ -1,5 +1,3 @@
-// write schema for voice call
-
 const mongoose = require("mongoose");
 
 const VoiceCallSchema = new mongoose.Schema({

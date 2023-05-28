@@ -26,7 +26,7 @@ const Call = require("../models/Call");
 const Text = require("../models/Text");
 const Task = require("../models/Task");
 const TaskType = require("../models/TaskType");
-const VoiceCall = require("../models/VoiceCall");
+const VoiceCall = require('../models/VocieCall');
 
 const TwilioMSGType = new GraphQLObjectType({
   name: "TwilioMSG",
@@ -694,14 +694,10 @@ const mutation = new GraphQLObjectType({
         msg: { type: GraphQLString },
         leadId: { type: GraphQLID },
       },
-
       async resolve(parent, args) {
-        // Your AccountSID and Auth Token from console.twilio.com
         const accountSid = process.env.TWILIO_ACCOUNT_SID;
         const authToken = process.env.TWILIO_AUTH_TOKEN;
-
         const client = require("twilio")(accountSid, authToken);
-
         return client.calls
           .create({
             twiml: "<Response><Say>Bryan Hossack real estate at your service!</Say></Response>",
@@ -730,6 +726,7 @@ const mutation = new GraphQLObjectType({
           });
       },
     },
+
     sendSMS: {
       type: TextType,
       args: {
