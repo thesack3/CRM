@@ -145,12 +145,11 @@ app.post("/addLead", async (req, res) => {
 });
 
 app.post("/sms", async (req, res) => {
-  console.log("Request-------------------------------1", req);
-  console.log("Request Body-------------------------------2", req.body);
-  console.log("Response Body-------------------------------3", res);
+  console.log("Request Body-------------------------------", req.body);
   const twiml = new MessagingResponse();
-  const phoneNumber = req.body.from.replace(/\D/g, "");
+  const phoneNumber = req.body.From.replace(/\D/g, "");
   const lead = await Lead.findOne({ phone: { $regex: `.*${phoneNumber}.*`, $options: "i" } });
+  console.log("Lead---------------------------", lead);
   if (lead) {
     const result = await Text.create({
       body: req.body.Body,
