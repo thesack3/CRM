@@ -1,6 +1,8 @@
+// write schema for voice call
+
 const mongoose = require("mongoose");
 
-const TextSchema = new mongoose.Schema({
+const VoiceCallSchema = new mongoose.Schema({
   body: {
     type: String,
   },
@@ -19,4 +21,4 @@ const TextSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model("Text", TextSchema);
+module.exports = mongoose.model("VoiceCall", VoiceCallSchema);

@@ -26,6 +26,7 @@ const Call = require("../models/Call");
 const Text = require("../models/Text");
 const Task = require("../models/Task");
 const TaskType = require("../models/TaskType");
+const VoiceCall = require("../models/VoiceCall");
 
 const TwilioMSGType = new GraphQLObjectType({
   name: "TwilioMSG",
@@ -708,9 +709,7 @@ const mutation = new GraphQLObjectType({
             from: process.env.SENDER_PHONE_NUMBER, // From a valid Twilio number
           })
           .then((message) => {
-            // console.log(message.sid)
-            console.log(message);
-            const twilioMSG = {
+            const twilioCall = {
               date_Updated: message.dateUpdated,
               date_Sent: message.dateSent,
               accountSid: message.accountSid,
@@ -719,18 +718,15 @@ const mutation = new GraphQLObjectType({
               body: message.body,
               status: message.status,
             };
-
-            // const newText = new Text({
-            //     body: twilioMSG.body,
-            //     to: twilioMSG.to,
-            //     from: twilioMSG.from,
-            //     dateCreated: twilioMSG.date_Updated,
-            //     leadId: args.leadId,
-            //     });
-
-            //  newText.save();
-
-            return twilioMSG;
+            const newCall = new VoiceCall({
+              body: twilioCall.body,
+              to: twilioCall.to,
+              from: twilioCall.from,
+              dateCreated: twilioCall.date_Updated,
+              leadId: args.leadId,
+            });
+            newCall.save();
+            return twilioCall;
           });
       },
     },
