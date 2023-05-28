@@ -13,6 +13,11 @@ const VoiceCallSchema = new mongoose.Schema({
   dateCreated: {
     type: String,
   },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+
   leadId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Lead",

@@ -45,6 +45,7 @@ import { SEND_CALL } from '../mutations/sendCall';
 import { callContext } from '../hooks/useCall';
 import { ADD_LEAD_TASK } from '../mutations/reminder';
 import { TASK_TYPES } from '../queries/reminder';
+import { GET_VOICE_CALLS } from '../queries/callQueries';
 
 const LeadDetailPage = () => {
   const { user } = useSelector((state) => state.auth);
@@ -69,10 +70,11 @@ const LeadDetailPage = () => {
   const { data: emails, loading: emailLoading } = useQuery(GET_EALERTS, {
     variables: { leadId: id },
   });
-  const [updateLead] = useMutation(updateLeadMutation);
-  const [sendCall] = useMutation(SEND_CALL, {
-    variables: { toNumber: data?.lead?.phone || '', msg: 'Call', leadId: id },
+  const { data: voiceCalls } = useQuery(GET_VOICE_CALLS, {
+    variables: { leadId: id },
   });
+  const [updateLead] = useMutation(updateLeadMutation);
+  const [sendCall] = useMutation(SEND_CALL);
 
   // get task types
   const { loading: typeLoading, data: types } = useQuery(TASK_TYPES, {
@@ -138,7 +140,9 @@ const LeadDetailPage = () => {
 
   const handleCall = async () => {
     try {
-      await sendCall();
+      await sendCall({
+        variables: { toNumber: data?.lead?.phone, msg: 'Call', leadId: id },
+      });
     } catch (error) {
       console.log('Error-', error);
     }
@@ -871,6 +875,31 @@ const LeadDetailPage = () => {
                 notes?.notes.map((note) => <Card data={note} getItem={(item) => getSelected(item)} type="note" />)) ||
                 'Note history is empty'}
             </Grid>
+            <Grid
+              item
+              xs={6}
+              md={4}
+              lg={2.7}
+              sx={{
+                marginTop: '2rem',
+                boxShadow: '0 0 12px #e3e3e3',
+                borderRadius: '12px',
+                border: '1px solid #e3e3e3',
+                padding: '16px',
+                maxHeight: '500px',
+                overflowY: 'scroll',
+              }}
+            >
+              <Typography variant="h5" sx={{ color: 'text.primary', marginBottom: '10px' }}>
+                Call Logs
+              </Typography>
+              {(voiceCalls &&
+                voiceCalls?.voiceCallList?.length &&
+                voiceCalls?.voiceCallList?.map((call) => (
+                  <Card data={call} getItem={(item) => getSelected(item)} type="call" />
+                ))) ||
+                'Call log is empty'}
+            </Grid>
           </Grid>
         </Grid>
       </Grid>
@@ -883,6 +912,8 @@ const LeadDetailPage = () => {
 export default LeadDetailPage;
 
 const Card = ({ data, getItem, type }) => {
+  console.log('data-------------------', data.createdAt);
+
   return (
     <Box
       sx={{ boxShadow: '0px 0px 10px #e3e3e3', marginTop: '16px', padding: '16px', cursor: 'pointer' }}
@@ -911,7 +942,9 @@ const Card = ({ data, getItem, type }) => {
         <Box>
           <Typography variant="subtitle2"> {data?.FirstName}</Typography>
           <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-            {fDateTime(new Date().getTime())}
+            {/* {data?.note || data?.message || data?.text || data?.description} */}
+            {data?.createdAt && data.createdAt}
+            {/* {data?.createdAt ? fDateTime(new Date(1685299278395).getTime()) : fDateTime(new Date().getTime())} */}
           </Typography>
         </Box>
       </Box>

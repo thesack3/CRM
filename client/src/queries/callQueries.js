@@ -22,4 +22,15 @@ const GET_CALLS = gql`
   }
 `;
 
-export { GET_CALLS };
+// voice call query
+
+const GET_VOICE_CALLS = gql`
+  query VoiceCallList($leadId: ID) {
+    voiceCallList(leadId: $leadId) {
+      id
+      createdAt
+    }
+  }
+`;
+
+export { GET_CALLS, GET_VOICE_CALLS };

@@ -163,4 +163,15 @@ app.post("/sms", async (req, res) => {
   res.type("text/xml").send(twiml.toString());
 });
 
+app.post("/smsList", async (req, res) => {
+  const accountSid = process.env.TWILIO_ACCOUNT_SID;
+  const authToken = process.env.TWILIO_AUTH_TOKEN;
+  const client = require("twilio")(accountSid, authToken);
+  client.messages
+    .list({ limit: 20 })
+    .then((messages) => messages.forEach((m) => console.log(m.sid)));
+
+  res.send(200, "success");
+});
+
 app.listen(port, console.log(`Server running on port ${port}`));

@@ -57,7 +57,7 @@ const CallBox = () => {
         >
           <Iconify icon="mdi:user" color="#18712" width={36} height={36} />
           <Typography fontSize={18} fontWeight={600} marginTop={1}>
-            {userName || 'dd'}
+            {userName || '-'}
           </Typography>
         </Box>
         <Button

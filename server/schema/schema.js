@@ -1,4 +1,5 @@
 //Dependencies
+const { format } = require("date-fns");
 const Project = require("../models/Project");
 const Client = require("../models/Client");
 const nodemailer = require("nodemailer");
@@ -26,7 +27,13 @@ const Call = require("../models/Call");
 const Text = require("../models/Text");
 const Task = require("../models/Task");
 const TaskType = require("../models/TaskType");
-const VoiceCall = require('../models/VocieCall');
+const VoiceCall = require("../models/VocieCall");
+
+function fDateTime(date, newFormat) {
+  const fm = newFormat || "dd MMM yyyy p";
+
+  return date ? format(new Date(date), fm) : "";
+}
 
 const TwilioMSGType = new GraphQLObjectType({
   name: "TwilioMSG",
@@ -41,6 +48,22 @@ const TwilioMSGType = new GraphQLObjectType({
     dateUpdated: { type: GraphQLString },
     dateSent: { type: GraphQLString },
     direction: { type: GraphQLString },
+  }),
+});
+const TwilioCallType = new GraphQLObjectType({
+  name: "TwilioCall",
+  fields: () => ({
+    accountSid: { type: GraphQLID },
+    id: { type: GraphQLID },
+    to: { type: GraphQLString },
+    from: { type: GraphQLString },
+    body: { type: GraphQLString },
+    status: { type: GraphQLString },
+    dateCreated: { type: GraphQLString },
+    dateUpdated: { type: GraphQLString },
+    dateSent: { type: GraphQLString },
+    direction: { type: GraphQLString },
+    createdAt: { type: GraphQLString },
   }),
 });
 
@@ -678,6 +701,19 @@ const RootQuery = new GraphQLObjectType({
         // const userEmails = tasks.map((task) => task.user);
 
         return tasks;
+      },
+    },
+    // get voice call by leadId
+    voiceCallList: {
+      type: new GraphQLList(TwilioCallType),
+      args: { leadId: { type: GraphQLID } },
+      async resolve(parent, args) {
+        const response = await VoiceCall.find({ leadId: args.leadId });
+        const result = response.map((call) => {
+          const callUp = { ...call._doc, createdAt: fDateTime(call.createdAt) };
+          return callUp;
+        });
+        return result;
       },
     },
   },
