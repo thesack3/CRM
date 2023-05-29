@@ -84,6 +84,7 @@ const LeadDetailPage = () => {
 
   const [description, setDescription] = useState('');
   const [open, setOpen] = useState(false);
+  const [taskOpen, setTaskOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [isMessageModal, setIsMessageModal] = useState(false);
   const [confirmCall, setConfirmCall] = useState(false);
@@ -193,7 +194,7 @@ const LeadDetailPage = () => {
     } catch (error) {
       dispatch(setAlert({ type: 'error', payload: error.message }));
     } finally {
-      setOpen(false);
+      setTaskOpen(false);
     }
   };
 
@@ -247,8 +248,8 @@ const LeadDetailPage = () => {
       )}
 
       {/* Add task dialog */}
-      {open && (
-        <Dialog open={open} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
+      {taskOpen && (
+        <Dialog open={taskOpen} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
           <DialogTitle
             id="alert-dialog-title"
             sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
@@ -328,7 +329,7 @@ const LeadDetailPage = () => {
           <DialogActions sx={{ justifyContent: 'right', gap: '5px' }}>
             <Button
               onClick={() => {
-                setOpen(false);
+                setTaskOpen(false);
                 setAddType(false);
                 setType('');
               }}
@@ -374,7 +375,7 @@ const LeadDetailPage = () => {
                     <Iconify icon="eva:email-fill" color="#18712" width={22} height={22} />
                   </Button>
                   <Tooltip title="Add Task" arrow TransitionComponent={Zoom}>
-                    <Button href="" className={styles.callButtonV2} onClick={() => setOpen(true)}>
+                    <Button href="" className={styles.callButtonV2} onClick={() => setTaskOpen(true)}>
                       <AddCircleOutlineIcon />
                     </Button>
                   </Tooltip>
