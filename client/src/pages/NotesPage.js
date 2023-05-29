@@ -103,6 +103,8 @@ const NotesPage = () => {
           note: value.note,
           date: value.date,
           type,
+          userId: user?.id,
+          leadId: '',
         },
       });
       setValue({
