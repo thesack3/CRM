@@ -43,7 +43,7 @@ import { updateLeadMutation } from '../mutations/leadMutations';
 import ChatUI from '../components/modals/ChatUI';
 import { SEND_CALL } from '../mutations/sendCall';
 import { callContext } from '../hooks/useCall';
-import { ADD_LEAD_TASK } from '../mutations/reminder';
+import { ADD_TASK } from '../mutations/reminder';
 import { TASK_TYPES } from '../queries/reminder';
 
 const LeadDetailPage = () => {
@@ -79,7 +79,7 @@ const LeadDetailPage = () => {
   const { loading: typeLoading, data: types } = useQuery(TASK_TYPES, {
     variables: { userId: '' },
   });
-  const [addTask] = useMutation(ADD_LEAD_TASK);
+  const [addTask] = useMutation(ADD_TASK);
 
   const [description, setDescription] = useState('');
   const [open, setOpen] = useState(false);
