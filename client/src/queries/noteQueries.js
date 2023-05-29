@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client';
 
-const GET_NOTES = gql`
-  query getNotes($leadId: ID!) {
+const NOTES = gql`
+  query notes($leadId: ID!) {
     notes(leadId: $leadId) {
       id
       contactId
@@ -10,8 +10,12 @@ const GET_NOTES = gql`
       Notes
       BuyerAgent
       ListingAgent
+      lead {
+        id
+        firstName
+      }
     }
   }
 `;
 
-export { GET_NOTES };
+export { NOTES };

@@ -21,7 +21,7 @@ import { useMutation, useQuery } from '@apollo/client';
 import CloseIcon from '@mui/icons-material/Close';
 
 import { GET_LEADS } from '../queries/leadQueries';
-import { GET_NOTES } from '../queries/noteQueries';
+import { NOTES } from '../queries/noteQueries';
 import { GET_CALLS } from '../queries/callQueries';
 import { GET_EALERTS } from '../queries/eAlertQueries';
 
@@ -72,7 +72,7 @@ export default function LeadDetails({ leadDetail, handleUpdate, openModal, setOp
     loading: notesLoading,
     data: notesData,
     refetch: refetchNotes,
-  } = useQuery(GET_NOTES, {
+  } = useQuery(NOTES, {
     variables: { leadId },
   });
 

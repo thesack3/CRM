@@ -21,7 +21,7 @@ import CategoryGrid from '../inputs/CategorySearchBox';
 
 // sections
 import { GET_LEADS } from '../../queries/leadQueries';
-import { GET_NOTES } from '../../queries/noteQueries';
+import { NOTES } from '../../queries/noteQueries';
 import { GET_CALLS } from '../../queries/callQueries';
 import { GET_EALERTS } from '../../queries/eAlertQueries';
 
@@ -83,7 +83,7 @@ export default function ProfileP({ rowId }) {
     loading: notesLoading,
     error: notesError,
     data: notesData,
-  } = useQuery(GET_NOTES, {
+  } = useQuery(NOTES, {
     variables: { leadId: selectedLead ? selectedLead.id : null },
     skip: !selectedLead,
   });

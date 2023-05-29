@@ -420,8 +420,11 @@ const RootQuery = new GraphQLObjectType({
       args: {
         leadId: { type: GraphQLNonNull(GraphQLID) },
       },
-      resolve(parent, args) {
-        return Note.find({ leadId: args.leadId });
+      async resolve(parent, args) {
+        console.log("args---------------------------/", args);
+        const response = await Note.find({ leadId: args.leadId });
+        console.log("response---------------------------/", response);
+        return response;
       },
     },
     note: {
@@ -1038,6 +1041,10 @@ const mutation = new GraphQLObjectType({
       },
       async resolve(parent, args) {
         try {
+          const findLead = await Lead.findOne({ email: args.email });
+          if (findLead) {
+            throw new Error("Lead already exists");
+          }
           const lead = new Lead(args);
           const result = await lead.save();
           return result;
@@ -1425,6 +1432,39 @@ const mutation = new GraphQLObjectType({
         }
       },
     },
+
+    // Add single note
+    addSingleNote: {
+      type: NoteType,
+      args: {
+        contactId: { type: GraphQLString },
+        firstName: { type: GraphQLString },
+        lastName: { type: GraphQLString },
+        notes: { type: GraphQLString },
+        buyerAgent: { type: GraphQLString },
+        listingAgent: { type: GraphQLString },
+        leadId: { type: GraphQLID },
+      },
+      async resolve(parent, args) {
+        try {
+          console.log("args-------------------------", args);
+          const response = await Note.create({
+            contactId: args.contactId,
+            FirstName: args.firstName,
+            LastName: args.lastName,
+            Notes: args.notes,
+            BuyerAgent: args.buyerAgent,
+            ListingAgent: args.listingAgent,
+            leadId: args.leadId,
+          });
+          console.log("response-------------------------", response);
+          return response;
+        } catch (error) {
+          console.log(error);
+        }
+      },
+    },
+
     // task mutation to add tasks to the database
     addTask: {
       type: TaskTypes,

@@ -33,7 +33,7 @@ import styles from '../Styles/Messages.module.css';
 import SelectField from '../components/SelectField';
 import { GET_LEAD } from '../queries/leadQueries';
 import { GET_CALLS, GET_VOICE_CALLS } from '../queries/callQueries';
-import { GET_NOTES } from '../queries/noteQueries';
+import { NOTES } from '../queries/noteQueries';
 import { GET_SMS_TEXT } from '../queries/textQueries';
 import { GET_EALERTS } from '../queries/eAlertQueries';
 import { fDateTime } from '../utils/formatTime';
@@ -60,9 +60,10 @@ const LeadDetailPage = () => {
   const { data: calls, loading: callLoading } = useQuery(GET_CALLS, {
     variables: { leadId: id },
   });
-  const { data: notes, loading: noteLoading } = useQuery(GET_NOTES, {
+  const { data: notes, loading: noteLoading } = useQuery(NOTES, {
     variables: { leadId: id },
   });
+  console.log('notes-------------------', notes);
   const { data: texts, loading: textLoading } = useQuery(GET_SMS_TEXT, {
     variables: { leadId: id },
   });

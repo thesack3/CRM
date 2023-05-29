@@ -7,7 +7,7 @@ import { useTheme } from '@mui/system';
 import { useQuery } from '@apollo/client';
 // sections
 import { GET_LEADS } from '../queries/leadQueries';
-import { GET_NOTES } from '../queries/noteQueries';
+import { NOTES } from '../queries/noteQueries';
 
 import TagBox from './inputs/SearchTagBox';
 import SnackBar from './dataGrid/SnackBar';
@@ -58,7 +58,7 @@ export default function ProfileDetailsPage({ params, row }) {
 
   const { loading, error, data } = useQuery(GET_LEADS);
 
-  const { Noteloading, Noteerror, Notedata } = useQuery(GET_NOTES, {
+  const { Noteloading, Noteerror, Notedata } = useQuery(NOTES, {
     variables: { leadId: '63f1ad64d855342f3c84d873' },
   });
 

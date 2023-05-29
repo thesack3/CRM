@@ -10,8 +10,6 @@ import CallContextProvider from './hooks/useCall';
 import App from './App';
 import { store, persistor } from './redux/store';
 
-// ----------------------------------------------------------------------
-
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
 const cache = new InMemoryCache({

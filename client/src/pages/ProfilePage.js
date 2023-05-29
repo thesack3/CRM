@@ -16,7 +16,7 @@ import TagBox from '../components/inputs/SearchTagBox';
 import Iconify from '../components/iconify';
 // sections
 import { GET_LEADS } from '../queries/leadQueries';
-import { GET_NOTES } from '../queries/noteQueries';
+import { NOTES } from '../queries/noteQueries';
 
 import SnackBar from '../components/dataGrid/SnackBar';
 import {
@@ -65,7 +65,7 @@ export default function ProfilePage() {
 
   const { loading, error, data } = useQuery(GET_LEADS);
 
-  const { Noteloading, Noteerror, Notedata } = useQuery(GET_NOTES, {
+  const { Noteloading, Noteerror, Notedata } = useQuery(NOTES, {
     variables: { leadId: '63f1ad64d855342f3c84d873' },
   });
 
