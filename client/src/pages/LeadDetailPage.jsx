@@ -63,7 +63,6 @@ const LeadDetailPage = () => {
   const { data: notes, loading: noteLoading } = useQuery(NOTES, {
     variables: { leadId: id },
   });
-  console.log('notes-------------------', notes);
   const { data: texts, loading: textLoading } = useQuery(GET_SMS_TEXT, {
     variables: { leadId: id },
   });
@@ -911,8 +910,6 @@ const LeadDetailPage = () => {
 export default LeadDetailPage;
 
 const Card = ({ data, getItem, type }) => {
-  console.log('data-------------------', data.createdAt);
-
   return (
     <Box
       sx={{ boxShadow: '0px 0px 10px #e3e3e3', marginTop: '16px', padding: '16px', cursor: 'pointer' }}

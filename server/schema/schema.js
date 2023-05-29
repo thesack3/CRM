@@ -210,6 +210,7 @@ const TextType = new GraphQLObjectType({
     dateCreated: { type: GraphQLString },
     date_Updated: { type: GraphQLString },
     accountSid: { type: GraphQLString },
+    createdAt: { type: GraphQLString },
   }),
 });
 
@@ -401,8 +402,13 @@ const RootQuery = new GraphQLObjectType({
       args: {
         leadId: { type: GraphQLNonNull(GraphQLID) },
       },
-      resolve(parent, args) {
-        return Text.find({ leadId: args.leadId });
+      async resolve(parent, args) {
+        const response = await Text.find({ leadId: args.leadId });
+        const updatedResponse = response.map((text) => {
+          const textUp = { ...text._doc, createdAt: fDateTime(text.dateCreated) };
+          return textUp;
+        });
+        return updatedResponse;
       },
     },
     text: {
