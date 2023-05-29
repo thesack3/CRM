@@ -1078,8 +1078,6 @@ const LeadDetailPage = () => {
 export default LeadDetailPage;
 
 const Card = ({ data, getItem, type }) => {
-  console.log('data-------------------', data.createdAt);
-
   return (
     <Box
       sx={{ boxShadow: '0px 0px 10px #e3e3e3', marginTop: '16px', padding: '16px', cursor: 'pointer' }}

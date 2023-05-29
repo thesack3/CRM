@@ -7,6 +7,7 @@ export const GET_SMS_TEXT = gql`
       body
       to
       from
+      createdAt
     }
   }
 `;
