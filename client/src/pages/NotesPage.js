@@ -40,6 +40,7 @@ const NotesPage = () => {
   const [open, setOpen] = useState(false);
   const [noteModal, setNoteModal] = useState(false);
   const [selectedNote, setSelectedNote] = useState(null);
+  console.log(selectedNote?._id);
   const [filteredTask, setFilteredTask] = useState([]);
   const [typeData, setTypeData] = useState([]);
   const [searchValue, setSearchValue] = useState('');
@@ -156,7 +157,7 @@ const NotesPage = () => {
     try {
       await deleteTask({
         variables: {
-          id: item.id,
+          id: item._id,
         },
       });
 
