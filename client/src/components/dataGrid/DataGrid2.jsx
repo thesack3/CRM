@@ -513,11 +513,9 @@ export default function DataGridProCSV2() {
               type={'categories'}
               handleUpdate={(value, id, type) => handleUpdate(value, id, type)}
             />
-            {/* <CategoryBoxView defaultValues={params.row.categories} Lead={params.row} /> */}
           </Box>
         ),
       },
-      //   { field: 'Uid', headerName: 'UID', width: 100, editable: true, hide: true },
     ],
     [rowId, data]
   );
@@ -540,30 +538,6 @@ export default function DataGridProCSV2() {
     }
     setOpenSnack(false);
   };
-  // useEffect(() => {
-  //   const filteredRows = responseData.filter((row) => {
-  //     const matched = Object.values(row).some((value) => {
-  //       return String(value).toLowerCase().includes(searchQuery.toLowerCase());
-  //     });
-
-  //     const categoryMatched =
-  //       categories.length === 0 ||
-  //       categories.some((category) => {
-  //         return row.categories.includes(category);
-  //       });
-
-  //     return matched && categoryMatched;
-  //   });
-
-  //   setFilteredData(filteredRows);
-  // }, [responseData, searchQuery, categories]);
-
-  // ...
-
-  // const handleVisibility=()=>{
-  //  const a= columns.filter((column) => selectedColumns.includes(column.field))
-  //  console.log('a-------------------', a);
-  // }
 
   // remove categories and tags from data.leads and make new array
   const leadsRows = data?.leads?.rows
@@ -744,7 +718,6 @@ export default function DataGridProCSV2() {
   // eslint-disable-next-line no-unused-vars
   const deleteById = async () => {
     if (!selectIds.length) return dispatch(setAlert({ type: 'info', message: 'Please select a lead' }));
-
     try {
       const response = await deleteLeads({
         variables: {

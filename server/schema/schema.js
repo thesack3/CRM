@@ -421,9 +421,7 @@ const RootQuery = new GraphQLObjectType({
         leadId: { type: GraphQLNonNull(GraphQLID) },
       },
       async resolve(parent, args) {
-        console.log("args---------------------------/", args);
         const response = await Note.find({ leadId: args.leadId });
-        console.log("response---------------------------/", response);
         return response;
       },
     },
@@ -1042,9 +1040,8 @@ const mutation = new GraphQLObjectType({
       async resolve(parent, args) {
         try {
           const findLead = await Lead.findOne({ email: args.email });
-          if (findLead) {
-            throw new Error("Lead already exists");
-          }
+          if (findLead) throw new Error("Lead already exists");
+
           const lead = new Lead(args);
           const result = await lead.save();
           return result;

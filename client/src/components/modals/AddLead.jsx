@@ -1,21 +1,22 @@
 import * as React from 'react';
 import { useState } from 'react';
 import { useMutation } from '@apollo/client';
-import { Alert, Snackbar } from '@mui/material';
-import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import { Box } from '@mui/system';
 import Dialog from '@mui/material/Dialog';
+import { useDispatch } from 'react-redux';
+import { Button } from '@mui/material';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import CsvUpload from '../DropBoxes/CsvUpload';
 import { ADD_LEAD } from '../../mutations/leadMutations';
+import { setAlert } from '../../redux/slice/alertSlice';
 
 export default function AddLeadModal({ handleRefetch }) {
+  const dispatch = useDispatch();
   const [addLead, { loading, error, data }] = useMutation(ADD_LEAD);
-  const [openSnack, setOpenSnack] = useState(false);
   const [uploadInProcess, setUploaded] = useState(false);
   const [open, setOpen] = React.useState(false);
 
@@ -84,7 +85,6 @@ export default function AddLeadModal({ handleRefetch }) {
   };
 
   const handleLeadSubmit = (e) => {
-    console.log(formData);
     e.preventDefault();
     addLead({
       variables: formData,
@@ -134,15 +134,13 @@ export default function AddLeadModal({ handleRefetch }) {
           Birthday: '',
           HomeClosingDate: '',
         });
-        console.log(res);
         setUploaded(false);
-        console.log('Lead Submitted!');
         handleRefetch();
         handleClose();
-        setOpenSnack(true);
+        dispatch(setAlert({ type: 'success', message: 'Lead added successfully' }));
       })
       .catch((err) => {
-        console.log(err);
+        dispatch(setAlert({ type: 'error', message: 'Error adding lead' }));
       });
   };
 
@@ -738,11 +736,6 @@ export default function AddLeadModal({ handleRefetch }) {
               <Button onClick={handleLeadSubmit}>Add Lead</Button>
             </DialogActions>
           </Dialog>
-          <Snackbar open={openSnack} autoHideDuration={2000} onClose={() => setOpenSnack(false)}>
-            <Alert onClose={() => setOpenSnack(false)} severity="success" sx={{ width: '100%' }}>
-              Lead Added!
-            </Alert>
-          </Snackbar>
         </div>
       )}
     </>
