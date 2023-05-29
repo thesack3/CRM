@@ -456,7 +456,7 @@ const LeadDetailPage = () => {
                   onChange={handleChange}
                 />
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12}>
                 <TextField
                   label="Listing Agent"
                   variant="outlined"
