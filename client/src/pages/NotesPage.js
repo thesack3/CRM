@@ -54,10 +54,12 @@ const NotesPage = () => {
     date: '',
   });
   // get tasks
-  const { loading, data, refetch } = useQuery(GET_TASKS);
+  const { loading, data, refetch } = useQuery(GET_TASKS, {
+    variables: { userId: user?.id },
+  });
   // get task types
   const { loading: typeLoading, data: types } = useQuery(TASK_TYPES, {
-    variables: { userId: '' },
+    variables: { userId: user?.id },
   });
 
   // handle mutation

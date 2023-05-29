@@ -12,8 +12,8 @@ const Task = require("./models/Task");
 const User = require("./models/User");
 const Text = require("./models/Text");
 
-// // // DEVELOPMENT
-// require("dotenv").config();
+// // DEVELOPMENT
+require("dotenv").config();
 
 const port = process.env.PORT || 4000;
 

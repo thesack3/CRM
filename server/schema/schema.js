@@ -650,10 +650,9 @@ const RootQuery = new GraphQLObjectType({
     // get all tasks
     tasks: {
       type: new GraphQLList(TaskTypes),
+      args: { userId: { type: GraphQLID } },
       async resolve(parent, args) {
-        // delete all task
-        const response = await Task.find().sort({ date: -1 });
-
+        const response = await Task.find({ user: args.userId }).sort({ date: 1 });
         let result = [];
         for (let i = 0; i < response.length; i++) {
           const task = response[i];
@@ -682,9 +681,7 @@ const RootQuery = new GraphQLObjectType({
       type: new GraphQLList(TaskListType),
       args: { userId: { type: GraphQLID } },
       async resolve(parent, args) {
-        // use when user is logged in
-        // return await TaskType.find({ user: args.userId });
-        const response = await TaskType.find();
+        const response = await TaskType.find({ user: args.userId });
         return response;
       },
     },
