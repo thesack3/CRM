@@ -45,6 +45,7 @@ import { SEND_CALL } from '../mutations/sendCall';
 import { callContext } from '../hooks/useCall';
 import { ADD_TASK } from '../mutations/reminder';
 import { TASK_TYPES } from '../queries/reminder';
+import { ADD_SINGLE_NOTE } from '../mutations/noteMutations';
 
 const LeadDetailPage = () => {
   const { user } = useSelector((state) => state.auth);
@@ -60,10 +61,13 @@ const LeadDetailPage = () => {
   const { data: calls, loading: callLoading } = useQuery(GET_CALLS, {
     variables: { leadId: id },
   });
-  const { data: notes, loading: noteLoading } = useQuery(NOTES, {
+  const {
+    data: notes,
+    loading: noteLoading,
+    refetch: refetchNotes,
+  } = useQuery(NOTES, {
     variables: { leadId: id },
   });
-  console.log('notes-------------------', notes);
   const { data: texts, loading: textLoading } = useQuery(GET_SMS_TEXT, {
     variables: { leadId: id },
   });
@@ -82,14 +86,26 @@ const LeadDetailPage = () => {
   });
   const [addTask] = useMutation(ADD_TASK);
 
+  // add single note mutation
+  const [addSingleNote] = useMutation(ADD_SINGLE_NOTE);
+
   const [description, setDescription] = useState('');
   const [open, setOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [isMessageModal, setIsMessageModal] = useState(false);
   const [confirmCall, setConfirmCall] = useState(false);
+  const [singleNoteModal, setSingleNoteModal] = useState(false);
   const [typeData, setTypeData] = useState([]);
   const [addType, setAddType] = useState(false);
   const [type, setType] = useState('');
+  const [formData, setFormData] = useState({
+    contactId: '',
+    firstName: '',
+    lastName: '',
+    notes: '',
+    buyerAgent: '',
+    listingAgent: '',
+  });
   const [value, setValue] = useState({
     title: '',
     note: '',
@@ -163,37 +179,75 @@ const LeadDetailPage = () => {
   };
 
   // handle change
-  const handleChange = (e, a) => {
+  const handleChange = (e) => {
+    if (singleNoteModal) {
+      setFormData({
+        ...formData,
+        [e.target.name]: e.target.value,
+      });
+    }
     setValue({ ...value, [e.target.name]: e.target.value });
   };
 
   // handle task submit with leadID
   const handleSubmit = async () => {
-    try {
-      await addTask({
-        variables: {
-          title: value.title,
-          note: value.note,
-          date: value.date,
-          type,
-          userId: user?.id || '',
-          leadId: id,
-        },
-      });
-      setValue({
-        title: '',
-        note: '',
-        date: '',
-      });
-      setAddType(false);
-      setType('');
+    if (singleNoteModal) {
+      try {
+        await addSingleNote({
+          variables: {
+            contactId: formData.contactId,
+            firstName: formData.firstName,
+            lastName: formData.lastName,
+            notes: formData.notes,
+            buyerAgent: formData.buyerAgent,
+            listingAgent: formData.listingAgent,
+            leadId: id,
+          },
+        });
+        setFormData({
+          contactId: '',
+          lastName: '',
+          firstName: '',
+          notes: '',
+          buyerAgent: '',
+          listingAgent: '',
+          leadId: '',
+        });
 
-      dispatch(setAlert({ type: 'success', message: 'Task added successfully' }));
-      // await refetch();
-    } catch (error) {
-      dispatch(setAlert({ type: 'error', payload: error.message }));
-    } finally {
-      setOpen(false);
+        dispatch(setAlert({ type: 'success', message: 'Note added successfully' }));
+        await refetchNotes();
+      } catch (error) {
+        dispatch(setAlert({ type: 'error', payload: error.message }));
+      } finally {
+        setSingleNoteModal(false);
+      }
+    } else {
+      try {
+        await addTask({
+          variables: {
+            title: value.title,
+            note: value.note,
+            date: value.date,
+            type,
+            userId: user?.id || '',
+            leadId: id,
+          },
+        });
+        setValue({
+          title: '',
+          note: '',
+          date: '',
+        });
+        setAddType(false);
+        setType('');
+
+        dispatch(setAlert({ type: 'success', message: 'Task added successfully' }));
+        // await refetch();
+      } catch (error) {
+        dispatch(setAlert({ type: 'error', payload: error.message }));
+      } finally {
+        setOpen(false);
+      }
     }
   };
 
@@ -338,6 +392,106 @@ const LeadDetailPage = () => {
               Cancel
             </Button>
             <Button variant="contained" sx={{ padding: '6px 26px', color: '#fff' }} onClick={() => handleSubmit()}>
+              Save
+            </Button>
+          </DialogActions>
+        </Dialog>
+      )}
+
+      {/* Add single note dialog */}
+      {singleNoteModal && (
+        <Dialog open={singleNoteModal} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
+          <DialogTitle
+            id="alert-dialog-title"
+            sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+          >
+            Add Single Note <EditNoteIcon />
+          </DialogTitle>
+          <DialogContent sx={{ overflowY: 'unset' }}>
+            <Grid container spacing={2}>
+              <Grid item xs={6}>
+                <TextField
+                  label="First Name"
+                  variant="outlined"
+                  fullWidth
+                  size="small"
+                  name="firstName"
+                  sx={{ zIndex: '9999999' }}
+                  value={formData.firstName}
+                  onChange={handleChange}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  label="Last Name"
+                  variant="outlined"
+                  fullWidth
+                  size="small"
+                  name="lastName"
+                  value={formData.lastName}
+                  onChange={handleChange}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  label="Contact ID"
+                  variant="outlined"
+                  fullWidth
+                  size="small"
+                  name="contactId"
+                  value={formData.contactId}
+                  onChange={handleChange}
+                />
+              </Grid>
+
+              <Grid item xs={6}>
+                <TextField
+                  label="Buyer Agent"
+                  variant="outlined"
+                  fullWidth
+                  size="small"
+                  name="buyerAgent"
+                  value={formData.buyerAgent}
+                  onChange={handleChange}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  label="Listing Agent"
+                  variant="outlined"
+                  fullWidth
+                  size="small"
+                  name="listingAgent"
+                  value={formData.listingAgent}
+                  onChange={handleChange}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  label="Notes"
+                  rows={4}
+                  multiline
+                  variant="outlined"
+                  fullWidth
+                  size="small"
+                  name="notes"
+                  value={formData.notes}
+                  onChange={handleChange}
+                />
+              </Grid>
+            </Grid>
+          </DialogContent>
+          <DialogActions sx={{ justifyContent: 'right', gap: '5px' }}>
+            <Button
+              onClick={() => {
+                setSingleNoteModal(false);
+              }}
+              variant="outlined"
+              sx={{ padding: '5px 16px' }}
+            >
+              Cancel
+            </Button>
+            <Button variant="contained" sx={{ padding: '6px 26px', color: '#fff' }} onClick={handleSubmit}>
               Save
             </Button>
           </DialogActions>
@@ -867,8 +1021,20 @@ const LeadDetailPage = () => {
                 border: '1px solid #e3e3e3',
               }}
             >
-              <Typography variant="h5" sx={{ color: 'text.primary', marginBottom: '10px' }}>
-                Notes
+              <Typography
+                variant="h5"
+                sx={{
+                  color: 'text.primary',
+                  marginBottom: '10px',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}
+              >
+                Notes{' '}
+                <IconButton aria-label="add-note" onClick={() => setSingleNoteModal(true)}>
+                  <AddCircleOutlineIcon />
+                </IconButton>
               </Typography>
               {(notes &&
                 notes.notes.length &&
@@ -939,7 +1105,7 @@ const Card = ({ data, getItem, type }) => {
           <TimelineConnector />
         </TimelineSeparator>
         <Box>
-          <Typography variant="subtitle2"> {data?.FirstName}</Typography>
+          <Typography variant="subtitle2">{data?.FirstName}</Typography>
           <Typography variant="caption" sx={{ color: 'text.secondary' }}>
             {/* {data?.note || data?.message || data?.text || data?.description} */}
             {data?.createdAt && data.createdAt}
