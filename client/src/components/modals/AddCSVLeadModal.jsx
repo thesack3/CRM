@@ -30,19 +30,22 @@ export default function AddCSVLeadModal({ callback }) {
       const numBatches = Math.ceil(data.length / batchSize);
       let response;
       // eslint-disable-next-line no-plusplus
+      let findCount = 0;
       for (let i = 0; i < numBatches; i++) {
         const start = i * batchSize;
         const end = start + batchSize;
         const batch = data.slice(start, end);
-
         // eslint-disable-next-line no-await-in-loop
         response = await addLeadsCsv({
           variables: {
             leads: JSON.stringify(batch),
           },
         });
+        
+        findCount = findCount + response.data.addLeadsCsv.count;
       }
-      if (response) setCount(response.data.addLeadsCsv.count);
+
+      if (response) setCount(findCount);
 
       setOpenSnack(true);
       // setCount(findCount);
