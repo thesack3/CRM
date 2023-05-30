@@ -1045,9 +1045,14 @@ const mutation = new GraphQLObjectType({
       },
       async resolve(parent, args) {
         try {
-          const findLead = await Lead.findOne({ email: args.email });
-          if (findLead) throw new Error("Lead already exists");
+          // find email and phone number in database to avoid duplicate leads
 
+          const existingLead = await Lead.findOne({
+            $or: [{ email: args.email }, { phone: args.phone }],
+          });
+          if (existingLead) {
+            throw new Error("Lead already exists");
+          }
           const lead = new Lead(args);
           const result = await lead.save();
           return result;
