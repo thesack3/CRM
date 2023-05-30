@@ -159,9 +159,9 @@ app.post("/sms", async (req, res) => {
       leadId: lead._id,
     });
   }
-  twiml.message(
-    "Thanks for contacting Ryan Hossack real estate. We will get back to you as soon as a represetnative is available."
-  );
+  // twiml.message(
+  //   "Thanks for contacting Ryan Hossack real estate. We will get back to you as soon as a represetnative is available."
+  // );
   res.type("text/xml").send(twiml.toString());
 });
 

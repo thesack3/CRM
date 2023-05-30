@@ -1450,7 +1450,6 @@ const mutation = new GraphQLObjectType({
       },
       async resolve(parent, args) {
         try {
-          console.log("args-------------------------", args);
           const response = await Note.create({
             contactId: args.contactId,
             FirstName: args.firstName,
@@ -1460,7 +1459,6 @@ const mutation = new GraphQLObjectType({
             ListingAgent: args.listingAgent,
             leadId: args.leadId,
           });
-          console.log("response-------------------------", response);
           return response;
         } catch (error) {
           console.log(error);
