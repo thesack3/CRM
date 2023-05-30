@@ -1129,8 +1129,8 @@ const mutation = new GraphQLObjectType({
           const bulkWrite = leads.map((lead) => ({
             updateOne: {
               filter: {
-                firstName: lead.firstName,
-                lastName: lead.lastName,
+                firstName: lead.FirstName,
+                lastName: lead.LastName,
               },
               update: {
                 ...lead,
