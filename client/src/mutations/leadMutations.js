@@ -222,4 +222,20 @@ const DELETE_LEADS = gql`
   }
 `;
 
-export { ADD_LEAD, ADD_LEADS_CSV, updateLeadMutation, DELETE_LEADS };
+const FILTERS = gql`
+  mutation AddFilter($userId: ID!, $columns: [String], $pageSize: Int, $page: Int, $sort: String, $search: String) {
+    addFilter(userId: $userId, columns: $columns, pageSize: $pageSize, page: $page, sort: $sort, search: $search) {
+      columns
+      pageSize
+      page
+      sort
+      search
+      user {
+        id
+        email
+      }
+    }
+  }
+`;
+
+export { ADD_LEAD, ADD_LEADS_CSV, updateLeadMutation, DELETE_LEADS, FILTERS };

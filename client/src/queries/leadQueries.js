@@ -154,3 +154,19 @@ export const NEW_LEAD_SUBSCRIPTION = gql`
     }
   }
 `;
+
+export const GET_FILTERS = gql`
+  query GetFilter($userId: ID!) {
+    getFilter(userId: $userId) {
+      columns
+      pageSize
+      page
+      sort
+      search
+      user {
+        id
+        email
+      }
+    }
+  }
+`;

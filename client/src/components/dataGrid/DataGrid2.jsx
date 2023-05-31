@@ -3,11 +3,11 @@ import * as React from 'react';
 import { Button, TextField, Typography, CircularProgress } from '@mui/material';
 import { useQuery, useMutation } from '@apollo/client';
 import { useMemo, useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Box from '@mui/material/Box';
 import { useNavigate } from 'react-router-dom';
 import { DataGridPro, GridToolbar } from '@mui/x-data-grid-pro';
-import { GET_LEADS } from '../../queries/leadQueries';
+import { GET_FILTERS, GET_LEADS } from '../../queries/leadQueries';
 import { SEND_EMAILS_MUTATION } from '../../mutations/bulkEmail';
 import AddLeadModal from '../modals/AddLead';
 import AddCSVLeadModal from '../modals/AddCSVLeadModal';
@@ -16,7 +16,7 @@ import AddCategoryModal from '../modals/AddCategory';
 import CategoryGrid from '../inputs/CategorySearchBox';
 import { gridStyles } from '../../constants/styles';
 import SelectField from '../SelectField';
-import { DELETE_LEADS, updateLeadMutation } from '../../mutations/leadMutations';
+import { DELETE_LEADS, FILTERS, updateLeadMutation } from '../../mutations/leadMutations';
 import CustomModal from '../modals/CustomModal';
 import LeadDetails from '../LeadDetails';
 import { callContext } from '../../hooks/useCall';
@@ -27,6 +27,7 @@ import AddeAlert from '../modals/AddeAlert';
 import { setAlert } from '../../redux/slice/alertSlice';
 
 export default function DataGridProCSV2() {
+  const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { setLeadId } = React.useContext(callContext);
@@ -50,6 +51,13 @@ export default function DataGridProCSV2() {
   const [page, setPage] = React.useState(0);
   const [pageSize, setPageSize] = React.useState(10);
   const [skip, setSkip] = React.useState(0);
+  const { data: filterData, refetch: filterRefetch } = useQuery(GET_FILTERS, {
+    variables: {
+      userId: user?.id,
+    },
+  });
+
+  const [addFilter] = useMutation(FILTERS);
 
   const {
     loading: graphQLClientsLoading,
@@ -565,11 +573,18 @@ export default function DataGridProCSV2() {
   // when page loads, check if columns are in local storage, if not, set them
   useEffect(() => {
     console.log('useEffectisrunning');
-    if (localStorage.getItem('columns')) {
+    if (localStorage.getItem('columns') || filterData) {
       const visibleColumnsFieldList = JSON.parse(localStorage.getItem('columns'));
-      if (visibleColumnsFieldList.length > 0) {
+      if (filterData?.getFilter?.pageSize) {
+        setPageSize(filterData?.getFilter?.pageSize);
+      }
+      if (filterData?.getFilter?.page) {
+        setPage(filterData?.getFilter?.page);
+      }
+      const filterCol = filterData?.getFilter?.columns;
+      if (filterCol && filterCol.length) {
         columns.forEach((column) => {
-          if (visibleColumnsFieldList.includes(column.field)) {
+          if (filterCol.includes(column.field)) {
             column.hide = false;
           } else {
             column.hide = true;
@@ -585,10 +600,20 @@ export default function DataGridProCSV2() {
     console.log('setColumnsas', columns);
     setColumnsToShow(columns);
     setGridDataLoading(false);
-  }, []);
+  }, [filterData]);
 
-  const ColumnVisibilityChangeHandler = (obj) => {
+  const ColumnVisibilityChangeHandler = async (obj) => {
     const visibleColumnsFieldList = Object.keys(obj).filter((key) => obj[key]);
+    const response = await addFilter({
+      variables: {
+        userId: user?.id,
+        columns: visibleColumnsFieldList,
+      },
+    });
+    if (response?.data?.addFilter) {
+      await filterRefetch();
+    }
+
     localStorage.setItem('columns', JSON.stringify(visibleColumnsFieldList));
     console.log('visibleColumnsFieldList', obj);
     // visibleColumnsFieldList is an object containing column.field as key and column.hide as value
@@ -678,16 +703,35 @@ export default function DataGridProCSV2() {
     setFilterModel({});
     setSkip(0);
     setPage(0);
-    setPageSize(10);
+    // setPageSize(10);
   }
 
-  const handlePageChange = (newPage) => {
+  const handlePageChange = async (newPage) => {
+    const response = await addFilter({
+      variables: {
+        userId: user?.id,
+        page: newPage,
+      },
+    });
+    if (response?.data?.addFilter) {
+      await filterRefetch();
+    }
+
     setSkip(newPage * pageSize);
     setPage(newPage);
   };
 
-  const handlePageSizeChange = (newPageSize) => {
+  const handlePageSizeChange = async (newPageSize) => {
     setPageSize(newPageSize);
+    const response = await addFilter({
+      variables: {
+        userId: user?.id,
+        pageSize: newPageSize,
+      },
+    });
+    if (response?.data?.addFilter) {
+      await filterRefetch();
+    }
   };
 
   let selectIds = [];

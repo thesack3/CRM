@@ -28,6 +28,7 @@ const Text = require("../models/Text");
 const Task = require("../models/Task");
 const TaskType = require("../models/TaskType");
 const VoiceCall = require("../models/VocieCall");
+const Filter = require("../models/Filter");
 
 function fDateTime(date, newFormat) {
   const fm = newFormat || "dd MMM yyyy p";
@@ -298,6 +299,23 @@ const FilterModelTypes = new GraphQLObjectType({
     columnField: { type: GraphQLString },
     operatorValue: { type: GraphQLString },
     value: { type: GraphQLString },
+  }),
+});
+
+const FilterModelTypesUp = new GraphQLObjectType({
+  name: "FilterModelTypesUp",
+  fields: () => ({
+    columns: { type: GraphQLList(GraphQLString) },
+    page: { type: GraphQLInt },
+    pageSize: { type: GraphQLInt },
+    sort: { type: GraphQLString },
+    search: { type: GraphQLString },
+    user: {
+      type: UserType,
+      resolve(parent, args) {
+        return User.findById(parent.user);
+      },
+    },
   }),
 });
 
@@ -718,6 +736,17 @@ const RootQuery = new GraphQLObjectType({
           return callUp;
         });
         return result;
+      },
+    },
+
+    // get filter by userId
+
+    getFilter: {
+      type: FilterModelTypesUp,
+      args: { userId: { type: GraphQLID } },
+      async resolve(parent, args) {
+        const response = await Filter.findOne({ userId: args.userId });
+        return response;
       },
     },
   },
@@ -1604,6 +1633,52 @@ const mutation = new GraphQLObjectType({
           },
           { new: true }
         );
+      },
+    },
+
+    // add filter mutation
+    addFilter: {
+      type: FilterModelTypesUp,
+      args: {
+        userId: { type: GraphQLID },
+        columns: { type: GraphQLList(GraphQLString) },
+        page: { type: GraphQLInt },
+        pageSize: { type: GraphQLInt },
+        sort: { type: GraphQLString },
+        search: { type: GraphQLString },
+      },
+      async resolve(parent, args) {
+        // upsert filter to database
+        console.log("args-------------------------/", args);
+        const filter = await Filter.findOne({ userId: args.userId });
+        console.log("filter-------------------------/", filter);
+        if (!filter) {
+          const newFilter = new Filter({
+            userId: args.userId,
+            columns: args.columns,
+            pageSize: args.pageSize,
+            page: args.page,
+            sort: args.sort,
+            search: args.search,
+          });
+          await newFilter.save();
+          console.log("new filter created-------------------------/", newFilter);
+          return newFilter;
+        } else {
+          const result = await Filter.findOneAndUpdate(
+            { userId: args.userId },
+            {
+              columns: args.columns,
+              pageSize: args.pageSize,
+              page: args.page,
+              sort: args.sort,
+              search: args.search,
+            },
+            { new: true }
+          );
+          console.log("filter updated-------------------------/", result);
+          return result;
+        }
       },
     },
   },
