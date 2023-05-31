@@ -51,13 +51,15 @@ export default function DataGridProCSV2() {
   const [page, setPage] = React.useState(0);
   const [pageSize, setPageSize] = React.useState(10);
   const [skip, setSkip] = React.useState(0);
+  const [closed, setClosed] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const { data: filterData, refetch: filterRefetch } = useQuery(GET_FILTERS, {
     variables: {
       userId: user?.id,
     },
   });
 
-  const [addFilter] = useMutation(FILTERS);
+  const [addFilter, { loading: addFilterLoading }] = useMutation(FILTERS);
 
   const {
     loading: graphQLClientsLoading,
@@ -81,7 +83,6 @@ export default function DataGridProCSV2() {
   const [deleteLeads] = useMutation(DELETE_LEADS);
 
   const [rowId] = useState(null);
-  const [, setGridDataLoading] = useState(true);
 
   const handleUpdate = async (values, id, type) => {
     const entries = values?.map((x) => x.title);
@@ -572,6 +573,7 @@ export default function DataGridProCSV2() {
 
   // when page loads, check if columns are in local storage, if not, set them
   useEffect(() => {
+    setIsLoading(true);
     console.log('useEffectisrunning');
     if (localStorage.getItem('columns') || filterData) {
       const visibleColumnsFieldList = JSON.parse(localStorage.getItem('columns'));
@@ -581,7 +583,15 @@ export default function DataGridProCSV2() {
       if (filterData?.getFilter?.page) {
         setPage(filterData?.getFilter?.page);
       }
-      const filterCol = filterData?.getFilter?.columns;
+      let filterCol;
+      if (filterData?.getFilter?.isClosed) {
+        filterCol = filterData?.getFilter?.closedColumns;
+        setFilter('closed');
+      } else {
+        filterCol = filterData?.getFilter?.columns;
+        setFilter('');
+      }
+      setClosed(filterData?.getFilter?.isClosed);
       if (filterCol && filterCol.length) {
         columns.forEach((column) => {
           if (filterCol.includes(column.field)) {
@@ -597,9 +607,8 @@ export default function DataGridProCSV2() {
     columns.forEach((column) => {
       columnsToShow[column.field] = column.hide;
     });
-    console.log('setColumnsas', columns);
     setColumnsToShow(columns);
-    setGridDataLoading(false);
+    setIsLoading(false);
   }, [filterData]);
 
   const ColumnVisibilityChangeHandler = async (obj) => {
@@ -778,6 +787,45 @@ export default function DataGridProCSV2() {
     return null;
   };
 
+  const handleClosedLeads = async () => {
+    if (filterData?.getFilter?.isClosed) {
+      setFilter('');
+      const response = await addFilter({
+        variables: {
+          userId: user?.id,
+          isClosed: false,
+        },
+      });
+      if (response?.data?.addFilter) {
+        setClosed(response?.data?.addFilter?.isClosed);
+        await filterRefetch();
+        await refetch();
+      }
+    } else {
+      setFilter('closed');
+      const closedColumns = [
+        '__check__',
+        'RegisterDate',
+        'Address',
+        'HomeClosingDate',
+        'BuyerAgentCategory',
+        'ListingAgentCategory',
+      ];
+      const response = await addFilter({
+        variables: {
+          userId: user?.id,
+          closedColumns,
+          isClosed: true,
+        },
+      });
+      if (response?.data?.addFilter) {
+        setClosed(response?.data?.addFilter?.isClosed);
+        await filterRefetch();
+        await refetch();
+      }
+    }
+  };
+
   return (
     <div style={{ height: 700, width: '100%' }}>
       {currentParam && (
@@ -810,6 +858,9 @@ export default function DataGridProCSV2() {
         </Box>
 
         <Box flex>
+          <Button variant="outlined" style={{ marginRight: 16 }} onClick={() => handleClosedLeads()}>
+            {closed ? 'All Leads' : 'Closed'}
+          </Button>
           <Button variant="outlined" style={{ marginRight: 16 }}>
             Export
           </Button>
@@ -864,7 +915,11 @@ export default function DataGridProCSV2() {
             />
           </Box>
 
-          {!graphQLClientsLoading ? (
+          {isLoading || graphQLClientsLoading || addFilterLoading ? (
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+              <CircularProgress />
+            </Box>
+          ) : (
             <DataGridPro
               sx={gridStyles}
               rows={categories.length || searchQuery ? data?.leads?.rows : leadsRows}
@@ -900,10 +955,6 @@ export default function DataGridProCSV2() {
               onPageChange={(value) => handlePageChange(value)} // handle page changes
               onPageSizeChange={(value) => handlePageSizeChange(value)} // handle page size changes
             />
-          ) : (
-            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
-              <CircularProgress />
-            </Box>
           )}
         </Box>
       </div>

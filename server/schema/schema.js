@@ -310,6 +310,8 @@ const FilterModelTypesUp = new GraphQLObjectType({
     pageSize: { type: GraphQLInt },
     sort: { type: GraphQLString },
     search: { type: GraphQLString },
+    closedColumns: { type: GraphQLList(GraphQLString) },
+    isClosed: { type: GraphQLBoolean },
     user: {
       type: UserType,
       resolve(parent, args) {
@@ -532,8 +534,23 @@ const RootQuery = new GraphQLObjectType({
           });
           return { count: totalCount, rows: response };
         }
+        if (args.filter === "closed") {
+          const response = await Lead.find({
+            tagsList: { $in: ["closed"] },
+          });
+          return { count: totalCount, rows: response };
+        }
 
         let sortCriteria = {};
+        // find closed leads where tags array have closed tag
+        // if (args.filter.toLowerCase() === "closed") {
+        //   const response = await Lead.find({ tagsList: { $in: ["closed"] } })
+        //     .limit(args?.take)
+        //     .skip(args?.skip)
+        //     .sort(args.column ? sortCriteria : { createdAt: -1 })
+        //     .exec();
+        //   return { count: totalCount, rows: response };
+        // }
 
         // get leads keys
         const keys = Object.keys(Lead.schema.paths);
@@ -1123,7 +1140,6 @@ const mutation = new GraphQLObjectType({
         try {
           const tag = new Tag(args);
           const result = await tag.save();
-
           return result;
         } catch (error) {
           console.error(error);
@@ -1245,12 +1261,22 @@ const mutation = new GraphQLObjectType({
         HomeClosingDate: { type: GraphQLString },
         tagsList: { type: GraphQLList(GraphQLString) },
         categoriesList: { type: GraphQLList(GraphQLString) },
+        ListingAgentCategory: { type: GraphQLString },
+        BuyerAgentCategory: { type: GraphQLString },
         leadId: { type: GraphQLString },
 
         // Add additional fields to update here
       },
       async resolve(parent, { id, ...params }) {
         try {
+          if (params.tagsList) {
+            // tags list has closed tag then update the BuyerAgentCategory to closed ListingAgentCategory to closed HomeClosingDate to today's date
+            if (params.tagsList.includes("closed")) {
+              params.BuyerAgentCategory = "closed";
+              params.ListingAgentCategory = "closed";
+              params.HomeClosingDate = new Date().toLocaleDateString();
+            }
+          }
           let update = await Lead.findOneAndUpdate({ _id: id }, { ...params }, { new: true });
           return update;
         } catch (error) {
@@ -1646,6 +1672,8 @@ const mutation = new GraphQLObjectType({
         pageSize: { type: GraphQLInt },
         sort: { type: GraphQLString },
         search: { type: GraphQLString },
+        closedColumns: { type: GraphQLList(GraphQLString) },
+        isClosed: { type: GraphQLBoolean },
       },
       async resolve(parent, args) {
         // upsert filter to database
@@ -1658,6 +1686,8 @@ const mutation = new GraphQLObjectType({
             page: args.page,
             sort: args.sort,
             search: args.search,
+            closedColumns: args.closedColumns,
+            isClosed: args.isClosed,
           });
           await newFilter.save();
           return newFilter;
@@ -1670,6 +1700,8 @@ const mutation = new GraphQLObjectType({
               page: args.page,
               sort: args.sort,
               search: args.search,
+              closedColumns: args.closedColumns,
+              isClosed: args.isClosed,
             },
             { new: true }
           );

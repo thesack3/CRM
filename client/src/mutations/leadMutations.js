@@ -223,9 +223,29 @@ const DELETE_LEADS = gql`
 `;
 
 const FILTERS = gql`
-  mutation AddFilter($userId: ID!, $columns: [String], $pageSize: Int, $page: Int, $sort: String, $search: String) {
-    addFilter(userId: $userId, columns: $columns, pageSize: $pageSize, page: $page, sort: $sort, search: $search) {
+  mutation AddFilter(
+    $userId: ID!
+    $columns: [String]
+    $closedColumns: [String]
+    $isClosed: Boolean
+    $pageSize: Int
+    $page: Int
+    $sort: String
+    $search: String
+  ) {
+    addFilter(
+      userId: $userId
+      columns: $columns
+      closedColumns: $closedColumns
+      isClosed: $isClosed
+      pageSize: $pageSize
+      page: $page
+      sort: $sort
+      search: $search
+    ) {
       columns
+      closedColumns
+      isClosed
       pageSize
       page
       sort

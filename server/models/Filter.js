@@ -7,6 +7,14 @@ const FilterSchema = mongoose.Schema({
     type: Array,
   },
 
+  closedColumns: {
+    type: Array,
+  },
+  isClosed: {
+    type: Boolean,
+    default: false,
+  },
+
   pageSize: {
     type: Number,
   },

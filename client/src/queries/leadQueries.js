@@ -159,6 +159,8 @@ export const GET_FILTERS = gql`
   query GetFilter($userId: ID!) {
     getFilter(userId: $userId) {
       columns
+      closedColumns
+      isClosed
       pageSize
       page
       sort
