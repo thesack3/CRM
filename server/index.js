@@ -42,18 +42,38 @@ app.use(
 // write method for cron job sending emails and notifications
 
 app.post("/notification", async (req, res) => {
+  // find task by today's date and 5 minutes before time
   const tasks = await Task.find({
     date: new Date().toLocaleDateString(),
   });
-  for (let i = 0; i < tasks.length; i++) {
-    const task = tasks[i];
+  // find task from tasks by 5 minutes before time
+
+  const filteredTasks = tasks.filter((task) => {
+    const currentTime = new Date();
+    const timeDiff = task.time - currentTime.getTime();
+    const diffMins = Math.round(timeDiff / 60000);
+    console.log("diffMins-------------------------/", diffMins);
+    if (diffMins <= 15 && diffMins >= 0 && !task.isEmailSend) {
+      return task;
+    }
+  });
+  console.log("filteredTasks-------------------------/", filteredTasks);
+  for (let i = 0; i < filteredTasks.length; i++) {
+    const task = filteredTasks[i];
     let updatedTask = task;
     // find lead by id
     let user = null;
     if (task.user) {
       user = await User.findById(task.user);
     }
-    updatedTask = { ...task._doc, user, date: task.date.toLocaleDateString() };
+    // set isEmailSend to true
+    await Task.findByIdAndUpdate(task._id, { isEmailSend: true });
+    updatedTask = {
+      ...task._doc,
+      time: new Date(task.time).toUTCString(),
+      user,
+      date: task.date.toLocaleDateString(),
+    };
 
     // create reusable transporter object using the default gmail account
     const transporter = nodemailer.createTransport({
@@ -74,7 +94,7 @@ app.post("/notification", async (req, res) => {
       html: `<h1>Task Notification</h1>
       <p>Title: ${updatedTask.title}</p>
       <p>Note: ${updatedTask.note}</p>
-      <p>Date: ${updatedTask.date}, ${updatedTask.time}</p>
+      <p>Date: ${updatedTask.date}</p>
       <p>Thanks</p>`,
     };
     transporter.sendMail(mailOptions, function (error, info) {

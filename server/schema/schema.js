@@ -1557,8 +1557,8 @@ const mutation = new GraphQLObjectType({
         const result = await Task.create({
           title: args.title,
           note: args.note,
-          date: new Date(dateUp).toLocaleDateString(),
-          time: timeUp,
+          date: new Date(args.date).toLocaleDateString(),
+          time: new Date(args.date).getTime(),
           type: args.type,
           user: args.userId ? args.userId : null,
           lead: args.leadId ? args.leadId : null,

@@ -22,6 +22,10 @@ const TaskSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  isEmailSend: {
+    type: Boolean,
+    default: false,
+  },
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
