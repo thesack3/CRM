@@ -1649,9 +1649,7 @@ const mutation = new GraphQLObjectType({
       },
       async resolve(parent, args) {
         // upsert filter to database
-        console.log("args-------------------------/", args);
         const filter = await Filter.findOne({ userId: args.userId });
-        console.log("filter-------------------------/", filter);
         if (!filter) {
           const newFilter = new Filter({
             userId: args.userId,
@@ -1662,7 +1660,6 @@ const mutation = new GraphQLObjectType({
             search: args.search,
           });
           await newFilter.save();
-          console.log("new filter created-------------------------/", newFilter);
           return newFilter;
         } else {
           const result = await Filter.findOneAndUpdate(
@@ -1676,7 +1673,6 @@ const mutation = new GraphQLObjectType({
             },
             { new: true }
           );
-          console.log("filter updated-------------------------/", result);
           return result;
         }
       },
