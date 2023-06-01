@@ -65,7 +65,7 @@ app.post("/notification", async (req, res) => {
     const diffMins = Math.round(timeDiff / 60000) + 300;
     const diffMins2 = Math.round(timeDiff / 60000);
 
-    log("diffMins2------------------------- without +300/", diffMins2);
+    console.log("diffMins2------------------------- without +300/", diffMins2);
 
     console.log("diffMins 22-------------------------/", diffMins);
     if (diffMins <= 15 && diffMins >= 0 && !task.isEmailSend) {
