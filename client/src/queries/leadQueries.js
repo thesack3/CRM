@@ -63,6 +63,11 @@ export const GET_LEADS = gql`
         ZipCode
         tagsList
         categoriesList
+        didLeaveReview
+        didClosingGift
+        didsocialMediaFriends
+        didPostCardDrip
+        didAnniversaryDrip
         tags {
           id
           title

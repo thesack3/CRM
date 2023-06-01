@@ -410,63 +410,6 @@ const LeadDetailPage = () => {
           </DialogTitle>
           <DialogContent sx={{ overflowY: 'unset' }}>
             <Grid container spacing={2}>
-              <Grid item xs={6}>
-                <TextField
-                  label="First Name"
-                  variant="outlined"
-                  fullWidth
-                  size="small"
-                  name="firstName"
-                  sx={{ zIndex: '9999999' }}
-                  value={formData.firstName}
-                  onChange={handleChange}
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <TextField
-                  label="Last Name"
-                  variant="outlined"
-                  fullWidth
-                  size="small"
-                  name="lastName"
-                  value={formData.lastName}
-                  onChange={handleChange}
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <TextField
-                  label="Contact ID"
-                  variant="outlined"
-                  fullWidth
-                  size="small"
-                  name="contactId"
-                  value={formData.contactId}
-                  onChange={handleChange}
-                />
-              </Grid>
-
-              <Grid item xs={6}>
-                <TextField
-                  label="Buyer Agent"
-                  variant="outlined"
-                  fullWidth
-                  size="small"
-                  name="buyerAgent"
-                  value={formData.buyerAgent}
-                  onChange={handleChange}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  label="Listing Agent"
-                  variant="outlined"
-                  fullWidth
-                  size="small"
-                  name="listingAgent"
-                  value={formData.listingAgent}
-                  onChange={handleChange}
-                />
-              </Grid>
               <Grid item xs={12}>
                 <TextField
                   label="Notes"
@@ -1042,7 +985,14 @@ const LeadDetailPage = () => {
               </Typography>
               {(notes &&
                 notes.notes.length &&
-                notes?.notes.map((note) => <Card data={note} getItem={(item) => getSelected(item)} type="note" />)) ||
+                notes?.notes.map((note) => (
+                  <Card
+                    data={note}
+                    leadName={`${data?.lead?.firstName} ${data?.lead?.lastName}`}
+                    getItem={(item) => getSelected(item)}
+                    type="note"
+                  />
+                ))) ||
                 'Note history is empty'}
             </Grid>
             <Grid
@@ -1080,7 +1030,7 @@ const LeadDetailPage = () => {
 
 export default LeadDetailPage;
 
-const Card = ({ data, getItem, type }) => {
+const Card = ({ data, getItem, type, leadName }) => {
   return (
     <Box
       sx={{ boxShadow: '0px 0px 10px #e3e3e3', marginTop: '16px', padding: '16px', cursor: 'pointer' }}
@@ -1107,7 +1057,7 @@ const Card = ({ data, getItem, type }) => {
           <TimelineConnector />
         </TimelineSeparator>
         <Box>
-          <Typography variant="subtitle2">{data?.FirstName}</Typography>
+          <Typography variant="subtitle2">{data?.FirstName || leadName}</Typography>
           <Typography variant="caption" sx={{ color: 'text.secondary' }}>
             {/* {data?.note || data?.message || data?.text || data?.description} */}
             {data?.createdAt && data.createdAt}

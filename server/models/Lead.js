@@ -178,6 +178,21 @@ const LeadSchema = new mongoose.Schema({
   categoriesList: {
     type: Array,
   },
+  didLeaveReview: {
+    type: String,
+  },
+  didClosingGift: {
+    type: String,
+  },
+  didsocialMediaFriends: {
+    type: String,
+  },
+  didPostCardDrip: {
+    type: String,
+  },
+  didAnniversaryDrip: {
+    type: String,
+  },
   tags: [
     {
       type: mongoose.Schema.Types.ObjectId,

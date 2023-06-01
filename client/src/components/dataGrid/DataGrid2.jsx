@@ -480,6 +480,41 @@ export default function DataGridProCSV2() {
         hide: true,
       },
       {
+        field: 'didLeaveReview',
+        headerName: 'DidLeaveReview',
+        width: 120,
+        editable: true,
+        hide: true,
+      },
+      {
+        field: 'didClosingGift',
+        headerName: 'DidClosingGift',
+        width: 120,
+        editable: true,
+        hide: true,
+      },
+      {
+        field: 'didsocialMediaFriends',
+        headerName: 'DidsocialMediaFriends',
+        width: 120,
+        editable: true,
+        hide: true,
+      },
+      {
+        field: 'didPostCardDrip',
+        headerName: 'DidPostCardDrip',
+        width: 120,
+        editable: true,
+        hide: true,
+      },
+      {
+        field: 'didAnniversaryDrip',
+        headerName: 'DidAnniversaryDrip',
+        width: 120,
+        editable: true,
+        hide: true,
+      },
+      {
         field: 'tags',
         headerName: 'Tags',
         width: 310,
@@ -808,8 +843,11 @@ export default function DataGridProCSV2() {
         'RegisterDate',
         'Address',
         'HomeClosingDate',
-        'BuyerAgentCategory',
-        'ListingAgentCategory',
+        'didLeaveReview',
+        'didClosingGift',
+        'didsocialMediaFriends',
+        'didPostCardDrip',
+        'didAnniversaryDrip',
       ];
       const response = await addFilter({
         variables: {

@@ -281,6 +281,11 @@ const LeadType = new GraphQLObjectType({
     tags: { type: GraphQLList(GraphQLID) },
     categories: { type: GraphQLList(GraphQLID) },
     Link: { type: GraphQLString },
+    didLeaveReview: { type: GraphQLString },
+    didClosingGift: { type: GraphQLString },
+    didsocialMediaFriends: { type: GraphQLString },
+    didPostCardDrip: { type: GraphQLString },
+    didAnniversaryDrip: { type: GraphQLString },
 
     Birthday: { type: GraphQLString },
     HomeClosingDate: { type: GraphQLString },
@@ -1749,7 +1754,6 @@ const mutation = new GraphQLObjectType({
       },
     },
     // update text isRead true for lead by id
-
     updateTextIsRead: {
       type: TextType,
       args: {
