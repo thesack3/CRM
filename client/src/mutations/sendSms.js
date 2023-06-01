@@ -12,3 +12,14 @@ export const SEND_SMS = gql`
     }
   }
 `;
+
+// write schmea for updateTextIsRead
+
+export const UPDATE_TEXT_IS_READ = gql`
+  mutation UpdateTextIsRead($leadId: ID) {
+    updateTextIsRead(leadId: $leadId) {
+      to
+      from
+    }
+  }
+`;

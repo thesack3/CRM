@@ -10,6 +10,10 @@ const TextSchema = new mongoose.Schema({
   from: {
     type: String,
   },
+  isRead: {
+    type: Boolean,
+    default: false,
+  },
   dateCreated: {
     type: String,
   },

@@ -212,6 +212,12 @@ const TextType = new GraphQLObjectType({
     date_Updated: { type: GraphQLString },
     accountSid: { type: GraphQLString },
     createdAt: { type: GraphQLString },
+    lead: {
+      type: LeadType,
+      resolve(parent, args) {
+        return Lead.findById(parent.leadId);
+      },
+    },
   }),
 });
 
@@ -431,6 +437,38 @@ const RootQuery = new GraphQLObjectType({
         return updatedResponse;
       },
     },
+
+    // create endpoint to get unread texts for all leads for a user id
+
+    unreadTexts: {
+      // type for response
+      type: new GraphQLObjectType({
+        name: "UnreadTexts",
+        fields: () => ({
+          count: { type: GraphQLInt },
+          rows: { type: new GraphQLList(TextType) },
+        }),
+      }),
+      args: {
+        userId: { type: GraphQLID },
+      },
+      async resolve(parent, args) {
+        const response = await Text.find({
+          isRead: false,
+          from: { $ne: process.env.SENDER_PHONE_NUMBER },
+        });
+        // get lead ids from response and find leads by ids and return text and lead info in response array of objects
+        const leadIds = response.map((text) => text.leadId);
+        const leads = await Lead.find({ _id: { $in: leadIds } });
+        const result = response.map((text) => {
+          const lead = leads.find((lead) => lead._id.toString() === text.leadId.toString());
+          const textUp = { ...text._doc, id: text._id, createdAt: fDateTime(text.dateCreated) };
+          return textUp;
+        });
+        return { count: result.length, rows: result };
+      },
+    },
+
     text: {
       //TODO
       type: TextType,
@@ -438,6 +476,7 @@ const RootQuery = new GraphQLObjectType({
         leadId: { type: GraphQLNonNull(GraphQLID) },
       },
       resolve(parent, args) {
+        // when this endpoit call set isRead to true in Text model for this leadId
         return Text.findOne({ leadId: args.leadId });
       },
     },
@@ -1706,6 +1745,22 @@ const mutation = new GraphQLObjectType({
             { new: true }
           );
           return result;
+        }
+      },
+    },
+    // update text isRead true for lead by id
+
+    updateTextIsRead: {
+      type: TextType,
+      args: {
+        leadId: { type: GraphQLID },
+      },
+      async resolve(parent, args) {
+        try {
+          const result = await Text.updateMany({ leadId: args.leadId }, { isRead: true });
+          return result;
+        } catch (error) {
+          console.log(error);
         }
       },
     },

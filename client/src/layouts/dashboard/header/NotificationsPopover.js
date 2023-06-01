@@ -3,6 +3,7 @@ import { set, sub } from 'date-fns';
 import { noCase } from 'change-case';
 import { faker } from '@faker-js/faker';
 import { useState } from 'react';
+import { useMutation, useQuery } from '@apollo/client';
 // @mui
 import {
   Box,
@@ -21,10 +22,13 @@ import {
   ListItemButton,
 } from '@mui/material';
 // utils
+import { useNavigate } from 'react-router-dom';
 import { fToNow } from '../../../utils/formatTime';
 // components
 import Iconify from '../../../components/iconify';
 import Scrollbar from '../../../components/scrollbar';
+import { GET_UNREAD_TEXT } from '../../../queries/textQueries';
+import { UPDATE_TEXT_IS_READ } from '../../../mutations/sendSms';
 
 // ----------------------------------------------------------------------
 
@@ -47,37 +51,45 @@ const NOTIFICATIONS = [
     createdAt: sub(new Date(), { hours: 3, minutes: 30 }),
     isUnRead: true,
   },
-  {
-    id: faker.datatype.uuid(),
-    title: 'You have new message',
-    description: '5 unread messages',
-    avatar: null,
-    type: 'chat_message',
-    createdAt: sub(new Date(), { days: 1, hours: 3, minutes: 30 }),
-    isUnRead: false,
-  },
-  {
-    id: faker.datatype.uuid(),
-    title: 'You have new mail',
-    description: 'sent from Guido Padberg',
-    avatar: null,
-    type: 'mail',
-    createdAt: sub(new Date(), { days: 2, hours: 3, minutes: 30 }),
-    isUnRead: false,
-  },
-  {
-    id: faker.datatype.uuid(),
-    title: 'Delivery processing',
-    description: 'Your order is being shipped',
-    avatar: null,
-    type: 'order_shipped',
-    createdAt: sub(new Date(), { days: 3, hours: 3, minutes: 30 }),
-    isUnRead: false,
-  },
+  // {
+  //   id: faker.datatype.uuid(),
+  //   title: 'You have new message',
+  //   description: '5 unread messages',
+  //   avatar: null,
+  //   type: 'chat_message',
+  //   createdAt: sub(new Date(), { days: 1, hours: 3, minutes: 30 }),
+  //   isUnRead: false,
+  // },
+  // {
+  //   id: faker.datatype.uuid(),
+  //   title: 'You have new mail',
+  //   description: 'sent from Guido Padberg',
+  //   avatar: null,
+  //   type: 'mail',
+  //   createdAt: sub(new Date(), { days: 2, hours: 3, minutes: 30 }),
+  //   isUnRead: false,
+  // },
+  // {
+  //   id: faker.datatype.uuid(),
+  //   title: 'Delivery processing',
+  //   description: 'Your order is being shipped',
+  //   avatar: null,
+  //   type: 'order_shipped',
+  //   createdAt: sub(new Date(), { days: 3, hours: 3, minutes: 30 }),
+  //   isUnRead: false,
+  // },
 ];
 
 export default function NotificationsPopover() {
+  const navigate = useNavigate();
   const [notifications, setNotifications] = useState(NOTIFICATIONS);
+  // const [selectedId, setSelectedId] = useState();
+
+  const { data, loading, refetch } = useQuery(GET_UNREAD_TEXT, {
+    variables: { userId: '' },
+  });
+
+  const [updateTextIsRead] = useMutation(UPDATE_TEXT_IS_READ);
 
   const totalUnRead = notifications.filter((item) => item.isUnRead === true).length;
 
@@ -100,10 +112,21 @@ export default function NotificationsPopover() {
     );
   };
 
+  const handleNavigate = async (id) => {
+    navigate(`/lead/${id}`);
+    debugger;
+    const response = await updateTextIsRead({
+      variables: {
+        leadId: id,
+      },
+    });
+    await refetch();
+  };
+  console.log('data?.unreadTexts?.count-------------', data);
   return (
     <>
       <IconButton color={open ? 'primary' : 'default'} onClick={handleOpen} sx={{ width: 40, height: 40 }}>
-        <Badge badgeContent={totalUnRead} color="error">
+        <Badge badgeContent={data?.unreadTexts?.count || '0'} color="error">
           <Iconify icon="eva:bell-fill" />
         </Badge>
       </IconButton>
@@ -126,7 +149,7 @@ export default function NotificationsPopover() {
           <Box sx={{ flexGrow: 1 }}>
             <Typography variant="subtitle1">Notifications</Typography>
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              You have {totalUnRead} unread messages
+              You have {data?.unreadTexts?.count || 0} unread messages
             </Typography>
           </Box>
 
@@ -142,7 +165,7 @@ export default function NotificationsPopover() {
         <Divider sx={{ borderStyle: 'dashed' }} />
 
         <Scrollbar sx={{ height: { xs: 340, sm: 'auto' } }}>
-          <List
+          {/* <List
             disablePadding
             subheader={
               <ListSubheader disableSticky sx={{ py: 1, px: 2.5, typography: 'overline' }}>
@@ -153,9 +176,37 @@ export default function NotificationsPopover() {
             {notifications.slice(0, 2).map((notification) => (
               <NotificationItem key={notification.id} notification={notification} />
             ))}
+          </List> */}
+          <List
+            disablePadding
+            subheader={
+              <ListSubheader disableSticky sx={{ py: 1, px: 2.5, typography: 'overline' }}>
+                New
+              </ListSubheader>
+            }
+          >
+            {data?.unreadTexts?.rows?.map((notification) => (
+              <div
+                key={notification.id}
+                style={{ display: 'flex', gap: '1rem', padding: '.8rem 1.5rem', cursor: 'pointer' }}
+                onClick={() => handleNavigate(notification.lead.id)}
+              >
+                <img src="/assets/icons/ic_notification_mail.svg" />
+                <div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
+                    <p style={{ margin: 0 }}>
+                      {notification.lead.firstName} {notification.lead.lastName}: {notification.body}
+                    </p>
+                    <p style={{ margin: 0, color: 'gray', textTransform: 'capitalize' }}>
+                      {fToNow(notification.createdAt)}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ))}
           </List>
 
-          <List
+          {/* <List
             disablePadding
             subheader={
               <ListSubheader disableSticky sx={{ py: 1, px: 2.5, typography: 'overline' }}>
@@ -166,7 +217,7 @@ export default function NotificationsPopover() {
             {notifications.slice(2, 5).map((notification) => (
               <NotificationItem key={notification.id} notification={notification} />
             ))}
-          </List>
+          </List> */}
         </Scrollbar>
 
         <Divider sx={{ borderStyle: 'dashed' }} />
@@ -181,8 +232,6 @@ export default function NotificationsPopover() {
   );
 }
 
-// ----------------------------------------------------------------------
-
 NotificationItem.propTypes = {
   notification: PropTypes.shape({
     createdAt: PropTypes.instanceOf(Date),
@@ -194,6 +243,14 @@ NotificationItem.propTypes = {
     avatar: PropTypes.any,
   }),
 };
+
+// function NotificationItemV1({ notification, navigate }) {
+//   const text = notification;
+
+//   return (
+
+//   );
+// }
 
 function NotificationItem({ notification }) {
   const { avatar, title } = renderContent(notification);
@@ -232,8 +289,6 @@ function NotificationItem({ notification }) {
     </ListItemButton>
   );
 }
-
-// ----------------------------------------------------------------------
 
 function renderContent(notification) {
   const title = (

@@ -514,6 +514,9 @@ const LeadDetailPage = () => {
                   <Typography variant="subtitle1" sx={{ color: 'text.primary' }}>
                     {data?.lead?.email}
                   </Typography>
+                  <Typography variant="subtitle1" sx={{ color: 'text.primary' }}>
+                    {data?.lead?.phone}
+                  </Typography>
                 </Box>
                 <Box display="flex" sx={{ width: '225px' }}>
                   <Button

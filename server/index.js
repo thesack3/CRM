@@ -181,7 +181,9 @@ app.post("/addLead", async (req, res) => {
 
 app.post("/sms", async (req, res) => {
   const twiml = new MessagingResponse();
-  const phoneNumber = req.body.From.slice(-10);
+  // remove non numeric from phone number
+  const number = req.body.From.replace(/\D/g, "");
+  const phoneNumber = number.slice(-10);
   const lead = await Lead.find({ phone: { $regex: `${phoneNumber}$` } });
   if (lead?.length) {
     const result = await Text.create({

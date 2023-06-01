@@ -31,7 +31,7 @@ LicenseInfo.setLicenseKey(
 );
 
 export default function App() {
-  const {user, token} = useSelector((state) => state.auth);
+  const { user, token } = useSelector((state) => state.auth);
   const { isCall, setCategories, setTags, refetch: reload } = useContext(callContext);
   const { data: categoriesData, refetch: categoriesRefetch } = useQuery(GET_CATEGORIES);
   const { data: tagData, refetch: tagsRefetch } = useQuery(GET_TAGS);

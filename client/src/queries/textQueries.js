@@ -11,3 +11,25 @@ export const GET_SMS_TEXT = gql`
     }
   }
 `;
+
+export const GET_UNREAD_TEXT = gql`
+  query UnreadTexts($userId: ID) {
+    unreadTexts(userId: $userId) {
+      count
+      rows {
+        id
+        to
+        from
+        body
+        createdAt
+        lead {
+          email
+          id
+          phone
+          firstName
+          lastName
+        }
+      }
+    }
+  }
+`;
