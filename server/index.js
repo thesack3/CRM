@@ -47,17 +47,31 @@ app.post("/notification", async (req, res) => {
     date: new Date().toLocaleDateString(),
   });
   // find task from tasks by 5 minutes before time
+  // const filteredTasks = tasks.filter((task) => {
+  //   const currentTime = new Date();
+  //   const timeDiff = task.time - currentTime.getTime();
+  //   const diffMins = Math.round(timeDiff / 60000);
+  //   console.log("diffMins-------------------------/", diffMins);
+  //   if (diffMins <= 15 && diffMins >= 0 && !task.isEmailSend) {
+  //     return task;
+  //   }
+  // });
 
+  // filter the tasks and add 5 hours to time
   const filteredTasks = tasks.filter((task) => {
     const currentTime = new Date();
     const timeDiff = task.time - currentTime.getTime();
-    const diffMins = Math.round(timeDiff / 60000);
-    console.log("diffMins-------------------------/", diffMins);
+    // add 5 hours to time
+    const diffMins = Math.round(timeDiff / 60000) + 300;
+    console.log("diffMins 22-------------------------/", diffMins);
     if (diffMins <= 15 && diffMins >= 0 && !task.isEmailSend) {
       return task;
     }
   });
-  console.log("filteredTasks-------------------------/", filteredTasks);
+  console.log("filteredTasksWithTime-------------------------/", filteredTasks);
+
+  if (!filteredTasks.length) return res.send(200, "No task found");
+
   for (let i = 0; i < filteredTasks.length; i++) {
     const task = filteredTasks[i];
     let updatedTask = task;
@@ -66,6 +80,7 @@ app.post("/notification", async (req, res) => {
     if (task.user) {
       user = await User.findById(task.user);
     }
+    if (!user) return;
     // set isEmailSend to true
     await Task.findByIdAndUpdate(task._id, { isEmailSend: true });
     updatedTask = {
