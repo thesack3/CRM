@@ -46,6 +46,13 @@ app.post("/notification", async (req, res) => {
   const tasks = await Task.find({
     date: new Date().toLocaleDateString(),
   });
+  // when I deploy this code on server then 5 hours will be added to time and then get the tasks from database
+  const task1 = await Task.find({
+    // add 5 hours to time and then get the tasks from database
+    date: new Date(new Date().getTime() + 300 * 60000).toLocaleDateString(),
+  });
+  console.log("tasks-------------------------/", tasks);
+  console.log("task1-------------------------/", task1);
   // find task from tasks by 5 minutes before time
   // const filteredTasks = tasks.filter((task) => {
   //   const currentTime = new Date();
@@ -64,11 +71,13 @@ app.post("/notification", async (req, res) => {
     // add 5 hours to time
     const diffMins = Math.round(timeDiff / 60000) + 300;
     const diffMins2 = Math.round(timeDiff / 60000);
+    const diffMins3 = Math.round(timeDiff / 60000) - 300;
 
-    console.log("diffMins2------------------------- without +300/", diffMins2);
+    console.log("diffMins-------------------------/", diffMins);
 
-    console.log("diffMins 22-------------------------/", diffMins);
-    if (diffMins <= 15 && diffMins >= 0 && !task.isEmailSend) {
+    console.log("diffMins 2------------------------- ", diffMins2);
+    console.log("diffMins 3------------------------- ", diffMins3);
+    if (diffMins3 <= 15 && diffMins3 >= 0 && !task.isEmailSend) {
       return task;
     }
   });
