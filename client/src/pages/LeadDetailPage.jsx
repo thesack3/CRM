@@ -1058,11 +1058,18 @@ const Card = ({ data, getItem, type, leadName }) => {
         </TimelineSeparator>
         <Box>
           <Typography variant="subtitle2">{data?.FirstName || leadName}</Typography>
-          <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-            {/* {data?.note || data?.message || data?.text || data?.description} */}
-            {data?.createdAt && data.createdAt}
-            {/* {data?.createdAt ? fDateTime(new Date(1685299278395).getTime()) : fDateTime(new Date().getTime())} */}
-          </Typography>
+          <Box display="flex" flexDirection="column">
+            <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+              {/* {data?.note || data?.message || data?.text || data?.description} */}
+              {data?.body && data.body.length > 40 ? data.body.slice(0, 40) + '...' : data.body}
+              {/* {data?.createdAt ? fDateTime(new Date(1685299278395).getTime()) : fDateTime(new Date().getTime())} */}
+            </Typography>
+            <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+              {/* {data?.note || data?.message || data?.text || data?.description} */}
+              {data?.createdAt && data.createdAt}
+              {/* {data?.createdAt ? fDateTime(new Date(1685299278395).getTime()) : fDateTime(new Date().getTime())} */}
+            </Typography>
+          </Box>
         </Box>
       </Box>
     </Box>
