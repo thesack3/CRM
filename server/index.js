@@ -51,18 +51,6 @@ app.post("/notification", async (req, res) => {
     // add 5 hours to time and then get the tasks from database
     date: new Date(new Date().getTime() + 300 * 60000).toLocaleDateString(),
   });
-  console.log("tasks-------------------------/", tasks);
-  console.log("task1-------------------------/", task1);
-  // find task from tasks by 5 minutes before time
-  // const filteredTasks = tasks.filter((task) => {
-  //   const currentTime = new Date();
-  //   const timeDiff = task.time - currentTime.getTime();
-  //   const diffMins = Math.round(timeDiff / 60000);
-  //   console.log("diffMins-------------------------/", diffMins);
-  //   if (diffMins <= 15 && diffMins >= 0 && !task.isEmailSend) {
-  //     return task;
-  //   }
-  // });
 
   // filter the tasks and add 5 hours to time
   const filteredTasks = tasks.filter((task) => {
@@ -73,15 +61,15 @@ app.post("/notification", async (req, res) => {
     const diffMins2 = Math.round(timeDiff / 60000);
     const diffMins3 = Math.round(timeDiff / 60000) - 300;
 
-    console.log("diffMins-------------------------/", diffMins);
+    // console.log("diffMins-------------------------/", diffMins);
 
-    console.log("diffMins 2------------------------- ", diffMins2);
+    // console.log("diffMins 2------------------------- ", diffMins2);
     console.log("diffMins 3------------------------- ", diffMins3);
     if (diffMins3 <= 15 && diffMins3 >= 0 && !task.isEmailSend) {
       return task;
     }
   });
-  console.log("filteredTasksWithTime-------------------------/", filteredTasks);
+  // console.log("filteredTasksWithTime-------------------------/", filteredTasks);
 
   if (!filteredTasks.length) return res.send(200, "No task found");
 
