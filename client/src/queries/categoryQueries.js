@@ -5,6 +5,7 @@ const GET_CATEGORIES = gql`
     categories {
       id
       title
+      color
       dateCreated
     }
   }
@@ -15,6 +16,7 @@ const GET_CATEGORY = gql`
     category(id: $id) {
       id
       title
+      color
       dateCreated
     }
   }
