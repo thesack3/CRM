@@ -1,13 +1,16 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const CategorySchema = new mongoose.Schema({
-    title:{
-        type: String,
-    },
-    dateCreated:{
-        type: String,
-    }
+  title: {
+    type: String,
+  },
+  color: {
+    type: String,
+  },
+  dateCreated: {
+    type: Date,
+    default: Date.now,
+  },
+});
 
-})
-
-module.exports = mongoose.model('Category', CategorySchema);
+module.exports = mongoose.model("Category", CategorySchema);

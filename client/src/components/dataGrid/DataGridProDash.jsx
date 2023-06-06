@@ -36,7 +36,7 @@ import AddLeadModal from '../modals/AddLead';
 import AddCSVLeadModal from '../modals/AddCSVLeadModal';
 import AddTagModal from '../modals/AddTag';
 import AddCategoryModal from '../modals/AddCategory';
-import CategoryGrid from '../inputs/CategorySearchBox';
+import CategoryGrid from '../inputs/CategoryInput';
 import AutoSelect from '../AutoSelect';
 import { GET_CATEGORIES } from '../../queries/categoryQueries';
 import { GET_TAGS } from '../../queries/tagQueries';

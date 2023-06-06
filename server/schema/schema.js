@@ -346,6 +346,7 @@ const CategoryType = new GraphQLObjectType({
   fields: () => ({
     id: { type: GraphQLID },
     title: { type: GraphQLString },
+    color: { type: GraphQLString },
     dateCreated: { type: GraphQLString },
   }),
 });
@@ -801,7 +802,6 @@ const RootQuery = new GraphQLObjectType({
     },
 
     // get filter by userId
-
     getFilter: {
       type: FilterModelTypesUp,
       args: { userId: { type: GraphQLID } },
@@ -1156,21 +1156,49 @@ const mutation = new GraphQLObjectType({
       type: CategoryType,
       args: {
         title: { type: GraphQLNonNull(GraphQLString) },
-        dateCreated: { type: GraphQLNonNull(GraphQLString) },
+        color: { type: GraphQLString },
       },
       async resolve(parent, args) {
         try {
+          // find category by title to avoid duplicate category names with regex case insensitive
+          const existingCategory = await Category.findOne({
+            title: { $regex: new RegExp(args.title, "i") },
+          });
+          if (existingCategory) {
+            throw new Error("Category already exists");
+          }
           const category = new Category(args);
           const result = await category.save();
-
           return result;
         } catch (error) {
           console.error(error);
-
           throw new Error("Error adding tag");
         }
 
         //Client.create(//fields) //could do it this way as well
+      },
+    },
+
+    // write endpoint to update category by id and also get color from frontend and save it to database
+    updateCategory: {
+      type: CategoryType,
+      args: {
+        id: { type: GraphQLNonNull(GraphQLID) },
+        title: { type: GraphQLString },
+        color: { type: GraphQLString },
+      },
+      async resolve(parent, args) {
+        try {
+          const category = await Category.findById(args.id);
+          if (!category) throw new Error("Category not found");
+          category.title = args.title;
+          category.color = args.color;
+          const result = await category.save();
+          return result;
+        } catch (error) {
+          console.error(error);
+          throw new Error("Error updating category");
+        }
       },
     },
 
@@ -1763,6 +1791,48 @@ const mutation = new GraphQLObjectType({
         try {
           const result = await Text.updateMany({ leadId: args.leadId }, { isRead: true });
           return result;
+        } catch (error) {
+          console.log(error);
+        }
+      },
+    },
+    // send email to lead by email
+    sendEmailToLead: {
+      type: new GraphQLObjectType({
+        name: "sendEmailToLead",
+        fields: () => ({
+          message: { type: GraphQLString },
+        }),
+      }),
+
+      args: {
+        leadId: { type: GraphQLID },
+        subject: { type: GraphQLString },
+        body: { type: GraphQLString },
+      },
+      async resolve(parent, args) {
+        try {
+          const lead = await Lead.findById(args.leadId);
+          if (!lead) throw new Error("Lead not found");
+          const transporter = nodemailer.createTransport({
+            host: "smtp.porkbun.com",
+            port: 587,
+            secure: false,
+            auth: {
+              user: process.env.EMAIL,
+              pass: process.env.PASSWORD,
+            },
+          });
+          const mailOptions = {
+            from: process.env.EMAIL,
+            to: lead.email,
+            subject: args.subject,
+            text: args.body,
+            html: `<p>${args.body}</p>`,
+          };
+          const info = await transporter.sendMail(mailOptions);
+          // if(info.messageId) return "Email sent successfully";
+          return { message: "Email sent successfully" };
         } catch (error) {
           console.log(error);
         }
