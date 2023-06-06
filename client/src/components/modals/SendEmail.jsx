@@ -11,9 +11,8 @@ const SendEmail = ({ emailOpen, setEmailOpen, id }) => {
   const dispatch = useDispatch();
 
   // send email mutation
-  const [sendEmailToLead] = useMutation(SEND_EMAIL);
+  const [sendEmailToLead, { loading }] = useMutation(SEND_EMAIL);
 
-  const [isSending, setIsSending] = useState(false);
   const [formData, setFormData] = useState({
     subject: '',
     body: '',
@@ -29,7 +28,6 @@ const SendEmail = ({ emailOpen, setEmailOpen, id }) => {
 
   // handle email submit
   const handleSubmit = async () => {
-    setIsSending(true);
     try {
       await sendEmailToLead({
         variables: {
@@ -46,11 +44,9 @@ const SendEmail = ({ emailOpen, setEmailOpen, id }) => {
       dispatch(setAlert({ type: 'success', message: 'Email sent successfully' }));
       // await refetch();
     } catch (error) {
-      setIsSending(false);
-      dispatch(setAlert({ type: 'error', payload: error.message }));
+      dispatch(setAlert({ type: 'error', message: error.message }));
     } finally {
       setEmailOpen(false);
-      setIsSending(false);
     }
   };
 
@@ -98,7 +94,7 @@ const SendEmail = ({ emailOpen, setEmailOpen, id }) => {
         </Grid>
       </DialogContent>
       <DialogActions sx={{ justifyContent: 'right', gap: '5px' }}>
-        {isSending ? (
+        {loading ? (
           <Box display="flex" alignItems="center">
             <span>Sending...</span>
             <Box ml={1}>
