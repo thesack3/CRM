@@ -25,6 +25,7 @@ import {
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import EditNoteIcon from '@mui/icons-material/EditNote';
+import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
 import { TimelineConnector, TimelineDot, TimelineSeparator } from '@mui/lab';
 import { setAlert } from '../redux/slice/alertSlice';
 import account from '../_mock/account';
@@ -44,8 +45,10 @@ import ChatUI from '../components/modals/ChatUI';
 import { SEND_CALL } from '../mutations/sendCall';
 import { callContext } from '../hooks/useCall';
 import { ADD_TASK } from '../mutations/reminder';
+import { SEND_EMAIL } from '../mutations/bulkEmail';
 import { TASK_TYPES } from '../queries/reminder';
 import { ADD_SINGLE_NOTE } from '../mutations/noteMutations';
+import SendEmail from '../components/modals/SendEmail';
 
 const LeadDetailPage = () => {
   const { user } = useSelector((state) => state.auth);
@@ -98,6 +101,7 @@ const LeadDetailPage = () => {
   const [singleNoteModal, setSingleNoteModal] = useState(false);
   const [typeData, setTypeData] = useState([]);
   const [addType, setAddType] = useState(false);
+  const [emailOpen, setEmailOpen] = useState(false);
   const [type, setType] = useState('');
   const [formData, setFormData] = useState({
     contactId: '',
@@ -442,6 +446,9 @@ const LeadDetailPage = () => {
         </Dialog>
       )}
 
+      {/* send email dialaog */}
+      <SendEmail emailOpen={emailOpen} setEmailOpen={setEmailOpen} id={id} />
+
       <Grid container margin="24px">
         {/* left columns */}
         <Grid item xs={12} md={4}>
@@ -461,7 +468,7 @@ const LeadDetailPage = () => {
                     {data?.lead?.phone}
                   </Typography>
                 </Box>
-                <Box display="flex" sx={{ width: '225px' }}>
+                <Box display="flex">
                   <Button
                     href=""
                     className={styles.callButtonV2}
@@ -469,14 +476,19 @@ const LeadDetailPage = () => {
                       setConfirmCall(true);
                     }}
                   >
-                    <Iconify icon="eva:phone-fill" color="#18712" width={22} height={22} />
+                    <Iconify icon="eva:phone-fill" color="#18712" width={24} height={24} />
                   </Button>
                   <Button href="" className={styles.callButtonV2} onClick={() => setIsMessageModal(true)}>
-                    <Iconify icon="eva:email-fill" color="#18712" width={22} height={22} />
+                    <Iconify icon="eva:email-fill" color="#18712" width={24} height={24} />
                   </Button>
                   <Tooltip title="Add Task" arrow TransitionComponent={Zoom}>
                     <Button href="" className={styles.callButtonV2} onClick={() => setTaskOpen(true)}>
                       <AddCircleOutlineIcon />
+                    </Button>
+                  </Tooltip>
+                  <Tooltip title="Send Email" arrow TransitionComponent={Zoom}>
+                    <Button href="" className={styles.callButtonV2} onClick={() => setEmailOpen(true)}>
+                      <AlternateEmailIcon />
                     </Button>
                   </Tooltip>
                 </Box>
