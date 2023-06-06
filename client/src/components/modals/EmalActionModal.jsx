@@ -80,20 +80,36 @@ export default function EmailActionModal({ Massemails }) {
       <Button variant="outlined" onClick={handleClickOpen}>
         Bulk Email
       </Button>
-
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Bulk Email</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            Mass email:
-          </DialogContentText>
+          <DialogContentText>Mass email:</DialogContentText>
 
           {/* Show the list of queued emails */}
           {queuedEmails}
 
-          <TextField autoFocus margin="dense" id="subject" label="Subject" type="text" fullWidth name="subject" value={formData.subject} onChange={handleChange} />
+          <TextField
+            autoFocus
+            margin="dense"
+            id="subject"
+            label="Subject"
+            type="text"
+            fullWidth
+            name="subject"
+            value={formData.subject}
+            onChange={handleChange}
+          />
 
-          <TextField margin="dense" id="body" label="Body" type="text" fullWidth name="body" value={formData.body} onChange={handleChange} />
+          <TextField
+            margin="dense"
+            id="body"
+            label="Body"
+            type="text"
+            fullWidth
+            name="body"
+            value={formData.body}
+            onChange={handleChange}
+          />
         </DialogContent>
 
         <DialogActions>
@@ -103,56 +119,30 @@ export default function EmailActionModal({ Massemails }) {
 
           <Button onClick={handleSendEmails}>
             {isSending ? (
-<Box display="flex" alignItems="center">
-<span>Sending...</span>
-<Box ml={1}>
-<CircularProgress size={20} thickness={4} />
-</Box>
-</Box>
-) : (
-<span>
-SEND EMAILS <BsCheckCircle style={{ marginLeft: 5 }} />
-</span>
-)
+              <Box display="flex" alignItems="center">
+                <span>Sending...</span>
+                <Box ml={1}>
+                  <CircularProgress size={20} thickness={4} />
+                </Box>
+              </Box>
+            ) : (
+              <span>
+                SEND EMAILS <BsCheckCircle style={{ marginLeft: 5 }} />
+              </span>
+            )}
+          </Button>
+        </DialogActions>
+      </Dialog>{' '}
+      {/* Show confirmation message */}
+      {showConfirmation && (
+        <Box display="flex" alignItems="center" style={{ marginTop: 10 }}>
+          <BsCheckCircle style={{ color: 'green', marginRight: 5 }} />
+          <span>Emails sent successfully!</span>
+        </Box>
+      )}
+    </div>
+  );
 }
-</Button>
-</DialogActions>
-</Dialog>  {/* Show confirmation message */}
-  {showConfirmation && (
-    <Box display="flex" alignItems="center" style={{ marginTop: 10 }}>
-      <BsCheckCircle style={{ color: 'green', marginRight: 5 }} />
-      <span>Emails sent successfully!</span>
-    </Box>
-  )}
-</div>
-);
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // import * as React from 'react';
 // import { useState } from 'react';
@@ -173,7 +163,6 @@ SEND EMAILS <BsCheckCircle style={{ marginLeft: 5 }} />
 // import styles from './AddCSVLeadsModal.module.css';
 // import { ADD_LEAD } from '../../mutations/leadMutations';
 // import { SEND_EMAILS_MUTATION } from '../../mutations/bulkEmail';
-
 
 // export default function EmailActionModal({ Massemails }) {
 
@@ -264,10 +253,3 @@ SEND EMAILS <BsCheckCircle style={{ marginLeft: 5 }} />
 //     </div>
 //   );
 // }
-
-
-
-
-
-
-
