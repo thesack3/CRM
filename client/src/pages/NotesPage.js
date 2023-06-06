@@ -20,6 +20,7 @@ import {
   IconButton,
   Link,
 } from '@mui/material';
+import { DataGridPro, GridRowId } from '@mui/x-data-grid-pro';
 import SearchIcon from '@mui/icons-material/Search';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
@@ -40,7 +41,6 @@ const NotesPage = () => {
   const [open, setOpen] = useState(false);
   const [noteModal, setNoteModal] = useState(false);
   const [selectedNote, setSelectedNote] = useState(null);
-  console.log(selectedNote?._id);
   const [filteredTask, setFilteredTask] = useState([]);
   const [typeData, setTypeData] = useState([]);
   const [searchValue, setSearchValue] = useState('');
@@ -58,7 +58,11 @@ const NotesPage = () => {
     variables: { userId: user?.id },
   });
   // get task types
-  const { loading: typeLoading, data: types } = useQuery(TASK_TYPES, {
+  const {
+    loading: typeLoading,
+    data: types,
+    refetch: typesRefetch,
+  } = useQuery(TASK_TYPES, {
     variables: { userId: user?.id },
   });
 
@@ -88,6 +92,44 @@ const NotesPage = () => {
     }
   }, [types, type]);
 
+  // list view rows data
+  const rows = filteredTask.map((item) => {
+    return {
+      id: item._id,
+      title: item.title,
+      note: item.note,
+      date: item.date,
+      type: item.type,
+      lead: (item?.lead && item.lead.firstName) || '---',
+    };
+  });
+
+  // list view columns
+  const columns = [
+    { field: 'title', headerName: 'Title', flex: 1 },
+    { field: 'note', headerName: 'Note', flex: 1 },
+    { field: 'date', headerName: 'Date', flex: 1 },
+    { field: 'type', headerName: 'Type', flex: 1 },
+    { field: 'lead', headerName: 'Lead', flex: 1 },
+    {
+      field: 'actions',
+      headerName: 'Actions',
+      flex: 1,
+      renderCell: (params) => (
+        <IconButton
+          onClick={() => {
+            setSelectedNote(params.row);
+            setConfirmDelete(true);
+          }}
+          sx={{ color: 'rgb(244 63 94)' }}
+          aria-label="Delete"
+        >
+          <DeleteIcon />
+        </IconButton>
+      ),
+    },
+  ];
+
   // handle change
   const handleChange = (e) => {
     if (selectedNote) {
@@ -116,6 +158,7 @@ const NotesPage = () => {
       });
       setAddType(false);
       setType('');
+      typesRefetch();
 
       dispatch(setAlert({ type: 'success', message: 'Task added successfully' }));
       await refetch();
@@ -157,11 +200,11 @@ const NotesPage = () => {
   };
 
   // handle delete
-  const handleDelete = async (item) => {
+  const handleDelete = async () => {
     try {
       await deleteTask({
         variables: {
-          id: item._id,
+          id: selectedNote?.id,
         },
       });
 
@@ -171,7 +214,7 @@ const NotesPage = () => {
       dispatch(setAlert({ type: 'error', payload: error.message }));
     } finally {
       setConfirmDelete(false);
-      setSelectedNote(false);
+      setSelectedNote(null);
     }
   };
 
@@ -443,78 +486,15 @@ const NotesPage = () => {
             <CircularProgress />
           </Box>
         ) : (
-          <Grid container spacing={3}>
-            {(filteredTask &&
-              filteredTask.length &&
-              filteredTask.map((item) => (
-                <Grid item xs={12} sm={6} md={3} key={item.title}>
-                  <Card
-                    onClick={() => handleSingleNote(item)}
-                    sx={{
-                      padding: '20px',
-                      backgroundColor: '#F9FAFB',
-                      minHeight: '200px',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      justifyContent: 'space-between',
-                      cursor: 'pointer',
-                      '&:hover .delete-icon': {
-                        opacity: 1,
-                      },
-                    }}
-                  >
-                    <Box>
-                      <Typography variant="h6">{item.title}</Typography>
-                      <Typography variant="body2">{item.note}</Typography>
-                    </Box>
-                    <Box
-                      display="flex"
-                      alignItems="center"
-                      gap="5px"
-                      marginTop="10px"
-                      paddingRight="5px"
-                      flexWrap="wrap"
-                    >
-                      <Chip
-                        avatar={
-                          <Avatar>
-                            <AccessTimeIcon />
-                          </Avatar>
-                        }
-                        label={item.date}
-                        size="small"
-                      />
-                      <Chip label={item.type} size="small" />
-                      <Link
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          e.preventDefault();
-                          navigate(`/lead/${item.lead.id}`);
-                        }}
-                      >
-                        {item?.lead && item.lead.firstName}
-                      </Link>
-                      <IconButton
-                        className="delete-icon"
-                        sx={{ marginLeft: 'auto', opacity: 0, transition: 'opacity 0.3s' }}
-                        aria-label="delete"
-                        onClick={(event) => {
-                          event.stopPropagation(); // Stop event propagation
-                          setSelectedNote(item);
-                          setConfirmDelete(true);
-                        }}
-                      >
-                        <DeleteIcon sx={{ color: 'rgb(244 63 94)' }} />
-                      </IconButton>
-                    </Box>
-                  </Card>
-                </Grid>
-              ))) || (
+          <Box width="100%" height="74vh">
+            {filteredTask && filteredTask.length ? (
+              <DataGridPro sx={{ p: 1 }} pagination rows={rows} autoPageSize columns={columns} rowHeight={60} />
+            ) : (
               <Typography sx={{ padding: '10px' }} variant="paragraph">
                 Record is empty!
               </Typography>
             )}
-          </Grid>
+          </Box>
         )}
       </Card>
     </Container>
