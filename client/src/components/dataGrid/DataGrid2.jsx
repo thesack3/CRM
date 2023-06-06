@@ -13,7 +13,7 @@ import AddLeadModal from '../modals/AddLead';
 import AddCSVLeadModal from '../modals/AddCSVLeadModal';
 import AddTagModal from '../modals/AddTag';
 import AddCategoryModal from '../modals/AddCategory';
-import CategoryGrid from '../inputs/CategorySearchBox';
+import CategoryInput from '../inputs/CategoryInput';
 import { gridStyles } from '../../constants/styles';
 import SelectField from '../SelectField';
 import { DELETE_LEADS, FILTERS, updateLeadMutation } from '../../mutations/leadMutations';
@@ -25,19 +25,19 @@ import AddNote from '../modals/AddNote';
 import AddCSVCall from '../modals/AddCSVCalls';
 import AddeAlert from '../modals/AddeAlert';
 import { setAlert } from '../../redux/slice/alertSlice';
+import AddCategory from '../AddCategory';
 
 export default function DataGridProCSV2() {
   const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { setLeadId } = React.useContext(callContext);
+  const { setLeadId, categories: categoriesList } = React.useContext(callContext);
   const [sortModel, setSortModel] = useState([{ field: 'name', sort: 'asc' }]);
   const [sort, setSort] = useState('');
   const [column, setColumn] = useState('');
-  const [profileModal] = useState(false);
-  const [refetchCategories, setRefetchCategories] = useState('');
   const [, setRefetchTag] = useState('');
   const [categories, setCategories] = useState([]);
+  const [activeCategories, setActiveCategories] = useState([]);
   const [columnsToShow, setColumnsToShow] = useState([]);
   const [gridRef] = useState({});
   const [openSnack, setOpenSnack] = React.useState(false);
@@ -53,12 +53,13 @@ export default function DataGridProCSV2() {
   const [skip, setSkip] = React.useState(0);
   const [closed, setClosed] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
+
   const { data: filterData, refetch: filterRefetch } = useQuery(GET_FILTERS, {
     variables: {
       userId: user?.id,
     },
   });
-
   const [addFilter, { loading: addFilterLoading }] = useMutation(FILTERS);
 
   const {
@@ -564,25 +565,6 @@ export default function DataGridProCSV2() {
     [rowId, data]
   );
 
-  // const handleEditRowsModelChange = (params) => {
-  //   const updatedData = [...responseData];
-  //   params.forEach((cell) => {
-  //     const { field, id, value } = cell;
-  //     const row = updatedData.find((r) => r.id === id);
-  //     row[field] = value;
-  //   });
-
-  //   setResponseData(updatedData);
-  // };
-
-  const [filteredData, setFilteredData] = useState([]);
-  const handleCloseSnackbar = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    setOpenSnack(false);
-  };
-
   // remove categories and tags from data.leads and make new array
   const leadsRows = data?.leads?.rows
     ? data.leads.rows.map((lead) => {
@@ -864,6 +846,17 @@ export default function DataGridProCSV2() {
     }
   };
 
+  // Get active categories
+  const handleCategoryClick = (category) => {
+    if (activeCategories.includes(category)) {
+      setActiveCategories(activeCategories.filter((cat) => cat !== category));
+      setCategories(activeCategories.filter((cat) => cat !== category));
+    } else {
+      setActiveCategories([...activeCategories, category]);
+      setCategories([...activeCategories, category]);
+    }
+  };
+
   return (
     <div style={{ height: 700, width: '100%' }}>
       {currentParam && (
@@ -884,12 +877,13 @@ export default function DataGridProCSV2() {
       >
         <Box sx={{ display: 'flex', flexDirection: 'row', gap: '16px' }}>
           <AddLeadModal handleRefetch={handleRefetch} />
-          {/* {profileModal && <ProfileP />} */}
-          {profileModal && <CustomModal />}
           {/* // TODO PUT BACK */}
           <AddCSVLeadModal callback={handleRefetch} />
           <AddTagModal callback={() => setRefetchTag(new Date().getTime())} />
-          <AddCategoryModal callback={() => setRefetchCategories(new Date().getTime())} />
+          <Button variant="outlined" onClick={() => setIsCategoryModalOpen(true)}>
+            Add Category
+          </Button>
+          <AddCategory open={isCategoryModalOpen} close={() => setIsCategoryModalOpen(false)} />
           <AddNote callback={handleRefetch} />
           <AddCSVCall callback={handleRefetch} />
           <AddeAlert callback={handleRefetch} />
@@ -913,7 +907,15 @@ export default function DataGridProCSV2() {
       </div>
       <div style={{ height: 690, width: '100%' }}>
         <Box sx={{ marginTop: '16px' }}>
-          <CategoryGrid remote={(e) => setCategories(e)} callback={refetchCategories} />
+          <Box sx={{ width: '70vw', display: 'inline-flex', overflow: 'scroll', gap: '20px' }}>
+            {categoriesList?.categories?.map((category) => (
+              <CategoryInput
+                category={category}
+                activeCategories={activeCategories}
+                handleActiveCategory={(value) => handleCategoryClick(value)}
+              />
+            ))}
+          </Box>
         </Box>
         <Box sx={{ height: '100%' }}>
           <Box

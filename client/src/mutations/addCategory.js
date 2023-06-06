@@ -1,14 +1,12 @@
-import { gql } from "@apollo/client";
+import { gql } from '@apollo/client';
 
-
-const ADD_CATEGORY = gql`
-  mutation AddCategory($title: String!, $dateCreated: String!) {
-    addCategory(title: $title, dateCreated: $dateCreated) {
+export const ADD_CATEGORY = gql`
+  mutation AddCategory($title: String!, $color: String) {
+    addCategory(title: $title, color: $color) {
       id
       title
+      color
       dateCreated
     }
   }
 `;
-
-export { ADD_CATEGORY }

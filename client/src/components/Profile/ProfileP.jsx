@@ -17,7 +17,7 @@ import {
 import { Helmet } from 'react-helmet-async';
 import { useTheme } from '@mui/system';
 import { useMutation, useQuery } from '@apollo/client';
-import CategoryGrid from '../inputs/CategorySearchBox';
+import CategoryGrid from '../inputs/CategoryInput';
 
 // sections
 import { GET_LEADS } from '../../queries/leadQueries';
