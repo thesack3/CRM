@@ -1,5 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, Button } from '@mui/material';
+import { MuiColorInput } from 'mui-color-input';
 import { ADD_CATEGORY } from '../mutations/addCategory';
 import { useMutation } from '@apollo/client';
 import { useDispatch } from 'react-redux';
@@ -8,13 +9,14 @@ import { callContext } from '../hooks/useCall';
 
 const AddCategory = ({ open, close }) => {
   const dispatch = useDispatch();
+
   const { setRefetch } = useContext(callContext);
   const [title, setTitle] = useState('');
-  const [color, setColor] = useState('');
+  const [color, setColor] = useState('black');
 
   const [addCategory, { loading, error, data }] = useMutation(ADD_CATEGORY);
 
-  const handleLeadSubmit = () => {
+  const handleLeadSubmit = async () => {
     try {
       addCategory({
         variables: {
@@ -48,6 +50,7 @@ const AddCategory = ({ open, close }) => {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
+        <MuiColorInput sx={{ marginTop: '20px' }} value={color} onChange={(e) => setColor(e)} />
       </DialogContent>
       <DialogActions>
         <Button onClick={close}>Cancel</Button>
