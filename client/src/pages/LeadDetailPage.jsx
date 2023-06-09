@@ -49,6 +49,7 @@ import { SEND_EMAIL } from '../mutations/bulkEmail';
 import { TASK_TYPES } from '../queries/reminder';
 import { ADD_SINGLE_NOTE } from '../mutations/noteMutations';
 import SendEmail from '../components/modals/SendEmail';
+import AddLeadModal from '../components/modals/AddLead';
 
 const LeadDetailPage = () => {
   const { user } = useSelector((state) => state.auth);
@@ -556,7 +557,18 @@ const LeadDetailPage = () => {
         </Grid>
         <Grid item xs={12} md={7.4} style={{ display: 'flex' }}>
           <StyledInformation>
-            <Box flexGrow="1">
+            <Box flexGrow="1" position="relative">
+              {/* update leads modal */}
+              <Box position="absolute" right="0">
+                <AddLeadModal leadData={data?.lead} title="Update Leads" />
+              </Box>
+
+              {/* <Tooltip title="Edit Fields" arrow TransitionComponent={Zoom} sx={{ position: 'absolute', right: '0' }}>
+                <Button onClick={() => setEmailOpen(true)}>
+                  <EditNoteIcon sx={{ color: 'black' }} />
+                </Button>
+              </Tooltip> */}
+
               {data && data.lead && (
                 <Box display="flex" flexDirection="column" gap="10px">
                   {/* <Box display="flex">

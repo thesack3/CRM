@@ -876,7 +876,7 @@ export default function DataGridProCSV2() {
         }}
       >
         <Box sx={{ display: 'flex', flexDirection: 'row', gap: '16px' }}>
-          <AddLeadModal handleRefetch={handleRefetch} />
+          <AddLeadModal handleRefetch={handleRefetch} title="Add Lead" />
           {/* // TODO PUT BACK */}
           <AddCSVLeadModal callback={handleRefetch} />
           <AddTagModal callback={() => setRefetchTag(new Date().getTime())} />
