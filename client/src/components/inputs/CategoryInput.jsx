@@ -19,6 +19,7 @@ export default function CategoryInput({ category, activeCategories, handleActive
         backgroundColor: category?.color || '',
         whiteSpace: 'nowrap',
         minWidth: '125px',
+        maxWidth: '100%',
         color: 'black',
         opacity: activeCategories?.includes(category.title) ? 1 : 0.5,
         '&:hover': {

@@ -909,11 +909,13 @@ export default function DataGridProCSV2() {
         <Box sx={{ marginTop: '16px' }}>
           <Box sx={{ width: '70vw', display: 'inline-flex', overflow: 'scroll', gap: '20px' }}>
             {categoriesList?.categories?.map((category) => (
-              <CategoryInput
-                category={category}
-                activeCategories={activeCategories}
-                handleActiveCategory={(value) => handleCategoryClick(value)}
-              />
+              <Box>
+                <CategoryInput
+                  category={category}
+                  activeCategories={activeCategories}
+                  handleActiveCategory={(value) => handleCategoryClick(value)}
+                />
+              </Box>
             ))}
           </Box>
         </Box>
