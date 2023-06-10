@@ -26,6 +26,7 @@ import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import EditNoteIcon from '@mui/icons-material/EditNote';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useMutation, useQuery } from '@apollo/client';
 import { useDispatch, useSelector } from 'react-redux';
@@ -41,6 +42,7 @@ const NotesPage = () => {
   const [open, setOpen] = useState(false);
   const [noteModal, setNoteModal] = useState(false);
   const [selectedNote, setSelectedNote] = useState(null);
+  console.log(selectedNote);
   const [filteredTask, setFilteredTask] = useState([]);
   const [typeData, setTypeData] = useState([]);
   const [searchValue, setSearchValue] = useState('');
@@ -116,16 +118,24 @@ const NotesPage = () => {
       headerName: 'Actions',
       flex: 1,
       renderCell: (params) => (
-        <IconButton
-          onClick={() => {
-            setSelectedNote(params.row);
-            setConfirmDelete(true);
-          }}
-          sx={{ color: 'rgb(244 63 94)' }}
-          aria-label="Delete"
-        >
-          <DeleteIcon />
-        </IconButton>
+        <Box>
+          <IconButton onClick={() => handleSingleNote(params.row)} aria-label="View">
+            <VisibilityIcon />
+          </IconButton>
+          <IconButton onClick={() => handleEditNote(params.row)} aria-label="View">
+            <EditNoteIcon />
+          </IconButton>
+          <IconButton
+            onClick={() => {
+              setSelectedNote(params.row);
+              setConfirmDelete(true);
+            }}
+            sx={{ color: 'rgb(244 63 94)' }}
+            aria-label="Delete"
+          >
+            <DeleteIcon />
+          </IconButton>
+        </Box>
       ),
     },
   ];
@@ -225,7 +235,8 @@ const NotesPage = () => {
   };
 
   // handle edit note
-  const handleEditNote = () => {
+  const handleEditNote = (item) => {
+    setSelectedNote(item);
     setNoteModal(false);
     setOpen(true);
   };
@@ -343,7 +354,7 @@ const NotesPage = () => {
                     renderInput={(params) => (
                       <TextField {...params} label="Type" variant="outlined" fullWidth size="small" />
                     )}
-                    value={type}
+                    value={selectedNote ? selectedNote.type : type}
                     onChange={(_, value) => setType(value)}
                   />
                 )}
