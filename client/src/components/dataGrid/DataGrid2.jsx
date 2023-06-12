@@ -26,6 +26,7 @@ import AddCSVCall from '../modals/AddCSVCalls';
 import AddeAlert from '../modals/AddeAlert';
 import { setAlert } from '../../redux/slice/alertSlice';
 import AddCategory from '../AddCategory';
+import FilterLeads from '../modals/FilterLeads';
 
 export default function DataGridProCSV2() {
   const { user } = useSelector((state) => state.auth);
@@ -54,6 +55,7 @@ export default function DataGridProCSV2() {
   const [closed, setClosed] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
+  const [filterLeadModal, setFilterLeadModal] = useState(false);
 
   const { data: filterData, refetch: filterRefetch } = useQuery(GET_FILTERS, {
     variables: {
@@ -859,6 +861,8 @@ export default function DataGridProCSV2() {
 
   return (
     <div style={{ height: 700, width: '100%' }}>
+      {/* filter lead modal */}
+      <FilterLeads filterLeadModal={filterLeadModal} setFilterLeadModal={setFilterLeadModal} />
       {currentParam && (
         <LeadDetails
           leadDetail={currentParam}
@@ -934,6 +938,9 @@ export default function DataGridProCSV2() {
             }}
           >
             <Box sx={{ display: 'flex', gap: '1rem', marginRight: '1rem' }}>
+              <Button variant="outlined" onClick={() => setFilterLeadModal(true)}>
+                Filter Leads
+              </Button>
               <Button onClick={() => deleteAll()} variant="outlined">
                 Delete All
               </Button>
