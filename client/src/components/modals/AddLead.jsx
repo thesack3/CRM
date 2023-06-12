@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useState } from 'react';
 import { useMutation } from '@apollo/client';
+import { useNavigate } from 'react-router-dom';
 import TextField from '@mui/material/TextField';
 import { Box } from '@mui/system';
 import Dialog from '@mui/material/Dialog';
@@ -16,11 +17,14 @@ import { setAlert } from '../../redux/slice/alertSlice';
 
 export default function AddLeadModal({ handleRefetch, title, leadData }) {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const [addLead, { loading, error, data }] = useMutation(ADD_LEAD);
   const [UpdateLead] = useMutation(updateLeadMutation);
   const [uploadInProcess, setUploaded] = useState(false);
   const [curLead, setCurLead] = useState(null);
   const [open, setOpen] = React.useState(false);
+
   const [formData, setFormData] = useState({
     firstName: '',
     email: '',
@@ -87,20 +91,18 @@ export default function AddLeadModal({ handleRefetch, title, leadData }) {
       ...formData,
       [event.target.name]: event.target.value,
     });
-
     console.log(formData);
   };
-
   const handleClose = () => {
     setOpen(false);
   };
-
   const handleLeadSubmit = (e) => {
     e.preventDefault();
     addLead({
       variables: formData,
     })
       .then((res) => {
+        const leadId = res.data.addLead.id;
         setFormData({
           firstName: '',
           email: '',
@@ -149,6 +151,7 @@ export default function AddLeadModal({ handleRefetch, title, leadData }) {
         handleRefetch();
         handleClose();
         dispatch(setAlert({ type: 'success', message: 'Lead added successfully' }));
+        navigate(`/lead/${leadId}`);
       })
       .catch((err) => {
         dispatch(setAlert({ type: 'error', message: 'Error adding lead' }));
@@ -547,6 +550,7 @@ export default function AddLeadModal({ handleRefetch, title, leadData }) {
                 fullWidth
                 variant="standard"
                 name="NextCallDue"
+                value={formData.NextCallDue}
                 value={curLead ? curLead.NextCallDue : formData.NextCallDue}
                 onChange={handleChange}
               />
