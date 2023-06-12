@@ -12,15 +12,17 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import CsvUpload from '../DropBoxes/CsvUpload';
-import { ADD_LEAD } from '../../mutations/leadMutations';
+import { ADD_LEAD, updateLeadMutation } from '../../mutations/leadMutations';
 import { setAlert } from '../../redux/slice/alertSlice';
 
-export default function AddLeadModal({ handleRefetch }) {
+export default function AddLeadModal({ handleRefetch, title, leadData }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const [addLead, { loading, error, data }] = useMutation(ADD_LEAD);
+  const [UpdateLead] = useMutation(updateLeadMutation);
   const [uploadInProcess, setUploaded] = useState(false);
+  const [curLead, setCurLead] = useState(null);
   const [open, setOpen] = React.useState(false);
 
   const [formData, setFormData] = useState({
@@ -69,22 +71,31 @@ export default function AddLeadModal({ handleRefetch }) {
     HomeClosingDate: '',
   });
 
+  React.useEffect(() => {
+    setCurLead(leadData);
+  }, [leadData]);
+
   const handleClickOpen = () => {
     setOpen(true);
   };
 
   const handleChange = (event) => {
     event.persist();
+    if (curLead) {
+      setCurLead({
+        ...curLead,
+        [event.target.name]: event.target.value,
+      });
+    }
     setFormData({
       ...formData,
       [event.target.name]: event.target.value,
     });
+    console.log(formData);
   };
-
   const handleClose = () => {
     setOpen(false);
   };
-
   const handleLeadSubmit = (e) => {
     e.preventDefault();
     addLead({
@@ -147,12 +158,27 @@ export default function AddLeadModal({ handleRefetch }) {
       });
   };
 
+  // handle update
+  const handleUpdate = async () => {
+    try {
+      await UpdateLead({
+        variables: curLead,
+      });
+      setCurLead(null);
+      dispatch(setAlert({ type: 'success', message: 'Lead updated successfully' }));
+    } catch (error) {
+      dispatch(setAlert({ type: 'error', payload: error.message }));
+    } finally {
+      setOpen(false);
+    }
+  };
+
   return (
     <>
       {uploadInProcess ? (
         <div>
           <Button variant="outlined" sx={{ backgroundColor: 'white' }} onClick={handleClickOpen}>
-            Add Lead
+            {title}
           </Button>
           <Dialog open={open} onClose={handleClose}>
             <DialogTitle>New Lead Info</DialogTitle>
@@ -177,7 +203,7 @@ export default function AddLeadModal({ handleRefetch }) {
       ) : (
         <div>
           <Button variant="outlined" onClick={handleClickOpen}>
-            Add Lead
+            {title}
           </Button>
           <Dialog open={open} onClose={handleClose}>
             <DialogTitle>New Lead Info</DialogTitle>
@@ -197,7 +223,7 @@ export default function AddLeadModal({ handleRefetch }) {
                 fullWidth
                 variant="standard"
                 name="firstName"
-                value={formData.firstName}
+                value={curLead ? curLead.firstName : formData.firstName}
                 onChange={handleChange}
               />
 
@@ -210,7 +236,7 @@ export default function AddLeadModal({ handleRefetch }) {
                 fullWidth
                 variant="standard"
                 name="email"
-                value={formData.email}
+                value={curLead ? curLead.email : formData.email}
                 onChange={handleChange}
               />
 
@@ -223,7 +249,7 @@ export default function AddLeadModal({ handleRefetch }) {
                 fullWidth
                 variant="standard"
                 name="lastName"
-                value={formData.lastName}
+                value={curLead ? curLead.lastName : formData.lastName}
                 onChange={handleChange}
               />
 
@@ -236,7 +262,7 @@ export default function AddLeadModal({ handleRefetch }) {
                 fullWidth
                 variant="standard"
                 name="phone"
-                value={formData.phone}
+                value={curLead ? curLead.phone : formData.phone}
                 onChange={handleChange}
               />
 
@@ -249,7 +275,7 @@ export default function AddLeadModal({ handleRefetch }) {
                 fullWidth
                 variant="standard"
                 name="phoneStatus"
-                value={formData.phoneStatus}
+                value={curLead ? curLead.phoneStatus : formData.phoneStatus}
                 onChange={handleChange}
               />
 
@@ -262,7 +288,7 @@ export default function AddLeadModal({ handleRefetch }) {
                 fullWidth
                 variant="standard"
                 name="emailInvalid"
-                value={formData.emailInvalid}
+                value={curLead ? curLead.emailInvalid : formData.emailInvalid}
                 onChange={handleChange}
               />
 
@@ -275,7 +301,7 @@ export default function AddLeadModal({ handleRefetch }) {
                 fullWidth
                 variant="standard"
                 name="GloballyOptedOutOfEmail"
-                value={formData.GloballyOptedOutOfEmail}
+                value={curLead ? curLead.GloballyOptedOutOfEmail : formData.GloballyOptedOutOfEmail}
                 onChange={handleChange}
               />
 
@@ -288,7 +314,7 @@ export default function AddLeadModal({ handleRefetch }) {
                 fullWidth
                 variant="standard"
                 name="GloballyOptedOutOfBuyerAgentEmail"
-                value={formData.GloballyOptedOutOfBuyerAgentEmail}
+                value={curLead ? curLead.GloballyOptedOutOfBuyerAgentEmail : formData.GloballyOptedOutOfBuyerAgentEmail}
                 onChange={handleChange}
               />
 
@@ -301,7 +327,9 @@ export default function AddLeadModal({ handleRefetch }) {
                 fullWidth
                 variant="standard"
                 name="GloballyOptedOutOfListingAgentEmail"
-                value={formData.GloballyOptedOutOfListingAgentEmail}
+                value={
+                  curLead ? curLead.GloballyOptedOutOfListingAgentEmail : formData.GloballyOptedOutOfListingAgentEmail
+                }
                 onChange={handleChange}
               />
 
@@ -314,7 +342,7 @@ export default function AddLeadModal({ handleRefetch }) {
                 fullWidth
                 variant="standard"
                 name="GloballyOptedOutOfLenderEmail"
-                value={formData.GloballyOptedOutOfLenderEmail}
+                value={curLead ? curLead.GloballyOptedOutOfLenderEmail : formData.GloballyOptedOutOfLenderEmail}
                 onChange={handleChange}
               />
 
@@ -327,7 +355,7 @@ export default function AddLeadModal({ handleRefetch }) {
                 fullWidth
                 variant="standard"
                 name="GloballyOptedOutOfAlerts"
-                value={formData.GloballyOptedOutOfAlerts}
+                value={curLead ? curLead.GloballyOptedOutOfAlerts : formData.GloballyOptedOutOfAlerts}
                 onChange={handleChange}
               />
 
@@ -340,7 +368,7 @@ export default function AddLeadModal({ handleRefetch }) {
                 fullWidth
                 variant="standard"
                 name="OptInDate"
-                value={formData.OptInDate}
+                value={curLead ? curLead.OptInDate : formData.OptInDate}
                 onChange={handleChange}
               />
 
@@ -353,7 +381,7 @@ export default function AddLeadModal({ handleRefetch }) {
                 fullWidth
                 variant="standard"
                 name="BuyerAgentCategory"
-                value={formData.BuyerAgentCategory}
+                value={curLead ? curLead.BuyerAgentCategory : formData.BuyerAgentCategory}
                 onChange={handleChange}
               />
 
@@ -366,7 +394,7 @@ export default function AddLeadModal({ handleRefetch }) {
                 fullWidth
                 variant="standard"
                 name="ListingAgentCategory"
-                value={formData.ListingAgentCategory}
+                value={curLead ? curLead.ListingAgentCategory : formData.ListingAgentCategory}
                 onChange={handleChange}
               />
 
@@ -379,7 +407,7 @@ export default function AddLeadModal({ handleRefetch }) {
                 fullWidth
                 variant="standard"
                 name="LenderCategory"
-                value={formData.LenderCategory}
+                value={curLead ? curLead.LenderCategory : formData.LenderCategory}
                 onChange={handleChange}
               />
 
@@ -392,7 +420,7 @@ export default function AddLeadModal({ handleRefetch }) {
                 fullWidth
                 variant="standard"
                 name="BuyerAgent"
-                value={formData.BuyerAgent}
+                value={curLead ? curLead.BuyerAgent : formData.BuyerAgent}
                 onChange={handleChange}
               />
 
@@ -405,7 +433,7 @@ export default function AddLeadModal({ handleRefetch }) {
                 fullWidth
                 variant="standard"
                 name="ListingAgent"
-                value={formData.ListingAgent}
+                value={curLead ? curLead.ListingAgent : formData.ListingAgent}
                 onChange={handleChange}
               />
 
@@ -418,7 +446,7 @@ export default function AddLeadModal({ handleRefetch }) {
                 fullWidth
                 variant="standard"
                 name="Lender"
-                value={formData.Lender}
+                value={curLead ? curLead.Lender : formData.Lender}
                 onChange={handleChange}
               />
 
@@ -431,7 +459,7 @@ export default function AddLeadModal({ handleRefetch }) {
                 fullWidth
                 variant="standard"
                 name="OriginalSource"
-                value={formData.OriginalSource}
+                value={curLead ? curLead.OriginalSource : formData.OriginalSource}
                 onChange={handleChange}
               />
 
@@ -444,7 +472,7 @@ export default function AddLeadModal({ handleRefetch }) {
                 fullWidth
                 variant="standard"
                 name="OriginalCampaign"
-                value={formData.OriginalCampaign}
+                value={curLead ? curLead.OriginalCampaign : formData.OriginalCampaign}
                 onChange={handleChange}
               />
 
@@ -457,7 +485,7 @@ export default function AddLeadModal({ handleRefetch }) {
                 fullWidth
                 variant="standard"
                 name="LastAgentNote"
-                value={formData.LastAgentNote}
+                value={curLead ? curLead.LastAgentNote : formData.LastAgentNote}
                 onChange={handleChange}
               />
 
@@ -470,7 +498,7 @@ export default function AddLeadModal({ handleRefetch }) {
                 fullWidth
                 variant="standard"
                 name="eAlerts"
-                value={formData.eAlerts}
+                value={curLead ? curLead.eAlerts : formData.eAlerts}
                 onChange={handleChange}
               />
 
@@ -483,7 +511,7 @@ export default function AddLeadModal({ handleRefetch }) {
                 fullWidth
                 variant="standard"
                 name="VisitTotal"
-                value={formData.VisitTotal}
+                value={curLead ? curLead.VisitTotal : formData.VisitTotal}
                 onChange={handleChange}
               />
 
@@ -496,7 +524,7 @@ export default function AddLeadModal({ handleRefetch }) {
                 fullWidth
                 variant="standard"
                 name="listingviewcount"
-                value={formData.listingviewcount}
+                value={curLead ? curLead.listingviewcount : formData.listingviewcount}
                 onChange={handleChange}
               />
 
@@ -509,7 +537,7 @@ export default function AddLeadModal({ handleRefetch }) {
                 fullWidth
                 variant="standard"
                 name="AvgListingPrice"
-                value={formData.AvgListingPrice}
+                value={curLead ? curLead.AvgListingPrice : formData.AvgListingPrice}
                 onChange={handleChange}
               />
 
@@ -523,6 +551,7 @@ export default function AddLeadModal({ handleRefetch }) {
                 variant="standard"
                 name="NextCallDue"
                 value={formData.NextCallDue}
+                value={curLead ? curLead.NextCallDue : formData.NextCallDue}
                 onChange={handleChange}
               />
 
@@ -535,7 +564,7 @@ export default function AddLeadModal({ handleRefetch }) {
                 fullWidth
                 variant="standard"
                 name="LastAgentCallDate"
-                value={formData.LastAgentCallDate}
+                value={curLead ? curLead.LastAgentCallDate : formData.LastAgentCallDate}
                 onChange={handleChange}
               />
 
@@ -548,7 +577,7 @@ export default function AddLeadModal({ handleRefetch }) {
                 fullWidth
                 variant="standard"
                 name="LastLenderCallDate"
-                value={formData.LastLenderCallDate}
+                value={curLead ? curLead.LastLenderCallDate : formData.LastLenderCallDate}
                 onChange={handleChange}
               />
 
@@ -561,7 +590,7 @@ export default function AddLeadModal({ handleRefetch }) {
                 fullWidth
                 variant="standard"
                 name="FirstVisitDate"
-                value={formData.FirstVisitDate}
+                value={curLead ? curLead.FirstVisitDate : formData.FirstVisitDate}
                 onChange={handleChange}
               />
 
@@ -574,7 +603,7 @@ export default function AddLeadModal({ handleRefetch }) {
                 fullWidth
                 variant="standard"
                 name="LastVisitDate"
-                value={formData.LastVisitDate}
+                value={curLead ? curLead.LastVisitDate : formData.LastVisitDate}
                 onChange={handleChange}
               />
 
@@ -587,7 +616,7 @@ export default function AddLeadModal({ handleRefetch }) {
                 fullWidth
                 variant="standard"
                 name="RegisterDate"
-                value={formData.RegisterDate}
+                value={curLead ? curLead.RegisterDate : formData.RegisterDate}
                 onChange={handleChange}
               />
 
@@ -600,7 +629,7 @@ export default function AddLeadModal({ handleRefetch }) {
                 fullWidth
                 variant="standard"
                 name="LeadType"
-                value={formData.LeadType}
+                value={curLead ? curLead.LeadType : formData.LeadType}
                 onChange={handleChange}
               />
 
@@ -613,7 +642,7 @@ export default function AddLeadModal({ handleRefetch }) {
                 fullWidth
                 variant="standard"
                 name="AgentSelected"
-                value={formData.AgentSelected}
+                value={curLead ? curLead.AgentSelected : formData.AgentSelected}
                 onChange={handleChange}
               />
 
@@ -626,7 +655,7 @@ export default function AddLeadModal({ handleRefetch }) {
                 fullWidth
                 variant="standard"
                 name="LenderOptIn"
-                value={formData.LenderOptIn}
+                value={curLead ? curLead.LenderOptIn : formData.LenderOptIn}
                 onChange={handleChange}
               />
 
@@ -639,7 +668,7 @@ export default function AddLeadModal({ handleRefetch }) {
                 fullWidth
                 variant="standard"
                 name="Address"
-                value={formData.Address}
+                value={leadData ? leadData?.Address : formData.Address}
                 onChange={handleChange}
               />
 
@@ -652,7 +681,7 @@ export default function AddLeadModal({ handleRefetch }) {
                 fullWidth
                 variant="standard"
                 name="City"
-                value={formData.City}
+                value={curLead ? curLead.City : formData.City}
                 onChange={handleChange}
               />
 
@@ -665,7 +694,7 @@ export default function AddLeadModal({ handleRefetch }) {
                 fullWidth
                 variant="standard"
                 name="State"
-                value={formData.State}
+                value={curLead ? curLead.State : formData.State}
                 onChange={handleChange}
               />
 
@@ -678,7 +707,7 @@ export default function AddLeadModal({ handleRefetch }) {
                 fullWidth
                 variant="standard"
                 name="ZipCode"
-                value={formData.ZipCode}
+                value={curLead ? curLead.ZipCode : formData.ZipCode}
                 onChange={handleChange}
               />
 
@@ -691,7 +720,7 @@ export default function AddLeadModal({ handleRefetch }) {
                 fullWidth
                 variant="standard"
                 name="Tags"
-                value={formData.Tags}
+                value={curLead ? curLead.Tags : formData.Tags}
                 onChange={handleChange}
               />
 
@@ -704,7 +733,7 @@ export default function AddLeadModal({ handleRefetch }) {
                 fullWidth
                 variant="standard"
                 name="Link"
-                value={formData.Link}
+                value={curLead ? curLead.Link : formData.Link}
                 onChange={handleChange}
               />
 
@@ -717,7 +746,7 @@ export default function AddLeadModal({ handleRefetch }) {
                 fullWidth
                 variant="standard"
                 name="Birthday"
-                value={formData.Birthday}
+                value={curLead ? curLead.Birthday : formData.Birthday}
                 onChange={handleChange}
               />
 
@@ -730,13 +759,18 @@ export default function AddLeadModal({ handleRefetch }) {
                 fullWidth
                 variant="standard"
                 name="HomeClosingDate"
-                value={formData.HomeClosingDate}
+                value={curLead ? curLead.HomeClosingDate : formData.HomeClosingDate}
                 onChange={handleChange}
               />
             </DialogContent>
             <DialogActions>
               <Button onClick={handleClose}>Cancel</Button>
               <Button onClick={handleLeadSubmit}>Add Lead</Button>
+              {curLead ? (
+                <Button onClick={handleUpdate}>Update Lead</Button>
+              ) : (
+                <Button onClick={handleLeadSubmit}>Add Lead</Button>
+              )}
             </DialogActions>
           </Dialog>
         </div>
