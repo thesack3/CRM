@@ -765,7 +765,6 @@ export default function AddLeadModal({ handleRefetch, title, leadData }) {
             </DialogContent>
             <DialogActions>
               <Button onClick={handleClose}>Cancel</Button>
-              <Button onClick={handleLeadSubmit}>Add Lead</Button>
               {curLead ? (
                 <Button onClick={handleUpdate}>Update Lead</Button>
               ) : (
