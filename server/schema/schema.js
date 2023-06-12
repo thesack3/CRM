@@ -1352,7 +1352,7 @@ const mutation = new GraphQLObjectType({
         AgentSelected: { type: GraphQLString },
         LenderOptIn: { type: GraphQLString },
         Link: { type: GraphQLString },
-        updatedAt : { type: GraphQLString },
+        updatedAt: { type: GraphQLString },
         leadId: { type: GraphQLString },
 
         // Add additional fields to update here
@@ -1705,6 +1705,23 @@ const mutation = new GraphQLObjectType({
       async resolve(parent, args) {
         const result = await Task.findByIdAndDelete(args.id);
         return result;
+      },
+    },
+
+    // delete all tasks for a user
+    deleteAllTasks: {
+      type: new GraphQLObjectType({
+        name: "deleteAllTasks",
+        fields: () => ({
+          message: { type: GraphQLString },
+        }),
+      }),
+      args: {
+        userId: { type: GraphQLID },
+      },
+      async resolve(parent, args) {
+        await Task.deleteMany({ user: args.userId });
+        return { message: "All tasks deleted successfully" };
       },
     },
 
