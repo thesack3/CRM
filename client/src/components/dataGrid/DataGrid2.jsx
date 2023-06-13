@@ -12,7 +12,6 @@ import { SEND_EMAILS_MUTATION } from '../../mutations/bulkEmail';
 import AddLeadModal from '../modals/AddLead';
 import AddCSVLeadModal from '../modals/AddCSVLeadModal';
 import AddTagModal from '../modals/AddTag';
-import AddCategoryModal from '../modals/AddCategory';
 import CategoryInput from '../inputs/CategoryInput';
 import { gridStyles } from '../../constants/styles';
 import SelectField from '../SelectField';
@@ -862,7 +861,7 @@ export default function DataGridProCSV2() {
   return (
     <div style={{ height: 700, width: '100%' }}>
       {/* filter lead modal */}
-      <FilterLeads filterLeadModal={filterLeadModal} setFilterLeadModal={setFilterLeadModal} />
+      <FilterLeads filterLeadModal={filterLeadModal} setFilterLeadModal={setFilterLeadModal} list={data} />
       {currentParam && (
         <LeadDetails
           leadDetail={currentParam}

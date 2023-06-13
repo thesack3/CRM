@@ -11,13 +11,28 @@ import {
   Autocomplete,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+import { useQuery } from '@apollo/client';
+import { GET_LEADS_VALUES } from '../../queries/leadQueries';
 
-const FilterLeads = ({ filterLeadModal, setFilterLeadModal }) => {
+const FilterLeads = ({ filterLeadModal, setFilterLeadModal, list }) => {
   const [label, setLable] = useState('FirstName');
+  const [filterValue, setFilterValue] = useState('');
+  const [options, setOptions] = useState([]);
+
+  // query GET_LEADS_VALUES
+
+  const { data, loading } = useQuery(GET_LEADS_VALUES, {
+    variables: {
+      label: filterValue,
+      value: '',
+    },
+  });
 
   const handleFilter = ({ label, value }) => {
     setLable(label);
     console.log(value);
+    const options = list?.leads?.rows?.map((lead) => lead[value || 'firstName']);
+    setOptions(options);
   };
   return (
     <Dialog
@@ -584,7 +599,7 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal }) => {
           {/* aside content */}
           <Box flex=".7" padding="20px">
             <Autocomplete
-              options={['One', 'Two', 'Three']}
+              options={options}
               renderInput={(params) => (
                 <TextField {...params} label={label} variant="outlined" fullWidth size="small" />
               )}
