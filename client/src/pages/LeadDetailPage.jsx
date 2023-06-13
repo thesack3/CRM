@@ -124,6 +124,8 @@ const LeadDetailPage = () => {
     }
   }, [data]);
 
+  console.log(data?.lead);
+
   // set types from api
   useEffect(() => {
     if (types) {
