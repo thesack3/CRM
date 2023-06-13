@@ -14,32 +14,26 @@ import CloseIcon from '@mui/icons-material/Close';
 import { useQuery } from '@apollo/client';
 import { GET_LEADS_VALUES } from '../../queries/leadQueries';
 
-const FilterLeads = ({ filterLeadModal, setFilterLeadModal, list, callback }) => {
+const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback }) => {
   const [label, setLable] = useState('FirstName');
   const [fieldValue, setFieldValue] = useState('firstName');
   const [filterValue, setFilterValue] = useState('');
-  const [options, setOptions] = useState([]);
 
-  // const { data, loading } = useQuery(GET_LEADS_VALUES, {
-  //   variables: {
-  //     label: filterValue,
-  //     value: '',
-  //   },
-  // });
-
-  useEffect(() => {
-    if (list && fieldValue) {
-      const options = list?.leads?.rows?.map((lead) => lead[fieldValue]);
-      setOptions(options);
-    }
-  }, [list, fieldValue]);
+  const { data, loading } = useQuery(GET_LEADS_VALUES, {
+    variables: {
+      label: filterValue || '',
+      value: fieldValue || 'firstName',
+    },
+  });
 
   const handleFilter = ({ label, value }) => {
     setLable(label);
     setFieldValue(value);
+    setFilterValue('');
   };
 
   const handleOnChange = (e, value) => {
+    setFilterValue(value);
     callback({ label: fieldValue, value });
   };
 
@@ -608,7 +602,7 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal, list, callback }) =>
           {/* aside content */}
           <Box flex=".7" padding="20px">
             <Autocomplete
-              options={options}
+              options={data ? data?.leadFilter : []}
               onChange={(e, value) => handleOnChange(e, value)}
               value={filterValue}
               renderInput={(params) => (

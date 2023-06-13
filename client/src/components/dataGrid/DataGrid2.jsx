@@ -888,7 +888,6 @@ export default function DataGridProCSV2() {
       <FilterLeads
         filterLeadModal={filterLeadModal}
         setFilterLeadModal={setFilterLeadModal}
-        list={data}
         callback={({ label, value }) => getFilterValue({ label, value })}
       />
       {currentParam && (
