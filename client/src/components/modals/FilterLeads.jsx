@@ -13,8 +13,11 @@ import {
 import CloseIcon from '@mui/icons-material/Close';
 
 const FilterLeads = ({ filterLeadModal, setFilterLeadModal }) => {
-  const handleFilter = (e) => {
-    console.log(e);
+  const [label, setLable] = useState('FirstName');
+
+  const handleFilter = ({ label, value }) => {
+    setLable(label);
+    console.log(value);
   };
   return (
     <Dialog
@@ -35,7 +38,7 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal }) => {
         </Button>
       </DialogTitle>
       <DialogContent sx={{ overflowY: 'hidden' }}>
-        <Box
+        {/* <Box
           display="flex"
           alignItems="center"
           gap="4px"
@@ -45,7 +48,7 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal }) => {
           <Button sx={{ backgroundColor: '#fafafa', color: 'gray' }}>
             eAlerts <CloseIcon sx={{ height: '12px' }} />
           </Button>
-        </Box>
+        </Box> */}
         <Box display="flex" sx={{ borderBottom: '1px solid #DADEE3' }}>
           {/* sidebar */}
           <Box
@@ -61,283 +64,518 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal }) => {
             <Box display="flex" flexDirection="column" gap="15px">
               <Button
                 sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '1px', color: 'gray' }}
-                onClick={() => handleFilter('firstName')}
+                onClick={() =>
+                  handleFilter({
+                    label: 'First Name',
+                    value: 'firstName',
+                  })
+                }
               >
                 First Name
               </Button>
               <Button
                 sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray' }}
-                onClick={() => handleFilter('lastName')}
+                onClick={() =>
+                  handleFilter({
+                    label: 'Last Name',
+                    value: 'lastName',
+                  })
+                }
               >
                 Last Name
               </Button>
               <Button
                 sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray' }}
-                onClick={() => handleFilter('email')}
+                onClick={() =>
+                  handleFilter({
+                    label: 'Email',
+                    value: 'email',
+                  })
+                }
               >
                 Email
               </Button>
               <Button
                 sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray' }}
-                onClick={() => handleFilter('Address')}
+                onClick={() =>
+                  handleFilter({
+                    label: 'Address',
+                    value: 'Address',
+                  })
+                }
               >
                 Address
               </Button>
               <Button
                 sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray' }}
-                onClick={() => handleFilter('AgentSelected')}
+                onClick={() =>
+                  handleFilter({
+                    label: 'Agent Selected',
+                    value: 'AgentSelected',
+                  })
+                }
               >
                 Agent Selected
               </Button>
               <Button
                 sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray' }}
-                onClick={() => handleFilter('AvgListingPrice')}
+                onClick={() =>
+                  handleFilter({
+                    label: 'Avg Listing Price',
+                    value: 'AvgListingPrice',
+                  })
+                }
               >
                 Avg Listing Price
               </Button>
               <Button
                 sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray' }}
-                onClick={() => handleFilter('Birthday')}
+                onClick={() =>
+                  handleFilter({
+                    label: 'Birthday',
+                    value: 'Birthday',
+                  })
+                }
               >
                 Birthday
               </Button>
               <Button
                 sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray' }}
-                onClick={() => handleFilter('BuyerAgent')}
+                onClick={() =>
+                  handleFilter({
+                    label: 'Buyer Agent',
+                    value: 'BuyerAgent',
+                  })
+                }
               >
                 Buyer Agent
               </Button>
               <Button
                 sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray' }}
-                onClick={() => handleFilter('BuyerAgentCategory')}
+                onClick={() =>
+                  handleFilter({
+                    label: 'Buyer Agent Category',
+                    value: 'BuyerAgentCategory',
+                  })
+                }
               >
                 Buyer Agent Category
               </Button>
               <Button
                 sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray' }}
-                onClick={() => handleFilter('City')}
+                onClick={() =>
+                  handleFilter({
+                    label: 'City',
+                    value: 'City',
+                  })
+                }
               >
                 City
               </Button>
               <Button
                 sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray' }}
-                onClick={() => handleFilter('FirstVisitDate')}
+                onClick={() =>
+                  handleFilter({
+                    label: 'First Visit Date',
+                    value: 'FirstVisitDate',
+                  })
+                }
               >
                 First Visit Date
               </Button>
               <Button
                 sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray' }}
-                onClick={() => handleFilter('GloballyOptedOutOfAlerts')}
+                onClick={() =>
+                  handleFilter({
+                    label: 'Globally Opted Out Of Alerts',
+                    value: 'GloballyOptedOutOfAlerts',
+                  })
+                }
               >
                 Globally Opted Out Of Alerts
               </Button>
               <Button
                 sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray' }}
-                onClick={() => handleFilter('GloballyOptedOutOfBuyerAgentEmail')}
+                onClick={() =>
+                  handleFilter({
+                    label: 'Globally Opted Out Of Buyer Agent Email',
+                    value: 'GloballyOptedOutOfBuyerAgentEmail',
+                  })
+                }
               >
                 Globally Opted Out Of Buyer Agent Email
               </Button>
               <Button
                 sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray' }}
-                onClick={() => handleFilter('GloballyOptedOutOfEmail')}
+                onClick={() =>
+                  handleFilter({
+                    label: 'Globally Opted Out Of Email',
+                    value: 'GloballyOptedOutOfEmail',
+                  })
+                }
               >
                 Globally Opted Out Of Email
               </Button>
               <Button
                 sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray' }}
-                onClick={() => handleFilter('GloballyOptedOutOfLenderEmail')}
+                onClick={() =>
+                  handleFilter({
+                    label: 'Globally Opted Out Of Lender Email',
+                    value: 'GloballyOptedOutOfLenderEmail',
+                  })
+                }
               >
                 Globally Opted Out Of Lender Email
               </Button>
               <Button
                 sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray' }}
-                onClick={() => handleFilter('GloballyOptedOutOfListingAgentEmail')}
+                onClick={() =>
+                  handleFilter({
+                    label: 'Globally Opted Out Of Listing Agent Email',
+                    value: 'GloballyOptedOutOfListingAgentEmail',
+                  })
+                }
               >
                 Globally Opted Out Of Listing Agent Email
               </Button>
               <Button
                 sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray' }}
-                onClick={() => handleFilter('HomeClosingDate')}
+                onClick={() =>
+                  handleFilter({
+                    label: 'Home Closing Date',
+                    value: 'HomeClosingDate',
+                  })
+                }
               >
                 Home Closing Date
               </Button>
               <Button
                 sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray' }}
-                onClick={() => handleFilter('LastAgentCallDate')}
+                onClick={() =>
+                  handleFilter({
+                    label: 'Last Agent Call Date',
+                    value: 'LastAgentCallDate',
+                  })
+                }
               >
                 Last Agent Call Date
               </Button>
               <Button
                 sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray' }}
-                onClick={() => handleFilter('LastAgentNote')}
+                onClick={() =>
+                  handleFilter({
+                    label: 'Last Agent Note',
+                    value: 'LastAgentNote',
+                  })
+                }
               >
                 Last Agent Note
               </Button>
               <Button
                 sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray' }}
-                onClick={() => handleFilter('LastLenderCallDate')}
+                onClick={() =>
+                  handleFilter({
+                    label: 'Last Lender Call Date',
+                    value: 'LastLenderCallDate',
+                  })
+                }
               >
                 Last Lender Call Date
               </Button>
               <Button
                 sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray' }}
-                onClick={() => handleFilter('LastVisitDate')}
+                onClick={() =>
+                  handleFilter({
+                    label: 'Last Visit Date',
+                    value: 'LastVisitDate',
+                  })
+                }
               >
                 Last Visit Date
               </Button>
               <Button
                 sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray' }}
-                onClick={() => handleFilter('LeadType')}
+                onClick={() =>
+                  handleFilter({
+                    label: 'Lead Type',
+                    value: 'LeadType',
+                  })
+                }
               >
                 Lead Type
               </Button>
               <Button
                 sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray' }}
-                onClick={() => handleFilter('Lender')}
+                onClick={() =>
+                  handleFilter({
+                    label: 'Lender',
+                    value: 'Lender',
+                  })
+                }
               >
                 Lender
               </Button>
               <Button
                 sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray' }}
-                onClick={() => handleFilter('LenderCategory')}
+                onClick={() =>
+                  handleFilter({
+                    label: 'Lender Category',
+                    value: 'LenderCategory',
+                  })
+                }
               >
                 Lender Category
               </Button>
               <Button
                 sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray' }}
-                onClick={() => handleFilter('LenderOptIn')}
+                onClick={() =>
+                  handleFilter({
+                    label: 'Lender Opt In',
+                    value: 'LenderOptIn',
+                  })
+                }
               >
                 Lender Opt In
               </Button>
               <Button
                 sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray' }}
-                onClick={() => handleFilter('Link')}
+                onClick={() =>
+                  handleFilter({
+                    label: 'Link',
+                    value: 'Link',
+                  })
+                }
               >
                 Link
               </Button>
               <Button
                 sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray,' }}
-                onClick={() => handleFilter('ListingAgent')}
+                onClick={() =>
+                  handleFilter({
+                    label: 'Listing Agent',
+                    value: 'ListingAgent',
+                  })
+                }
               >
                 Listing Agent
               </Button>
               <Button
                 sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray,' }}
-                onClick={() => handleFilter('ListingAgentCategory')}
+                onClick={() =>
+                  handleFilter({
+                    label: 'Listing Agent Category',
+                    value: 'ListingAgentCategory',
+                  })
+                }
               >
                 Listing Agent Category
               </Button>
               <Button
                 sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray,' }}
-                onClick={() => handleFilter('NextCallDue')}
+                onClick={() =>
+                  handleFilter({
+                    label: 'Next Call Due',
+                    value: 'NextCallDue',
+                  })
+                }
               >
                 Next Call Due
               </Button>
               <Button
                 sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray,' }}
-                onClick={() => handleFilter('OptInDate')}
+                onClick={() =>
+                  handleFilter({
+                    label: 'Opt In Date',
+                    value: 'OptInDate',
+                  })
+                }
               >
                 Opt In Date
               </Button>
               <Button
                 sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray,' }}
-                onClick={() => handleFilter('OriginalCampaign')}
+                onClick={() =>
+                  handleFilter({
+                    label: 'Original Campaign',
+                    value: 'OriginalCampaign',
+                  })
+                }
               >
                 Original Campaign
               </Button>
               <Button
                 sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray,' }}
-                onClick={() => handleFilter('OriginalSource')}
+                onClick={() =>
+                  handleFilter({
+                    label: 'Original Source',
+                    value: 'OriginalSource',
+                  })
+                }
               >
                 Original Source
               </Button>
               <Button
                 sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray,' }}
-                onClick={() => handleFilter('RegisterDate')}
+                onClick={() =>
+                  handleFilter({
+                    label: 'Register Date',
+                    value: 'RegisterDate',
+                  })
+                }
               >
                 Register Date
               </Button>
               <Button
                 sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray,' }}
-                onClick={() => handleFilter('State')}
+                onClick={() =>
+                  handleFilter({
+                    label: 'State',
+                    value: 'State',
+                  })
+                }
               >
                 State
               </Button>
               <Button
                 sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray,' }}
-                onClick={() => handleFilter('VisitTotal')}
+                onClick={() =>
+                  handleFilter({
+                    label: 'Visit Total',
+                    value: 'VisitTotal',
+                  })
+                }
               >
                 Visit Total
               </Button>
               <Button
                 sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray,' }}
-                onClick={() => handleFilter('ZipCode')}
+                onClick={() =>
+                  handleFilter({
+                    label: 'Zip Code',
+                    value: 'ZipCode',
+                  })
+                }
               >
                 ZipCode
               </Button>
               <Button
                 sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray,' }}
-                onClick={() => handleFilter('description')}
+                onClick={() =>
+                  handleFilter({
+                    label: 'Description',
+                    value: 'description',
+                  })
+                }
               >
                 Description
               </Button>
               <Button
                 sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray,' }}
-                onClick={() => handleFilter('eAlerts')}
+                onClick={() =>
+                  handleFilter({
+                    label: 'eAlerts',
+                    value: 'eAlerts',
+                  })
+                }
               >
                 E Alerts
               </Button>
               <Button
                 sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray,' }}
-                onClick={() => handleFilter('emailInvalid')}
+                onClick={() =>
+                  handleFilter({
+                    label: 'Email Invalid',
+                    value: 'emailInvalid',
+                  })
+                }
               >
                 Email Invalid
               </Button>
               <Button
                 sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray,' }}
-                onClick={() => handleFilter('listingviewcount')}
+                onClick={() =>
+                  handleFilter({
+                    label: 'Listing View Count',
+                    value: 'listingviewcount',
+                  })
+                }
               >
                 Listing View Count
               </Button>
               <Button
                 sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray,' }}
-                onClick={() => handleFilter('phone')}
+                onClick={() =>
+                  handleFilter({
+                    label: 'Phone',
+                    value: 'phone',
+                  })
+                }
               >
                 Phone
               </Button>
               <Button
                 sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray,' }}
-                onClick={() => handleFilter('phoneStatus')}
+                onClick={() =>
+                  handleFilter({
+                    label: 'Phone Status',
+                    value: 'phoneStatus',
+                  })
+                }
               >
                 Phone Status
               </Button>
               <Button
                 sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray,' }}
-                onClick={() => handleFilter('didLeaveReview')}
+                onClick={() =>
+                  handleFilter({
+                    label: 'Did Leave Review',
+                    value: 'didLeaveReviews',
+                  })
+                }
               >
                 Did Leave Review
               </Button>
               <Button
                 sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray,' }}
-                onClick={() => handleFilter('didClosingGift')}
+                onClick={() =>
+                  handleFilter({
+                    label: 'Did Closing Gift',
+                    value: 'didClosingGift',
+                  })
+                }
               >
                 Did Closing Gift
               </Button>
               <Button
                 sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray,' }}
-                onClick={() => handleFilter('didsocialMediaFriends')}
+                onClick={() =>
+                  handleFilter({
+                    label: 'Did Social Media Friends',
+                    value: 'didsocialMediaFriends',
+                  })
+                }
               >
                 Did Social Media Friends
               </Button>
               <Button
                 sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray,' }}
-                onClick={() => handleFilter('didPostCardDrip')}
+                onClick={() =>
+                  handleFilter({
+                    label: 'Did Post Card Drip',
+                    value: 'didPostCardDrip',
+                  })
+                }
               >
                 Did Post Card Drip
               </Button>
               <Button
                 sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray,' }}
-                onClick={() => handleFilter('didAnniversaryDrip')}
+                onClick={() =>
+                  handleFilter({
+                    label: 'Did Anniversary Drip',
+                    value: 'didAnniversaryDrip',
+                  })
+                }
               >
                 Did Anniversary Drip
               </Button>
@@ -348,7 +586,7 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal }) => {
             <Autocomplete
               options={['One', 'Two', 'Three']}
               renderInput={(params) => (
-                <TextField {...params} label="Lender" variant="outlined" fullWidth size="small" />
+                <TextField {...params} label={label} variant="outlined" fullWidth size="small" />
               )}
             />
           </Box>

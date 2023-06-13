@@ -676,6 +676,32 @@ const RootQuery = new GraphQLObjectType({
       },
     },
 
+    // filter leads by all fields in lead model and return label
+    leadFilter: {
+      type: new GraphQLList(GraphQLString),
+      args: {
+        label: { type: GraphQLString },
+        value: { type: GraphQLString },
+      },
+      async resolve(parent, args) {
+        const keys = Object.keys(Lead.schema.paths);
+        const leadKeys = keys.filter(
+          (key) => !["_id", "__v", "categoriesList", "tagsList"].includes(key)
+        );
+        // get value from leadKeys array with args.value  as key
+        const value = leadKeys.find((key) => key === args.value);
+
+        // find leads by value in database
+        const leads = await Lead.find({
+          [value]: { $regex: new RegExp(args.label, "i") },
+        });
+
+        // get values from leads array with args.value as key and return array of values for that key from leads array
+        const values = leads.map((lead) => lead[args.value]);
+        return values;
+      },
+    },
+
     lead: {
       type: LeadType,
       args: { id: { type: GraphQLID } },
