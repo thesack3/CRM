@@ -721,6 +721,18 @@ export default function DataGridProCSV2() {
     setFilterModel(newFilterModel.items[0]);
   }
 
+  // get filter value from filter modal
+  const getFilterValue = async ({ label, value }) => {
+    setSort('');
+    const filterModel = {
+      columnField: label,
+      operatorValue: 'contains',
+      value,
+    };
+    setFilterModel(filterModel);
+    setFilterLeadModal(false);
+  };
+
   // sorting
   function handleSortModelChange(newSortModel) {
     if (!newSortModel.length) return;
@@ -858,10 +870,27 @@ export default function DataGridProCSV2() {
     }
   };
 
+  // reset all filters and sorting and search query and categories and page size and page number
+  const resetFilters = async () => {
+    setFilter('');
+    setSort('');
+    setFilterModel({});
+    setCategories([]);
+    setSkip(0);
+    setPage(0);
+    setPageSize(10);
+    setSearchQuery('');
+  };
+
   return (
     <div style={{ height: 700, width: '100%' }}>
       {/* filter lead modal */}
-      <FilterLeads filterLeadModal={filterLeadModal} setFilterLeadModal={setFilterLeadModal} list={data} />
+      <FilterLeads
+        filterLeadModal={filterLeadModal}
+        setFilterLeadModal={setFilterLeadModal}
+        list={data}
+        callback={({ label, value }) => getFilterValue({ label, value })}
+      />
       {currentParam && (
         <LeadDetails
           leadDetail={currentParam}
@@ -939,6 +968,9 @@ export default function DataGridProCSV2() {
             }}
           >
             <Box sx={{ display: 'flex', gap: '1rem', marginRight: '1rem' }}>
+              <Button variant="outlined" onClick={() => resetFilters()}>
+                Reset
+              </Button>
               <Button variant="outlined" onClick={() => setFilterLeadModal(true)}>
                 Filter Leads
               </Button>
@@ -949,9 +981,9 @@ export default function DataGridProCSV2() {
                 Delete
               </Button>
             </Box>
-            <Typography variant="h6" style={{ marginRight: 16 }}>
+            {/* <Typography variant="h6" style={{ marginRight: 16 }}>
               User Fields
-            </Typography>
+            </Typography> */}
             <TextField
               size="small"
               variant="outlined"

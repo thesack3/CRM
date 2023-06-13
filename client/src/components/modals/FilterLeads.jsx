@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   Button,
@@ -14,26 +14,35 @@ import CloseIcon from '@mui/icons-material/Close';
 import { useQuery } from '@apollo/client';
 import { GET_LEADS_VALUES } from '../../queries/leadQueries';
 
-const FilterLeads = ({ filterLeadModal, setFilterLeadModal, list }) => {
+const FilterLeads = ({ filterLeadModal, setFilterLeadModal, list, callback }) => {
   const [label, setLable] = useState('FirstName');
+  const [fieldValue, setFieldValue] = useState('firstName');
   const [filterValue, setFilterValue] = useState('');
   const [options, setOptions] = useState([]);
 
-  // query GET_LEADS_VALUES
+  // const { data, loading } = useQuery(GET_LEADS_VALUES, {
+  //   variables: {
+  //     label: filterValue,
+  //     value: '',
+  //   },
+  // });
 
-  const { data, loading } = useQuery(GET_LEADS_VALUES, {
-    variables: {
-      label: filterValue,
-      value: '',
-    },
-  });
+  useEffect(() => {
+    if (list && fieldValue) {
+      const options = list?.leads?.rows?.map((lead) => lead[fieldValue]);
+      setOptions(options);
+    }
+  }, [list, fieldValue]);
 
   const handleFilter = ({ label, value }) => {
     setLable(label);
-    console.log(value);
-    const options = list?.leads?.rows?.map((lead) => lead[value || 'firstName']);
-    setOptions(options);
+    setFieldValue(value);
   };
+
+  const handleOnChange = (e, value) => {
+    callback({ label: fieldValue, value });
+  };
+
   return (
     <Dialog
       open={filterLeadModal}
@@ -600,8 +609,18 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal, list }) => {
           <Box flex=".7" padding="20px">
             <Autocomplete
               options={options}
+              onChange={(e, value) => handleOnChange(e, value)}
+              value={filterValue}
               renderInput={(params) => (
-                <TextField {...params} label={label} variant="outlined" fullWidth size="small" />
+                <TextField
+                  {...params}
+                  label={label}
+                  variant="outlined"
+                  fullWidth
+                  size="small"
+                  value={fieldValue}
+                  // onChange={(e) => handleOnChange(e)}
+                />
               )}
             />
           </Box>
