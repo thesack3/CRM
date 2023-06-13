@@ -660,6 +660,21 @@ const RootQuery = new GraphQLObjectType({
           return { count: totalCount, rows: response };
         }
 
+        // filter date by date range in filterModel and return leads in that date range and sort by date range and return leads
+        if (filterModel?.operatorValue === "inRange") {
+          const response = await Lead.find({
+            [filterModel?.columnField]: {
+              $gte: filterModel?.value[0],
+              $lte: filterModel?.value[1],
+            },
+          })
+            .limit(args?.take)
+            .skip(args?.skip)
+            .sort(args.column ? sortCriteria : { createdAt: -1 })
+            .exec();
+          return { count: totalCount, rows: response };
+        }
+
         const leads = await Lead.find({
           $or: [
             { firstName: { $regex: new RegExp(args.filter, "i") } },

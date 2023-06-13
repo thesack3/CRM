@@ -56,17 +56,6 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback }) => {
         </Button>
       </DialogTitle>
       <DialogContent sx={{ overflowY: 'hidden' }}>
-        {/* <Box
-          display="flex"
-          alignItems="center"
-          gap="4px"
-          flexWrap="wrap"
-          sx={{ borderTop: '1px solid #DADEE3', borderBottom: '1px solid #DADEE3', padding: '5px' }}
-        >
-          <Button sx={{ backgroundColor: '#fafafa', color: 'gray' }}>
-            eAlerts <CloseIcon sx={{ height: '12px' }} />
-          </Button>
-        </Box> */}
         <Box display="flex" sx={{ borderBottom: '1px solid #DADEE3' }}>
           {/* sidebar */}
           <Box
@@ -600,24 +589,62 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback }) => {
             </Box>
           </Box>
           {/* aside content */}
-          <Box flex=".7" padding="20px">
-            <Autocomplete
-              options={data ? data?.leadFilter : []}
-              onChange={(e, value) => handleOnChange(e, value)}
-              value={filterValue}
-              renderInput={(params) => (
+          {fieldValue == 'Birthday' ||
+          fieldValue == 'FirstVisitDate' ||
+          fieldValue == 'HomeClosingDate' ||
+          fieldValue == 'LastAgentCallDate' ||
+          fieldValue == 'LastAgentNote' ||
+          fieldValue == 'LastVisitDate' ||
+          fieldValue == 'LenderOptIn' ||
+          fieldValue == 'RegisterDate' ? (
+            <Box>
+              {/* add two fields for date range */}
+              <Box display="flex" flexDirection="row" alignItems={'center'} gap="10px" padding="20px">
+                <Typography variant="subtitle1">From</Typography>
                 <TextField
-                  {...params}
-                  label={label}
+                  id="outlined-basic"
                   variant="outlined"
-                  fullWidth
                   size="small"
-                  value={fieldValue}
-                  // onChange={(e) => handleOnChange(e)}
+                  type="date"
+                  sx={{ width: '100%' }}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
                 />
-              )}
-            />
-          </Box>
+
+                <Typography variant="subtitle1">To</Typography>
+                <TextField
+                  id="outlined-basic"
+                  variant="outlined"
+                  size="small"
+                  type="date"
+                  sx={{ width: '100%' }}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                />
+              </Box>
+            </Box>
+          ) : (
+            <Box flex=".7" padding="20px">
+              <Autocomplete
+                options={data ? data?.leadFilter : []}
+                onChange={(e, value) => handleOnChange(e, value)}
+                value={filterValue}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label={label}
+                    variant="outlined"
+                    fullWidth
+                    size="small"
+                    value={fieldValue}
+                    // onChange={(e) => handleOnChange(e)}
+                  />
+                )}
+              />
+            </Box>
+          )}
         </Box>
       </DialogContent>
       <DialogActions sx={{ justifyContent: 'right', gap: '5px' }}>
