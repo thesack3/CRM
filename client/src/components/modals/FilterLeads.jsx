@@ -625,6 +625,37 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback }) => {
                 />
               </Box>
             </Box>
+          ) : fieldValue == 'AvgListingPrice' ||
+            fieldValue == 'VisitTotal' ||
+            fieldValue == 'AvgListingPrice' ||
+            fieldValue == 'listingviewcount' ? (
+            <Box flex=".7" padding="20px">
+              <Box display="flex" flexDirection="row" alignItems={'center'} gap="10px">
+                <Typography variant="subtitle1">From</Typography>
+                <TextField
+                  id="outlined-basic"
+                  variant="outlined"
+                  size="small"
+                  type="number"
+                  sx={{ width: '100%' }}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                />
+
+                <Typography variant="subtitle1">To</Typography>
+                <TextField
+                  id="outlined-basic"
+                  variant="outlined"
+                  size="small"
+                  type="number"
+                  sx={{ width: '100%' }}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                />
+              </Box>
+            </Box>
           ) : (
             <Box flex=".7" padding="20px">
               <Autocomplete
