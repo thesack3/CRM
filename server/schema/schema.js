@@ -609,6 +609,53 @@ const RootQuery = new GraphQLObjectType({
           sortCriteria[args.column] = args.sort === "desc" ? -1 : 1;
         }
 
+        console.log("filterModel---------------------------------", filterModel);
+        //-------- filter date by date range in filterModel and return leads in that date range and sort by date range and return leads
+        if (filterModel?.operatorValue === "isRange" && filterModel?.type === "date") {
+          console.log("---------------------------------date");
+          const response = await Lead.find({
+            [filterModel?.columnField]: {
+              // {$gte:ISODate(“2020-03-01”),$lt:ISODate(“2021-03-31”)}}
+              $gte: ISODate(filterModel?.from),
+              $lt: ISODate(filterModel?.to),
+            },
+          })
+            .limit(args?.take)
+            .skip(args?.skip)
+            .sort(args.column ? sortCriteria : { createdAt: -1 })
+            .exec();
+          console.log("---------------------------------response date", response);
+          return { count: totalCount, rows: response };
+        }
+
+        // filter number by number range in filterModel and return leads in that number range and sort by number range and return leads
+        if (filterModel?.operatorValue === "isRange" && filterModel?.type === "number") {
+          // find range of number with mongo db aggregate
+          const response = await Lead.aggregate([
+            {
+              $match: {
+                $and: [
+                  { [filterModel?.columnField]: { $gte: filterModel?.from } },
+                  { [filterModel?.columnField]: { $lte: filterModel?.to } },
+                ],
+              },
+            },
+          ])
+            .limit(args?.take)
+            .skip(args?.skip)
+            .sort(args.column ? sortCriteria : { createdAt: -1 })
+            .exec();
+
+          // return _id as id for each lead in response array of objects and return response
+          const result = response.map((lead) => {
+            const leadUp = { ...lead, id: lead._id };
+            return leadUp;
+          });
+          return { count: totalCount, rows: result };
+        }
+
+        console.log("---------------------------------after range");
+        //-------------------------------------------------------------------------------------------------------------
         // filter record by contains, equals, etc.
         const query = {};
 
@@ -653,21 +700,6 @@ const RootQuery = new GraphQLObjectType({
           filterModel?.operatorValue === "isNotEmpty"
         ) {
           const response = await Lead.find(query)
-            .limit(args?.take)
-            .skip(args?.skip)
-            .sort(args.column ? sortCriteria : { createdAt: -1 })
-            .exec();
-          return { count: totalCount, rows: response };
-        }
-
-        // filter date by date range in filterModel and return leads in that date range and sort by date range and return leads
-        if (filterModel?.operatorValue === "inRange") {
-          const response = await Lead.find({
-            [filterModel?.columnField]: {
-              $gte: filterModel?.value[0],
-              $lte: filterModel?.value[1],
-            },
-          })
             .limit(args?.take)
             .skip(args?.skip)
             .sort(args.column ? sortCriteria : { createdAt: -1 })
@@ -1189,7 +1221,7 @@ const mutation = new GraphQLObjectType({
           return result;
         } catch (error) {
           console.error("Error details", error);
-          throw new Error("Error adding lead");
+          throw new Error("Error adding lead", error);
         }
       },
     },

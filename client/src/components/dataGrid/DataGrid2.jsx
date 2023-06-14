@@ -722,15 +722,41 @@ export default function DataGridProCSV2() {
   }
 
   // get filter value from filter modal
-  const getFilterValue = async ({ label, value }) => {
+  const getFilterValue = async ({ label, value, from, to }) => {
     setSort('');
     const filterModel = {
       columnField: label,
       operatorValue: 'contains',
-      value,
+      value: value || '',
+      from: '',
+      to: '',
     };
+
+    // if value have Birthday or FirstVisitDate or HomeClosingDate or LastAgentCallDate or LastAgentNote or LastVisitDate or LenderOptIn or RegisterDate then set type to date and operatorValue to isRange
+    if (
+      label === 'Birthday' ||
+      label === 'FirstVisitDate' ||
+      label === 'HomeClosingDate' ||
+      label === 'LastAgentCallDate' ||
+      label === 'LastAgentNote' ||
+      label === 'LastVisitDate' ||
+      label === 'LenderOptIn' ||
+      label === 'RegisterDate'
+    ) {
+      filterModel.type = 'date';
+      filterModel.operatorValue = 'isRange';
+      filterModel.from = from;
+      filterModel.to = to;
+    }
+    // if value have VisitTotal or listingviewcount or AvgListingPrice then set type to number and operatorValue to isRange
+    if (label === 'VisitTotal' || label === 'listingviewcount' || label === 'AvgListingPrice') {
+      filterModel.type = 'number';
+      filterModel.operatorValue = 'isRange';
+      filterModel.from = from;
+      filterModel.to = to;
+    }
+
     setFilterModel(filterModel);
-    setFilterLeadModal(false);
   };
 
   // sorting
@@ -888,7 +914,7 @@ export default function DataGridProCSV2() {
       <FilterLeads
         filterLeadModal={filterLeadModal}
         setFilterLeadModal={setFilterLeadModal}
-        callback={({ label, value }) => getFilterValue({ label, value })}
+        callback={({ label, value, from, to }) => getFilterValue({ label, value, from, to })}
       />
       {currentParam && (
         <LeadDetails

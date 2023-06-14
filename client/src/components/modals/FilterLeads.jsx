@@ -18,6 +18,8 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback }) => {
   const [label, setLable] = useState('FirstName');
   const [fieldValue, setFieldValue] = useState('firstName');
   const [filterValue, setFilterValue] = useState('');
+  const [from, setFrom] = useState('');
+  const [to, setTo] = useState('');
 
   const { data, loading } = useQuery(GET_LEADS_VALUES, {
     variables: {
@@ -30,11 +32,19 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback }) => {
     setLable(label);
     setFieldValue(value);
     setFilterValue('');
+    setFrom('');
+    setTo('');
   };
 
   const handleOnChange = (e, value) => {
     setFilterValue(value);
     callback({ label: fieldValue, value });
+    setFilterLeadModal(false);
+  };
+
+  const handleSubmit = () => {
+    callback({ label: fieldValue, value: filterValue, from, to });
+    setFilterLeadModal(false);
   };
 
   return (
@@ -625,10 +635,7 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback }) => {
                 />
               </Box>
             </Box>
-          ) : fieldValue == 'AvgListingPrice' ||
-            fieldValue == 'VisitTotal' ||
-            fieldValue == 'AvgListingPrice' ||
-            fieldValue == 'listingviewcount' ? (
+          ) : fieldValue == 'AvgListingPrice' || fieldValue == 'VisitTotal' || fieldValue == 'listingviewcount' ? (
             <Box flex=".7" padding="20px">
               <Box display="flex" flexDirection="row" alignItems={'center'} gap="10px">
                 <Typography variant="subtitle1">From</Typography>
@@ -641,6 +648,7 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback }) => {
                   InputLabelProps={{
                     shrink: true,
                   }}
+                  onChange={(e) => setFrom(e.target.value)}
                 />
 
                 <Typography variant="subtitle1">To</Typography>
@@ -653,6 +661,7 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback }) => {
                   InputLabelProps={{
                     shrink: true,
                   }}
+                  onChange={(e) => setTo(e.target.value)}
                 />
               </Box>
             </Box>
@@ -682,7 +691,7 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback }) => {
         <Button onClick={() => setFilterLeadModal(false)} variant="outlined" sx={{ padding: '5px 16px' }}>
           Cancel
         </Button>
-        <Button variant="contained" sx={{ padding: '6px 26px', color: '#fff' }}>
+        <Button variant="contained" sx={{ padding: '6px 26px', color: '#fff' }} onClick={handleSubmit}>
           View Results
         </Button>
       </DialogActions>
