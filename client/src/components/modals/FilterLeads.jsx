@@ -20,6 +20,8 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback }) => {
   const [filterValue, setFilterValue] = useState('');
   const [from, setFrom] = useState('');
   const [to, setTo] = useState('');
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
 
   const { data, loading } = useQuery(GET_LEADS_VALUES, {
     variables: {
@@ -43,8 +45,16 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback }) => {
   };
 
   const handleSubmit = () => {
-    callback({ label: fieldValue, value: filterValue, from, to });
-    setFilterLeadModal(false);
+    if (from && to) {
+      callback({ label: fieldValue, value: filterValue, from, to });
+      setFilterLeadModal(false);
+      return;
+    }
+    if (startDate && endDate) {
+      callback({ label: fieldValue, value: filterValue, from: startDate, to: endDate });
+      setFilterLeadModal(false);
+      return;
+    }
   };
 
   return (
@@ -605,7 +615,7 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback }) => {
           fieldValue == 'LastAgentCallDate' ||
           fieldValue == 'LastAgentNote' ||
           fieldValue == 'LastVisitDate' ||
-          fieldValue == 'LenderOptIn' ||
+          fieldValue == 'OptInDate' ||
           fieldValue == 'RegisterDate' ? (
             <Box>
               {/* add two fields for date range */}
@@ -620,6 +630,12 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback }) => {
                   InputLabelProps={{
                     shrink: true,
                   }}
+                  value={startDate}
+                  onChange={(e) => {
+                    setStartDate(e.target.value);
+                    setFrom('');
+                    setTo('');
+                  }}
                 />
 
                 <Typography variant="subtitle1">To</Typography>
@@ -629,8 +645,14 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback }) => {
                   size="small"
                   type="date"
                   sx={{ width: '100%' }}
+                  value={endDate}
                   InputLabelProps={{
                     shrink: true,
+                  }}
+                  onChange={(e) => {
+                    setEndDate(e.target.value);
+                    setFrom('');
+                    setTo('');
                   }}
                 />
               </Box>
@@ -648,7 +670,12 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback }) => {
                   InputLabelProps={{
                     shrink: true,
                   }}
-                  onChange={(e) => setFrom(e.target.value)}
+                  value={from}
+                  onChange={(e) => {
+                    setFrom(e.target.value);
+                    setEndDate('');
+                    setStartDate('');
+                  }}
                 />
 
                 <Typography variant="subtitle1">To</Typography>
@@ -661,7 +688,12 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback }) => {
                   InputLabelProps={{
                     shrink: true,
                   }}
-                  onChange={(e) => setTo(e.target.value)}
+                  value={to}
+                  onChange={(e) => {
+                    setTo(e.target.value);
+                    setEndDate('');
+                    setStartDate('');
+                  }}
                 />
               </Box>
             </Box>

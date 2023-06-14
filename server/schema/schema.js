@@ -615,9 +615,8 @@ const RootQuery = new GraphQLObjectType({
           console.log("---------------------------------date");
           const response = await Lead.find({
             [filterModel?.columnField]: {
-              // {$gte:ISODate(“2020-03-01”),$lt:ISODate(“2021-03-31”)}}
-              $gte: ISODate(filterModel?.from),
-              $lt: ISODate(filterModel?.to),
+              $gte: new Date(filterModel?.from),
+              $lt: new Date(filterModel?.to),
             },
           })
             .limit(args?.take)
@@ -636,7 +635,6 @@ const RootQuery = new GraphQLObjectType({
             .skip(args?.skip)
             .sort(args.column ? sortCriteria : { createdAt: -1 })
             .exec();
-          console.log("response--------------------------", response);
           return { count: totalCount, rows: response };
         }
 
@@ -728,8 +726,14 @@ const RootQuery = new GraphQLObjectType({
           [value]: { $regex: new RegExp(args.label, "i") },
         });
 
-        // get values from leads array with args.value as key and return array of values for that key from leads array
-        const values = leads.map((lead) => lead[args.value]);
+        // const values = leads.map((lead) => lead[args.value]);
+        // get values from leads array with args.value as key and return array of values for that key from leads array and remove duplicates from array
+        const values = leads
+          .map((lead) => lead[args.value])
+          .filter((value, index, self) => {
+            return self.indexOf(value) === index;
+          });
+
         return values;
       },
     },

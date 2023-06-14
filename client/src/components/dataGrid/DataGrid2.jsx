@@ -379,10 +379,9 @@ export default function DataGridProCSV2() {
       },
       {
         field: 'FirstVisitDate',
-        headerName: 'Firs tVisit Date',
+        headerName: 'First tVisit Date',
         width: 120,
         editable: true,
-
         hide: true,
       },
       {
@@ -740,7 +739,7 @@ export default function DataGridProCSV2() {
       label === 'LastAgentCallDate' ||
       label === 'LastAgentNote' ||
       label === 'LastVisitDate' ||
-      label === 'LenderOptIn' ||
+      label === 'OptInDate' ||
       label === 'RegisterDate'
     ) {
       filterModel.type = 'date';
