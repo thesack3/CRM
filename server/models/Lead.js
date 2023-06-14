@@ -96,15 +96,15 @@ const LeadSchema = new mongoose.Schema({
     required: false,
   },
   VisitTotal: {
-    type: String,
+    type: Number,
     required: false,
   },
   listingviewcount: {
-    type: String,
+    type: Number,
     required: false,
   },
   AvgListingPrice: {
-    type: String,
+    type: Number,
     required: false,
   },
   NextCallDue: {
@@ -219,6 +219,29 @@ const LeadSchema = new mongoose.Schema({
 LeadSchema.pre("save", function (next) {
   if (this.phone) {
     this.phone = this.phone.replace(/\D/g, ""); // Remove all non-numeric characters
+  }
+  next();
+});
+
+//  save VisitTotal in number format instead of string format to allow for sorting in the client
+LeadSchema.pre("save", function (next) {
+  if (this.VisitTotal) {
+    this.VisitTotal = parseInt(this.VisitTotal);
+  }
+  next();
+});
+
+// save these fields in number format instead of string format to allow for sorting in the client AvgListingPrice, listingviewcount
+LeadSchema.pre("save", function (next) {
+  if (this.AvgListingPrice) {
+    this.AvgListingPrice = parseInt(this.AvgListingPrice);
+  }
+  next();
+});
+
+LeadSchema.pre("save", function (next) {
+  if (this.listingviewcount) {
+    this.listingviewcount = parseInt(this.listingviewcount);
   }
   next();
 });
