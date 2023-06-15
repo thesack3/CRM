@@ -69,6 +69,11 @@ export default function AddLeadModal({ handleRefetch, title, leadData }) {
     Link: '',
     Birthday: '',
     HomeClosingDate: '',
+    didLeaveReview: '',
+    didClosingGift: '',
+    didsocialMediaFriends: '',
+    didPostCardDrip: '',
+    didAnniversaryDrip: '',
   });
 
   React.useEffect(() => {
@@ -86,12 +91,12 @@ export default function AddLeadModal({ handleRefetch, title, leadData }) {
         ...curLead,
         [event.target.name]: event.target.value,
       });
+    } else {
+      setFormData({
+        ...formData,
+        [event.target.name]: event.target.value,
+      });
     }
-    setFormData({
-      ...formData,
-      [event.target.name]: event.target.value,
-    });
-    console.log(formData);
   };
   const handleClose = () => {
     setOpen(false);
@@ -146,6 +151,11 @@ export default function AddLeadModal({ handleRefetch, title, leadData }) {
           Link: '',
           Birthday: '',
           HomeClosingDate: '',
+          didLeaveReview: '',
+          didClosingGift: '',
+          didsocialMediaFriends: '',
+          didPostCardDrip: '',
+          didAnniversaryDrip: '',
         });
         setUploaded(false);
         handleRefetch();
@@ -159,12 +169,15 @@ export default function AddLeadModal({ handleRefetch, title, leadData }) {
   };
 
   // handle update
-  const handleUpdate = async () => {
+  const handleUpdate = (e) => {
+    e.preventDefault();
+
     try {
-      await UpdateLead({
+      UpdateLead({
         variables: curLead,
       });
       setCurLead(null);
+      handleRefetch();
       dispatch(setAlert({ type: 'success', message: 'Lead updated successfully' }));
     } catch (error) {
       dispatch(setAlert({ type: 'error', payload: error.message }));
@@ -550,7 +563,6 @@ export default function AddLeadModal({ handleRefetch, title, leadData }) {
                 fullWidth
                 variant="standard"
                 name="NextCallDue"
-                value={formData.NextCallDue}
                 value={curLead ? curLead.NextCallDue : formData.NextCallDue}
                 onChange={handleChange}
               />
@@ -668,7 +680,7 @@ export default function AddLeadModal({ handleRefetch, title, leadData }) {
                 fullWidth
                 variant="standard"
                 name="Address"
-                value={leadData ? leadData?.Address : formData.Address}
+                value={curLead ? curLead?.Address : formData.Address}
                 onChange={handleChange}
               />
 
@@ -760,6 +772,67 @@ export default function AddLeadModal({ handleRefetch, title, leadData }) {
                 variant="standard"
                 name="HomeClosingDate"
                 value={curLead ? curLead.HomeClosingDate : formData.HomeClosingDate}
+                onChange={handleChange}
+              />
+
+              <TextField
+                autoFocus
+                margin="dense"
+                id="didLeaveReview"
+                label="Did Leave Review"
+                type="text"
+                fullWidth
+                variant="standard"
+                name="didLeaveReview"
+                value={curLead ? curLead.didLeaveReview : formData.didLeaveReview}
+                onChange={handleChange}
+              />
+              <TextField
+                autoFocus
+                margin="dense"
+                id="didClosingGift"
+                label="Did Closing Gift"
+                type="text"
+                fullWidth
+                variant="standard"
+                name="didClosingGift"
+                value={curLead ? curLead.didClosingGift : formData.didClosingGift}
+                onChange={handleChange}
+              />
+              <TextField
+                autoFocus
+                margin="dense"
+                id="didsocialMediaFriends"
+                label="Did Social Media Friends"
+                type="text"
+                fullWidth
+                variant="standard"
+                name="didsocialMediaFriends"
+                value={curLead ? curLead.didsocialMediaFriends : formData.didsocialMediaFriends}
+                onChange={handleChange}
+              />
+              <TextField
+                autoFocus
+                margin="dense"
+                id="didPostCardDrip"
+                label="Did Post Card Drip"
+                type="text"
+                fullWidth
+                variant="standard"
+                name="didPostCardDrip"
+                value={curLead ? curLead.didPostCardDrip : formData.didPostCardDrip}
+                onChange={handleChange}
+              />
+              <TextField
+                autoFocus
+                margin="dense"
+                id="didAnniversaryDrip"
+                label="Did Anniversary Drip"
+                type="text"
+                fullWidth
+                variant="standard"
+                name="didAnniversaryDrip"
+                value={curLead ? curLead.didAnniversaryDrip : formData.didAnniversaryDrip}
                 onChange={handleChange}
               />
             </DialogContent>
