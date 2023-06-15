@@ -52,7 +52,7 @@ const LeadSchema = new mongoose.Schema({
     required: false,
   },
   OptInDate: {
-    type: String,
+    type: Date,
     required: false,
   },
   BuyerAgentCategory: {
@@ -88,7 +88,7 @@ const LeadSchema = new mongoose.Schema({
     required: false,
   },
   LastAgentNote: {
-    type: String,
+    type: Date,
     required: false,
   },
   eAlerts: {
@@ -96,15 +96,15 @@ const LeadSchema = new mongoose.Schema({
     required: false,
   },
   VisitTotal: {
-    type: String,
+    type: Number,
     required: false,
   },
   listingviewcount: {
-    type: String,
+    type: Number,
     required: false,
   },
   AvgListingPrice: {
-    type: String,
+    type: Number,
     required: false,
   },
   NextCallDue: {
@@ -112,7 +112,7 @@ const LeadSchema = new mongoose.Schema({
     required: false,
   },
   LastAgentCallDate: {
-    type: String,
+    type: Date,
     required: false,
   },
   LastLenderCallDate: {
@@ -120,15 +120,15 @@ const LeadSchema = new mongoose.Schema({
     required: false,
   },
   FirstVisitDate: {
-    type: String,
+    type: Date,
     required: false,
   },
   LastVisitDate: {
-    type: String,
+    type: Date,
     required: false,
   },
   RegisterDate: {
-    type: String,
+    type: Date,
     required: false,
   },
   LeadType: {
@@ -165,11 +165,11 @@ const LeadSchema = new mongoose.Schema({
     required: false,
   },
   Birthday: {
-    type: String,
+    type: Date,
     required: false,
   },
   HomeClosingDate: {
-    type: String,
+    type: Date,
     required: false,
   },
   tagsList: {
@@ -222,5 +222,78 @@ LeadSchema.pre("save", function (next) {
   }
   next();
 });
+
+//  save VisitTotal in number format instead of string format to allow for sorting in the client
+LeadSchema.pre("save", function (next) {
+  if (this.VisitTotal) {
+    this.VisitTotal = parseInt(this.VisitTotal);
+  }
+  next();
+});
+
+// save these fields in number format instead of string format to allow for sorting in the client AvgListingPrice, listingviewcount
+LeadSchema.pre("save", function (next) {
+  if (this.AvgListingPrice) {
+    this.AvgListingPrice = parseInt(this.AvgListingPrice);
+  }
+  next();
+});
+
+LeadSchema.pre("save", function (next) {
+  if (this.listingviewcount) {
+    this.listingviewcount = parseInt(this.listingviewcount);
+  }
+  next();
+});
+
+LeadSchema.pre("save", function (next) {
+  if (this.FirstVisitDate) {
+    this.FirstVisitDate = new Date(this.FirstVisitDate);
+  }
+  next();
+});
+LeadSchema.pre("save", function (next) {
+  if (this.HomeClosingDate) {
+    this.HomeClosingDate = new Date(this.HomeClosingDate);
+  }
+  next();
+});
+LeadSchema.pre("save", function (next) {
+  if (this.LastAgentCallDate) {
+    this.LastAgentCallDate = new Date(this.LastAgentCallDate);
+  }
+  next();
+});
+LeadSchema.pre("save", function (next) {
+  if (this.LastAgentNote) {
+    this.LastAgentNote = new Date(this.LastAgentNote);
+  }
+  next();
+});
+LeadSchema.pre("save", function (next) {
+  if (this.LastVisitDate) {
+    this.LastVisitDate = new Date(this.LastVisitDate);
+  }
+  next();
+});
+LeadSchema.pre("save", function (next) {
+  if (this.OptInDate) {
+    this.OptInDate = new Date(this.OptInDate);
+  }
+  next();
+});
+LeadSchema.pre("save", function (next) {
+  if (this.RegisterDate) {
+    this.RegisterDate = new Date(this.RegisterDate);
+  }
+  next();
+});
+LeadSchema.pre("save", function (next) {
+  if (this.Birthday) {
+    this.Birthday = new Date(this.Birthday);
+  } 
+  next();
+});
+
 
 module.exports = mongoose.model("Lead", LeadSchema);

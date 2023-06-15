@@ -609,6 +609,36 @@ const RootQuery = new GraphQLObjectType({
           sortCriteria[args.column] = args.sort === "desc" ? -1 : 1;
         }
 
+        console.log("filterModel---------------------------------", filterModel);
+        //-------- filter date by date range in filterModel and return leads in that date range and sort by date range and return leads
+        if (filterModel?.operatorValue === "isRange" && filterModel?.type === "date") {
+          console.log("---------------------------------date");
+          const response = await Lead.find({
+            [filterModel?.columnField]: {
+              $gte: new Date(filterModel?.from),
+              $lt: new Date(filterModel?.to),
+            },
+          })
+            .limit(args?.take)
+            .skip(args?.skip)
+            .sort(args.column ? sortCriteria : { createdAt: -1 })
+            .exec();
+          return { count: totalCount, rows: response };
+        }
+
+        // filter number by number range in filterModel and return leads in that number range and sort by number range and return leads
+        if (filterModel?.operatorValue === "isRange" && filterModel?.type === "number") {
+          const response = await Lead.find({
+            [filterModel?.columnField]: { $gte: filterModel?.from, $lte: filterModel?.to },
+          })
+            .limit(args?.take)
+            .skip(args?.skip)
+            .sort(args.column ? sortCriteria : { createdAt: -1 })
+            .exec();
+          return { count: totalCount, rows: response };
+        }
+
+        //-------------------------------------------------------------------------------------------------------------
         // filter record by contains, equals, etc.
         const query = {};
 
@@ -673,6 +703,38 @@ const RootQuery = new GraphQLObjectType({
           .sort(args.column ? sortCriteria : { createdAt: -1 })
           .exec();
         return { count: totalCount, rows: leads };
+      },
+    },
+
+    // filter leads by all fields in lead model and return label
+    leadFilter: {
+      type: new GraphQLList(GraphQLString),
+      args: {
+        label: { type: GraphQLString },
+        value: { type: GraphQLString },
+      },
+      async resolve(parent, args) {
+        const keys = Object.keys(Lead.schema.paths);
+        const leadKeys = keys.filter(
+          (key) => !["_id", "__v", "categoriesList", "tagsList"].includes(key)
+        );
+        // get value from leadKeys array with args.value  as key
+        const value = leadKeys.find((key) => key === args.value);
+
+        // find leads by value in database
+        const leads = await Lead.find({
+          [value]: { $regex: new RegExp(args.label, "i") },
+        });
+
+        // const values = leads.map((lead) => lead[args.value]);
+        // get values from leads array with args.value as key and return array of values for that key from leads array and remove duplicates from array
+        const values = leads
+          .map((lead) => lead[args.value])
+          .filter((value, index, self) => {
+            return self.indexOf(value) === index;
+          });
+
+        return values;
       },
     },
 
@@ -1148,7 +1210,7 @@ const mutation = new GraphQLObjectType({
           return result;
         } catch (error) {
           console.error("Error details", error);
-          throw new Error("Error adding lead");
+          throw new Error("Error adding lead", error);
         }
       },
     },
@@ -1335,6 +1397,24 @@ const mutation = new GraphQLObjectType({
         categoriesList: { type: GraphQLList(GraphQLString) },
         ListingAgentCategory: { type: GraphQLString },
         BuyerAgentCategory: { type: GraphQLString },
+        LenderCategory: { type: GraphQLString },
+        OriginalCampaign: { type: GraphQLString },
+        LastAgentNote: { type: GraphQLString },
+        eAlerts: { type: GraphQLString },
+        VisitTotal: { type: GraphQLString },
+        listingviewcount: { type: GraphQLString },
+        AvgListingPrice: { type: GraphQLString },
+        NextCallDue: { type: GraphQLString },
+        LastAgentCallDate: { type: GraphQLString },
+        LastLenderCallDate: { type: GraphQLString },
+        FirstVisitDate: { type: GraphQLString },
+        LastVisitDate: { type: GraphQLString },
+        RegisterDate: { type: GraphQLString },
+        LeadType: { type: GraphQLString },
+        AgentSelected: { type: GraphQLString },
+        LenderOptIn: { type: GraphQLString },
+        Link: { type: GraphQLString },
+        updatedAt: { type: GraphQLString },
         leadId: { type: GraphQLString },
 
         // Add additional fields to update here
@@ -1687,6 +1767,23 @@ const mutation = new GraphQLObjectType({
       async resolve(parent, args) {
         const result = await Task.findByIdAndDelete(args.id);
         return result;
+      },
+    },
+
+    // delete all tasks for a user
+    deleteAllTasks: {
+      type: new GraphQLObjectType({
+        name: "deleteAllTasks",
+        fields: () => ({
+          message: { type: GraphQLString },
+        }),
+      }),
+      args: {
+        userId: { type: GraphQLID },
+      },
+      async resolve(parent, args) {
+        await Task.deleteMany({ user: args.userId });
+        return { message: "All tasks deleted successfully" };
       },
     },
 

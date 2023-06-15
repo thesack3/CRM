@@ -177,3 +177,9 @@ export const GET_FILTERS = gql`
     }
   }
 `;
+
+export const GET_LEADS_VALUES = gql`
+  query leadFilter($label: String, $value: String) {
+    leadFilter(label: $label, value: $value)
+  }
+`;
