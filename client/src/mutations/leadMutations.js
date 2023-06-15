@@ -197,11 +197,50 @@ const updateLeadMutation = gql`
       email
       lastName
       phone
+      phoneStatus
+      description
+      emailInvalid
+      GloballyOptedOutOfEmail
+      GloballyOptedOutOfBuyerAgentEmail
+      GloballyOptedOutOfListingAgentEmail
+      GloballyOptedOutOfLenderEmail
+      GloballyOptedOutOfAlerts
+      OptInDate
+      BuyerAgentCategory
+      ListingAgentCategory
+      LenderCategory
+      BuyerAgent
+      ListingAgent
+      Lender
+      OriginalSource
+      OriginalCampaign
+      LastAgentNote
+      eAlerts
+      VisitTotal
+      listingviewcount
+      AvgListingPrice
+      NextCallDue
+      LastAgentCallDate
+      LastLenderCallDate
+      FirstVisitDate
+      LastVisitDate
+      RegisterDate
+      LeadType
+      AgentSelected
+      LenderOptIn
+      Address
+      City
+      State
+      ZipCode
+      tags {
+        id
+      }
+      Link
+      Birthday
+      HomeClosingDate
+
       tagsList
       categoriesList
-      description
-      phoneStatus
-      emailInvalid
     }
   }
 `;

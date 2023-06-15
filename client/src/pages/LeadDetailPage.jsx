@@ -597,307 +597,307 @@ const LeadDetailPage = () => {
                       {data.lead.email || '-'}
                     </Typography>
                   </Box> */}
-                  <Box display="flex">
+                  <Box display="flex" justifyContent="space-between">
                     <Typography variant="h6" sx={{ width: '30%' }}>
                       Address:
                     </Typography>
-                    <Typography variant="subtitle1" sx={{ width: '70%' }}>
+                    <Typography variant="subtitle1" sx={{ width: '65%' }}>
                       {data.lead.Address || '-'}
                     </Typography>
                   </Box>
-                  <Box display="flex">
+                  <Box display="flex" justifyContent="space-between">
                     <Typography variant="h6" sx={{ width: '30%' }}>
                       Agent Selected:
                     </Typography>
-                    <Typography variant="subtitle1" sx={{ width: '70%' }}>
+                    <Typography variant="subtitle1" sx={{ width: '65%' }}>
                       {data.lead.AgentSelected || '-'}
                     </Typography>
                   </Box>
-                  <Box display="flex">
+                  <Box display="flex" justifyContent="space-between">
                     <Typography variant="h6" sx={{ width: '30%' }}>
                       Avg Listing Price
                     </Typography>
-                    <Typography variant="subtitle1" sx={{ width: '70%' }}>
+                    <Typography variant="subtitle1" sx={{ width: '65%' }}>
                       {data.lead.AvgListingPrice || '-'}
                     </Typography>
                   </Box>
-                  <Box display="flex">
+                  <Box display="flex" justifyContent="space-between">
                     <Typography variant="h6" sx={{ width: '30%' }}>
                       Birthday
                     </Typography>
-                    <Typography variant="subtitle1" sx={{ width: '70%' }}>
+                    <Typography variant="subtitle1" sx={{ width: '65%' }}>
                       {data.lead.Birthday || '-'}
                     </Typography>
                   </Box>
-                  <Box display="flex">
+                  <Box display="flex" justifyContent="space-between">
                     <Typography variant="h6" sx={{ width: '30%' }}>
                       Buyer Agent
                     </Typography>
-                    <Typography variant="subtitle1" sx={{ width: '70%' }}>
+                    <Typography variant="subtitle1" sx={{ width: '65%' }}>
                       {data.lead.BuyerAgent || '-'}
                     </Typography>
                   </Box>
-                  <Box display="flex">
+                  <Box display="flex" justifyContent="space-between">
                     <Typography variant="h6" sx={{ width: '30%' }}>
                       Buyer Agent Category
                     </Typography>
-                    <Typography variant="subtitle1" sx={{ width: '70%' }}>
+                    <Typography variant="subtitle1" sx={{ width: '65%' }}>
                       {data.lead.BuyerAgentCategory || '-'}
                     </Typography>
                   </Box>
-                  <Box display="flex">
+                  <Box display="flex" justifyContent="space-between">
                     <Typography variant="h6" sx={{ width: '30%' }}>
                       City
                     </Typography>
-                    <Typography variant="subtitle1" sx={{ width: '70%' }}>
+                    <Typography variant="subtitle1" sx={{ width: '65%' }}>
                       {data.lead.City || '-'}
                     </Typography>
                   </Box>
-                  <Box display="flex">
+                  <Box display="flex" justifyContent="space-between">
                     <Typography variant="h6" sx={{ width: '30%' }}>
                       First Visit Date
                     </Typography>
-                    <Typography variant="subtitle1" sx={{ width: '70%' }}>
+                    <Typography variant="subtitle1" sx={{ width: '65%' }}>
                       {data.lead.FirstVisitDate || '-'}
                     </Typography>
                   </Box>
-                  <Box display="flex">
+                  <Box display="flex" justifyContent="space-between">
                     <Typography variant="h6" sx={{ width: '30%' }}>
                       Globally Opted Out Of Alerts
                     </Typography>
-                    <Typography variant="subtitle1" sx={{ width: '70%' }}>
+                    <Typography variant="subtitle1" sx={{ width: '65%' }}>
                       {data.lead.GloballyOptedOutOfAlerts || '-'}
                     </Typography>
                   </Box>
-                  <Box display="flex">
+                  <Box display="flex" justifyContent="space-between">
                     <Typography variant="h6" sx={{ width: '30%' }}>
                       Globally Opted Out Of Buyer Agent Email
                     </Typography>
-                    <Typography variant="subtitle1" sx={{ width: '70%' }}>
+                    <Typography variant="subtitle1" sx={{ width: '65%' }}>
                       {data.lead.GloballyOptedOutOfBuyerAgentEmail || '-'}
                     </Typography>
                   </Box>
-                  <Box display="flex">
+                  <Box display="flex" justifyContent="space-between">
                     <Typography variant="h6" sx={{ width: '30%' }}>
                       Globally Opted Out Of Email
                     </Typography>
-                    <Typography variant="subtitle1" sx={{ width: '70%' }}>
+                    <Typography variant="subtitle1" sx={{ width: '65%' }}>
                       {data.lead.GloballyOptedOutOfEmail || '-'}
                     </Typography>
                   </Box>
-                  <Box display="flex">
+                  <Box display="flex" justifyContent="space-between">
                     <Typography variant="h6" sx={{ width: '30%' }}>
                       Globally Opted Out Of Lender Email
                     </Typography>
-                    <Typography variant="subtitle1" sx={{ width: '70%' }}>
+                    <Typography variant="subtitle1" sx={{ width: '65%' }}>
                       {data.lead.GloballyOptedOutOfLenderEmail || '-'}
                     </Typography>
                   </Box>
-                  <Box display="flex">
+                  <Box display="flex" justifyContent="space-between">
                     <Typography variant="h6" sx={{ width: '30%' }}>
                       Globally Opted Out Of Listing Agent Email
                     </Typography>
-                    <Typography variant="subtitle1" sx={{ width: '70%' }}>
+                    <Typography variant="subtitle1" sx={{ width: '65%' }}>
                       {data.lead.GloballyOptedOutOfListingAgentEmail || '-'}
                     </Typography>
                   </Box>
-                  <Box display="flex">
+                  <Box display="flex" justifyContent="space-between">
                     <Typography variant="h6" sx={{ width: '30%' }}>
                       Home Closing Date
                     </Typography>
-                    <Typography variant="subtitle1" sx={{ width: '70%' }}>
+                    <Typography variant="subtitle1" sx={{ width: '65%' }}>
                       {data.lead.HomeClosingDate || '-'}
                     </Typography>
                   </Box>
-                  <Box display="flex">
+                  <Box display="flex" justifyContent="space-between">
                     <Typography variant="h6" sx={{ width: '30%' }}>
                       Last Agent Call Date
                     </Typography>
-                    <Typography variant="subtitle1" sx={{ width: '70%' }}>
+                    <Typography variant="subtitle1" sx={{ width: '65%' }}>
                       {data.lead.LastAgentCallDate || '-'}
                     </Typography>
                   </Box>
-                  <Box display="flex">
+                  <Box display="flex" justifyContent="space-between">
                     <Typography variant="h6" sx={{ width: '30%' }}>
                       Last Agent Note
                     </Typography>
-                    <Typography variant="subtitle1" sx={{ width: '70%' }}>
+                    <Typography variant="subtitle1" sx={{ width: '65%' }}>
                       {data.lead.LastAgentNote || '-'}
                     </Typography>
                   </Box>
-                  <Box display="flex">
+                  <Box display="flex" justifyContent="space-between">
                     <Typography variant="h6" sx={{ width: '30%' }}>
                       Last Lender Call Date
                     </Typography>
-                    <Typography variant="subtitle1" sx={{ width: '70%' }}>
+                    <Typography variant="subtitle1" sx={{ width: '65%' }}>
                       {data.lead.LastLenderCallDate || '-'}
                     </Typography>
                   </Box>
-                  <Box display="flex">
+                  <Box display="flex" justifyContent="space-between">
                     <Typography variant="h6" sx={{ width: '30%' }}>
                       Last Visit Date
                     </Typography>
-                    <Typography variant="subtitle1" sx={{ width: '70%' }}>
+                    <Typography variant="subtitle1" sx={{ width: '65%' }}>
                       {data.lead.LastVisitDate || '-'}
                     </Typography>
                   </Box>
-                  <Box display="flex">
+                  <Box display="flex" justifyContent="space-between">
                     <Typography variant="h6" sx={{ width: '30%' }}>
                       Lead Type
                     </Typography>
-                    <Typography variant="subtitle1" sx={{ width: '70%' }}>
+                    <Typography variant="subtitle1" sx={{ width: '65%' }}>
                       {data.lead.LeadType || '-'}
                     </Typography>
                   </Box>
-                  <Box display="flex">
+                  <Box display="flex" justifyContent="space-between">
                     <Typography variant="h6" sx={{ width: '30%' }}>
                       Lender
                     </Typography>
-                    <Typography variant="subtitle1" sx={{ width: '70%' }}>
+                    <Typography variant="subtitle1" sx={{ width: '65%' }}>
                       {data.lead.Lender || '-'}
                     </Typography>
                   </Box>
-                  <Box display="flex">
+                  <Box display="flex" justifyContent="space-between">
                     <Typography variant="h6" sx={{ width: '30%' }}>
                       Lender Category
                     </Typography>
-                    <Typography variant="subtitle1" sx={{ width: '70%' }}>
+                    <Typography variant="subtitle1" sx={{ width: '65%' }}>
                       {data.lead.LenderCategory || '-'}
                     </Typography>
                   </Box>
-                  <Box display="flex">
+                  <Box display="flex" justifyContent="space-between">
                     <Typography variant="h6" sx={{ width: '30%' }}>
                       Lender OptIn
                     </Typography>
-                    <Typography variant="subtitle1" sx={{ width: '70%' }}>
+                    <Typography variant="subtitle1" sx={{ width: '65%' }}>
                       {data.lead.LenderOptIn || '-'}
                     </Typography>
                   </Box>
-                  <Box display="flex">
+                  <Box display="flex" justifyContent="space-between">
                     <Typography variant="h6" sx={{ width: '30%' }}>
                       Link
                     </Typography>
-                    <Typography variant="subtitle1" sx={{ width: '70%' }}>
+                    <Typography variant="subtitle1" sx={{ width: '65%' }}>
                       {data.lead.Link || '-'}
                     </Typography>
                   </Box>
-                  <Box display="flex">
+                  <Box display="flex" justifyContent="space-between">
                     <Typography variant="h6" sx={{ width: '30%' }}>
                       Listing Agent
                     </Typography>
-                    <Typography variant="subtitle1" sx={{ width: '70%' }}>
+                    <Typography variant="subtitle1" sx={{ width: '65%' }}>
                       {data.lead.ListingAgent || '-'}
                     </Typography>
                   </Box>
-                  <Box display="flex">
+                  <Box display="flex" justifyContent="space-between">
                     <Typography variant="h6" sx={{ width: '30%' }}>
                       Listing Agent Category
                     </Typography>
-                    <Typography variant="subtitle1" sx={{ width: '70%' }}>
+                    <Typography variant="subtitle1" sx={{ width: '65%' }}>
                       {data.lead.ListingAgentCategory || '-'}
                     </Typography>
                   </Box>
-                  <Box display="flex">
+                  <Box display="flex" justifyContent="space-between">
                     <Typography variant="h6" sx={{ width: '30%' }}>
                       Next Call Due
                     </Typography>
-                    <Typography variant="subtitle1" sx={{ width: '70%' }}>
+                    <Typography variant="subtitle1" sx={{ width: '65%' }}>
                       {data.lead.NextCallDue || '-'}
                     </Typography>
                   </Box>
-                  <Box display="flex">
+                  <Box display="flex" justifyContent="space-between">
                     <Typography variant="h6" sx={{ width: '30%' }}>
                       Opt In Date
                     </Typography>
-                    <Typography variant="subtitle1" sx={{ width: '70%' }}>
+                    <Typography variant="subtitle1" sx={{ width: '65%' }}>
                       {data.lead.OptInDate || '-'}
                     </Typography>
                   </Box>
-                  <Box display="flex">
+                  <Box display="flex" justifyContent="space-between">
                     <Typography variant="h6" sx={{ width: '30%' }}>
                       Original Campaign
                     </Typography>
-                    <Typography variant="subtitle1" sx={{ width: '70%' }}>
+                    <Typography variant="subtitle1" sx={{ width: '65%' }}>
                       {data.lead.OriginalCampaign || '-'}
                     </Typography>
                   </Box>
-                  <Box display="flex">
+                  <Box display="flex" justifyContent="space-between">
                     <Typography variant="h6" sx={{ width: '30%' }}>
                       Original Source
                     </Typography>
-                    <Typography variant="subtitle1" sx={{ width: '70%' }}>
+                    <Typography variant="subtitle1" sx={{ width: '65%' }}>
                       {data.lead.OriginalSource || '-'}
                     </Typography>
                   </Box>
-                  <Box display="flex">
+                  <Box display="flex" justifyContent="space-between">
                     <Typography variant="h6" sx={{ width: '30%' }}>
                       Register Date
                     </Typography>
-                    <Typography variant="subtitle1" sx={{ width: '70%' }}>
+                    <Typography variant="subtitle1" sx={{ width: '65%' }}>
                       {data.lead.RegisterDate || '-'}
                     </Typography>
                   </Box>
-                  <Box display="flex">
+                  <Box display="flex" justifyContent="space-between">
                     <Typography variant="h6" sx={{ width: '30%' }}>
                       State
                     </Typography>
-                    <Typography variant="subtitle1" sx={{ width: '70%' }}>
+                    <Typography variant="subtitle1" sx={{ width: '65%' }}>
                       {data.lead.State || '-'}
                     </Typography>
                   </Box>
-                  <Box display="flex">
+                  <Box display="flex" justifyContent="space-between">
                     <Typography variant="h6" sx={{ width: '30%' }}>
                       Visit Total
                     </Typography>
-                    <Typography variant="subtitle1" sx={{ width: '70%' }}>
+                    <Typography variant="subtitle1" sx={{ width: '65%' }}>
                       {data.lead.VisitTotal || '-'}
                     </Typography>
                   </Box>
-                  <Box display="flex">
+                  <Box display="flex" justifyContent="space-between">
                     <Typography variant="h6" sx={{ width: '30%' }}>
                       Zip Code
                     </Typography>
-                    <Typography variant="subtitle1" sx={{ width: '70%' }}>
+                    <Typography variant="subtitle1" sx={{ width: '65%' }}>
                       {data.lead.ZipCode || '-'}
                     </Typography>
                   </Box>
-                  <Box display="flex">
+                  <Box display="flex" justifyContent="space-between">
                     <Typography variant="h6" sx={{ width: '30%' }}>
                       E Alerts
                     </Typography>
-                    <Typography variant="subtitle1" sx={{ width: '70%' }}>
+                    <Typography variant="subtitle1" sx={{ width: '65%' }}>
                       {data.lead.eAlerts || '-'}
                     </Typography>
                   </Box>
-                  <Box display="flex">
+                  <Box display="flex" justifyContent="space-between">
                     <Typography variant="h6" sx={{ width: '30%' }}>
                       Email Invalid
                     </Typography>
-                    <Typography variant="subtitle1" sx={{ width: '70%' }}>
+                    <Typography variant="subtitle1" sx={{ width: '65%' }}>
                       {data.lead.emailInvalid || '-'}
                     </Typography>
                   </Box>
-                  <Box display="flex">
+                  <Box display="flex" justifyContent="space-between">
                     <Typography variant="h6" sx={{ width: '30%' }}>
                       Listing View Count
                     </Typography>
-                    <Typography variant="subtitle1" sx={{ width: '70%' }}>
+                    <Typography variant="subtitle1" sx={{ width: '65%' }}>
                       {data.lead.listingviewcount || '-'}
                     </Typography>
                   </Box>
-                  <Box display="flex">
+                  <Box display="flex" justifyContent="space-between">
                     <Typography variant="h6" sx={{ width: '30%' }}>
                       Phone
                     </Typography>
-                    <Typography variant="subtitle1" sx={{ width: '70%' }}>
+                    <Typography variant="subtitle1" sx={{ width: '65%' }}>
                       {data.lead.phone || '-'}
                     </Typography>
                   </Box>
-                  <Box display="flex">
+                  <Box display="flex" justifyContent="space-between">
                     <Typography variant="h6" sx={{ width: '30%' }}>
                       Phone Status
                     </Typography>
-                    <Typography variant="subtitle1" sx={{ width: '70%' }}>
+                    <Typography variant="subtitle1" sx={{ width: '65%' }}>
                       {data.lead.phoneStatus || '-'}
                     </Typography>
                   </Box>

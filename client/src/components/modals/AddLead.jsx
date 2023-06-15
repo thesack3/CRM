@@ -69,11 +69,6 @@ export default function AddLeadModal({ handleRefetch, title, leadData }) {
     Link: '',
     Birthday: '',
     HomeClosingDate: '',
-    didLeaveReview: '',
-    didClosingGift: '',
-    didsocialMediaFriends: '',
-    didPostCardDrip: '',
-    didAnniversaryDrip: '',
   });
 
   React.useEffect(() => {
@@ -91,12 +86,11 @@ export default function AddLeadModal({ handleRefetch, title, leadData }) {
         ...curLead,
         [event.target.name]: event.target.value,
       });
-    } else {
-      setFormData({
-        ...formData,
-        [event.target.name]: event.target.value,
-      });
     }
+    setFormData({
+      ...formData,
+      [event.target.name]: event.target.value,
+    });
   };
   const handleClose = () => {
     setOpen(false);
@@ -169,15 +163,12 @@ export default function AddLeadModal({ handleRefetch, title, leadData }) {
   };
 
   // handle update
-  const handleUpdate = (e) => {
-    e.preventDefault();
-
+  const handleUpdate = async () => {
     try {
-      UpdateLead({
+      debugger;
+      await UpdateLead({
         variables: curLead,
       });
-      setCurLead(null);
-      handleRefetch();
       dispatch(setAlert({ type: 'success', message: 'Lead updated successfully' }));
     } catch (error) {
       dispatch(setAlert({ type: 'error', payload: error.message }));
