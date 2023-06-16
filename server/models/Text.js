@@ -17,6 +17,9 @@ const TextSchema = new mongoose.Schema({
   dateCreated: {
     type: String,
   },
+  sid: {
+    type: String,
+  },
   leadId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Lead",
