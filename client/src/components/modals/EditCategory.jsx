@@ -9,7 +9,7 @@ import {
   Autocomplete,
   Button,
 } from '@mui/material';
-import { MuiColorInput } from 'mui-color-input';
+// import { MuiColorInput } from 'mui-color-input';
 import { EDIT_CATEGORY } from '../../mutations/editCategory';
 import { useMutation } from '@apollo/client';
 import { useDispatch } from 'react-redux';
@@ -21,10 +21,9 @@ const EditCategory = ({ categoriesList }) => {
   const [open, setOpen] = useState(false);
   const [curCategories, setCurCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
-  const [title, setTitle] = useState('');
-  const [color, setColor] = useState('black');
+  console.log(selectedCategory);
 
-  const [editCategory, { loading, error, data }] = useMutation(EDIT_CATEGORY);
+  const [updateCategory, { loading, error, data }] = useMutation(EDIT_CATEGORY);
 
   // set categories
   useEffect(() => {
@@ -33,27 +32,21 @@ const EditCategory = ({ categoriesList }) => {
     }
   }, [categoriesList]);
 
-  useEffect(() => {
-    if (selectedCategory) {
-      setTitle(selectedCategory.title);
-      setColor(selectedCategory.color);
-    }
-  }, [selectedCategory]);
-
-  const handleLeadSubmit = async () => {
+  const handleUpdate = async () => {
     try {
       updateCategory({
         variables: {
-          title: title,
-          color: color,
+          id: selectedCategory.id,
+          title: selectedCategory.title,
+          color: selectedCategory.color,
         },
       });
-      dispatch(setAlert({ type: 'success', message: 'Category added successfully' }));
-      setRefetch(new Date().getTime());
+      dispatch(setAlert({ type: 'success', message: 'Category updated successfully' }));
+      setSelectedCategory(null);
     } catch (error) {
-      dispatch(setAlert({ type: 'error', message: 'Category not added' }));
+      dispatch(setAlert({ type: 'error', message: 'Category not updated' }));
     } finally {
-      close();
+      setOpen(false);
     }
   };
 
@@ -76,8 +69,8 @@ const EditCategory = ({ categoriesList }) => {
         fullWidth
       >
         <DialogTitle>Update Category</DialogTitle>
-        <DialogContent>
-          <DialogContentText sx={{ marginBottom: '5px' }}>Select your category!</DialogContentText>
+        <DialogContent sx={{ minHeight: '250px' }}>
+          <DialogContentText sx={{ marginBottom: '8px' }}>Select your category!</DialogContentText>
           <Autocomplete
             options={curCategories}
             getOptionLabel={(category) => category.title}
@@ -85,6 +78,7 @@ const EditCategory = ({ categoriesList }) => {
               <TextField {...params} label="Categories" variant="outlined" fullWidth size="small" />
             )}
             onChange={(_, value) => setSelectedCategory(value)}
+            sx={{ marginBottom: '10px' }}
           />
           {selectedCategory && (
             <>
@@ -97,15 +91,39 @@ const EditCategory = ({ categoriesList }) => {
                 fullWidth
                 variant="standard"
                 name="title"
-                value={selectedCategory.title}
-                onChange={(e) => setTitle(e.target.value)}
+                value={selectedCategory?.title}
+                onChange={(e) =>
+                  setSelectedCategory((prevState) => ({
+                    ...prevState,
+                    title: e.target.value,
+                  }))
+                }
+                sx={{ marginBottom: '10px' }}
+              />
+
+              <TextField
+                autoFocus
+                margin="dense"
+                label="Color"
+                type="color"
+                fullWidth
+                variant="standard"
+                name="title"
+                value={selectedCategory.color}
+                onChange={(e) =>
+                  setSelectedCategory((prevState) => ({
+                    ...prevState,
+                    color: e.target.value,
+                  }))
+                }
+                sx={{ marginBottom: '10px' }}
               />
             </>
           )}
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpen(false)}>Cancel</Button>
-          <Button onClick={handleLeadSubmit}>Update Category</Button>
+          <Button onClick={handleUpdate}>Update Category</Button>
         </DialogActions>
       </Dialog>
     </>
