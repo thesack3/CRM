@@ -27,6 +27,7 @@ import { setAlert } from '../../redux/slice/alertSlice';
 import AddCategory from '../AddCategory';
 import FilterLeads from '../modals/FilterLeads';
 import EditCategory from '../modals/EditCategory';
+import SendMessage from '../modals/SendMessage';
 
 export default function DataGridProCSV2() {
   const { user } = useSelector((state) => state.auth);
@@ -57,6 +58,8 @@ export default function DataGridProCSV2() {
   const [isLoading, setIsLoading] = useState(true);
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
   const [filterLeadModal, setFilterLeadModal] = useState(false);
+  const [isSendMessageModalOpen, setIsSendMessageModalOpen] = useState(false);
+  const [selectedIds, setSelectedIds] = useState([]);
 
   const { data: filterData, refetch: filterRefetch } = useQuery(GET_FILTERS, {
     variables: {
@@ -742,7 +745,8 @@ export default function DataGridProCSV2() {
       label === 'LastAgentNote' ||
       label === 'LastVisitDate' ||
       label === 'OptInDate' ||
-      label === 'RegisterDate'
+      label === 'RegisterDate' ||
+      label === 'updatedAt'
     ) {
       filterModel.type = 'date';
       filterModel.operatorValue = 'isRange';
@@ -909,6 +913,15 @@ export default function DataGridProCSV2() {
     setSearchQuery('');
   };
 
+  const handleSendMessageModal = () => {
+    if (selectIds?.length) {
+      setIsSendMessageModalOpen(true);
+      setSelectedIds(selectIds);
+    } else {
+      dispatch(setAlert({ type: 'success', message: 'Lead updated successfully' }));
+    }
+  };
+
   return (
     <div style={{ height: 700, width: '100%' }}>
       {/* filter lead modal */}
@@ -964,6 +977,18 @@ export default function DataGridProCSV2() {
           </Button>
         </Box>
       </div>
+      <Box sx={{ marginTop: '1rem' }}>
+        {isSendMessageModalOpen && (
+          <SendMessage
+            leadIds={selectedIds}
+            open={isSendMessageModalOpen}
+            close={() => setIsSendMessageModalOpen(false)}
+          />
+        )}
+        <Button variant="outlined" onClick={() => handleSendMessageModal()}>
+          Send Message
+        </Button>
+      </Box>
       <div style={{ height: 690, width: '100%' }}>
         <Box sx={{ marginTop: '16px' }}>
           <Box sx={{ width: '70vw', paddingBottom: '.5rem', display: 'inline-flex', overflow: 'scroll', gap: '20px' }}>

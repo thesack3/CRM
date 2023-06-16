@@ -606,6 +606,17 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback }) => {
               >
                 Did Anniversary Drip
               </Button>
+              <Button
+                sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray,' }}
+                onClick={() =>
+                  handleFilter({
+                    label: 'Updated At',
+                    value: 'updatedAt',
+                  })
+                }
+              >
+                Updated At
+              </Button>
             </Box>
           </Box>
           {/* aside content */}
@@ -616,7 +627,8 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback }) => {
           fieldValue == 'LastAgentNote' ||
           fieldValue == 'LastVisitDate' ||
           fieldValue == 'OptInDate' ||
-          fieldValue == 'RegisterDate' ? (
+          fieldValue == 'RegisterDate' ||
+          fieldValue == 'updatedAt' ? (
             <Box>
               {/* add two fields for date range */}
               <Box display="flex" flexDirection="row" alignItems={'center'} gap="10px" padding="20px">

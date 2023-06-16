@@ -25,7 +25,7 @@ export default function AddCSVLeadModal({ callback }) {
   const handleUpload = async () => {
     try {
       if (!data.length) return;
-      // send 1000 leads per request
+      // send 200 leads per request
       const batchSize = 200;
       const numBatches = Math.ceil(data.length / batchSize);
       let response;
