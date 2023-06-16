@@ -901,6 +901,14 @@ const LeadDetailPage = () => {
                       {data.lead.phoneStatus || '-'}
                     </Typography>
                   </Box>
+                  <Box display="flex">
+                    <Typography variant="h6" sx={{ width: '30%' }}>
+                      Updated At
+                    </Typography>
+                    <Typography variant="subtitle1" sx={{ width: '70%' }}>
+                      {data.lead.updatedAt || '-'}
+                    </Typography>
+                  </Box>
                 </Box>
               )}
             </Box>

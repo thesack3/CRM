@@ -81,6 +81,7 @@ export const GET_LEADS = gql`
         Link
         Birthday
         HomeClosingDate
+        updatedAt
       }
     }
   }
@@ -144,6 +145,7 @@ export const GET_LEAD = gql`
       Link
       Birthday
       HomeClosingDate
+      updatedAt
     }
   }
 `;

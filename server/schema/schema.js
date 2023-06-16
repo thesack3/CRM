@@ -746,7 +746,22 @@ const RootQuery = new GraphQLObjectType({
         return Lead.findById(args.id)
           .then((result) => {
             // console.log("found lead", result);
-            return result;
+
+            // convert updatedAt to fDateTime format and return result
+            const resultUp = {
+              ...result._doc,
+              updatedAt: fDateTime(result.updatedAt),
+              LastVisitDate: fDateTime(result.LastVisitDate),
+              FirstVisitDate: fDateTime(result.FirstVisitDate),
+              LastLenderCallDate: fDateTime(result.LastLenderCallDate),
+              LastAgentCallDate: fDateTime(result.LastAgentCallDate),
+              Birthday: fDateTime(result.Birthday),
+              LastAgentNote: fDateTime(result.LastAgentNote),
+              RegisterDate: fDateTime(result.RegisterDate),
+            };
+            return resultUp;
+
+            // return result;
           })
           .catch((error) => {
             console.error("error finding lead", error);
@@ -1427,6 +1442,11 @@ const mutation = new GraphQLObjectType({
         Link: { type: GraphQLString },
         updatedAt: { type: GraphQLString },
         leadId: { type: GraphQLString },
+        didsocialMediaFriends: { type: GraphQLString },
+        didPostCardDrip: { type: GraphQLString },
+        didAnniversaryDrip: { type: GraphQLString },
+        didLeaveReview: { type: GraphQLString },
+        didClosingGift: { type: GraphQLString },
 
         // Add additional fields to update here
       },

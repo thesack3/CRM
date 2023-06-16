@@ -167,6 +167,9 @@ const updateLeadMutation = gql`
     $Address: String
     $Birthday: String
     $HomeClosingDate: String
+    $AgentSelected: String
+    $Link:String
+    $LastVisitDate:String
   ) {
     updateLead(
       id: $id
@@ -191,6 +194,9 @@ const updateLeadMutation = gql`
       Address: $Address
       Birthday: $Birthday
       HomeClosingDate: $HomeClosingDate
+      AgentSelected: $AgentSelected
+      Link:$Link
+      LastVisitDate:$LastVisitDate
     ) {
       id
       firstName
@@ -202,6 +208,10 @@ const updateLeadMutation = gql`
       description
       phoneStatus
       emailInvalid
+      AgentSelected
+      updatedAt
+      Link
+      LastVisitDate
     }
   }
 `;
