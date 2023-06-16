@@ -97,8 +97,9 @@ const ChatUI = ({ handleProfile, lead, setConfirmCall }) => {
           {textData &&
             textData?.texts?.map((item) => (
               <>
-                {/* {item.to.subString(2) === lead?.phone?.subString(2) ? ( */}
-                {item.to.slice(-10) === lead?.phone.slice(-10) ? (
+               
+                {/* {item.to.slice(-10) === lead?.phone.slice(-10) ? ( */}
+                {item.to.replace(/\D/g, '').slice(-10) === lead?.phone.replace(/\D/g, '').slice(-10) ? (
                   <Grid
                     key={item.dateCreated}
                     xs={12}

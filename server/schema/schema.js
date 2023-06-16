@@ -993,9 +993,11 @@ const mutation = new GraphQLObjectType({
         const result = [];
         for (let i = 0; i < leads.length; i++) {
           const lead = leads[i];
+          // remove all non numeric characters from phone number
+          const leadPhone = lead.phone.replace(/\D/g, "");
           const message = await client.messages.create({
             body: args.msg,
-            to: lead.phone, // number passed at row.
+            to: leadPhone, // number passed at row.
             from: process.env.SENDER_PHONE_NUMBER, // From a valid Twilio number
           });
           const twilioMSG = {
