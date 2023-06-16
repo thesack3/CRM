@@ -4,7 +4,7 @@ const colors = require("colors");
 const nodemailer = require("nodemailer");
 const cors = require("cors");
 const bodyParser = require("body-parser");
-const { MessagingResponse } = require("twilio").twiml;
+const { MessagingResponse, VoiceResponse } = require("twilio").twiml;
 const schema = require("./schema/schema");
 const connectDB = require("./config/db");
 const Lead = require("./models/Lead");
@@ -12,7 +12,7 @@ const Task = require("./models/Task");
 const User = require("./models/User");
 const Text = require("./models/Text");
 
-// // // DEVELOPMENT
+// DEVELOPMENT
 // require("dotenv").config();
 
 const port = process.env.PORT || 4000;
@@ -201,6 +201,15 @@ app.post("/sms", async (req, res) => {
   res.type("text/xml").send(twiml.toString());
 });
 
+// webhook for twilio voice call to get the call
+app.post("/call", async (req, res) => {
+  const twiml = new VoiceResponse();
+  twiml.say("Hello, this is a test call.");
+
+  res.type("text/xml");
+  res.send(twiml.toString());
+});
+
 app.post("/smsList", async (req, res) => {
   const accountSid = process.env.TWILIO_ACCOUNT_SID;
   const authToken = process.env.TWILIO_AUTH_TOKEN;
@@ -212,8 +221,43 @@ app.post("/smsList", async (req, res) => {
       messagesIds.push(m.sid);
     })
   );
-
   res.send(200, { success: true, messagesIds });
 });
+
+// token for twilio voice call to get the token for call and pass it to client side
+app.post("/token", async (req, res) => {
+  const AccessToken = require("twilio").jwt.AccessToken;
+  const VoiceGrant = AccessToken.VoiceGrant;
+
+  // Used when generating any kind of tokens
+  const twilioAccountSid = process.env.TWILIO_ACCOUNT_SID;
+  const twilioApiKey = process.env.TWILIO_API_KEY || "SK67daeb0afe4c63609523041e7f23d9f5";
+  const twilioApiSecret = process.env.TWILIO_API_SECRET || "TTAVxiWX3sHRhR7LmW1guLx5VlcDQ1HF";
+
+  // Used specifically for creating Voice tokens
+  const outgoingApplicationSid = process.env.TWILIO_APP_SID || "APf677b265ba67e840756f10b454fcfe8a";
+  const identity = "user";
+
+  // Create a "grant" which enables a client to use Voice as a given user
+  const voiceGrant = new VoiceGrant({
+    outgoingApplicationSid: outgoingApplicationSid,
+    incomingAllow: true, // Optional: add to allow incoming calls
+  });
+
+  // Create an access token which we will sign and return to the client,
+  // containing the grant we just created
+  const token = new AccessToken(twilioAccountSid, twilioApiKey, twilioApiSecret, {
+    identity: identity,
+  });
+  token.addGrant(voiceGrant);
+
+  // Serialize the token to a JWT string and include it in a JSON response
+  res.send({
+    identity: identity,
+    token: token.toJwt(),
+  });
+});
+
+// voice response for twilio voice call to get the call and pass it to client side and get the call
 
 app.listen(port, console.log(`Server running on port ${port}`));

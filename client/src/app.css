@@ -19,3 +19,60 @@ wave {
 .cardBgColor {
   background-color: #edeff1;
 }
+
+/* Webkit-based browsers (Chrome, Safari) */
+::-webkit-scrollbar {
+  height: 6px;
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: #f1f1f127;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgb(132, 132, 132);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #555;
+}
+
+::-webkit-scrollbar-corner {
+  background-color: transparent;
+}
+
+/* Mozilla-based browsers (Firefox) */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: #f1f1f127 rgb(132, 132, 132);
+}
+
+html::-moz-scrollbar {
+  height: 6px;
+  width: 6px;
+}
+
+html::-moz-scrollbar-track {
+  background-color: #f1f1f127;
+}
+
+html::-moz-scrollbar-thumb {
+  background-color: rgb(132, 132, 132);
+  border-radius: 4px;
+}
+
+html::-moz-scrollbar-thumb:hover {
+  background-color: #555;
+}
+
+html::-moz-scrollbar-corner {
+  background-color: transparent;
+}
+
+/* IE 10+ */
+
+html {
+  -ms-overflow-style: -ms-autohiding-scrollbar;
+}

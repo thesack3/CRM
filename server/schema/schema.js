@@ -286,9 +286,9 @@ const LeadType = new GraphQLObjectType({
     didsocialMediaFriends: { type: GraphQLString },
     didPostCardDrip: { type: GraphQLString },
     didAnniversaryDrip: { type: GraphQLString },
-
     Birthday: { type: GraphQLString },
     HomeClosingDate: { type: GraphQLString },
+    updatedAt: { type: GraphQLString },
     tags: {
       type: new GraphQLList(TagType),
       resolve(parent, args) {
@@ -746,7 +746,22 @@ const RootQuery = new GraphQLObjectType({
         return Lead.findById(args.id)
           .then((result) => {
             // console.log("found lead", result);
-            return result;
+
+            // convert updatedAt to fDateTime format and return result
+            const resultUp = {
+              ...result._doc,
+              updatedAt: fDateTime(result.updatedAt),
+              LastVisitDate: fDateTime(result.LastVisitDate),
+              FirstVisitDate: fDateTime(result.FirstVisitDate),
+              LastLenderCallDate: fDateTime(result.LastLenderCallDate),
+              LastAgentCallDate: fDateTime(result.LastAgentCallDate),
+              Birthday: fDateTime(result.Birthday),
+              LastAgentNote: fDateTime(result.LastAgentNote),
+              RegisterDate: fDateTime(result.RegisterDate),
+            };
+            return resultUp;
+
+            // return result;
           })
           .catch((error) => {
             console.error("error finding lead", error);
@@ -893,10 +908,12 @@ const mutation = new GraphQLObjectType({
         return client.calls
           .create({
             twiml: "<Response><Say>Bryan Hossack real estate at your service!</Say></Response>",
-            to: args.toNumber, // number passed at row.
+            to: "+923038861205", // number passed at row.
             from: process.env.SENDER_PHONE_NUMBER, // From a valid Twilio number
+            // url: "https://242e-103-151-42-15.ngrok-free.app",
           })
           .then((message) => {
+            console.log("message-----------------/", message);
             const twilioCall = {
               date_Updated: message.dateUpdated,
               date_Sent: message.dateSent,
@@ -1251,6 +1268,15 @@ const mutation = new GraphQLObjectType({
       },
       async resolve(parent, args) {
         try {
+          // find category by title to avoid duplicate category names with regex case insensitive
+
+          const existingCategory = await Category.findOne({
+            title: { $regex: new RegExp(args.title, "i") },
+          });
+          if (existingCategory) {
+            throw new Error("Category already exists");
+          }
+
           const category = await Category.findById(args.id);
           if (!category) throw new Error("Category not found");
           category.title = args.title;
@@ -1416,6 +1442,11 @@ const mutation = new GraphQLObjectType({
         Link: { type: GraphQLString },
         updatedAt: { type: GraphQLString },
         leadId: { type: GraphQLString },
+        didsocialMediaFriends: { type: GraphQLString },
+        didPostCardDrip: { type: GraphQLString },
+        didAnniversaryDrip: { type: GraphQLString },
+        didLeaveReview: { type: GraphQLString },
+        didClosingGift: { type: GraphQLString },
 
         // Add additional fields to update here
       },
@@ -1429,7 +1460,12 @@ const mutation = new GraphQLObjectType({
               params.HomeClosingDate = new Date().toLocaleDateString();
             }
           }
-          let update = await Lead.findOneAndUpdate({ _id: id }, { ...params }, { new: true });
+
+          let update = await Lead.findOneAndUpdate(
+            { _id: id },
+            { ...params, updatedAt: new Date() },
+            { new: true }
+          );
           return update;
         } catch (error) {
           console.error(error);

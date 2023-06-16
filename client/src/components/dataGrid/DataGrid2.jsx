@@ -966,7 +966,7 @@ export default function DataGridProCSV2() {
       </div>
       <div style={{ height: 690, width: '100%' }}>
         <Box sx={{ marginTop: '16px' }}>
-          <Box sx={{ width: '70vw', display: 'inline-flex', overflow: 'scroll', gap: '20px' }}>
+          <Box sx={{ width: '70vw', paddingBottom: '.5rem', display: 'inline-flex', overflow: 'scroll', gap: '20px' }}>
             {categoriesList?.categories?.map((category) => (
               <Box>
                 <CategoryInput
