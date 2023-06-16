@@ -26,12 +26,14 @@ import AddeAlert from '../modals/AddeAlert';
 import { setAlert } from '../../redux/slice/alertSlice';
 import AddCategory from '../AddCategory';
 import FilterLeads from '../modals/FilterLeads';
+import EditCategory from '../modals/EditCategory';
 
 export default function DataGridProCSV2() {
   const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { setLeadId, categories: categoriesList } = React.useContext(callContext);
+
   const [sortModel, setSortModel] = useState([{ field: 'name', sort: 'asc' }]);
   const [sort, setSort] = useState('');
   const [column, setColumn] = useState('');
@@ -940,6 +942,7 @@ export default function DataGridProCSV2() {
             Add Category
           </Button>
           <AddCategory open={isCategoryModalOpen} close={() => setIsCategoryModalOpen(false)} />
+          <EditCategory categoriesList={categoriesList} />
           <AddNote callback={handleRefetch} />
           <AddCSVCall callback={handleRefetch} />
           <AddeAlert callback={handleRefetch} />
