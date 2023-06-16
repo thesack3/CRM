@@ -12,7 +12,6 @@ import {
   Box,
 } from '@mui/material';
 
-// import { MuiColorInput } from 'mui-color-input';
 import { EDIT_CATEGORY } from '../../mutations/editCategory';
 import { useMutation } from '@apollo/client';
 import { useDispatch } from 'react-redux';

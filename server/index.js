@@ -13,7 +13,7 @@ const User = require("./models/User");
 const Text = require("./models/Text");
 
 // DEVELOPMENT
-// require("dotenv").config();
+require("dotenv").config();
 
 const port = process.env.PORT || 4000;
 
@@ -126,7 +126,8 @@ app.post("/notification", async (req, res) => {
 
 // post route for add lead
 app.post("/addLead", async (req, res) => {
-  if (!req.body.firstName) return res.status(400).send("First Name is required");
+  if (!req.body.firstName)
+    return res.status(400).send("First Name is required");
   if (!req.body.email) return res.status(400).send("Email is required");
   // create lead
   const findLead = await Lead.findOne({ email: req.body.email });
@@ -140,8 +141,10 @@ app.post("/addLead", async (req, res) => {
     description: req.body.description,
     emailInvalid: req.body.emailInvalid,
     GloballyOptedOutOfEmail: req.body.GloballyOptedOutOfEmail,
-    GloballyOptedOutOfBuyerAgentEmail: req.body.GloballyOptedOutOfBuyerAgentEmail,
-    GloballyOptedOutOfListingAgentEmail: req.body.GloballyOptedOutOfListingAgentEmail,
+    GloballyOptedOutOfBuyerAgentEmail:
+      req.body.GloballyOptedOutOfBuyerAgentEmail,
+    GloballyOptedOutOfListingAgentEmail:
+      req.body.GloballyOptedOutOfListingAgentEmail,
     GloballyOptedOutOfLenderEmail: req.body.GloballyOptedOutOfLenderEmail,
     GloballyOptedOutOfAlerts: req.body.GloballyOptedOutOfAlerts,
     OptInDate: req.body.OptInDate,
@@ -231,11 +234,14 @@ app.post("/token", async (req, res) => {
 
   // Used when generating any kind of tokens
   const twilioAccountSid = process.env.TWILIO_ACCOUNT_SID;
-  const twilioApiKey = process.env.TWILIO_API_KEY || "SK67daeb0afe4c63609523041e7f23d9f5";
-  const twilioApiSecret = process.env.TWILIO_API_SECRET || "TTAVxiWX3sHRhR7LmW1guLx5VlcDQ1HF";
+  const twilioApiKey =
+    process.env.TWILIO_API_KEY || "SK67daeb0afe4c63609523041e7f23d9f5";
+  const twilioApiSecret =
+    process.env.TWILIO_API_SECRET || "TTAVxiWX3sHRhR7LmW1guLx5VlcDQ1HF";
 
   // Used specifically for creating Voice tokens
-  const outgoingApplicationSid = process.env.TWILIO_APP_SID || "APf677b265ba67e840756f10b454fcfe8a";
+  const outgoingApplicationSid =
+    process.env.TWILIO_APP_SID || "APf677b265ba67e840756f10b454fcfe8a";
   const identity = "user";
 
   // Create a "grant" which enables a client to use Voice as a given user
@@ -246,9 +252,14 @@ app.post("/token", async (req, res) => {
 
   // Create an access token which we will sign and return to the client,
   // containing the grant we just created
-  const token = new AccessToken(twilioAccountSid, twilioApiKey, twilioApiSecret, {
-    identity: identity,
-  });
+  const token = new AccessToken(
+    twilioAccountSid,
+    twilioApiKey,
+    twilioApiSecret,
+    {
+      identity: identity,
+    }
+  );
   token.addGrant(voiceGrant);
 
   // Serialize the token to a JWT string and include it in a JSON response
