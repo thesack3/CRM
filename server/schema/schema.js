@@ -750,6 +750,7 @@ const RootQuery = new GraphQLObjectType({
             // convert updatedAt to fDateTime format and return result
             const resultUp = {
               ...result._doc,
+              id: result._id,
               updatedAt: fDateTime(result.updatedAt),
               LastVisitDate: fDateTime(result.LastVisitDate),
               FirstVisitDate: fDateTime(result.FirstVisitDate),
@@ -976,6 +977,52 @@ const mutation = new GraphQLObjectType({
           });
       },
     },
+
+    // write endpoint to send SMS to selected leads or all leads
+    sendSMSToLeads: {
+      type: new GraphQLList(TextType),
+      args: {
+        leadIds: { type: GraphQLList(GraphQLID) },
+        msg: { type: GraphQLString },
+      },
+      async resolve(parent, args) {
+        const accountSid = process.env.TWILIO_ACCOUNT_SID;
+        const authToken = process.env.TWILIO_AUTH_TOKEN;
+        const client = require("twilio")(accountSid, authToken);
+        const leads = await Lead.find({ _id: { $in: args.leadIds } });
+        const result = [];
+        for (let i = 0; i < leads.length; i++) {
+          const lead = leads[i];
+          const message = await client.messages.create({
+            body: args.msg,
+            to: lead.phone, // number passed at row.
+            from: process.env.SENDER_PHONE_NUMBER, // From a valid Twilio number
+          });
+          const twilioMSG = {
+            date_Updated: message.dateUpdated,
+            date_Sent: message.dateSent,
+            accountSid: message.accountSid,
+            to: message.to,
+            from: message.from,
+            body: message.body,
+            status: message.status,
+            sid: message.sid,
+          };
+          const newText = new Text({
+            body: twilioMSG.body,
+            to: twilioMSG.to,
+            from: twilioMSG.from,
+            dateCreated: twilioMSG.date_Updated,
+            leadId: lead._id,
+            sid: twilioMSG.sid,
+          });
+          newText.save();
+          result.push(twilioMSG);
+        }
+        return result;
+      },
+    },
+
     //Email Verification Register User
     registerUser: {
       type: UserType,
