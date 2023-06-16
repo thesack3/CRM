@@ -25,6 +25,7 @@ import Page404 from './pages/Page404';
 import NonVerifiedPage from './pages/NonVerified';
 import Website from './components/Website';
 import VerifyPage from './pages/Verify';
+import VoiceCall from './pages/VoiceCall';
 
 LicenseInfo.setLicenseKey(
   '9e17734200a964cd420488accda5490fTz01ODkyOSxFPTE3MDY4NzA0MzEyMTAsUz1wcm8sTE09c3Vic2NyaXB0aW9uLEtWPTI='
@@ -73,6 +74,7 @@ export default function App() {
           <Route path="/signup" element={<SignUpPage />} />
           <Route path="/nonverified" element={<NonVerifiedPage />} />
           <Route path="/verifyemail/:token" element={<VerifyPage />} />
+          <Route path="/call" element={<VoiceCall />} />
           <Route path="*" element={<Page404 />} />
         </Routes>
       </ThemeProvider>

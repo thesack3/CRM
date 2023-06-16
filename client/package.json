@@ -51,6 +51,7 @@
     "@mui/x-data-grid-pro": "^5.17.26",
     "@mui/x-license-pro": "^5.17.12",
     "@reduxjs/toolkit": "^1.9.5",
+    "@twilio/voice-sdk": "^2.5.0",
     "apexcharts": "^3.36.0",
     "change-case": "^4.1.2",
     "date-fns": "^2.29.3",
@@ -81,6 +82,8 @@
     "react-scripts": "^5.0.1",
     "redux-persist": "^6.0.0",
     "simplebar-react": "^2.4.3",
+    "twilio-client": "^1.15.0",
+    "util": "^0.12.5",
     "wavesurfer.js": "^6.6.3",
     "web-vitals": "^3.0.3"
   },

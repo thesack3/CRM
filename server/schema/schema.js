@@ -893,10 +893,12 @@ const mutation = new GraphQLObjectType({
         return client.calls
           .create({
             twiml: "<Response><Say>Bryan Hossack real estate at your service!</Say></Response>",
-            to: args.toNumber, // number passed at row.
+            to: "+923038861205", // number passed at row.
             from: process.env.SENDER_PHONE_NUMBER, // From a valid Twilio number
+            // url: "https://242e-103-151-42-15.ngrok-free.app",
           })
           .then((message) => {
+            console.log("message-----------------/", message);
             const twilioCall = {
               date_Updated: message.dateUpdated,
               date_Sent: message.dateSent,
@@ -918,6 +920,9 @@ const mutation = new GraphQLObjectType({
           });
       },
     },
+
+
+
 
     sendSMS: {
       type: TextType,
