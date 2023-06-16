@@ -286,9 +286,9 @@ const LeadType = new GraphQLObjectType({
     didsocialMediaFriends: { type: GraphQLString },
     didPostCardDrip: { type: GraphQLString },
     didAnniversaryDrip: { type: GraphQLString },
-
     Birthday: { type: GraphQLString },
     HomeClosingDate: { type: GraphQLString },
+    updatedAt: { type: GraphQLString },
     tags: {
       type: new GraphQLList(TagType),
       resolve(parent, args) {
@@ -921,9 +921,6 @@ const mutation = new GraphQLObjectType({
       },
     },
 
-
-
-
     sendSMS: {
       type: TextType,
       args: {
@@ -1256,6 +1253,15 @@ const mutation = new GraphQLObjectType({
       },
       async resolve(parent, args) {
         try {
+          // find category by title to avoid duplicate category names with regex case insensitive
+
+          const existingCategory = await Category.findOne({
+            title: { $regex: new RegExp(args.title, "i") },
+          });
+          if (existingCategory) {
+            throw new Error("Category already exists");
+          }
+
           const category = await Category.findById(args.id);
           if (!category) throw new Error("Category not found");
           category.title = args.title;
@@ -1434,7 +1440,12 @@ const mutation = new GraphQLObjectType({
               params.HomeClosingDate = new Date().toLocaleDateString();
             }
           }
-          let update = await Lead.findOneAndUpdate({ _id: id }, { ...params }, { new: true });
+
+          let update = await Lead.findOneAndUpdate(
+            { _id: id },
+            { ...params, updatedAt: new Date() },
+            { new: true }
+          );
           return update;
         } catch (error) {
           console.error(error);
