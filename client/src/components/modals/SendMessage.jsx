@@ -15,9 +15,23 @@ const SendMessage = ({ leadIds, open, close }) => {
   // handle email submit
   const handleSubmit = async () => {
     try {
-      await sendSMSToLeads({ variables: { leadIds, msg: message } });
-      dispatch(setAlert({ type: 'success', message: 'Messages sent successfully' }));
-      // await refetch();
+      // send 5 lead ids per request
+      const batchSize = 5;
+      const numBatches = Math.ceil(leadIds.length / batchSize);
+      for (let i = 0; i < numBatches; i++) {
+        const start = i * batchSize;
+        const end = start + batchSize;
+        const batch = leadIds.slice(start, end);
+        let response = await sendSMSToLeads({
+          variables: {
+            leadIds: batch,
+            msg: message,
+          },
+        });
+      }
+      if (response) {
+        dispatch(setAlert({ type: 'success', message: 'Messages sent successfully' }));
+      }
     } catch (error) {
       dispatch(setAlert({ type: 'error', message: error.message }));
     } finally {
