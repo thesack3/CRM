@@ -26,6 +26,7 @@ import AddeAlert from '../modals/AddeAlert';
 import { setAlert } from '../../redux/slice/alertSlice';
 import AddCategory from '../AddCategory';
 import FilterLeads from '../modals/FilterLeads';
+import EditCategory from '../modals/EditCategory';
 import SendMessage from '../modals/SendMessage';
 import { GET_CATEGORIES } from '../../queries/categoryQueries';
 
@@ -992,6 +993,7 @@ export default function DataGridProCSV2() {
             close={() => setIsCategoryModalOpen(false)}
             refetch={() => handleRefetchCategories()}
           />
+          <EditCategory categoriesList={categoriesList} />
           <AddNote callback={handleRefetch} />
           <AddCSVCall callback={handleRefetch} />
           <AddeAlert callback={handleRefetch} />

@@ -90,7 +90,14 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback }) => {
           >
             <Box display="flex" flexDirection="column" gap="15px">
               <Button
-                sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '1px', color: 'gray' }}
+                sx={{
+                  fontWeight: '500',
+                  borderRadius: '0',
+                  justifyContent: 'start',
+                  padding: '1px',
+                  color: 'gray',
+                  textAlign: 'left!important',
+                }}
                 onClick={() =>
                   handleFilter({
                     label: 'First Name',
@@ -101,7 +108,14 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback }) => {
                 First Name
               </Button>
               <Button
-                sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray' }}
+                sx={{
+                  fontWeight: '500',
+                  borderRadius: '0',
+                  justifyContent: 'start',
+                  padding: '1px',
+                  color: 'gray',
+                  textAlign: 'left!important',
+                }}
                 onClick={() =>
                   handleFilter({
                     label: 'Last Name',
@@ -112,7 +126,14 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback }) => {
                 Last Name
               </Button>
               <Button
-                sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray' }}
+                sx={{
+                  fontWeight: '500',
+                  borderRadius: '0',
+                  justifyContent: 'start',
+                  padding: '1px',
+                  color: 'gray',
+                  textAlign: 'left!important',
+                }}
                 onClick={() =>
                   handleFilter({
                     label: 'Email',
@@ -123,7 +144,14 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback }) => {
                 Email
               </Button>
               <Button
-                sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray' }}
+                sx={{
+                  fontWeight: '500',
+                  borderRadius: '0',
+                  justifyContent: 'start',
+                  padding: '1px',
+                  color: 'gray',
+                  textAlign: 'left!important',
+                }}
                 onClick={() =>
                   handleFilter({
                     label: 'Address',
@@ -134,7 +162,14 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback }) => {
                 Address
               </Button>
               <Button
-                sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray' }}
+                sx={{
+                  fontWeight: '500',
+                  borderRadius: '0',
+                  justifyContent: 'start',
+                  padding: '1px',
+                  color: 'gray',
+                  textAlign: 'left!important',
+                }}
                 onClick={() =>
                   handleFilter({
                     label: 'Agent Selected',
@@ -145,7 +180,14 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback }) => {
                 Agent Selected
               </Button>
               <Button
-                sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray' }}
+                sx={{
+                  fontWeight: '500',
+                  borderRadius: '0',
+                  justifyContent: 'start',
+                  padding: '1px',
+                  color: 'gray',
+                  textAlign: 'left!important',
+                }}
                 onClick={() =>
                   handleFilter({
                     label: 'Avg Listing Price',
@@ -156,7 +198,14 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback }) => {
                 Avg Listing Price
               </Button>
               <Button
-                sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray' }}
+                sx={{
+                  fontWeight: '500',
+                  borderRadius: '0',
+                  justifyContent: 'start',
+                  padding: '1px',
+                  color: 'gray',
+                  textAlign: 'left!important',
+                }}
                 onClick={() =>
                   handleFilter({
                     label: 'Birthday',
@@ -167,7 +216,14 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback }) => {
                 Birthday
               </Button>
               <Button
-                sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray' }}
+                sx={{
+                  fontWeight: '500',
+                  borderRadius: '0',
+                  justifyContent: 'start',
+                  padding: '1px',
+                  color: 'gray',
+                  textAlign: 'left!important',
+                }}
                 onClick={() =>
                   handleFilter({
                     label: 'Buyer Agent',
@@ -178,7 +234,14 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback }) => {
                 Buyer Agent
               </Button>
               <Button
-                sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray' }}
+                sx={{
+                  fontWeight: '500',
+                  borderRadius: '0',
+                  justifyContent: 'start',
+                  padding: '1px',
+                  color: 'gray',
+                  textAlign: 'left!important',
+                }}
                 onClick={() =>
                   handleFilter({
                     label: 'Buyer Agent Category',
@@ -189,7 +252,14 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback }) => {
                 Buyer Agent Category
               </Button>
               <Button
-                sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray' }}
+                sx={{
+                  fontWeight: '500',
+                  borderRadius: '0',
+                  justifyContent: 'start',
+                  padding: '1px',
+                  color: 'gray',
+                  textAlign: 'left!important',
+                }}
                 onClick={() =>
                   handleFilter({
                     label: 'City',
@@ -200,7 +270,14 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback }) => {
                 City
               </Button>
               <Button
-                sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray' }}
+                sx={{
+                  fontWeight: '500',
+                  borderRadius: '0',
+                  justifyContent: 'start',
+                  padding: '1px',
+                  color: 'gray',
+                  textAlign: 'left!important',
+                }}
                 onClick={() =>
                   handleFilter({
                     label: 'First Visit Date',
@@ -211,7 +288,14 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback }) => {
                 First Visit Date
               </Button>
               <Button
-                sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray' }}
+                sx={{
+                  fontWeight: '500',
+                  borderRadius: '0',
+                  justifyContent: 'start',
+                  padding: '1px',
+                  color: 'gray',
+                  textAlign: 'left!important',
+                }}
                 onClick={() =>
                   handleFilter({
                     label: 'Globally Opted Out Of Alerts',
@@ -222,7 +306,14 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback }) => {
                 Globally Opted Out Of Alerts
               </Button>
               <Button
-                sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray' }}
+                sx={{
+                  fontWeight: '500',
+                  borderRadius: '0',
+                  justifyContent: 'start',
+                  padding: '1px',
+                  color: 'gray',
+                  textAlign: 'left!important',
+                }}
                 onClick={() =>
                   handleFilter({
                     label: 'Globally Opted Out Of Buyer Agent Email',
@@ -233,7 +324,14 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback }) => {
                 Globally Opted Out Of Buyer Agent Email
               </Button>
               <Button
-                sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray' }}
+                sx={{
+                  fontWeight: '500',
+                  borderRadius: '0',
+                  justifyContent: 'start',
+                  padding: '1px',
+                  color: 'gray',
+                  textAlign: 'left!important',
+                }}
                 onClick={() =>
                   handleFilter({
                     label: 'Globally Opted Out Of Email',
@@ -244,7 +342,14 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback }) => {
                 Globally Opted Out Of Email
               </Button>
               <Button
-                sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray' }}
+                sx={{
+                  fontWeight: '500',
+                  borderRadius: '0',
+                  justifyContent: 'start',
+                  padding: '1px',
+                  color: 'gray',
+                  textAlign: 'left!important',
+                }}
                 onClick={() =>
                   handleFilter({
                     label: 'Globally Opted Out Of Lender Email',
@@ -255,7 +360,14 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback }) => {
                 Globally Opted Out Of Lender Email
               </Button>
               <Button
-                sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray' }}
+                sx={{
+                  fontWeight: '500',
+                  borderRadius: '0',
+                  justifyContent: 'start',
+                  padding: '1px',
+                  color: 'gray',
+                  textAlign: 'left!important',
+                }}
                 onClick={() =>
                   handleFilter({
                     label: 'Globally Opted Out Of Listing Agent Email',
@@ -266,7 +378,14 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback }) => {
                 Globally Opted Out Of Listing Agent Email
               </Button>
               <Button
-                sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray' }}
+                sx={{
+                  fontWeight: '500',
+                  borderRadius: '0',
+                  justifyContent: 'start',
+                  padding: '1px',
+                  color: 'gray',
+                  textAlign: 'left!important',
+                }}
                 onClick={() =>
                   handleFilter({
                     label: 'Home Closing Date',
@@ -277,7 +396,14 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback }) => {
                 Home Closing Date
               </Button>
               <Button
-                sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray' }}
+                sx={{
+                  fontWeight: '500',
+                  borderRadius: '0',
+                  justifyContent: 'start',
+                  padding: '1px',
+                  color: 'gray',
+                  textAlign: 'left!important',
+                }}
                 onClick={() =>
                   handleFilter({
                     label: 'Last Agent Call Date',
@@ -288,7 +414,14 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback }) => {
                 Last Agent Call Date
               </Button>
               <Button
-                sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray' }}
+                sx={{
+                  fontWeight: '500',
+                  borderRadius: '0',
+                  justifyContent: 'start',
+                  padding: '1px',
+                  color: 'gray',
+                  textAlign: 'left!important',
+                }}
                 onClick={() =>
                   handleFilter({
                     label: 'Last Agent Note',
@@ -299,7 +432,14 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback }) => {
                 Last Agent Note
               </Button>
               <Button
-                sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray' }}
+                sx={{
+                  fontWeight: '500',
+                  borderRadius: '0',
+                  justifyContent: 'start',
+                  padding: '1px',
+                  color: 'gray',
+                  textAlign: 'left!important',
+                }}
                 onClick={() =>
                   handleFilter({
                     label: 'Last Lender Call Date',
@@ -310,7 +450,14 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback }) => {
                 Last Lender Call Date
               </Button>
               <Button
-                sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray' }}
+                sx={{
+                  fontWeight: '500',
+                  borderRadius: '0',
+                  justifyContent: 'start',
+                  padding: '1px',
+                  color: 'gray',
+                  textAlign: 'left!important',
+                }}
                 onClick={() =>
                   handleFilter({
                     label: 'Last Visit Date',
@@ -321,7 +468,14 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback }) => {
                 Last Visit Date
               </Button>
               <Button
-                sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray' }}
+                sx={{
+                  fontWeight: '500',
+                  borderRadius: '0',
+                  justifyContent: 'start',
+                  padding: '1px',
+                  color: 'gray',
+                  textAlign: 'left!important',
+                }}
                 onClick={() =>
                   handleFilter({
                     label: 'Lead Type',
@@ -332,7 +486,14 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback }) => {
                 Lead Type
               </Button>
               <Button
-                sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray' }}
+                sx={{
+                  fontWeight: '500',
+                  borderRadius: '0',
+                  justifyContent: 'start',
+                  padding: '1px',
+                  color: 'gray',
+                  textAlign: 'left!important',
+                }}
                 onClick={() =>
                   handleFilter({
                     label: 'Lender',
@@ -343,7 +504,14 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback }) => {
                 Lender
               </Button>
               <Button
-                sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray' }}
+                sx={{
+                  fontWeight: '500',
+                  borderRadius: '0',
+                  justifyContent: 'start',
+                  padding: '1px',
+                  color: 'gray',
+                  textAlign: 'left!important',
+                }}
                 onClick={() =>
                   handleFilter({
                     label: 'Lender Category',
@@ -354,7 +522,14 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback }) => {
                 Lender Category
               </Button>
               <Button
-                sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray' }}
+                sx={{
+                  fontWeight: '500',
+                  borderRadius: '0',
+                  justifyContent: 'start',
+                  padding: '1px',
+                  color: 'gray',
+                  textAlign: 'left!important',
+                }}
                 onClick={() =>
                   handleFilter({
                     label: 'Lender Opt In',
@@ -365,7 +540,14 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback }) => {
                 Lender Opt In
               </Button>
               <Button
-                sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray' }}
+                sx={{
+                  fontWeight: '500',
+                  borderRadius: '0',
+                  justifyContent: 'start',
+                  padding: '1px',
+                  color: 'gray',
+                  textAlign: 'left!important',
+                }}
                 onClick={() =>
                   handleFilter({
                     label: 'Link',
@@ -376,7 +558,14 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback }) => {
                 Link
               </Button>
               <Button
-                sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray,' }}
+                sx={{
+                  fontWeight: '500',
+                  borderRadius: '0',
+                  justifyContent: 'start',
+                  padding: '1px',
+                  color: 'gray',
+                  textAlign: 'left!important',
+                }}
                 onClick={() =>
                   handleFilter({
                     label: 'Listing Agent',
@@ -387,7 +576,14 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback }) => {
                 Listing Agent
               </Button>
               <Button
-                sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray,' }}
+                sx={{
+                  fontWeight: '500',
+                  borderRadius: '0',
+                  justifyContent: 'start',
+                  padding: '1px',
+                  color: 'gray',
+                  textAlign: 'left!important',
+                }}
                 onClick={() =>
                   handleFilter({
                     label: 'Listing Agent Category',
@@ -398,7 +594,14 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback }) => {
                 Listing Agent Category
               </Button>
               <Button
-                sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray,' }}
+                sx={{
+                  fontWeight: '500',
+                  borderRadius: '0',
+                  justifyContent: 'start',
+                  padding: '1px',
+                  color: 'gray',
+                  textAlign: 'left!important',
+                }}
                 onClick={() =>
                   handleFilter({
                     label: 'Next Call Due',
@@ -409,7 +612,14 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback }) => {
                 Next Call Due
               </Button>
               <Button
-                sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray,' }}
+                sx={{
+                  fontWeight: '500',
+                  borderRadius: '0',
+                  justifyContent: 'start',
+                  padding: '1px',
+                  color: 'gray',
+                  textAlign: 'left!important',
+                }}
                 onClick={() =>
                   handleFilter({
                     label: 'Opt In Date',
@@ -420,7 +630,14 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback }) => {
                 Opt In Date
               </Button>
               <Button
-                sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray,' }}
+                sx={{
+                  fontWeight: '500',
+                  borderRadius: '0',
+                  justifyContent: 'start',
+                  padding: '1px',
+                  color: 'gray',
+                  textAlign: 'left!important',
+                }}
                 onClick={() =>
                   handleFilter({
                     label: 'Original Campaign',
@@ -431,7 +648,14 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback }) => {
                 Original Campaign
               </Button>
               <Button
-                sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray,' }}
+                sx={{
+                  fontWeight: '500',
+                  borderRadius: '0',
+                  justifyContent: 'start',
+                  padding: '1px',
+                  color: 'gray',
+                  textAlign: 'left!important',
+                }}
                 onClick={() =>
                   handleFilter({
                     label: 'Original Source',
@@ -442,7 +666,14 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback }) => {
                 Original Source
               </Button>
               <Button
-                sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray,' }}
+                sx={{
+                  fontWeight: '500',
+                  borderRadius: '0',
+                  justifyContent: 'start',
+                  padding: '1px',
+                  color: 'gray',
+                  textAlign: 'left!important',
+                }}
                 onClick={() =>
                   handleFilter({
                     label: 'Register Date',
@@ -453,7 +684,14 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback }) => {
                 Register Date
               </Button>
               <Button
-                sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray,' }}
+                sx={{
+                  fontWeight: '500',
+                  borderRadius: '0',
+                  justifyContent: 'start',
+                  padding: '1px',
+                  color: 'gray',
+                  textAlign: 'left!important',
+                }}
                 onClick={() =>
                   handleFilter({
                     label: 'State',
@@ -464,7 +702,14 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback }) => {
                 State
               </Button>
               <Button
-                sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray,' }}
+                sx={{
+                  fontWeight: '500',
+                  borderRadius: '0',
+                  justifyContent: 'start',
+                  padding: '1px',
+                  color: 'gray',
+                  textAlign: 'left!important',
+                }}
                 onClick={() =>
                   handleFilter({
                     label: 'Visit Total',
@@ -475,7 +720,14 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback }) => {
                 Visit Total
               </Button>
               <Button
-                sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray,' }}
+                sx={{
+                  fontWeight: '500',
+                  borderRadius: '0',
+                  justifyContent: 'start',
+                  padding: '1px',
+                  color: 'gray',
+                  textAlign: 'left!important',
+                }}
                 onClick={() =>
                   handleFilter({
                     label: 'Zip Code',
@@ -486,7 +738,14 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback }) => {
                 ZipCode
               </Button>
               <Button
-                sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray,' }}
+                sx={{
+                  fontWeight: '500',
+                  borderRadius: '0',
+                  justifyContent: 'start',
+                  padding: '1px',
+                  color: 'gray',
+                  textAlign: 'left!important',
+                }}
                 onClick={() =>
                   handleFilter({
                     label: 'Description',
@@ -497,7 +756,14 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback }) => {
                 Description
               </Button>
               <Button
-                sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray,' }}
+                sx={{
+                  fontWeight: '500',
+                  borderRadius: '0',
+                  justifyContent: 'start',
+                  padding: '1px',
+                  color: 'gray',
+                  textAlign: 'left!important',
+                }}
                 onClick={() =>
                   handleFilter({
                     label: 'eAlerts',
@@ -508,7 +774,14 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback }) => {
                 E Alerts
               </Button>
               <Button
-                sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray,' }}
+                sx={{
+                  fontWeight: '500',
+                  borderRadius: '0',
+                  justifyContent: 'start',
+                  padding: '1px',
+                  color: 'gray',
+                  textAlign: 'left!important',
+                }}
                 onClick={() =>
                   handleFilter({
                     label: 'Email Invalid',
@@ -519,7 +792,14 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback }) => {
                 Email Invalid
               </Button>
               <Button
-                sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray,' }}
+                sx={{
+                  fontWeight: '500',
+                  borderRadius: '0',
+                  justifyContent: 'start',
+                  padding: '1px',
+                  color: 'gray',
+                  textAlign: 'left!important',
+                }}
                 onClick={() =>
                   handleFilter({
                     label: 'Listing View Count',
@@ -530,7 +810,14 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback }) => {
                 Listing View Count
               </Button>
               <Button
-                sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray,' }}
+                sx={{
+                  fontWeight: '500',
+                  borderRadius: '0',
+                  justifyContent: 'start',
+                  padding: '1px',
+                  color: 'gray',
+                  textAlign: 'left!important',
+                }}
                 onClick={() =>
                   handleFilter({
                     label: 'Phone',
@@ -541,7 +828,14 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback }) => {
                 Phone
               </Button>
               <Button
-                sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray,' }}
+                sx={{
+                  fontWeight: '500',
+                  borderRadius: '0',
+                  justifyContent: 'start',
+                  padding: '1px',
+                  color: 'gray',
+                  textAlign: 'left!important',
+                }}
                 onClick={() =>
                   handleFilter({
                     label: 'Phone Status',
@@ -552,7 +846,14 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback }) => {
                 Phone Status
               </Button>
               <Button
-                sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray,' }}
+                sx={{
+                  fontWeight: '500',
+                  borderRadius: '0',
+                  justifyContent: 'start',
+                  padding: '1px',
+                  color: 'gray',
+                  textAlign: 'left!important',
+                }}
                 onClick={() =>
                   handleFilter({
                     label: 'Did Leave Review',
@@ -563,7 +864,14 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback }) => {
                 Did Leave Review
               </Button>
               <Button
-                sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray,' }}
+                sx={{
+                  fontWeight: '500',
+                  borderRadius: '0',
+                  justifyContent: 'start',
+                  padding: '1px',
+                  color: 'gray',
+                  textAlign: 'left!important',
+                }}
                 onClick={() =>
                   handleFilter({
                     label: 'Did Closing Gift',
@@ -574,7 +882,14 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback }) => {
                 Did Closing Gift
               </Button>
               <Button
-                sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray,' }}
+                sx={{
+                  fontWeight: '500',
+                  borderRadius: '0',
+                  justifyContent: 'start',
+                  padding: '1px',
+                  color: 'gray',
+                  textAlign: 'left!important',
+                }}
                 onClick={() =>
                   handleFilter({
                     label: 'Did Social Media Friends',
@@ -585,7 +900,14 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback }) => {
                 Did Social Media Friends
               </Button>
               <Button
-                sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray,' }}
+                sx={{
+                  fontWeight: '500',
+                  borderRadius: '0',
+                  justifyContent: 'start',
+                  padding: '1px',
+                  color: 'gray',
+                  textAlign: 'left!important',
+                }}
                 onClick={() =>
                   handleFilter({
                     label: 'Did Post Card Drip',
@@ -596,7 +918,14 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback }) => {
                 Did Post Card Drip
               </Button>
               <Button
-                sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray,' }}
+                sx={{
+                  fontWeight: '500',
+                  borderRadius: '0',
+                  justifyContent: 'start',
+                  padding: '1px',
+                  color: 'gray',
+                  textAlign: 'left!important',
+                }}
                 onClick={() =>
                   handleFilter({
                     label: 'Did Anniversary Drip',
@@ -607,7 +936,14 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback }) => {
                 Did Anniversary Drip
               </Button>
               <Button
-                sx={{ fontWeight: '500', borderRadius: '0', justifyContent: 'start', padding: '0', color: 'gray,' }}
+                sx={{
+                  fontWeight: '500',
+                  borderRadius: '0',
+                  justifyContent: 'start',
+                  padding: '1px',
+                  color: 'gray',
+                  textAlign: 'left!important',
+                }}
                 onClick={() =>
                   handleFilter({
                     label: 'Updated At',
