@@ -1,5 +1,15 @@
 import React, { useContext, useState } from 'react';
-import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, Button } from '@mui/material';
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  TextField,
+  Button,
+  styled,
+  Box,
+} from '@mui/material';
 import { MuiColorInput } from 'mui-color-input';
 import { ADD_CATEGORY } from '../mutations/addCategory';
 import { useMutation } from '@apollo/client';
@@ -18,7 +28,7 @@ const AddCategory = ({ open, close }) => {
 
   const handleLeadSubmit = async () => {
     try {
-      addCategory({
+      await addCategory({
         variables: {
           title: title,
           color: color,
@@ -50,7 +60,10 @@ const AddCategory = ({ open, close }) => {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
-        <MuiColorInput sx={{ marginTop: '20px' }} value={color} onChange={(e) => setColor(e)} />
+        <Box style={{ display: 'flex', alignItems: 'center', width: '300px', marginTop: '15px' }}>
+          <TextField size="small" value={color} onChange={(e) => setColor(e.target.value)} fullWidth type="color" />
+          <ColorPreview style={{ backgroundColor: color }} />
+        </Box>
       </DialogContent>
       <DialogActions>
         <Button onClick={close}>Cancel</Button>
@@ -61,3 +74,11 @@ const AddCategory = ({ open, close }) => {
 };
 
 export default AddCategory;
+
+// custom color picker
+const ColorPreview = styled('div')({
+  width: '40px',
+  height: '30px',
+  marginLeft: '16px',
+  border: '2px solid #ccc',
+});

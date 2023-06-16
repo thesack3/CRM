@@ -8,7 +8,10 @@ import {
   TextField,
   Autocomplete,
   Button,
+  styled,
+  Box,
 } from '@mui/material';
+
 // import { MuiColorInput } from 'mui-color-input';
 import { EDIT_CATEGORY } from '../../mutations/editCategory';
 import { useMutation } from '@apollo/client';
@@ -34,7 +37,7 @@ const EditCategory = ({ categoriesList }) => {
 
   const handleUpdate = async () => {
     try {
-      updateCategory({
+      await updateCategory({
         variables: {
           id: selectedCategory.id,
           title: selectedCategory.title,
@@ -78,7 +81,7 @@ const EditCategory = ({ categoriesList }) => {
               <TextField {...params} label="Categories" variant="outlined" fullWidth size="small" />
             )}
             onChange={(_, value) => setSelectedCategory(value)}
-            sx={{ marginBottom: '10px' }}
+            sx={{ marginBottom: '30px' }}
           />
           {selectedCategory && (
             <>
@@ -87,9 +90,9 @@ const EditCategory = ({ categoriesList }) => {
                 margin="dense"
                 id="title"
                 label="Title"
+                size="small"
                 type="text"
                 fullWidth
-                variant="standard"
                 name="title"
                 value={selectedCategory?.title}
                 onChange={(e) =>
@@ -98,26 +101,24 @@ const EditCategory = ({ categoriesList }) => {
                     title: e.target.value,
                   }))
                 }
-                sx={{ marginBottom: '10px' }}
+                sx={{ marginBottom: '25px' }}
               />
 
-              <TextField
-                autoFocus
-                margin="dense"
-                label="Color"
-                type="color"
-                fullWidth
-                variant="standard"
-                name="title"
-                value={selectedCategory.color}
-                onChange={(e) =>
-                  setSelectedCategory((prevState) => ({
-                    ...prevState,
-                    color: e.target.value,
-                  }))
-                }
-                sx={{ marginBottom: '10px' }}
-              />
+              <Box style={{ display: 'flex', alignItems: 'center', width: '300px' }}>
+                <TextField
+                  size="small"
+                  value={selectedCategory.color}
+                  fullWidth
+                  onChange={(e) =>
+                    setSelectedCategory((prevState) => ({
+                      ...prevState,
+                      color: e.target.value,
+                    }))
+                  }
+                  type="color"
+                />
+                <ColorPreview style={{ backgroundColor: selectedCategory.color }} />
+              </Box>
             </>
           )}
         </DialogContent>
@@ -131,3 +132,11 @@ const EditCategory = ({ categoriesList }) => {
 };
 
 export default EditCategory;
+
+// custom color picker
+const ColorPreview = styled('div')({
+  width: '40px',
+  height: '30px',
+  marginLeft: '16px',
+  border: '2px solid #ccc',
+});
