@@ -76,3 +76,11 @@ html::-moz-scrollbar-corner {
 html {
   -ms-overflow-style: -ms-autohiding-scrollbar;
 }
+
+/* category input field */
+
+.css-1sp8c2x-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input {
+  padding: 6px 8px !important;
+  width: 200px !important;
+  background-color: #fff !important;
+}

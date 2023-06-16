@@ -11,6 +11,19 @@ const CategorySchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  updatedAt: {
+    type: Date,
+  },
+  // link to lead
+  lead: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Lead",
+  },
+  // link to user
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  },
 });
 
 module.exports = mongoose.model("Category", CategorySchema);

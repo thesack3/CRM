@@ -73,9 +73,10 @@ export const GET_LEADS = gql`
           title
           dateCreated
         }
-        categories {
+        category {
           id
           title
+          color
           dateCreated
         }
         Link
@@ -137,9 +138,10 @@ export const GET_LEAD = gql`
         title
         dateCreated
       }
-      categories {
+      category {
         id
         title
+        color
         dateCreated
       }
       Link

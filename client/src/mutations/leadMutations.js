@@ -168,8 +168,9 @@ const updateLeadMutation = gql`
     $Birthday: String
     $HomeClosingDate: String
     $AgentSelected: String
-    $Link:String
-    $LastVisitDate:String
+    $Link: String
+    $LastVisitDate: String
+    $category: ID
   ) {
     updateLead(
       id: $id
@@ -195,8 +196,9 @@ const updateLeadMutation = gql`
       Birthday: $Birthday
       HomeClosingDate: $HomeClosingDate
       AgentSelected: $AgentSelected
-      Link:$Link
-      LastVisitDate:$LastVisitDate
+      Link: $Link
+      LastVisitDate: $LastVisitDate
+      category: $category
     ) {
       id
       firstName

@@ -7,10 +7,9 @@ import { useDispatch } from 'react-redux';
 import { setAlert } from '../redux/slice/alertSlice';
 import { callContext } from '../hooks/useCall';
 
-const AddCategory = ({ open, close }) => {
+const AddCategory = ({ open, close, refetch }) => {
   const dispatch = useDispatch();
 
-  const { setRefetch } = useContext(callContext);
   const [title, setTitle] = useState('');
   const [color, setColor] = useState('black');
 
@@ -25,7 +24,7 @@ const AddCategory = ({ open, close }) => {
         },
       });
       dispatch(setAlert({ type: 'success', message: 'Category added successfully' }));
-      setRefetch(new Date().getTime());
+      await refetch();
     } catch (error) {
       dispatch(setAlert({ type: 'error', message: 'Category not added' }));
     } finally {

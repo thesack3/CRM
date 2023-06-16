@@ -289,16 +289,17 @@ const LeadType = new GraphQLObjectType({
     Birthday: { type: GraphQLString },
     HomeClosingDate: { type: GraphQLString },
     updatedAt: { type: GraphQLString },
+    category: {
+      type: CategoryType,
+      resolve(parent, args) {
+        return Category.findById(parent.category);
+      },
+    },
+
     tags: {
       type: new GraphQLList(TagType),
       resolve(parent, args) {
         return Tag.find({ _id: { $in: parent.tags } });
-      },
-    },
-    categories: {
-      type: new GraphQLList(CategoryType),
-      resolve(parent, args) {
-        return Category.find({ _id: { $in: parent.categories } });
       },
     },
   }),
@@ -609,10 +610,8 @@ const RootQuery = new GraphQLObjectType({
           sortCriteria[args.column] = args.sort === "desc" ? -1 : 1;
         }
 
-        console.log("filterModel---------------------------------", filterModel);
         //-------- filter date by date range in filterModel and return leads in that date range and sort by date range and return leads
         if (filterModel?.operatorValue === "isRange" && filterModel?.type === "date") {
-          console.log("---------------------------------date");
           const response = await Lead.find({
             [filterModel?.columnField]: {
               $gte: new Date(filterModel?.from),
@@ -623,7 +622,17 @@ const RootQuery = new GraphQLObjectType({
             .skip(args?.skip)
             .sort(args.column ? sortCriteria : { createdAt: -1 })
             .exec();
-          return { count: totalCount, rows: response };
+
+          const categoriesIds = response.map((lead) => lead.category);
+          const categories = await Category.find({ _id: { $in: categoriesIds } });
+          const result = response.map((lead) => {
+            const category = categories.find(
+              (category) => category?._id?.toString() === lead?.category?.toString()
+            );
+            const leadUp = { ...lead._doc, id: lead._id, category };
+            return leadUp;
+          });
+          return { count: totalCount, rows: result };
         }
 
         // filter number by number range in filterModel and return leads in that number range and sort by number range and return leads
@@ -635,10 +644,18 @@ const RootQuery = new GraphQLObjectType({
             .skip(args?.skip)
             .sort(args.column ? sortCriteria : { createdAt: -1 })
             .exec();
-          return { count: totalCount, rows: response };
+          const categoriesIds = response.map((lead) => lead.category);
+          const categories = await Category.find({ _id: { $in: categoriesIds } });
+          const result = response.map((lead) => {
+            const category = categories.find(
+              (category) => category?._id?.toString() === lead?.category?.toString()
+            );
+            const leadUp = { ...lead._doc, id: lead._id, category };
+            return leadUp;
+          });
+          return { count: totalCount, rows: result };
         }
 
-        //-------------------------------------------------------------------------------------------------------------
         // filter record by contains, equals, etc.
         const query = {};
 
@@ -687,7 +704,17 @@ const RootQuery = new GraphQLObjectType({
             .skip(args?.skip)
             .sort(args.column ? sortCriteria : { createdAt: -1 })
             .exec();
-          return { count: totalCount, rows: response };
+
+          const categoriesIds = response.map((lead) => lead.category);
+          const categories = await Category.find({ _id: { $in: categoriesIds } });
+          const result = response.map((lead) => {
+            const category = categories.find(
+              (category) => category?._id?.toString() === lead?.category?.toString()
+            );
+            const leadUp = { ...lead._doc, id: lead._id, category };
+            return leadUp;
+          });
+          return { count: totalCount, rows: result };
         }
 
         const leads = await Lead.find({
@@ -702,7 +729,16 @@ const RootQuery = new GraphQLObjectType({
           .skip(args?.skip)
           .sort(args.column ? sortCriteria : { createdAt: -1 })
           .exec();
-        return { count: totalCount, rows: leads };
+        const categoriesIds = leads.map((lead) => lead.category);
+        const categories = await Category.find({ _id: { $in: categoriesIds } });
+        const result = leads.map((lead) => {
+          const category = categories.find(
+            (category) => category?._id?.toString() === lead?.category?.toString()
+          );
+          const leadUp = { ...lead._doc, id: lead._id, category };
+          return leadUp;
+        });
+        return { count: totalCount, rows: result };
       },
     },
 
@@ -1325,7 +1361,6 @@ const mutation = new GraphQLObjectType({
           if (existingCategory) {
             throw new Error("Category already exists");
           }
-
           const category = await Category.findById(args.id);
           if (!category) throw new Error("Category not found");
           category.title = args.title;
@@ -1496,6 +1531,8 @@ const mutation = new GraphQLObjectType({
         didAnniversaryDrip: { type: GraphQLString },
         didLeaveReview: { type: GraphQLString },
         didClosingGift: { type: GraphQLString },
+        category: { type: GraphQLID },
+        tags: { type: GraphQLList(GraphQLID) },
 
         // Add additional fields to update here
       },

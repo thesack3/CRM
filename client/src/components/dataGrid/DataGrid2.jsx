@@ -1,6 +1,6 @@
 // TODO: add subscription to update the table when a new lead is added, NEW_LEAD_SUBSCRIPTION
 import * as React from 'react';
-import { Button, TextField, Typography, CircularProgress } from '@mui/material';
+import { Button, TextField, Typography, CircularProgress, Select, MenuItem } from '@mui/material';
 import { useQuery, useMutation } from '@apollo/client';
 import { useMemo, useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -27,12 +27,13 @@ import { setAlert } from '../../redux/slice/alertSlice';
 import AddCategory from '../AddCategory';
 import FilterLeads from '../modals/FilterLeads';
 import SendMessage from '../modals/SendMessage';
+import { GET_CATEGORIES } from '../../queries/categoryQueries';
 
 export default function DataGridProCSV2() {
   const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { setLeadId, categories: categoriesList } = React.useContext(callContext);
+  const { setLeadId } = React.useContext(callContext);
   const [sortModel, setSortModel] = useState([{ field: 'name', sort: 'asc' }]);
   const [sort, setSort] = useState('');
   const [column, setColumn] = useState('');
@@ -58,6 +59,8 @@ export default function DataGridProCSV2() {
   const [filterLeadModal, setFilterLeadModal] = useState(false);
   const [isSendMessageModalOpen, setIsSendMessageModalOpen] = useState(false);
   const [selectedIds, setSelectedIds] = useState([]);
+
+  const { data: categoriesList, refetch: refetchCategories, loading: loadingCategories } = useQuery(GET_CATEGORIES);
 
   const { data: filterData, refetch: filterRefetch } = useQuery(GET_FILTERS, {
     variables: {
@@ -91,11 +94,13 @@ export default function DataGridProCSV2() {
 
   const handleUpdate = async (values, id, type) => {
     const entries = values?.map((x) => x.title);
+    debugger;
     if (type === 'categories') {
       await updateLead({
         variables: {
           id,
-          categoriesList: entries,
+          // categoriesList: entries,
+          category: entries[0],
         },
       });
     }
@@ -553,20 +558,50 @@ export default function DataGridProCSV2() {
               alignItems: 'center',
             }}
           >
-            <SelectField
+            {/* <SelectField
               data={params.row}
               defaultValues={params?.row?.categoriesList?.map((x) => ({
                 title: x,
               }))}
               type={'categories'}
               handleUpdate={(value, id, type) => handleUpdate(value, id, type)}
-            />
+            /> */}
+            {/* create dropdown to display categories list */}
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={params?.row?.category?.id}
+              onChange={(e) => handleCategoryChange(e, params?.row?.id)}
+            >
+              {categoriesList &&
+                categoriesList?.categories?.map((category) => {
+                  return <MenuItem value={category?.id}>{category?.title}</MenuItem>;
+                })}
+            </Select>
           </Box>
         ),
       },
     ],
-    [rowId, data]
+    [rowId, data, categoriesList]
   );
+
+  const handleCategoryChange = async (event, leadId) => {
+    const categoryId = event.target.value;
+    const response = await updateLead({
+      variables: {
+        id: leadId,
+        category: categoryId,
+      },
+    });
+    if (response) {
+      dispatch(setAlert({ type: 'success', message: 'Category updated successfully' }));
+    }
+    await refetch();
+  };
+
+  const handleRefetchCategories = async () => {
+    await refetchCategories();
+  };
 
   // remove categories and tags from data.leads and make new array
   const leadsRows = data?.leads?.rows
@@ -952,7 +987,11 @@ export default function DataGridProCSV2() {
           <Button variant="outlined" onClick={() => setIsCategoryModalOpen(true)}>
             Add Category
           </Button>
-          <AddCategory open={isCategoryModalOpen} close={() => setIsCategoryModalOpen(false)} />
+          <AddCategory
+            open={isCategoryModalOpen}
+            close={() => setIsCategoryModalOpen(false)}
+            refetch={() => handleRefetchCategories()}
+          />
           <AddNote callback={handleRefetch} />
           <AddCSVCall callback={handleRefetch} />
           <AddeAlert callback={handleRefetch} />
