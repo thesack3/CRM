@@ -571,14 +571,24 @@ const RootQuery = new GraphQLObjectType({
 
         // find by categoryList
         if (args && args.category.length) {
-          const searchRegexes = args.category.map((term) => term && new RegExp(term, "i"));
-          const response = await Lead.find({
-            // categoriesList: {
-            //   $elemMatch: { $regex: new RegExp(args.category, "i") },
-            // },
-            categoriesList: { $in: searchRegexes },
+          // find categories from category model by category title and then get ids of categories and find leads by category ids
+
+          const categories = await Category.find({ title: { $in: args.category } });
+          const categoriesIds = categories.map((category) => category._id);
+          const response = await Lead.find({ category: { $in: categoriesIds } })
+            .limit(args?.take)
+            .skip(args?.skip)
+            .sort(args.column ? sortCriteria : { createdAt: -1 })
+            .exec();
+
+          const result = response.map((lead) => {
+            const category = categories.find(
+              (category) => category?._id?.toString() === lead?.category?.toString()
+            );
+            const leadUp = { ...lead._doc, id: lead._id, category };
+            return leadUp;
           });
-          return { count: totalCount, rows: response };
+          return { count: totalCount, rows: result };
         }
         if (args.filter === "closed") {
           const response = await Lead.find({
