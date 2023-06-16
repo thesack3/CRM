@@ -1363,14 +1363,6 @@ const mutation = new GraphQLObjectType({
       },
       async resolve(parent, args) {
         try {
-          // find category by title to avoid duplicate category names with regex case insensitive
-
-          const existingCategory = await Category.findOne({
-            title: { $regex: new RegExp(args.title, "i") },
-          });
-          if (existingCategory) {
-            throw new Error("Category already exists");
-          }
           const category = await Category.findById(args.id);
           if (!category) throw new Error("Category not found");
           category.title = args.title;

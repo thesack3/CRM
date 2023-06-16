@@ -61,7 +61,6 @@
     "i": "^0.3.7",
     "lodash": "^4.17.21",
     "ls": "^0.2.1",
-    "material-ui-popup-state": "^1.9.3",
     "moment": "^2.29.4",
     "mui-snackbar": "^1.1.1",
     "npm": "^9.4.1",
