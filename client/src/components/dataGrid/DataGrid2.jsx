@@ -743,7 +743,8 @@ export default function DataGridProCSV2() {
       label === 'LastAgentNote' ||
       label === 'LastVisitDate' ||
       label === 'OptInDate' ||
-      label === 'RegisterDate'
+      label === 'RegisterDate' ||
+      label === 'updatedAt'
     ) {
       filterModel.type = 'date';
       filterModel.operatorValue = 'isRange';
@@ -911,7 +912,6 @@ export default function DataGridProCSV2() {
   };
 
   const handleSendMessageModal = () => {
-    
     if (selectIds?.length) {
       setIsSendMessageModalOpen(true);
       setSelectedIds(selectIds);
