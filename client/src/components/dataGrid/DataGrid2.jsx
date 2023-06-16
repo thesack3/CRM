@@ -95,7 +95,6 @@ export default function DataGridProCSV2() {
 
   const handleUpdate = async (values, id, type) => {
     const entries = values?.map((x) => x.title);
-    debugger;
     if (type === 'categories') {
       await updateLead({
         variables: {
