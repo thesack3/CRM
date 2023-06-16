@@ -170,6 +170,24 @@ const updateLeadMutation = gql`
     $AgentSelected: String
     $Link: String
     $LastVisitDate: String
+    $City: String
+    $AvgListingPrice: String
+    $BuyerAgent: String
+    $BuyerAgentCategory: String
+    $FirstVisitDate: String
+    $LastAgentCallDate: String
+    $LastAgentNote: String
+    $LastLenderCallDate: String
+    $LeadType: String
+    $LenderCategory: String
+    $LenderOptIn: String
+    $ListingAgentCategory: String
+    $NextCallDue: String
+    $OriginalCampaign: String
+    $RegisterDate: String
+    $VisitTotal: String
+    $eAlerts: String
+    $listingviewcount: String
   ) {
     updateLead(
       id: $id
@@ -197,6 +215,24 @@ const updateLeadMutation = gql`
       AgentSelected: $AgentSelected
       Link: $Link
       LastVisitDate: $LastVisitDate
+      City: $City
+      AvgListingPrice: $AvgListingPrice
+      BuyerAgent: $BuyerAgent
+      BuyerAgentCategory: $BuyerAgentCategory
+      FirstVisitDate: $FirstVisitDate
+      LastAgentCallDate: $LastAgentCallDate
+      LastAgentNote: $LastAgentNote
+      LastLenderCallDate: $LastLenderCallDate
+      LeadType: $LeadType
+      LenderCategory: $LenderCategory
+      LenderOptIn: $LenderOptIn
+      ListingAgentCategory: $ListingAgentCategory
+      NextCallDue: $NextCallDue
+      OriginalCampaign: $OriginalCampaign
+      RegisterDate: $RegisterDate
+      VisitTotal: $VisitTotal
+      eAlerts: $eAlerts
+      listingviewcount: $listingviewcount
     ) {
       id
       firstName
@@ -211,7 +247,6 @@ const updateLeadMutation = gql`
       GloballyOptedOutOfListingAgentEmail
       GloballyOptedOutOfLenderEmail
       GloballyOptedOutOfAlerts
-      OptInDate
       BuyerAgentCategory
       ListingAgentCategory
       LenderCategory
