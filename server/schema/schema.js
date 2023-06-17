@@ -566,13 +566,12 @@ const RootQuery = new GraphQLObjectType({
       },
       async resolve(parent, args) {
         const filterModel = JSON.parse(args.filterModel);
-
+        console.log("filterModel------------------", filterModel);
         const totalCount = await Lead.countDocuments();
 
         // find by categoryList
-        if (args && args.category.length) {
+        if (args && args?.category?.length) {
           // find categories from category model by category title and then get ids of categories and find leads by category ids
-
           const categories = await Category.find({ title: { $in: args.category } });
           const categoriesIds = categories.map((category) => category._id);
           const response = await Lead.find({ category: { $in: categoriesIds } })
@@ -580,7 +579,6 @@ const RootQuery = new GraphQLObjectType({
             .skip(args?.skip)
             .sort(args.column ? sortCriteria : { createdAt: -1 })
             .exec();
-
           const result = response.map((lead) => {
             const category = categories.find(
               (category) => category?._id?.toString() === lead?.category?.toString()
@@ -590,14 +588,14 @@ const RootQuery = new GraphQLObjectType({
           });
           return { count: totalCount, rows: result };
         }
-        if (args.filter === "closed") {
-        
+
+        if (args?.filter === "closed") {
           // find leads where category is closed and return leads
           const category = await Category.findOne({
             // with regex we can find category with closed or closed-1 or closed-2 etc.
             title: { $regex: new RegExp(args.filter, "i") },
           });
-         
+
           if (!category) return { count: 0, rows: [] };
           const response = await Lead.find({ category: category?._id })
             .limit(args?.take)
@@ -683,9 +681,10 @@ const RootQuery = new GraphQLObjectType({
 
         // filter record by contains, equals, etc.
         const query = {};
-
+        console.log("before category----------------- ");
         // Filter records based on a field that contains a specific value
         if (filterModel?.operatorValue === "contains") {
+          console.log("filterModel?.columnField", filterModel?.columnField);
           query[filterModel?.columnField] = { $regex: `.*${filterModel?.value}.*`, $options: "i" };
         }
 
@@ -1607,13 +1606,11 @@ const mutation = new GraphQLObjectType({
       },
       async resolve(parent, { id, ...params }) {
         try {
-          if (params.tagsList) {
-            // tags list has closed tag then update the BuyerAgentCategory to closed ListingAgentCategory to closed HomeClosingDate to today's date
-            if (params.tagsList.includes("closed")) {
-              params.BuyerAgentCategory = "closed";
-              params.ListingAgentCategory = "closed";
-              params.HomeClosingDate = new Date().toLocaleDateString();
-            }
+          // if category is closed then update the BuyerAgentCategory to closed ListingAgentCategory to closed HomeClosingDate to today's date
+          if (params?.category === "closed") {
+            params.BuyerAgentCategory = "closed";
+            params.ListingAgentCategory = "closed";
+            params.HomeClosingDate = new Date().toLocaleDateString();
           }
 
           let update = await Lead.findOneAndUpdate(

@@ -189,6 +189,11 @@ const updateLeadMutation = gql`
     $VisitTotal: String
     $eAlerts: String
     $listingviewcount: String
+    $didPostCardDrip: String
+    $didLeaveReview: String
+    $didAnniversaryDrip: String
+    $didsocialMediaFriends: String
+    $didClosingGift: String
   ) {
     updateLead(
       id: $id
@@ -235,6 +240,11 @@ const updateLeadMutation = gql`
       VisitTotal: $VisitTotal
       eAlerts: $eAlerts
       listingviewcount: $listingviewcount
+      didPostCardDrip: $didPostCardDrip
+      didLeaveReview: $didLeaveReview
+      didAnniversaryDrip: $didAnniversaryDrip
+      didsocialMediaFriends: $didsocialMediaFriends
+      didClosingGift: $didClosingGift
     ) {
       id
       firstName
@@ -297,6 +307,11 @@ const updateLeadMutation = gql`
         color
         dateCreated
       }
+      didPostCardDrip
+      didLeaveReview
+      didAnniversaryDrip
+      didsocialMediaFriends
+      didClosingGift
     }
   }
 `;

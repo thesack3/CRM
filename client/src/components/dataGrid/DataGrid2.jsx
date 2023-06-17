@@ -1071,7 +1071,7 @@ export default function DataGridProCSV2() {
           <Box sx={{ width: '70vw', paddingBottom: '.5rem', display: 'inline-flex', overflow: 'scroll', gap: '20px' }}>
             {categoriesList?.categories?.map((category) => {
               if (category?.title?.toLowerCase() === 'closed') return null;
-              return(
+              return (
                 <Box>
                   <CategoryInput
                     category={category}
