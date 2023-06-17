@@ -1414,14 +1414,29 @@ const mutation = new GraphQLObjectType({
         // convert string to array
         const leads = JSON.parse(args.leads);
 
-        if (leads.length) {
-          // use upsert data to save leads to database but upsertMany is not supported in mongoose
-          // so we need to use bulkWrite to save leads to database
-          const bulkWrite = leads.map((lead) => ({
+        // leads have category title we need to find category id from database and save it to lead category field and then bulkWrite leads to database with upsert true to avoid duplicate leads use email and phone as unique fields
+        if (!leads.length) {
+          return { count: 0 };
+        }
+        const categories = await Category.find();
+        const bulkWrite = leads?.map((lead) => {
+          let category = null;
+          if (leads.category) {
+            category = categories.find(
+              (category) => category?.title?.toLowerCase() === lead?.category?.toLowerCase()
+            );
+          }
+          // if category not found then add new category to database
+          if (!category && lead.category) {
+            category = new Category({ title: lead.category });
+            category.save();
+          }
+
+          return {
             updateOne: {
               filter: {
-                email: lead.Emails,
-                phone: lead.Phones,
+                email: lead.email,
+                phone: lead.phone,
               },
               update: {
                 ...lead,
@@ -1436,15 +1451,48 @@ const mutation = new GraphQLObjectType({
                 GloballyOptedOutOfListingAgentEmail: lead.OptedOutOfListingAgentEmail,
                 GloballyOptedOutOfLenderEmail: lead.OptedOutOfLenderEmail,
                 GloballyOptedOutOfAlerts: lead.OptedOutOfeAlerts,
+                category: category?._id || null,
               },
               upsert: true,
             },
-          }));
+          };
+        });
 
-          // return upserted leads count
-          const response = await (await Lead.bulkWrite(bulkWrite)).result.nUpserted;
-          return { count: response };
-        }
+        // return upserted leads count
+        const response = await (await Lead.bulkWrite(bulkWrite)).result.nUpserted;
+        return { count: response };
+
+        // if (leads.length) {
+        //   // use upsert data to save leads to database but upsertMany is not supported in mongoose
+        //   // so we need to use bulkWrite to save leads to database
+        //   const bulkWrite = leads.map((lead) => ({
+        //     updateOne: {
+        //       filter: {
+        //         email: lead.Emails,
+        //         phone: lead.Phones,
+        //       },
+        //       update: {
+        //         ...lead,
+        //         firstName: lead.FirstName,
+        //         lastName: lead.LastName,
+        //         email: lead.Emails,
+        //         phone: lead.Phones,
+        //         phoneStatus: lead.PhoneStatus,
+        //         description: lead.Description,
+        //         emailInvalid: lead.EmailInvalid,
+        //         GloballyOptedOutOfBuyerAgentEmail: lead.OptedOutOfBuyerAgentEmail,
+        //         GloballyOptedOutOfListingAgentEmail: lead.OptedOutOfListingAgentEmail,
+        //         GloballyOptedOutOfLenderEmail: lead.OptedOutOfLenderEmail,
+        //         GloballyOptedOutOfAlerts: lead.OptedOutOfeAlerts,
+        //       },
+        //       upsert: true,
+        //     },
+        //   }));
+
+        //   // return upserted leads count
+        //   const response = await (await Lead.bulkWrite(bulkWrite)).result.nUpserted;
+        //   return { count: response };
+        // }
       },
     },
 
