@@ -924,7 +924,47 @@ export default function DataGridProCSV2() {
   };
 
   // Get active categories
-  const handleCategoryClick = (category) => {
+  const handleCategoryClick = async (category) => {
+    // if (category && category.toLocaleLowerCase() !== 'closed') {
+    //   setFilter('');
+    //   const response = await addFilter({
+    //     variables: {
+    //       userId: user?.id,
+    //       isClosed: false,
+    //     },
+    //   });
+    //   if (response?.data?.addFilter) {
+    //     setClosed(response?.data?.addFilter?.isClosed);
+    //     await filterRefetch();
+    //     await refetch();
+    //   }
+    // }
+    // if (category && category.toLocaleLowerCase() === 'closed') {
+    //   setFilter('closed');
+    //   const closedColumns = [
+    //     '__check__',
+    //     'RegisterDate',
+    //     'Address',
+    //     'HomeClosingDate',
+    //     'didLeaveReview',
+    //     'didClosingGift',
+    //     'didsocialMediaFriends',
+    //     'didPostCardDrip',
+    //     'didAnniversaryDrip',
+    //   ];
+    //   const response = await addFilter({
+    //     variables: {
+    //       userId: user?.id,
+    //       closedColumns,
+    //       isClosed: true,
+    //     },
+    //   });
+    //   if (response?.data?.addFilter) {
+    //     setClosed(response?.data?.addFilter?.isClosed);
+    //     await filterRefetch();
+    //     await refetch();
+    //   }
+    // }
     if (activeCategories.includes(category)) {
       setActiveCategories(activeCategories.filter((cat) => cat !== category));
       setCategories(activeCategories.filter((cat) => cat !== category));
@@ -1029,15 +1069,18 @@ export default function DataGridProCSV2() {
       <div style={{ height: 690, width: '100%' }}>
         <Box sx={{ marginTop: '16px' }}>
           <Box sx={{ width: '70vw', paddingBottom: '.5rem', display: 'inline-flex', overflow: 'scroll', gap: '20px' }}>
-            {categoriesList?.categories?.map((category) => (
-              <Box>
-                <CategoryInput
-                  category={category}
-                  activeCategories={activeCategories}
-                  handleActiveCategory={(value) => handleCategoryClick(value)}
-                />
-              </Box>
-            ))}
+            {categoriesList?.categories?.map((category) => {
+              if (category?.title?.toLowerCase() === 'closed') return null;
+              return(
+                <Box>
+                  <CategoryInput
+                    category={category}
+                    activeCategories={activeCategories}
+                    handleActiveCategory={(value) => handleCategoryClick(value)}
+                  />
+                </Box>
+              );
+            })}
           </Box>
         </Box>
         <Box sx={{ height: '100%' }}>

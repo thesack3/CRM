@@ -591,10 +591,25 @@ const RootQuery = new GraphQLObjectType({
           return { count: totalCount, rows: result };
         }
         if (args.filter === "closed") {
-          const response = await Lead.find({
-            tagsList: { $in: ["closed"] },
+        
+          // find leads where category is closed and return leads
+          const category = await Category.findOne({
+            // with regex we can find category with closed or closed-1 or closed-2 etc.
+            title: { $regex: new RegExp(args.filter, "i") },
           });
-          return { count: totalCount, rows: response };
+         
+          if (!category) return { count: 0, rows: [] };
+          const response = await Lead.find({ category: category?._id })
+            .limit(args?.take)
+            .skip(args?.skip)
+            .sort(args.column ? sortCriteria : { createdAt: -1 })
+            .exec();
+
+          const result = response.map((lead) => {
+            const leadUp = { ...lead._doc, id: lead._id, category };
+            return leadUp;
+          });
+          return { count: totalCount, rows: result };
         }
 
         let sortCriteria = {};
@@ -1341,7 +1356,11 @@ const mutation = new GraphQLObjectType({
           if (existingCategory) {
             throw new Error("Category already exists");
           }
-          const category = new Category(args);
+          const category = new Category({
+            // save category title in lowercase
+            title: args.title.toLowerCase(),
+            color: args.color,
+          });
           const result = await category.save();
           return result;
         } catch (error) {
@@ -1365,7 +1384,7 @@ const mutation = new GraphQLObjectType({
         try {
           const category = await Category.findById(args.id);
           if (!category) throw new Error("Category not found");
-          category.title = args.title;
+          category.title = args.title.toLowerCase();
           category.color = args.color;
           const result = await category.save();
           return result;
