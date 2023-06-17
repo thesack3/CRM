@@ -53,8 +53,6 @@ const FilterSchema = mongoose.Schema({
       // "didLeaveReview",
       // "didClosingGift",
       // "didsocialMediaFriends",
-      // "didPostCardDrip",
-      // "didAnniversaryDrip",
     ],
   },
 
