@@ -589,27 +589,6 @@ const RootQuery = new GraphQLObjectType({
           return { count: totalCount, rows: result };
         }
 
-        if (args?.filter === "closed") {
-          // find leads where category is closed and return leads
-          const category = await Category.findOne({
-            // with regex we can find category with closed or closed-1 or closed-2 etc.
-            title: { $regex: new RegExp(args.filter, "i") },
-          });
-
-          if (!category) return { count: 0, rows: [] };
-          const response = await Lead.find({ category: category?._id })
-            .limit(args?.take)
-            .skip(args?.skip)
-            .sort(args.column ? sortCriteria : { createdAt: -1 })
-            .exec();
-
-          const result = response.map((lead) => {
-            const leadUp = { ...lead._doc, id: lead._id, category };
-            return leadUp;
-          });
-          return { count: totalCount, rows: result };
-        }
-
         let sortCriteria = {};
         // find closed leads where tags array have closed tag
         // if (args.filter.toLowerCase() === "closed") {
@@ -735,6 +714,27 @@ const RootQuery = new GraphQLObjectType({
             const category = categories.find(
               (category) => category?._id?.toString() === lead?.category?.toString()
             );
+            const leadUp = { ...lead._doc, id: lead._id, category };
+            return leadUp;
+          });
+          return { count: totalCount, rows: result };
+        }
+
+        if (args?.filter === "closed") {
+          // find leads where category is closed and return leads
+          const category = await Category.findOne({
+            // with regex we can find category with closed or closed-1 or closed-2 etc.
+            title: { $regex: new RegExp(args.filter, "i") },
+          });
+
+          if (!category) return { count: 0, rows: [] };
+          const response = await Lead.find({ category: category?._id })
+            .limit(args?.take)
+            .skip(args?.skip)
+            .sort(args.column ? sortCriteria : { createdAt: -1 })
+            .exec();
+
+          const result = response.map((lead) => {
             const leadUp = { ...lead._doc, id: lead._id, category };
             return leadUp;
           });
