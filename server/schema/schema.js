@@ -583,7 +583,21 @@ const RootQuery = new GraphQLObjectType({
             const category = categories.find(
               (category) => category?._id?.toString() === lead?.category?.toString()
             );
-            const leadUp = { ...lead._doc, id: lead._id, category };
+            // return leadUp dates in fDateTime format and return result
+            const leadUp = {
+              ...lead._doc,
+              id: lead._id,
+              updatedAt: fDateTime(lead.updatedAt),
+              LastVisitDate: fDateTime(lead.LastVisitDate),
+              FirstVisitDate: fDateTime(lead.FirstVisitDate),
+              LastLenderCallDate: fDateTime(lead.LastLenderCallDate),
+              LastAgentCallDate: fDateTime(lead.LastAgentCallDate),
+              Birthday: fDateTime(lead.Birthday),
+              LastAgentNote: fDateTime(lead.LastAgentNote),
+              RegisterDate: fDateTime(lead.RegisterDate),
+              OptInDate: fDateTime(lead.OptInDate),
+              category,
+            };
             return leadUp;
           });
           return { count: totalCount, rows: result };
@@ -631,7 +645,20 @@ const RootQuery = new GraphQLObjectType({
             const category = categories.find(
               (category) => category?._id?.toString() === lead?.category?.toString()
             );
-            const leadUp = { ...lead._doc, id: lead._id, category };
+            const leadUp = {
+              ...lead._doc,
+              id: lead._id,
+              updatedAt: fDateTime(lead.updatedAt),
+              LastVisitDate: fDateTime(lead.LastVisitDate),
+              FirstVisitDate: fDateTime(lead.FirstVisitDate),
+              LastLenderCallDate: fDateTime(lead.LastLenderCallDate),
+              LastAgentCallDate: fDateTime(lead.LastAgentCallDate),
+              Birthday: fDateTime(lead.Birthday),
+              LastAgentNote: fDateTime(lead.LastAgentNote),
+              RegisterDate: fDateTime(lead.RegisterDate),
+              OptInDate: fDateTime(lead.OptInDate),
+              category,
+            };
             return leadUp;
           });
           return { count: totalCount, rows: result };
@@ -652,7 +679,21 @@ const RootQuery = new GraphQLObjectType({
             const category = categories.find(
               (category) => category?._id?.toString() === lead?.category?.toString()
             );
-            const leadUp = { ...lead._doc, id: lead._id, category };
+            const leadUp = {
+              ...lead._doc,
+              id: lead._id,
+              updatedAt: fDateTime(lead.updatedAt),
+              LastVisitDate: fDateTime(lead.LastVisitDate),
+              FirstVisitDate: fDateTime(lead.FirstVisitDate),
+              LastLenderCallDate: fDateTime(lead.LastLenderCallDate),
+              LastAgentCallDate: fDateTime(lead.LastAgentCallDate),
+              Birthday: fDateTime(lead.Birthday),
+              LastAgentNote: fDateTime(lead.LastAgentNote),
+              RegisterDate: fDateTime(lead.RegisterDate),
+              OptInDate: fDateTime(lead.OptInDate),
+              HomeClosingDate: fDateTime(lead.HomeClosingDate),
+              category,
+            };
             return leadUp;
           });
           return { count: totalCount, rows: result };
@@ -714,7 +755,21 @@ const RootQuery = new GraphQLObjectType({
             const category = categories.find(
               (category) => category?._id?.toString() === lead?.category?.toString()
             );
-            const leadUp = { ...lead._doc, id: lead._id, category };
+            const leadUp = {
+              ...lead._doc,
+              id: lead._id,
+              updatedAt: fDateTime(lead.updatedAt),
+              LastVisitDate: fDateTime(lead.LastVisitDate),
+              FirstVisitDate: fDateTime(lead.FirstVisitDate),
+              LastLenderCallDate: fDateTime(lead.LastLenderCallDate),
+              LastAgentCallDate: fDateTime(lead.LastAgentCallDate),
+              Birthday: fDateTime(lead.Birthday),
+              LastAgentNote: fDateTime(lead.LastAgentNote),
+              RegisterDate: fDateTime(lead.RegisterDate),
+              OptInDate: fDateTime(lead.OptInDate),
+              HomeClosingDate: fDateTime(lead.HomeClosingDate),
+              category,
+            };
             return leadUp;
           });
           return { count: totalCount, rows: result };
@@ -735,7 +790,21 @@ const RootQuery = new GraphQLObjectType({
             .exec();
 
           const result = response.map((lead) => {
-            const leadUp = { ...lead._doc, id: lead._id, category };
+            const leadUp = {
+              ...lead._doc,
+              id: lead._id,
+              updatedAt: fDateTime(lead.updatedAt),
+              LastVisitDate: fDateTime(lead.LastVisitDate),
+              FirstVisitDate: fDateTime(lead.FirstVisitDate),
+              LastLenderCallDate: fDateTime(lead.LastLenderCallDate),
+              LastAgentCallDate: fDateTime(lead.LastAgentCallDate),
+              Birthday: fDateTime(lead.Birthday),
+              LastAgentNote: fDateTime(lead.LastAgentNote),
+              RegisterDate: fDateTime(lead.RegisterDate),
+              OptInDate: fDateTime(lead.OptInDate),
+              HomeClosingDate: fDateTime(lead.HomeClosingDate),
+              category,
+            };
             return leadUp;
           });
           return { count: totalCount, rows: result };
@@ -759,7 +828,21 @@ const RootQuery = new GraphQLObjectType({
           const category = categories.find(
             (category) => category?._id?.toString() === lead?.category?.toString()
           );
-          const leadUp = { ...lead._doc, id: lead._id, category };
+          const leadUp = {
+            ...lead._doc,
+            id: lead._id,
+            updatedAt: fDateTime(lead.updatedAt),
+            LastVisitDate: fDateTime(lead.LastVisitDate),
+            FirstVisitDate: fDateTime(lead.FirstVisitDate),
+            LastLenderCallDate: fDateTime(lead.LastLenderCallDate),
+            LastAgentCallDate: fDateTime(lead.LastAgentCallDate),
+            Birthday: fDateTime(lead.Birthday),
+            LastAgentNote: fDateTime(lead.LastAgentNote),
+            RegisterDate: fDateTime(lead.RegisterDate),
+            OptInDate: fDateTime(lead.OptInDate),
+            HomeClosingDate: fDateTime(lead.HomeClosingDate),
+            category,
+          };
           return leadUp;
         });
         return { count: totalCount, rows: result };
