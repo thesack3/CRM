@@ -786,13 +786,9 @@ const RootQuery = new GraphQLObjectType({
           [value]: { $regex: new RegExp(args.label, "i") },
         });
 
-        // const values = leads.map((lead) => lead[args.value]);
-        // get values from leads array with args.value as key and return array of values for that key from leads array and remove duplicates from array
-        const values = leads
-          .map((lead) => lead[args.value])
-          .filter((value, index, self) => {
-            return self.indexOf(value) === index;
-          });
+        const values = [...new Set(leads.map((lead) => lead[args.value]))].filter(
+          (value) => value !== ""
+        );
 
         return values;
       },
