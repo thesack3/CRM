@@ -593,7 +593,6 @@ const RootQuery = new GraphQLObjectType({
               LastLenderCallDate: fDateTime(lead.LastLenderCallDate),
               LastAgentCallDate: fDateTime(lead.LastAgentCallDate),
               Birthday: fDateTime(lead.Birthday),
-              LastAgentNote: fDateTime(lead.LastAgentNote),
               RegisterDate: fDateTime(lead.RegisterDate),
               OptInDate: fDateTime(lead.OptInDate),
               category,
@@ -666,7 +665,6 @@ const RootQuery = new GraphQLObjectType({
               LastLenderCallDate: fDateTime(lead.LastLenderCallDate),
               LastAgentCallDate: fDateTime(lead.LastAgentCallDate),
               Birthday: fDateTime(lead.Birthday),
-              LastAgentNote: fDateTime(lead.LastAgentNote),
               RegisterDate: fDateTime(lead.RegisterDate),
               OptInDate: fDateTime(lead.OptInDate),
               category,
@@ -700,7 +698,6 @@ const RootQuery = new GraphQLObjectType({
               LastLenderCallDate: fDateTime(lead.LastLenderCallDate),
               LastAgentCallDate: fDateTime(lead.LastAgentCallDate),
               Birthday: fDateTime(lead.Birthday),
-              LastAgentNote: fDateTime(lead.LastAgentNote),
               RegisterDate: fDateTime(lead.RegisterDate),
               OptInDate: fDateTime(lead.OptInDate),
               HomeClosingDate: fDateTime(lead.HomeClosingDate),
@@ -776,7 +773,6 @@ const RootQuery = new GraphQLObjectType({
               LastLenderCallDate: fDateTime(lead.LastLenderCallDate),
               LastAgentCallDate: fDateTime(lead.LastAgentCallDate),
               Birthday: fDateTime(lead.Birthday),
-              LastAgentNote: fDateTime(lead.LastAgentNote),
               RegisterDate: fDateTime(lead.RegisterDate),
               OptInDate: fDateTime(lead.OptInDate),
               HomeClosingDate: fDateTime(lead.HomeClosingDate),
@@ -811,7 +807,6 @@ const RootQuery = new GraphQLObjectType({
               LastLenderCallDate: fDateTime(lead.LastLenderCallDate),
               LastAgentCallDate: fDateTime(lead.LastAgentCallDate),
               Birthday: fDateTime(lead.Birthday),
-              LastAgentNote: fDateTime(lead.LastAgentNote),
               RegisterDate: fDateTime(lead.RegisterDate),
               OptInDate: fDateTime(lead.OptInDate),
               HomeClosingDate: fDateTime(lead.HomeClosingDate),
@@ -850,7 +845,6 @@ const RootQuery = new GraphQLObjectType({
               LastLenderCallDate: fDateTime(lead.LastLenderCallDate),
               LastAgentCallDate: fDateTime(lead.LastAgentCallDate),
               Birthday: fDateTime(lead.Birthday),
-              LastAgentNote: fDateTime(lead.LastAgentNote),
               RegisterDate: fDateTime(lead.RegisterDate),
               OptInDate: fDateTime(lead.OptInDate),
               HomeClosingDate: fDateTime(lead.HomeClosingDate),
@@ -881,7 +875,6 @@ const RootQuery = new GraphQLObjectType({
             LastLenderCallDate: fDateTime(lead.LastLenderCallDate),
             LastAgentCallDate: fDateTime(lead.LastAgentCallDate),
             Birthday: fDateTime(lead.Birthday),
-            LastAgentNote: fDateTime(lead.LastAgentNote),
             RegisterDate: fDateTime(lead.RegisterDate),
             OptInDate: fDateTime(lead.OptInDate),
             HomeClosingDate: fDateTime(lead.HomeClosingDate),
@@ -940,12 +933,11 @@ const RootQuery = new GraphQLObjectType({
               LastLenderCallDate: fDateTime(result.LastLenderCallDate),
               LastAgentCallDate: fDateTime(result.LastAgentCallDate),
               Birthday: fDateTime(result.Birthday),
-              LastAgentNote: fDateTime(result.LastAgentNote),
               RegisterDate: fDateTime(result.RegisterDate),
+              OptInDate: fDateTime(result.OptInDate),
+              HomeClosingDate: fDateTime(result.HomeClosingDate),
             };
             return resultUp;
-
-            // return result;
           })
           .catch((error) => {
             console.error("error finding lead", error);
@@ -1724,6 +1716,7 @@ const mutation = new GraphQLObjectType({
         didClosingGift: { type: GraphQLString },
         category: { type: GraphQLID },
         tags: { type: GraphQLList(GraphQLID) },
+        OptInDate: { type: GraphQLString },
 
         // Add additional fields to update here
       },
@@ -1741,7 +1734,23 @@ const mutation = new GraphQLObjectType({
             { ...params, updatedAt: new Date() },
             { new: true }
           );
-          return update;
+          if (!update) throw new Error(`Lead with ID ${id} not found`);
+          // return update with populated category and tags fields and also convert date to string
+
+          const resultUp = {
+            ...update._doc,
+            updatedAt: fDateTime(update.updatedAt),
+            createdAt: fDateTime(update.createdAt),
+            category: update.category?._id,
+            OptInDate: fDateTime(update.OptInDate),
+            HomeClosingDate: fDateTime(update.HomeClosingDate),
+            LastAgentCallDate: fDateTime(update.LastAgentCallDate),
+            LastLenderCallDate: fDateTime(update.LastLenderCallDate),
+            FirstVisitDate: fDateTime(update.FirstVisitDate),
+            LastVisitDate: fDateTime(update.LastVisitDate),
+            RegisterDate: fDateTime(update.RegisterDate),
+          };
+          return resultUp;
         } catch (error) {
           console.error(error);
           throw new Error(`Error updating lead with ID ${id}`);

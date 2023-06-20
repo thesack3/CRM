@@ -88,7 +88,7 @@ const LeadSchema = new mongoose.Schema({
     required: false,
   },
   LastAgentNote: {
-    type: Date,
+    type: String,
     required: false,
   },
   eAlerts: {
@@ -116,7 +116,7 @@ const LeadSchema = new mongoose.Schema({
     required: false,
   },
   LastLenderCallDate: {
-    type: String,
+    type: Date,
     required: false,
   },
   FirstVisitDate: {
@@ -263,12 +263,7 @@ LeadSchema.pre("save", function (next) {
   }
   next();
 });
-LeadSchema.pre("save", function (next) {
-  if (this.LastAgentNote) {
-    this.LastAgentNote = new Date(this.LastAgentNote);
-  }
-  next();
-});
+
 LeadSchema.pre("save", function (next) {
   if (this.LastVisitDate) {
     this.LastVisitDate = new Date(this.LastVisitDate);
@@ -290,6 +285,12 @@ LeadSchema.pre("save", function (next) {
 LeadSchema.pre("save", function (next) {
   if (this.Birthday) {
     this.Birthday = new Date(this.Birthday);
+  }
+  next();
+});
+LeadSchema.pre("save", function (next) {
+  if (this.LastLenderCallDate) {
+    this.LastLenderCallDate = new Date(this.LastLenderCallDate);
   }
   next();
 });

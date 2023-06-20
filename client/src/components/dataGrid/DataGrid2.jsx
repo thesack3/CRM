@@ -754,16 +754,16 @@ export default function DataGridProCSV2() {
       to: '',
     };
 
-    // if value have Birthday or FirstVisitDate or HomeClosingDate or LastAgentCallDate or LastAgentNote or LastVisitDate or LenderOptIn or RegisterDate then set type to date and operatorValue to isRange
+    // if value have Birthday or FirstVisitDate or HomeClosingDate or LastAgentCallDate or LastVisitDate or LenderOptIn or RegisterDate then set type to date and operatorValue to isRange
     if (
       label === 'Birthday' ||
       label === 'FirstVisitDate' ||
       label === 'HomeClosingDate' ||
       label === 'LastAgentCallDate' ||
-      label === 'LastAgentNote' ||
       label === 'LastVisitDate' ||
       label === 'OptInDate' ||
       label === 'RegisterDate' ||
+      label === 'LastLenderCallDate' ||
       label === 'updatedAt'
     ) {
       filterModel.type = 'date';

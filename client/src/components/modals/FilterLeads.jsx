@@ -960,10 +960,10 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback }) => {
           fieldValue == 'FirstVisitDate' ||
           fieldValue == 'HomeClosingDate' ||
           fieldValue == 'LastAgentCallDate' ||
-          fieldValue == 'LastAgentNote' ||
           fieldValue == 'LastVisitDate' ||
           fieldValue == 'OptInDate' ||
           fieldValue == 'RegisterDate' ||
+          fieldValue == 'LastLenderCallDate' ||
           fieldValue == 'updatedAt' ? (
             <Box>
               {/* add two fields for date range */}

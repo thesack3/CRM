@@ -194,6 +194,7 @@ const updateLeadMutation = gql`
     $didAnniversaryDrip: String
     $didsocialMediaFriends: String
     $didClosingGift: String
+    $OptInDate: String
   ) {
     updateLead(
       id: $id
@@ -245,6 +246,7 @@ const updateLeadMutation = gql`
       didAnniversaryDrip: $didAnniversaryDrip
       didsocialMediaFriends: $didsocialMediaFriends
       didClosingGift: $didClosingGift
+      OptInDate: $OptInDate
     ) {
       id
       firstName
@@ -312,6 +314,7 @@ const updateLeadMutation = gql`
       didAnniversaryDrip
       didsocialMediaFriends
       didClosingGift
+      OptInDate
     }
   }
 `;

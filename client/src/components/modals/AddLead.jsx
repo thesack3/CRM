@@ -38,7 +38,7 @@ export default function AddLeadModal({ handleRefetch, title, leadData }) {
     GloballyOptedOutOfListingAgentEmail: '',
     GloballyOptedOutOfLenderEmail: '',
     GloballyOptedOutOfAlerts: '',
-    // OptInDate: '',
+    OptInDate: '',
     BuyerAgentCategory: '',
     ListingAgentCategory: '',
     LenderCategory: '',
@@ -114,7 +114,7 @@ export default function AddLeadModal({ handleRefetch, title, leadData }) {
           GloballyOptedOutOfListingAgentEmail: '',
           GloballyOptedOutOfLenderEmail: '',
           GloballyOptedOutOfAlerts: '',
-          // OptInDate: '',
+          OptInDate: '',
           BuyerAgentCategory: '',
           ListingAgentCategory: '',
           LenderCategory: '',
@@ -362,7 +362,7 @@ export default function AddLeadModal({ handleRefetch, title, leadData }) {
                 onChange={handleChange}
               />
 
-              {/* <TextField
+              <TextField
                 autoFocus
                 margin="dense"
                 id="OptInDate"
@@ -373,7 +373,7 @@ export default function AddLeadModal({ handleRefetch, title, leadData }) {
                 name="OptInDate"
                 value={curLead ? curLead.OptInDate : formData.OptInDate}
                 onChange={handleChange}
-              /> */}
+              />
 
               <TextField
                 autoFocus
