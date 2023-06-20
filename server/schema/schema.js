@@ -1739,6 +1739,7 @@ const mutation = new GraphQLObjectType({
 
           const resultUp = {
             ...update._doc,
+            id: update._id,
             updatedAt: fDateTime(update.updatedAt),
             createdAt: fDateTime(update.createdAt),
             category: update.category?._id,
