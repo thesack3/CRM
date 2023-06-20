@@ -339,8 +339,8 @@ export default function DataGridProCSV2() {
         hide: true,
       },
       {
-        field: 'AvgListingPrive',
-        headerName: 'Avg. Listing Prive',
+        field: 'AvgListingPrice',
+        headerName: 'Avg. Listing Price',
         width: 120,
         editable: true,
 
