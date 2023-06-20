@@ -600,19 +600,10 @@ const RootQuery = new GraphQLObjectType({
             };
             return leadUp;
           });
-          return { count: totalCount, rows: result };
+          return { count: result.length, rows: result };
         }
 
         let sortCriteria = {};
-        // find closed leads where tags array have closed tag
-        // if (args.filter.toLowerCase() === "closed") {
-        //   const response = await Lead.find({ tagsList: { $in: ["closed"] } })
-        //     .limit(args?.take)
-        //     .skip(args?.skip)
-        //     .sort(args.column ? sortCriteria : { createdAt: -1 })
-        //     .exec();
-        //   return { count: totalCount, rows: response };
-        // }
 
         // get leads keys
         const keys = Object.keys(Lead.schema.paths);
@@ -661,7 +652,7 @@ const RootQuery = new GraphQLObjectType({
             };
             return leadUp;
           });
-          return { count: totalCount, rows: result };
+          return { count: result.length, rows: result };
         }
 
         // filter number by number range in filterModel and return leads in that number range and sort by number range and return leads
@@ -696,7 +687,7 @@ const RootQuery = new GraphQLObjectType({
             };
             return leadUp;
           });
-          return { count: totalCount, rows: result };
+          return { count: result.length, rows: result };
         }
 
         // filter record by contains, equals, etc.
@@ -772,7 +763,7 @@ const RootQuery = new GraphQLObjectType({
             };
             return leadUp;
           });
-          return { count: totalCount, rows: result };
+          return { count: result.length, rows: result };
         }
 
         if (args?.filter === "closed") {
@@ -807,24 +798,56 @@ const RootQuery = new GraphQLObjectType({
             };
             return leadUp;
           });
-          return { count: totalCount, rows: result };
+          return { count: result.length, rows: result };
         }
 
-        const leads = await Lead.find({
-          $or: [
-            { firstName: { $regex: new RegExp(args.filter, "i") } },
-            { lastName: { $regex: new RegExp(args.filter, "i") } },
-            { email: { $regex: new RegExp(args.filter, "i") } },
-            { phone: { $regex: new RegExp(args.filter, "i") } },
-          ],
-        })
+        if (args.filter) {
+          const leads = await Lead.find({
+            $or: [
+              { firstName: { $regex: new RegExp(args.filter, "i") } },
+              { lastName: { $regex: new RegExp(args.filter, "i") } },
+              { email: { $regex: new RegExp(args.filter, "i") } },
+              { phone: { $regex: new RegExp(args.filter, "i") } },
+            ],
+          })
+            .limit(args?.take)
+            .skip(args?.skip)
+            .sort(args.column ? sortCriteria : { createdAt: -1 })
+            .exec();
+          const categoriesIds = leads.map((lead) => lead.category);
+          const categories = await Category.find({ _id: { $in: categoriesIds } });
+          const result = leads.map((lead) => {
+            const category = categories.find(
+              (category) => category?._id?.toString() === lead?.category?.toString()
+            );
+            const leadUp = {
+              ...lead._doc,
+              id: lead._id,
+              updatedAt: fDateTime(lead.updatedAt),
+              LastVisitDate: fDateTime(lead.LastVisitDate),
+              FirstVisitDate: fDateTime(lead.FirstVisitDate),
+              LastLenderCallDate: fDateTime(lead.LastLenderCallDate),
+              LastAgentCallDate: fDateTime(lead.LastAgentCallDate),
+              Birthday: fDateTime(lead.Birthday),
+              LastAgentNote: fDateTime(lead.LastAgentNote),
+              RegisterDate: fDateTime(lead.RegisterDate),
+              OptInDate: fDateTime(lead.OptInDate),
+              HomeClosingDate: fDateTime(lead.HomeClosingDate),
+              category,
+            };
+            return leadUp;
+          });
+          return { count: result.length, rows: result };
+        }
+        // if no args are passed, then return all leads
+        const response = await Lead.find()
           .limit(args?.take)
           .skip(args?.skip)
           .sort(args.column ? sortCriteria : { createdAt: -1 })
           .exec();
-        const categoriesIds = leads.map((lead) => lead.category);
+        const categoriesIds = response.map((lead) => lead.category);
         const categories = await Category.find({ _id: { $in: categoriesIds } });
-        const result = leads.map((lead) => {
+        const result = response.map((lead) => {
           const category = categories.find(
             (category) => category?._id?.toString() === lead?.category?.toString()
           );
@@ -1732,7 +1755,6 @@ const mutation = new GraphQLObjectType({
 
         const mailOptions = {
           from: process.env.EMAIL,
-          // emailsList
           to: emailsList,
           subject: args.subject,
           text: args.body,
