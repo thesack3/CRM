@@ -8,7 +8,6 @@ import Box from '@mui/material/Box';
 import { useNavigate } from 'react-router-dom';
 import { DataGridPro, GridToolbar } from '@mui/x-data-grid-pro';
 import { GET_FILTERS, GET_LEADS } from '../../queries/leadQueries';
-import { SEND_EMAILS_MUTATION } from '../../mutations/bulkEmail';
 import AddLeadModal from '../modals/AddLead';
 import AddCSVLeadModal from '../modals/AddCSVLeadModal';
 import AddTagModal from '../modals/AddTag';
@@ -29,6 +28,7 @@ import FilterLeads from '../modals/FilterLeads';
 import EditCategory from '../modals/EditCategory';
 import SendMessage from '../modals/SendMessage';
 import { GET_CATEGORIES } from '../../queries/categoryQueries';
+import SendEmail from '../modals/SendEmail';
 
 export default function DataGridProCSV2() {
   const { user } = useSelector((state) => state.auth);
@@ -60,6 +60,7 @@ export default function DataGridProCSV2() {
   const [filterLeadModal, setFilterLeadModal] = useState(false);
   const [isSendMessageModalOpen, setIsSendMessageModalOpen] = useState(false);
   const [selectedIds, setSelectedIds] = useState([]);
+  const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
 
   const { data: categoriesList, refetch: refetchCategories, loading: loadingCategories } = useQuery(GET_CATEGORIES);
 
@@ -87,7 +88,6 @@ export default function DataGridProCSV2() {
   });
   // const { data: allLeads, refetch: allLeadsRefetch } = useQuery(GET_LEADS);
 
-  const [sendEmails] = useMutation(SEND_EMAILS_MUTATION);
   const [updateLead] = useMutation(updateLeadMutation);
   const [deleteLeads] = useMutation(DELETE_LEADS);
 
@@ -95,7 +95,6 @@ export default function DataGridProCSV2() {
 
   const handleUpdate = async (values, id, type) => {
     const entries = values?.map((x) => x.title);
-    debugger;
     if (type === 'categories') {
       await updateLead({
         variables: {
@@ -124,21 +123,6 @@ export default function DataGridProCSV2() {
   // const handleCellEditCommit = (params, getRow) => {
   //   console.log('Cell edit commited:', params);
   // };
-
-  const handleSendEmails = async (Emails, Subject, Body) => {
-    try {
-      const { data } = await sendEmails({
-        variables: {
-          emails: Emails,
-          subject: Subject,
-          body: Body,
-        },
-      });
-      console.log(data); // do something with the returned data
-    } catch (e) {
-      console.error(e); // handle errors
-    }
-  };
 
   const apiRef = React.useRef(null);
 
@@ -355,8 +339,8 @@ export default function DataGridProCSV2() {
         hide: true,
       },
       {
-        field: 'AvgListingPrive',
-        headerName: 'Avg. Listing Prive',
+        field: 'AvgListingPrice',
+        headerName: 'Avg. Listing Price',
         width: 120,
         editable: true,
 
@@ -925,7 +909,47 @@ export default function DataGridProCSV2() {
   };
 
   // Get active categories
-  const handleCategoryClick = (category) => {
+  const handleCategoryClick = async (category) => {
+    // if (category && category.toLocaleLowerCase() !== 'closed') {
+    //   setFilter('');
+    //   const response = await addFilter({
+    //     variables: {
+    //       userId: user?.id,
+    //       isClosed: false,
+    //     },
+    //   });
+    //   if (response?.data?.addFilter) {
+    //     setClosed(response?.data?.addFilter?.isClosed);
+    //     await filterRefetch();
+    //     await refetch();
+    //   }
+    // }
+    // if (category && category.toLocaleLowerCase() === 'closed') {
+    //   setFilter('closed');
+    //   const closedColumns = [
+    //     '__check__',
+    //     'RegisterDate',
+    //     'Address',
+    //     'HomeClosingDate',
+    //     'didLeaveReview',
+    //     'didClosingGift',
+    //     'didsocialMediaFriends',
+    //     'didPostCardDrip',
+    //     'didAnniversaryDrip',
+    //   ];
+    //   const response = await addFilter({
+    //     variables: {
+    //       userId: user?.id,
+    //       closedColumns,
+    //       isClosed: true,
+    //     },
+    //   });
+    //   if (response?.data?.addFilter) {
+    //     setClosed(response?.data?.addFilter?.isClosed);
+    //     await filterRefetch();
+    //     await refetch();
+    //   }
+    // }
     if (activeCategories.includes(category)) {
       setActiveCategories(activeCategories.filter((cat) => cat !== category));
       setCategories(activeCategories.filter((cat) => cat !== category));
@@ -1009,10 +1033,15 @@ export default function DataGridProCSV2() {
           <Button
             variant="outlined"
             disabled={rowSelectedUsers.length === 0}
-            onClick={() => handleSendEmails(rowSelectedUsers, 'Test Subject', 'This is a test email body')}
+            onClick={() => {
+              if (selectIds.length === 0) return dispatch(setAlert({ type: 'info', message: 'Please select a lead' }));
+              setIsEmailModalOpen(true);
+              setSelectedIds(selectIds);
+            }}
           >
             Send Email
           </Button>
+          <SendEmail emailOpen={isEmailModalOpen} setEmailOpen={() => setIsEmailModalOpen(false)} ids={selectedIds} />
         </Box>
       </div>
       <Box sx={{ marginTop: '1rem' }}>
@@ -1030,15 +1059,18 @@ export default function DataGridProCSV2() {
       <div style={{ height: 690, width: '100%' }}>
         <Box sx={{ marginTop: '16px' }}>
           <Box sx={{ width: '70vw', paddingBottom: '.5rem', display: 'inline-flex', overflow: 'scroll', gap: '20px' }}>
-            {categoriesList?.categories?.map((category) => (
-              <Box>
-                <CategoryInput
-                  category={category}
-                  activeCategories={activeCategories}
-                  handleActiveCategory={(value) => handleCategoryClick(value)}
-                />
-              </Box>
-            ))}
+            {categoriesList?.categories?.map((category) => {
+              if (category?.title?.toLowerCase() === 'closed') return null;
+              return (
+                <Box>
+                  <CategoryInput
+                    category={category}
+                    activeCategories={activeCategories}
+                    handleActiveCategory={(value) => handleCategoryClick(value)}
+                  />
+                </Box>
+              );
+            })}
           </Box>
         </Box>
         <Box sx={{ height: '100%' }}>

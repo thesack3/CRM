@@ -38,7 +38,7 @@ export default function AddLeadModal({ handleRefetch, title, leadData }) {
     GloballyOptedOutOfListingAgentEmail: '',
     GloballyOptedOutOfLenderEmail: '',
     GloballyOptedOutOfAlerts: '',
-    OptInDate: '',
+    // OptInDate: '',
     BuyerAgentCategory: '',
     ListingAgentCategory: '',
     LenderCategory: '',
@@ -114,7 +114,7 @@ export default function AddLeadModal({ handleRefetch, title, leadData }) {
           GloballyOptedOutOfListingAgentEmail: '',
           GloballyOptedOutOfLenderEmail: '',
           GloballyOptedOutOfAlerts: '',
-          OptInDate: '',
+          // OptInDate: '',
           BuyerAgentCategory: '',
           ListingAgentCategory: '',
           LenderCategory: '',
@@ -165,7 +165,6 @@ export default function AddLeadModal({ handleRefetch, title, leadData }) {
   // handle update
   const handleUpdate = async () => {
     try {
-      debugger;
       await UpdateLead({
         variables: curLead,
       });
@@ -363,18 +362,18 @@ export default function AddLeadModal({ handleRefetch, title, leadData }) {
                 onChange={handleChange}
               />
 
-              <TextField
+              {/* <TextField
                 autoFocus
                 margin="dense"
                 id="OptInDate"
                 label="Opt In Date"
-                type="text"
+                type="date"
                 fullWidth
                 variant="standard"
                 name="OptInDate"
                 value={curLead ? curLead.OptInDate : formData.OptInDate}
                 onChange={handleChange}
-              />
+              /> */}
 
               <TextField
                 autoFocus
@@ -563,7 +562,7 @@ export default function AddLeadModal({ handleRefetch, title, leadData }) {
                 margin="dense"
                 id="LastAgentCallDate"
                 label="Last Agent Call Date"
-                type="text"
+                type="date"
                 fullWidth
                 variant="standard"
                 name="LastAgentCallDate"
@@ -576,7 +575,7 @@ export default function AddLeadModal({ handleRefetch, title, leadData }) {
                 margin="dense"
                 id="LastLenderCallDate"
                 label="Last Lender Call Date"
-                type="text"
+                type="date"
                 fullWidth
                 variant="standard"
                 name="LastLenderCallDate"
@@ -589,7 +588,7 @@ export default function AddLeadModal({ handleRefetch, title, leadData }) {
                 margin="dense"
                 id="FirstVisitDate"
                 label="FirstVisitDate"
-                type="text"
+                type="date"
                 fullWidth
                 variant="standard"
                 name="FirstVisitDate"
@@ -602,7 +601,7 @@ export default function AddLeadModal({ handleRefetch, title, leadData }) {
                 margin="dense"
                 id="LastVisitDate"
                 label="LastVisitDate"
-                type="text"
+                type="date"
                 fullWidth
                 variant="standard"
                 name="LastVisitDate"
@@ -615,7 +614,7 @@ export default function AddLeadModal({ handleRefetch, title, leadData }) {
                 margin="dense"
                 id="RegisterDate"
                 label="RegisterDate"
-                type="text"
+                type="date"
                 fullWidth
                 variant="standard"
                 name="RegisterDate"
@@ -758,7 +757,7 @@ export default function AddLeadModal({ handleRefetch, title, leadData }) {
                 margin="dense"
                 id="HomeClosingDate"
                 label="Home Closing Date"
-                type="text"
+                type="date"
                 fullWidth
                 variant="standard"
                 name="HomeClosingDate"

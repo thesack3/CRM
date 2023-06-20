@@ -14,15 +14,15 @@ const CategorySchema = new mongoose.Schema({
   updatedAt: {
     type: Date,
   },
-  // link to lead
-  lead: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Lead",
-  },
   // link to user
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
+  },
+  // link to lead
+  lead: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Lead",
   },
 });
 

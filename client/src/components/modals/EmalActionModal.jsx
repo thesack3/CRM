@@ -18,10 +18,10 @@ import DialogTitle from '@mui/material/DialogTitle';
 import CsvUpload from '../DropBoxes/CsvUpload';
 import DataGridCSV from '../dataGrid/DataGridCSV';
 import { ADD_LEAD } from '../../mutations/leadMutations';
-import { SEND_EMAILS_MUTATION } from '../../mutations/bulkEmail';
+import { SEND_EMAILS } from '../../mutations/bulkEmail';
 
 export default function EmailActionModal({ Massemails }) {
-  const [sendEmails, { loading, error, data }] = useMutation(SEND_EMAILS_MUTATION);
+  const [sendEmails, { loading, error, data }] = useMutation(SEND_EMAILS);
 
   const [formData, setFormData] = useState({
     subject: '',

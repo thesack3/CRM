@@ -4,14 +4,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Box, Button, Grid, TextField, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import { CircularProgress } from '@mui/material';
-import { SEND_EMAIL } from '../../mutations/bulkEmail';
+import { SEND_EMAIL, SEND_EMAILS } from '../../mutations/bulkEmail';
 import { setAlert } from '../../redux/slice/alertSlice';
 
-const SendEmail = ({ emailOpen, setEmailOpen, id }) => {
+const SendEmail = ({ emailOpen, setEmailOpen, id, ids }) => {
   const dispatch = useDispatch();
 
   // send email mutation
   const [sendEmailToLead, { loading }] = useMutation(SEND_EMAIL);
+  const [sendEmails, { loading: bulkLoading }] = useMutation(SEND_EMAILS);
 
   const [formData, setFormData] = useState({
     subject: '',
@@ -29,13 +30,24 @@ const SendEmail = ({ emailOpen, setEmailOpen, id }) => {
   // handle email submit
   const handleSubmit = async () => {
     try {
-      await sendEmailToLead({
-        variables: {
-          leadId: id,
-          subject: formData.subject,
-          body: formData.body,
-        },
-      });
+      if (ids.length) {
+        await sendEmails({
+          variables: {
+            ids: ids,
+            subject: formData.subject,
+            body: formData.body,
+          },
+        });
+      } else {
+        await sendEmailToLead({
+          variables: {
+            leadId: id,
+            subject: formData.subject,
+            body: formData.body,
+          },
+        });
+      }
+
       setFormData({
         subject: '',
         body: '',
@@ -94,7 +106,7 @@ const SendEmail = ({ emailOpen, setEmailOpen, id }) => {
         </Grid>
       </DialogContent>
       <DialogActions sx={{ justifyContent: 'right', gap: '5px' }}>
-        {loading ? (
+        {loading || bulkLoading ? (
           <Box display="flex" alignItems="center">
             <span>Sending...</span>
             <Box ml={1}>
