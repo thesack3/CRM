@@ -560,6 +560,7 @@ const RootQuery = new GraphQLObjectType({
         take: { type: GraphQLInt },
         filter: { type: GraphQLString },
         category: { type: GraphQLList(GraphQLString) },
+        tags: { type: GraphQLList(GraphQLString) },
         sort: { type: GraphQLString },
         column: { type: GraphQLString },
         filterModel: { type: GraphQLString },
@@ -596,6 +597,29 @@ const RootQuery = new GraphQLObjectType({
               RegisterDate: fDateTime(lead.RegisterDate),
               OptInDate: fDateTime(lead.OptInDate),
               category,
+            };
+            return leadUp;
+          });
+          return { count: result.length, rows: result };
+        }
+        if (args && args?.tags?.length) {
+          const response = await Lead.find({ tagsList: { $in: args.tags } })
+            .limit(args?.take)
+            .skip(args?.skip)
+            .sort(args.column ? sortCriteria : { createdAt: -1 })
+            .exec();
+          const result = response.map((lead) => {
+            const leadUp = {
+              ...lead._doc,
+              id: lead._id,
+              updatedAt: fDateTime(lead.updatedAt),
+              LastVisitDate: fDateTime(lead.LastVisitDate),
+              FirstVisitDate: fDateTime(lead.FirstVisitDate),
+              LastLenderCallDate: fDateTime(lead.LastLenderCallDate),
+              LastAgentCallDate: fDateTime(lead.LastAgentCallDate),
+              Birthday: fDateTime(lead.Birthday),
+              RegisterDate: fDateTime(lead.RegisterDate),
+              OptInDate: fDateTime(lead.OptInDate),
             };
             return leadUp;
           });
@@ -1722,6 +1746,7 @@ const mutation = new GraphQLObjectType({
       },
       async resolve(parent, { id, ...params }) {
         try {
+          console.log("params-------------------/", params);
           // if category is closed then update the BuyerAgentCategory to closed ListingAgentCategory to closed HomeClosingDate to today's date
           if (params?.category === "closed") {
             params.BuyerAgentCategory = "closed";
@@ -1734,15 +1759,14 @@ const mutation = new GraphQLObjectType({
             { ...params, updatedAt: new Date() },
             { new: true }
           );
+          console.log("update-------------------/", update);
           if (!update) throw new Error(`Lead with ID ${id} not found`);
           // return update with populated category and tags fields and also convert date to string
-
           const resultUp = {
             ...update._doc,
             id: update._id,
             updatedAt: fDateTime(update.updatedAt),
             createdAt: fDateTime(update.createdAt),
-            category: update.category?._id,
             OptInDate: fDateTime(update.OptInDate),
             HomeClosingDate: fDateTime(update.HomeClosingDate),
             LastAgentCallDate: fDateTime(update.LastAgentCallDate),
@@ -1750,10 +1774,12 @@ const mutation = new GraphQLObjectType({
             FirstVisitDate: fDateTime(update.FirstVisitDate),
             LastVisitDate: fDateTime(update.LastVisitDate),
             RegisterDate: fDateTime(update.RegisterDate),
+            category: update.category?._id || null,
           };
+          console.log("resultUp-------------------/", resultUp);
           return resultUp;
         } catch (error) {
-          console.error(error);
+          console.error("Error---:", error);
           throw new Error(`Error updating lead with ID ${id}`);
         }
       },
