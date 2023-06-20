@@ -986,7 +986,9 @@ export default function DataGridProCSV2() {
       <FilterLeads
         filterLeadModal={filterLeadModal}
         setFilterLeadModal={setFilterLeadModal}
+        categories={categoriesList && categoriesList?.categories}
         callback={({ label, value, from, to }) => getFilterValue({ label, value, from, to })}
+        handleActiveCategory={(value) => handleCategoryClick(value)}
       />
       {currentParam && (
         <LeadDetails

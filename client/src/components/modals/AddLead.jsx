@@ -69,6 +69,11 @@ export default function AddLeadModal({ handleRefetch, title, leadData }) {
     Link: '',
     Birthday: '',
     HomeClosingDate: '',
+    didLeaveReview: '',
+    didClosingGift: '',
+    didsocialMediaFriends: '',
+    didPostCardDrip: '',
+    didAnniversaryDrip: '',
   });
 
   React.useEffect(() => {

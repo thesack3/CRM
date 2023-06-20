@@ -14,7 +14,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { useQuery } from '@apollo/client';
 import { GET_LEADS_VALUES } from '../../queries/leadQueries';
 
-const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback }) => {
+const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback, categories, handleActiveCategory }) => {
   const [label, setLable] = useState('FirstName');
   const [fieldValue, setFieldValue] = useState('firstName');
   const [filterValue, setFilterValue] = useState('');
@@ -55,6 +55,12 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback }) => {
       setFilterLeadModal(false);
       return;
     }
+  };
+
+  const handleCategoryClick = (value) => {
+    setFilterValue(value);
+    handleActiveCategory(value);
+    setFilterLeadModal(false);
   };
 
   return (
@@ -935,6 +941,25 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback }) => {
               >
                 Did Anniversary Drip
               </Button>
+
+              <Button
+                sx={{
+                  fontWeight: '500',
+                  borderRadius: '0',
+                  justifyContent: 'start',
+                  padding: '1px',
+                  color: 'gray',
+                  textAlign: 'left!important',
+                }}
+                onClick={() =>
+                  handleFilter({
+                    label: 'Category',
+                    value: 'category',
+                  })
+                }
+              >
+                Categories
+              </Button>
               <Button
                 sx={{
                   fontWeight: '500',
@@ -1045,6 +1070,27 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback }) => {
                 />
               </Box>
             </Box>
+          ) : fieldValue == 'category' ? (
+            <Box flex=".7" padding="20px">
+              <Typography variant="subtitle1" sx={{ marginBottom: '1rem' }}>
+                Select Category
+              </Typography>
+              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
+                {categories.map((category) => {
+                  if ('closed' == category.title.toLowerCase()) return;
+                  return (
+                    <Box display="flex" flexDirection="row" alignItems={'center'} gap="10px">
+                      <Button
+                        onClick={() => handleCategoryClick(category.title)}
+                        sx={{ color: '#000', border: `1px solid ${category?.color || '#e3e3e3'}` }}
+                      >
+                        {category.title}
+                      </Button>
+                    </Box>
+                  );
+                })}
+              </Box>
+            </Box>
           ) : (
             <Box flex=".7" padding="20px">
               <Autocomplete
@@ -1052,15 +1098,7 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback }) => {
                 onChange={(e, value) => handleOnChange(e, value)}
                 value={filterValue}
                 renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label={label}
-                    variant="outlined"
-                    fullWidth
-                    size="small"
-                    value={fieldValue}
-                    // onChange={(e) => handleOnChange(e)}
-                  />
+                  <TextField {...params} label={label} variant="outlined" fullWidth size="small" value={fieldValue} />
                 )}
               />
             </Box>
