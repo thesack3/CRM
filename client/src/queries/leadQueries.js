@@ -6,6 +6,7 @@ export const GET_LEADS = gql`
     $skip: Int
     $filter: String
     $category: [String]
+    $tags: [String]
     $column: String
     $sort: String
     $filterModel: String
@@ -15,6 +16,7 @@ export const GET_LEADS = gql`
       skip: $skip
       filter: $filter
       category: $category
+      tags: $tags
       column: $column
       sort: $sort
       filterModel: $filterModel

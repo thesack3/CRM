@@ -14,7 +14,15 @@ import CloseIcon from '@mui/icons-material/Close';
 import { useQuery } from '@apollo/client';
 import { GET_LEADS_VALUES } from '../../queries/leadQueries';
 
-const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback, categories, handleActiveCategory }) => {
+const FilterLeads = ({
+  filterLeadModal,
+  setFilterLeadModal,
+  callback,
+  categories,
+  handleActiveCategory,
+  tags,
+  handleActiveTag,
+}) => {
   const [label, setLable] = useState('FirstName');
   const [fieldValue, setFieldValue] = useState('firstName');
   const [filterValue, setFilterValue] = useState('');
@@ -60,6 +68,12 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback, categories
   const handleCategoryClick = (value) => {
     setFilterValue(value);
     handleActiveCategory(value);
+    setFilterLeadModal(false);
+  };
+
+  const handleTagClick = (value) => {
+    setFilterValue(value);
+    handleActiveTag(value);
     setFilterLeadModal(false);
   };
 
@@ -971,6 +985,24 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback, categories
                 }}
                 onClick={() =>
                   handleFilter({
+                    label: 'Tags',
+                    value: 'tags',
+                  })
+                }
+              >
+                Tags
+              </Button>
+              <Button
+                sx={{
+                  fontWeight: '500',
+                  borderRadius: '0',
+                  justifyContent: 'start',
+                  padding: '1px',
+                  color: 'gray',
+                  textAlign: 'left!important',
+                }}
+                onClick={() =>
+                  handleFilter({
                     label: 'Updated At',
                     value: 'updatedAt',
                   })
@@ -1085,6 +1117,26 @@ const FilterLeads = ({ filterLeadModal, setFilterLeadModal, callback, categories
                         sx={{ color: '#000', border: `1px solid ${category?.color || '#e3e3e3'}` }}
                       >
                         {category.title}
+                      </Button>
+                    </Box>
+                  );
+                })}
+              </Box>
+            </Box>
+          ) : fieldValue == 'tags' ? (
+            <Box flex=".7" padding="20px">
+              <Typography variant="subtitle1" sx={{ marginBottom: '1rem' }}>
+                Select Tags
+              </Typography>
+              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
+                {tags?.map((tag) => {
+                  return (
+                    <Box display="flex" flexDirection="row" alignItems={'center'} gap="10px">
+                      <Button
+                        onClick={() => handleTagClick(tag.title)}
+                        sx={{ color: '#000', border: `1px solid ${tag?.color || '#e3e3e3'}` }}
+                      >
+                        {tag.title}
                       </Button>
                     </Box>
                   );

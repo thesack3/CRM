@@ -29,6 +29,7 @@ import EditCategory from '../modals/EditCategory';
 import SendMessage from '../modals/SendMessage';
 import { GET_CATEGORIES } from '../../queries/categoryQueries';
 import SendEmail from '../modals/SendEmail';
+import { GET_TAGS } from '../../queries/tagQueries';
 
 export default function DataGridProCSV2() {
   const { user } = useSelector((state) => state.auth);
@@ -40,6 +41,7 @@ export default function DataGridProCSV2() {
   const [column, setColumn] = useState('');
   const [, setRefetchTag] = useState('');
   const [categories, setCategories] = useState([]);
+  const [tags, setTags] = useState([]);
   const [activeCategories, setActiveCategories] = useState([]);
   const [columnsToShow, setColumnsToShow] = useState([]);
   const [gridRef] = useState({});
@@ -63,6 +65,7 @@ export default function DataGridProCSV2() {
   const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
 
   const { data: categoriesList, refetch: refetchCategories, loading: loadingCategories } = useQuery(GET_CATEGORIES);
+  const { data: tagList } = useQuery(GET_TAGS);
 
   const { data: filterData, refetch: filterRefetch } = useQuery(GET_FILTERS, {
     variables: {
@@ -81,6 +84,7 @@ export default function DataGridProCSV2() {
       take: pageSize,
       filter,
       category: categories,
+      tags: tags,
       column,
       sort,
       filterModel: JSON.stringify(filterModel),
@@ -728,6 +732,7 @@ export default function DataGridProCSV2() {
     if (e.key === 'Enter') {
       setFilter(searchQuery);
       setCategories([]);
+      setTags([]);
     }
   };
 
@@ -959,12 +964,18 @@ export default function DataGridProCSV2() {
     }
   };
 
+  // get active tags
+  const handleTagClick = async (tag) => {
+    setTags([...tags, tag]);
+  };
+
   // reset all filters and sorting and search query and categories and page size and page number
   const resetFilters = async () => {
     setFilter('');
     setSort('');
     setFilterModel({});
     setCategories([]);
+    setTags([]);
     setSkip(0);
     setPage(0);
     setPageSize(10);
@@ -989,6 +1000,8 @@ export default function DataGridProCSV2() {
         categories={categoriesList && categoriesList?.categories}
         callback={({ label, value, from, to }) => getFilterValue({ label, value, from, to })}
         handleActiveCategory={(value) => handleCategoryClick(value)}
+        tags={tagList && tagList?.tags}
+        handleActiveTag={(value) => handleTagClick(value)}
       />
       {currentParam && (
         <LeadDetails
