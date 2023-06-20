@@ -7,14 +7,13 @@ const TagSchema = new mongoose.Schema({
   dateCreated: {
     type: String,
   },
-
-  lead: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Lead",
-  },
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
+  },
+  lead: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Lead",
   },
 });
 
