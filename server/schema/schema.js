@@ -1708,13 +1708,18 @@ const mutation = new GraphQLObjectType({
     sendEmails: {
       type: new GraphQLList(EmailType),
       args: {
-        emails: {
-          type: GraphQLNonNull(new GraphQLList(GraphQLNonNull(GraphQLString))),
+        ids: {
+          type: GraphQLList(GraphQLID),
         },
         subject: { type: GraphQLNonNull(GraphQLString) },
         body: { type: GraphQLNonNull(GraphQLString) },
       },
+
       async resolve(parent, args) {
+        const leads = await Lead.find({ _id: { $in: args.ids } });
+        const emails = [];
+        const emailsList = leads.map((lead) => lead.email);
+
         const transporter = nodemailer.createTransport({
           host: "smtp.porkbun.com",
           port: 587,
@@ -1725,26 +1730,22 @@ const mutation = new GraphQLObjectType({
           },
         });
 
-        // Loop through the list of email addresses and send the email
-        const emails = [];
-        for (let i = 0; i < args.emails.length; i++) {
-          const mailOptions = {
-            from: process.env.EMAIL,
-            to: args.emails[i],
-            subject: args.subject,
-            text: args.body,
-            html: `<p>${args.body}</p>`,
-          };
+        const mailOptions = {
+          from: process.env.EMAIL,
+          // emailsList
+          to: emailsList,
+          subject: args.subject,
+          text: args.body,
+          html: `<p>${args.body}</p>`,
+        };
 
-          const info = await transporter.sendMail(mailOptions);
-          const email = {
-            id: info.messageId,
-            to: args.emails[i],
-            subject: args.subject,
-            body: args.body,
-          };
-          emails.push(email);
-        }
+        transporter.sendMail(mailOptions, function (err, info) {
+          if (err) {
+            console.log("Error--:", err);
+          } else {
+            console.log("Email sent--: " + info.response);
+          }
+        });
 
         return emails;
       },

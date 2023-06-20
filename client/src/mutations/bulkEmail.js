@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
-const SEND_EMAILS_MUTATION = gql`
-  mutation SendEmails($emails: [String!]!, $subject: String!, $body: String!) {
-    sendEmails(emails: $emails, subject: $subject, body: $body) {
+const SEND_EMAILS = gql`
+  mutation SendEmails($ids: [ID], $subject: String!, $body: String!) {
+    sendEmails(ids: $ids, subject: $subject, body: $body) {
       subject
       body
     }
@@ -17,4 +17,4 @@ const SEND_EMAIL = gql`
   }
 `;
 
-export { SEND_EMAILS_MUTATION, SEND_EMAIL };
+export { SEND_EMAILS, SEND_EMAIL };

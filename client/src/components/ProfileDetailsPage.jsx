@@ -23,7 +23,7 @@ import {
   AppConversionRates,
 } from '../sections/@dashboard/app';
 
-import EmailActionModal from './modals/EmalActionModal';
+// import EmailActionModal from './modals/EmalActionModal';
 import UserModal from './modals/UserModal';
 
 const SelectFilter = () => {
@@ -44,7 +44,7 @@ const SelectFilter = () => {
         </Select>
       </Grid>
       <Grid item xs={5}>
-        <EmailActionModal />
+        {/* <EmailActionModal /> */}
       </Grid>
     </Grid>
   );
