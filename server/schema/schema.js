@@ -348,6 +348,7 @@ const CategoryType = new GraphQLObjectType({
     id: { type: GraphQLID },
     title: { type: GraphQLString },
     color: { type: GraphQLString },
+    description: { type: GraphQLString },
     dateCreated: { type: GraphQLString },
   }),
 });
@@ -1484,6 +1485,7 @@ const mutation = new GraphQLObjectType({
       args: {
         title: { type: GraphQLNonNull(GraphQLString) },
         color: { type: GraphQLString },
+        description: { type: GraphQLString },
       },
       async resolve(parent, args) {
         try {
@@ -1498,6 +1500,7 @@ const mutation = new GraphQLObjectType({
             // save category title in lowercase
             title: args.title.toLowerCase(),
             color: args.color,
+            description: args.description,
           });
           const result = await category.save();
           return result;
@@ -1517,6 +1520,7 @@ const mutation = new GraphQLObjectType({
         id: { type: GraphQLNonNull(GraphQLID) },
         title: { type: GraphQLString },
         color: { type: GraphQLString },
+        description: { type: GraphQLString },
       },
       async resolve(parent, args) {
         try {
@@ -1524,6 +1528,7 @@ const mutation = new GraphQLObjectType({
           if (!category) throw new Error("Category not found");
           category.title = args.title.toLowerCase();
           category.color = args.color;
+          category.description = args.description;
           const result = await category.save();
           return result;
         } catch (error) {
@@ -1746,7 +1751,6 @@ const mutation = new GraphQLObjectType({
       },
       async resolve(parent, { id, ...params }) {
         try {
-          console.log("params-------------------/", params);
           // if category is closed then update the BuyerAgentCategory to closed ListingAgentCategory to closed HomeClosingDate to today's date
           if (params?.category === "closed") {
             params.BuyerAgentCategory = "closed";
@@ -1759,7 +1763,6 @@ const mutation = new GraphQLObjectType({
             { ...params, updatedAt: new Date() },
             { new: true }
           );
-          console.log("update-------------------/", update);
           if (!update) throw new Error(`Lead with ID ${id} not found`);
           // return update with populated category and tags fields and also convert date to string
           const resultUp = {
@@ -1776,7 +1779,6 @@ const mutation = new GraphQLObjectType({
             RegisterDate: fDateTime(update.RegisterDate),
             category: update.category?._id || null,
           };
-          console.log("resultUp-------------------/", resultUp);
           return resultUp;
         } catch (error) {
           console.error("Error---:", error);
