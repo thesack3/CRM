@@ -20,7 +20,7 @@ export default function AddLeadModal({ handleRefetch, title, leadData }) {
   const navigate = useNavigate();
 
   const [addLead, { loading, error, data }] = useMutation(ADD_LEAD);
-  const [UpdateLead] = useMutation(updateLeadMutation);
+  const [updateLead] = useMutation(updateLeadMutation);
   const [uploadInProcess, setUploaded] = useState(false);
   const [curLead, setCurLead] = useState(null);
   const [open, setOpen] = React.useState(false);
@@ -89,6 +89,7 @@ export default function AddLeadModal({ handleRefetch, title, leadData }) {
     if (curLead) {
       setCurLead({
         ...curLead,
+        category: curLead?.category?.id,
         [event.target.name]: event.target.value,
       });
     }
@@ -170,12 +171,12 @@ export default function AddLeadModal({ handleRefetch, title, leadData }) {
   // handle update
   const handleUpdate = async () => {
     try {
-      await UpdateLead({
+      const response = await updateLead({
         variables: curLead,
       });
       dispatch(setAlert({ type: 'success', message: 'Lead updated successfully' }));
     } catch (error) {
-      dispatch(setAlert({ type: 'error', payload: error.message }));
+      dispatch(setAlert({ type: 'error', message: error.message }));
     } finally {
       setOpen(false);
     }
