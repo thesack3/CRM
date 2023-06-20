@@ -967,6 +967,9 @@ export default function DataGridProCSV2() {
   // get active tags
   const handleTagClick = async (tag) => {
     setTags([...tags, tag]);
+    setFilter('');
+    setCategories([]);
+    setFilterModel({});
   };
 
   // reset all filters and sorting and search query and categories and page size and page number
