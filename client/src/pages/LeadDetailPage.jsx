@@ -531,7 +531,8 @@ const LeadDetailPage = () => {
             <Grid item xs={11.7}>
               <WrapSelectable>
                 <Typography fontWeight={'bold'}>Category</Typography>
-                <CategoryInput category={data?.lead?.category} />
+                {data?.lead?.category && <CategoryInput category={data?.lead?.category} />}
+                <Typography>{data?.lead?.category?.description || ''}</Typography>
                 {/* <Select labelId="demo-simple-select-label" id="demo-simple-select" value={data?.lead?.category?.id}>
                   {categoriesList &&
                     categoriesList?.categories?.map((category) => {
