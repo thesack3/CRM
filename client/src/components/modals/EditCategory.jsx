@@ -23,7 +23,6 @@ const EditCategory = ({ categoriesList }) => {
   const [open, setOpen] = useState(false);
   const [curCategories, setCurCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
-  console.log(selectedCategory);
 
   const [updateCategory, { loading, error, data }] = useMutation(EDIT_CATEGORY);
 
@@ -41,6 +40,7 @@ const EditCategory = ({ categoriesList }) => {
           id: selectedCategory.id,
           title: selectedCategory.title,
           color: selectedCategory.color,
+          description: selectedCategory.description,
         },
       });
       dispatch(setAlert({ type: 'success', message: 'Category updated successfully' }));
@@ -55,6 +55,7 @@ const EditCategory = ({ categoriesList }) => {
   const handleClickOpen = () => {
     setOpen(true);
   };
+
 
   return (
     <>
@@ -98,6 +99,24 @@ const EditCategory = ({ categoriesList }) => {
                   setSelectedCategory((prevState) => ({
                     ...prevState,
                     title: e.target.value,
+                  }))
+                }
+                sx={{ marginBottom: '25px' }}
+              />
+              <TextField
+                autoFocus
+                margin="dense"
+                id="description"
+                label="Description"
+                size="small"
+                type="text"
+                fullWidth
+                name="description"
+                value={selectedCategory?.description}
+                onChange={(e) =>
+                  setSelectedCategory((prevState) => ({
+                    ...prevState,
+                    description: e.target.value,
                   }))
                 }
                 sx={{ marginBottom: '25px' }}

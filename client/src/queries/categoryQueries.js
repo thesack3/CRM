@@ -6,6 +6,7 @@ const GET_CATEGORIES = gql`
       id
       title
       color
+      description
       dateCreated
     }
   }
@@ -17,6 +18,7 @@ const GET_CATEGORY = gql`
       id
       title
       color
+      description
       dateCreated
     }
   }

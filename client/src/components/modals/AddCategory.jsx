@@ -88,7 +88,7 @@ export default function AddCategoryModal({ callback }) {
 
   return (
     <>
-      {uploadInProcess ? (
+      {/* {uploadInProcess ? (
         <div>
           <Button variant="outlined" onClick={handleClickOpen}>
             Add Category
@@ -135,20 +135,6 @@ export default function AddCategoryModal({ callback }) {
                 value={formData.title}
                 onChange={handleChange}
               />
-
-              {/* <TextField
-autoFocus
-margin="dense"
-id="dateCreated"
-label="Date Created"
-type="text"
-fullWidth
-variant="standard"
-name="dateCreated"
-value={formData.dateCreated}
-onChange={handleChange}
-/>
- */}
             </DialogContent>
             <DialogActions>
               <Button onClick={handleClose}>Cancel</Button>
@@ -161,7 +147,7 @@ onChange={handleChange}
         <Alert onClose={() => setOpenSnack(false)} severity={catError ? 'error' : 'success'} sx={{ width: '100%' }}>
           {catError ? 'Category already exists' : 'Category Added'}
         </Alert>
-      </Snackbar>
+      </Snackbar> */}
     </>
   );
 }

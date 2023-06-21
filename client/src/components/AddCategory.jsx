@@ -21,6 +21,7 @@ const AddCategory = ({ open, close, refetch }) => {
 
   const [title, setTitle] = useState('');
   const [color, setColor] = useState('black');
+  const [description, setDescription] = useState('');
 
   const [addCategory, { loading, error, data }] = useMutation(ADD_CATEGORY);
 
@@ -30,6 +31,7 @@ const AddCategory = ({ open, close, refetch }) => {
         variables: {
           title: title,
           color: color,
+          description: description,
         },
       });
       dispatch(setAlert({ type: 'success', message: 'Category added successfully' }));
@@ -58,6 +60,21 @@ const AddCategory = ({ open, close, refetch }) => {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
+        <br />
+
+        <TextField
+          autoFocus
+          margin="dense"
+          id="description"
+          label="Description"
+          type="text"
+          fullWidth
+          variant="standard"
+          name="description"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+        />
+
         <Box style={{ display: 'flex', alignItems: 'center', width: '300px', marginTop: '15px' }}>
           <TextField size="small" value={color} onChange={(e) => setColor(e.target.value)} fullWidth type="color" />
           <ColorPreview style={{ backgroundColor: color }} />
