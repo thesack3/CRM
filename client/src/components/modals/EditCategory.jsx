@@ -10,14 +10,20 @@ import {
   Button,
   styled,
   Box,
+  ListItem,
+  ListItemText,
+  ListItemSecondaryAction,
+  IconButton,
 } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 import { EDIT_CATEGORY } from '../../mutations/editCategory';
 import { useMutation } from '@apollo/client';
 import { useDispatch } from 'react-redux';
 import { setAlert } from '../../redux/slice/alertSlice';
+import { DELETE_CATEGORY } from '../../mutations/addCategory';
 
-const EditCategory = ({ categoriesList }) => {
+const EditCategory = ({ categoriesList, refetchCategories }) => {
   const dispatch = useDispatch();
 
   const [open, setOpen] = useState(false);
@@ -25,6 +31,7 @@ const EditCategory = ({ categoriesList }) => {
   const [selectedCategory, setSelectedCategory] = useState(null);
 
   const [updateCategory, { loading, error, data }] = useMutation(EDIT_CATEGORY);
+  const [deleteCategory] = useMutation(DELETE_CATEGORY);
 
   // set categories
   useEffect(() => {
@@ -45,6 +52,7 @@ const EditCategory = ({ categoriesList }) => {
       });
       dispatch(setAlert({ type: 'success', message: 'Category updated successfully' }));
       setSelectedCategory(null);
+      refetchCategories();
     } catch (error) {
       dispatch(setAlert({ type: 'error', message: 'Category not updated' }));
     } finally {
@@ -56,6 +64,21 @@ const EditCategory = ({ categoriesList }) => {
     setOpen(true);
   };
 
+  // handle delete category
+  const handleDelete = async (id, val) => {
+    try {
+      await deleteCategory({
+        variables: {
+          id,
+        },
+      });
+      setCurCategories((prevState) => prevState.filter((curCategory) => curCategory.id !== id));
+      dispatch(setAlert({ type: 'success', message: 'Category deleted successfully' }));
+      refetchCategories();
+    } catch (error) {
+      dispatch(setAlert({ type: 'error', message: error.message }));
+    }
+  };
 
   return (
     <>
@@ -77,6 +100,23 @@ const EditCategory = ({ categoriesList }) => {
           <Autocomplete
             options={curCategories}
             getOptionLabel={(category) => category.title}
+            // delete category from list with renderOption
+            renderOption={(props, category) => (
+              <ListItem {...props}>
+                <ListItemText primary={category.title} />
+                <ListItemSecondaryAction>
+                  <IconButton
+                    edge="end"
+                    aria-label="delete"
+                    onClick={() => {
+                      handleDelete(category.id, category.title);
+                    }}
+                  >
+                    <DeleteIcon fontSize={'small'} color="error" />
+                  </IconButton>
+                </ListItemSecondaryAction>
+              </ListItem>
+            )}
             renderInput={(params) => (
               <TextField {...params} label="Categories" variant="outlined" fullWidth size="small" />
             )}
@@ -108,11 +148,11 @@ const EditCategory = ({ categoriesList }) => {
                 margin="dense"
                 id="description"
                 label="Description"
-                size="small"
+                size="medium"
                 type="text"
                 fullWidth
                 name="description"
-                value={selectedCategory?.description}
+                value={selectedCategory?.description || ''}
                 onChange={(e) =>
                   setSelectedCategory((prevState) => ({
                     ...prevState,

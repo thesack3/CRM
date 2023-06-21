@@ -1538,6 +1538,29 @@ const mutation = new GraphQLObjectType({
       },
     },
 
+    // detele category by id
+    deleteCategory: {
+      type: new GraphQLObjectType({
+        name: "deleteCategory",
+        fields: () => ({
+          message: { type: GraphQLString },
+        }),
+      }),
+      args: {
+        id: { type: GraphQLNonNull(GraphQLID) },
+      },
+      async resolve(parent, args) {
+        try {
+          const category = await Category.findByIdAndDelete(args.id);
+          if (!category) throw new Error("Category not found");
+          return { message: "Category deleted" };
+        } catch (error) {
+          console.error("Error--:", error);
+          throw new Error("Error deleting category");
+        }
+      },
+    },
+
     addTag: {
       type: TagType,
       args: {

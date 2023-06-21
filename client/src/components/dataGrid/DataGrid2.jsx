@@ -995,7 +995,7 @@ export default function DataGridProCSV2() {
             close={() => setIsCategoryModalOpen(false)}
             refetch={() => handleRefetchCategories()}
           />
-          <EditCategory categoriesList={categoriesList} />
+          <EditCategory categoriesList={categoriesList} refetchCategories={() => handleRefetchCategories()} />
           <AddNote callback={handleRefetch} />
           <AddCSVCall callback={handleRefetch} />
           <AddeAlert callback={handleRefetch} />
