@@ -915,46 +915,6 @@ export default function DataGridProCSV2() {
 
   // Get active categories
   const handleCategoryClick = async (category) => {
-    // if (category && category.toLocaleLowerCase() !== 'closed') {
-    //   setFilter('');
-    //   const response = await addFilter({
-    //     variables: {
-    //       userId: user?.id,
-    //       isClosed: false,
-    //     },
-    //   });
-    //   if (response?.data?.addFilter) {
-    //     setClosed(response?.data?.addFilter?.isClosed);
-    //     await filterRefetch();
-    //     await refetch();
-    //   }
-    // }
-    // if (category && category.toLocaleLowerCase() === 'closed') {
-    //   setFilter('closed');
-    //   const closedColumns = [
-    //     '__check__',
-    //     'RegisterDate',
-    //     'Address',
-    //     'HomeClosingDate',
-    //     'didLeaveReview',
-    //     'didClosingGift',
-    //     'didsocialMediaFriends',
-    //     'didPostCardDrip',
-    //     'didAnniversaryDrip',
-    //   ];
-    //   const response = await addFilter({
-    //     variables: {
-    //       userId: user?.id,
-    //       closedColumns,
-    //       isClosed: true,
-    //     },
-    //   });
-    //   if (response?.data?.addFilter) {
-    //     setClosed(response?.data?.addFilter?.isClosed);
-    //     await filterRefetch();
-    //     await refetch();
-    //   }
-    // }
     if (activeCategories.includes(category)) {
       setActiveCategories(activeCategories.filter((cat) => cat !== category));
       setCategories(activeCategories.filter((cat) => cat !== category));

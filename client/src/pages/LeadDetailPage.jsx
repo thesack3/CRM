@@ -20,6 +20,8 @@ import {
   Tooltip,
   IconButton,
   Zoom,
+  Select,
+  MenuItem,
 } from '@mui/material';
 
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
@@ -50,6 +52,8 @@ import { TASK_TYPES } from '../queries/reminder';
 import { ADD_SINGLE_NOTE } from '../mutations/noteMutations';
 import SendEmail from '../components/modals/SendEmail';
 import AddLeadModal from '../components/modals/AddLead';
+import CategoryInput from '../components/inputs/CategoryInput';
+import { GET_CATEGORIES } from '../queries/categoryQueries';
 
 const LeadDetailPage = () => {
   const { user } = useSelector((state) => state.auth);
@@ -57,6 +61,8 @@ const LeadDetailPage = () => {
   const param = useParams();
   const { id } = param;
   const { setIsCall, setUserName, setLeadId } = useContext(callContext);
+
+  const { data: categoriesList, refetch: refetchCategories, loading: loadingCategories } = useQuery(GET_CATEGORIES);
 
   // call single lead query
   const { data, loading, error } = useQuery(GET_LEAD, {
@@ -524,18 +530,14 @@ const LeadDetailPage = () => {
             {/* Categories  */}
             <Grid item xs={11.7}>
               <WrapSelectable>
-                <Typography fontWeight={'bold'}>Categories</Typography>
-                {(data && data.lead && (
-                  <SelectField
-                    data={data?.lead}
-                    defaultValues={data?.lead?.categoriesList?.map((x) => ({
-                      title: x,
-                    }))}
-                    type={'categories'}
-                    handleUpdate={(value, id, type) => handleUpdate(value, id, type)}
-                  />
-                )) ||
-                  ''}
+                <Typography fontWeight={'bold'}>Category</Typography>
+                <CategoryInput category={data?.lead?.category} />
+                {/* <Select labelId="demo-simple-select-label" id="demo-simple-select" value={data?.lead?.category?.id}>
+                  {categoriesList &&
+                    categoriesList?.categories?.map((category) => {
+                      return <MenuItem value={category?.id}>{category?.title || data?.lead?.category?.title}</MenuItem>;
+                    })}
+                </Select> */}
               </WrapSelectable>
             </Grid>
             {/* Tags */}
@@ -573,30 +575,6 @@ const LeadDetailPage = () => {
 
               {data && data.lead && (
                 <Box display="flex" flexDirection="column" gap="10px">
-                  {/* <Box display="flex">
-                    <Typography variant="h6" sx={{ width: '30%' }}>
-                      First Name:
-                    </Typography>
-                    <Typography variant="subtitle1" sx={{ width: '70%' }}>
-                      {data.lead.firstName || '-'}
-                    </Typography>
-                  </Box>
-                  <Box display="flex">
-                    <Typography variant="h6" sx={{ width: '30%' }}>
-                      Last Name:
-                    </Typography>
-                    <Typography variant="subtitle1" sx={{ width: '70%' }}>
-                      {data.lead.lastName || '-'}
-                    </Typography>
-                  </Box>
-                  <Box display="flex">
-                    <Typography variant="h6" sx={{ width: '30%' }}>
-                      Email:
-                    </Typography>
-                    <Typography variant="subtitle1" sx={{ width: '70%' }}>
-                      {data.lead.email || '-'}
-                    </Typography>
-                  </Box> */}
                   <Box display="flex" justifyContent="space-between">
                     <Typography variant="h6" sx={{ width: '30%' }}>
                       Address:
