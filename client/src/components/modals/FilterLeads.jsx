@@ -28,8 +28,10 @@ const FilterLeads = ({
   const [filterValue, setFilterValue] = useState('');
   const [from, setFrom] = useState('');
   const [to, setTo] = useState('');
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [selectedTags, setSelectedTags] = useState([]);
 
   const { data, loading } = useQuery(GET_LEADS_VALUES, {
     variables: {
@@ -63,18 +65,34 @@ const FilterLeads = ({
       setFilterLeadModal(false);
       return;
     }
+    if (selectedCategories.length) {
+      handleActiveCategory(selectedCategories);
+      setFilterLeadModal(false);
+      return;
+    }
+    if (selectedTags.length) {
+      handleActiveTag(selectedTags);
+      setFilterLeadModal(false);
+      return;
+    }
   };
 
   const handleCategoryClick = (value) => {
-    setFilterValue(value);
-    handleActiveCategory(value);
-    setFilterLeadModal(false);
+    if (selectedCategories.includes(value)) {
+      setSelectedCategories(selectedCategories.filter((item) => item !== value));
+      return;
+    } else {
+      setSelectedCategories([...selectedCategories, value]);
+    }
   };
 
   const handleTagClick = (value) => {
-    setFilterValue(value);
-    handleActiveTag(value);
-    setFilterLeadModal(false);
+    if (selectedTags.includes(value)) {
+      setSelectedTags(selectedTags.filter((item) => item !== value));
+      return;
+    } else {
+      setSelectedTags([...selectedTags, value]);
+    }
   };
 
   return (
@@ -1114,7 +1132,11 @@ const FilterLeads = ({
                     <Box display="flex" flexDirection="row" alignItems={'center'} gap="10px">
                       <Button
                         onClick={() => handleCategoryClick(category.title)}
-                        sx={{ color: '#000', border: `1px solid ${category?.color || '#e3e3e3'}` }}
+                        sx={{
+                          color: '#000',
+                          border: `1px solid ${category?.color || '#e3e3e3'}`,
+                          backgroundColor: `${selectedCategories.includes(category.title) ? category?.color : ''}`,
+                        }}
                       >
                         {category.title}
                       </Button>
@@ -1134,7 +1156,11 @@ const FilterLeads = ({
                     <Box display="flex" flexDirection="row" alignItems={'center'} gap="10px">
                       <Button
                         onClick={() => handleTagClick(tag.title)}
-                        sx={{ color: '#000', border: `1px solid ${tag?.color || '#e3e3e3'}` }}
+                        sx={{
+                          color: '#000',
+                          border: `1px solid ${tag?.color || '#e3e3e3'}`,
+                          backgroundColor: `${selectedTags.includes(tag.title) ? '#0ae7b6' : ''}`,
+                        }}
                       >
                         {tag.title}
                       </Button>

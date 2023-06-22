@@ -923,10 +923,16 @@ export default function DataGridProCSV2() {
       setCategories([...activeCategories, category]);
     }
   };
+  // filter categories by active categories
+  const filterCategories = (categories) => {
+    if (categories.length) {
+      setCategories([...categories]);
+    }
+  };
 
   // get active tags
   const handleTagClick = async (tag) => {
-    setTags([...tags, tag]);
+    setTags([...tags, ...tag]);
     setFilter('');
     setCategories([]);
     setFilterModel({});
@@ -962,7 +968,7 @@ export default function DataGridProCSV2() {
         setFilterLeadModal={setFilterLeadModal}
         categories={categoriesList && categoriesList?.categories}
         callback={({ label, value, from, to }) => getFilterValue({ label, value, from, to })}
-        handleActiveCategory={(value) => handleCategoryClick(value)}
+        handleActiveCategory={(value) => filterCategories(value)}
         tags={tagList && tagList?.tags}
         handleActiveTag={(value) => handleTagClick(value)}
       />
