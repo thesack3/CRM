@@ -105,7 +105,7 @@ const SendEmail = ({ emailOpen, setEmailOpen, id, ids }) => {
               onChange={(e) => handleChange(e)}
             />
           </Grid>
-          {ids.length && (
+          {ids?.length && (
             <Grid item xs={6}>
               <TextField
                 label="Date"

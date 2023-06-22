@@ -14,7 +14,7 @@ const Text = require("./models/Text");
 const Email = require("./models/Email");
 
 // DEVELOPMENT
-// require("dotenv").config();
+require("dotenv").config();
 
 const port = process.env.PORT || 4000;
 
@@ -120,7 +120,7 @@ app.post("/sendEmail", async (req, res) => {
     date: new Date().toLocaleDateString(),
     isSent: false,
   });
-  if (!emails?.length) return res.send(200, "No email found");
+  if (!emails?.length) return res.status(200).send("No email found");
   for (let i = 0; i < emails.length; i++) {
     const email = emails[i];
     const transporter = nodemailer.createTransport({
@@ -156,7 +156,7 @@ app.post("/sendEmail", async (req, res) => {
             isSent: true,
           }
         );
-        res.send(200, info.response);
+        res.status(200).send("Email sent successfully");
       }
     });
   }
@@ -172,7 +172,6 @@ app.post("/sendSms", async (req, res) => {
     date: new Date().toLocaleDateString(),
     isSent: false,
   });
-  console.log("text------------------------- ", texts);
   // const filteredTexts = text?.filter((text) => {
   //   // const currentTime = new Date();
   //   // const timeDiff = text.date - currentTime.getTime();
@@ -184,32 +183,37 @@ app.post("/sendSms", async (req, res) => {
   //   }
   // });
 
-  if (!texts?.length) return res.send(200, "No text found");
+  if (!texts?.length) {
+    // res.send is deprecated in express 5.0 so use res.status(200).send("No text found");
+    return res.status(200).send("No text found");
+  }
   for (let i = 0; i < texts.length; i++) {
     const text = texts[i];
     const tonumber = text.to.replace(/\D/g, "");
-    const message = await client.messages.create({
-      body: text.body,
-      to: tonumber, // number passed at row.
-      from: process.env.SENDER_PHONE_NUMBER, // From a valid Twilio number
-    });
-    console.log("message------------------------- ", message);
-    const response = await Text.findByIdAndUpdate(
-      {
-        _id: text._id,
-      },
-      {
-        isSent: true,
-        sid: message.accountSid,
-        sentDate: message.dateCreated,
-        from: message.from,
-        to: message.to,
-        body: message.body,
-      }
-    );
-    console.log("response------------------------- ", response);
+    try {
+      const message = await client.messages.create({
+        body: text.body,
+        to: tonumber, // number passed at row.
+        from: process.env.SENDER_PHONE_NUMBER, // From a valid Twilio number
+      });
+      await Text.findByIdAndUpdate(
+        {
+          _id: text._id,
+        },
+        {
+          isSent: true,
+          sid: message.accountSid,
+          sentDate: message.dateCreated,
+          from: message.from,
+          to: message.to,
+          body: message.body,
+        }
+      );
+    } catch (error) {
+      return res.status(400).send(error.message);
+    }
   }
-  res.send(200, "success");
+  return res.status(200).send("Text sent successfully");
 });
 
 // post route for add lead
