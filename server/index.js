@@ -13,7 +13,7 @@ const User = require("./models/User");
 const Text = require("./models/Text");
 
 // DEVELOPMENT
-// require("dotenv").config();
+require("dotenv").config();
 
 const port = process.env.PORT || 4000;
 
@@ -38,10 +38,6 @@ app.use(
     graphiql: process.env.NODE_ENV === "development",
   })
 );
-
-const accountSid = process.env.TWILIO_ACCOUNT_SID;
-const authToken = process.env.TWILIO_AUTH_TOKEN;
-const client = require("twilio")(accountSid, authToken);
 
 // write method for cron job sending emails and notifications
 
@@ -118,33 +114,36 @@ app.post("/notification", async (req, res) => {
 
 // write webhook for send sms to leads and update isSent to true in text model
 app.post("/sendSms", async (req, res) => {
+  const accountSid = process.env.TWILIO_ACCOUNT_SID;
+  const authToken = process.env.TWILIO_AUTH_TOKEN;
+  const client = require("twilio")(accountSid, authToken);
+
   const text = await Text.find({
     date: new Date().toLocaleDateString(),
   });
-
+  console.log("text------------------------- ", text);
   // filter the texts and add 5 hours to time
   const filteredTexts = text.filter((text) => {
     const currentTime = new Date();
     const timeDiff = text.date - currentTime.getTime();
     // add 5 hours to time
     const diffMins = Math.round(timeDiff / 60000) - 300;
-
     console.log("diffMins------------------------- ", diffMins);
-    if (diffMins <= 15 && diffMins >= 0 && !text.isSent) {
+    if (!text.isSent) {
       return text;
     }
   });
 
   console.log("filteredTexts------------------------- ", filteredTexts);
 
-  if (!filteredTexts.length) return res.send(200, "No text found");
+  if (!filteredTexts?.length) return res.send(200, "No text found");
 
   for (let i = 0; i < filteredTexts.length; i++) {
     const text = filteredTexts[i];
     const to = text.to.replace(/\D/g, "");
     const message = await client.messages.create({
-      body: args.msg,
-      to, // number passed at row.
+      body: text.body,
+      to: "9099945730", // number passed at row.
       from: process.env.SENDER_PHONE_NUMBER, // From a valid Twilio number
     });
     console.log("message------------------------- ", message);
@@ -162,6 +161,7 @@ app.post("/sendSms", async (req, res) => {
       }
     );
   }
+  res.send(200, "success");
 });
 
 // post route for add lead
