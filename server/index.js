@@ -39,6 +39,10 @@ app.use(
   })
 );
 
+const accountSid = process.env.TWILIO_ACCOUNT_SID;
+const authToken = process.env.TWILIO_AUTH_TOKEN;
+const client = require("twilio")(accountSid, authToken);
+
 // write method for cron job sending emails and notifications
 
 app.post("/notification", async (req, res) => {
@@ -46,33 +50,21 @@ app.post("/notification", async (req, res) => {
   const tasks = await Task.find({
     date: new Date().toLocaleDateString(),
   });
-  // when I deploy this code on server then 5 hours will be added to time and then get the tasks from database
-  const task1 = await Task.find({
-    // add 5 hours to time and then get the tasks from database
-    date: new Date(new Date().getTime() + 300 * 60000).toLocaleDateString(),
-  });
 
   // filter the tasks and add 5 hours to time
   const filteredTasks = tasks.filter((task) => {
     const currentTime = new Date();
     const timeDiff = task.time - currentTime.getTime();
     // add 5 hours to time
-    const diffMins = Math.round(timeDiff / 60000) + 300;
-    const diffMins2 = Math.round(timeDiff / 60000);
     const diffMins3 = Math.round(timeDiff / 60000) - 300;
 
-    // console.log("diffMins-------------------------/", diffMins);
-
-    // console.log("diffMins 2------------------------- ", diffMins2);
-    console.log("diffMins 3------------------------- ", diffMins3);
+    console.log("diffMins------------------------- ", diffMins3);
     if (diffMins3 <= 15 && diffMins3 >= 0 && !task.isEmailSend) {
       return task;
     }
   });
-  // console.log("filteredTasksWithTime-------------------------/", filteredTasks);
 
   if (!filteredTasks.length) return res.send(200, "No task found");
-
   for (let i = 0; i < filteredTasks.length; i++) {
     const task = filteredTasks[i];
     let updatedTask = task;
@@ -121,6 +113,54 @@ app.post("/notification", async (req, res) => {
         res.send(200, info.response);
       }
     });
+  }
+});
+
+// write webhook for send sms to leads and update isSent to true in text model
+app.post("/sendSms", async (req, res) => {
+  const text = await Text.find({
+    date: new Date().toLocaleDateString(),
+  });
+
+  // filter the texts and add 5 hours to time
+  const filteredTexts = text.filter((text) => {
+    const currentTime = new Date();
+    const timeDiff = text.date - currentTime.getTime();
+    // add 5 hours to time
+    const diffMins = Math.round(timeDiff / 60000) - 300;
+
+    console.log("diffMins------------------------- ", diffMins);
+    if (diffMins <= 15 && diffMins >= 0 && !text.isSent) {
+      return text;
+    }
+  });
+
+  console.log("filteredTexts------------------------- ", filteredTexts);
+
+  if (!filteredTexts.length) return res.send(200, "No text found");
+
+  for (let i = 0; i < filteredTexts.length; i++) {
+    const text = filteredTexts[i];
+    const to = text.to.replace(/\D/g, "");
+    const message = await client.messages.create({
+      body: args.msg,
+      to, // number passed at row.
+      from: process.env.SENDER_PHONE_NUMBER, // From a valid Twilio number
+    });
+    console.log("message------------------------- ", message);
+    await Text.findByIdAndUpdate(
+      {
+        _id: text._id,
+      },
+      {
+        isSent: true,
+        sid: message.accountSid,
+        sentDate: message.dateSent,
+        from: message.from,
+        to: message.to,
+        body: message.body,
+      }
+    );
   }
 });
 

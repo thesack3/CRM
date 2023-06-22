@@ -14,15 +14,29 @@ const TextSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
-  dateCreated: {
-    type: String,
-  },
+
   sid: {
     type: String,
+  },
+  date: {
+    type: Date,
+    default: Date.now,
+  },
+  isSent: {
+    type: Boolean,
+    default: false,
+  },
+  dateCreated: {
+    type: Date,
+    default: Date.now,
+  },
+  sentDate: {
+    type: Date,
   },
   leadId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Lead",
   },
 });
+
 module.exports = mongoose.model("Text", TextSchema);

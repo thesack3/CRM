@@ -9,6 +9,7 @@ import { SEND_MESSAGE_TO_LEADS } from '../../mutations/sendSms';
 const SendMessage = ({ leadIds, open, close }) => {
   const dispatch = useDispatch();
   const [message, setMessage] = useState('');
+  const [date, setDate] = useState(new Date());
 
   const [sendSMSToLeads, { loading }] = useMutation(SEND_MESSAGE_TO_LEADS);
 
@@ -26,6 +27,7 @@ const SendMessage = ({ leadIds, open, close }) => {
           variables: {
             leadIds: batch,
             msg: message,
+            date,
           },
         });
       }
@@ -66,6 +68,21 @@ const SendMessage = ({ leadIds, open, close }) => {
               value={message}
               name="message"
               onChange={(e) => setMessage(e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              label="Date"
+              type="datetime-local"
+              variant="outlined"
+              fullWidth
+              size="small"
+              InputLabelProps={{
+                shrink: true,
+              }}
+              name="date"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
             />
           </Grid>
         </Grid>

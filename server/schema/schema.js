@@ -1180,48 +1180,32 @@ const mutation = new GraphQLObjectType({
 
     // write endpoint to send SMS to selected leads or all leads
     sendSMSToLeads: {
-      type: new GraphQLList(TextType),
+      type: new GraphQLObjectType({
+        name: "SendSMSToLeads",
+        fields: () => ({
+          message: { type: GraphQLString },
+        }),
+      }),
+
       args: {
         leadIds: { type: GraphQLList(GraphQLID) },
         msg: { type: GraphQLString },
+        date: { type: GraphQLString },
       },
       async resolve(parent, args) {
-        const accountSid = process.env.TWILIO_ACCOUNT_SID;
-        const authToken = process.env.TWILIO_AUTH_TOKEN;
-        const client = require("twilio")(accountSid, authToken);
-        const leads = await Lead.find({ _id: { $in: args.leadIds } });
-        const result = [];
-        for (let i = 0; i < leads.length; i++) {
-          const lead = leads[i];
-          // remove all non numeric characters from phone number
-          const leadPhone = lead.phone.replace(/\D/g, "");
-          const message = await client.messages.create({
-            body: args.msg,
-            to: leadPhone, // number passed at row.
-            from: process.env.SENDER_PHONE_NUMBER, // From a valid Twilio number
-          });
-          const twilioMSG = {
-            date_Updated: message.dateUpdated,
-            date_Sent: message.dateSent,
-            accountSid: message.accountSid,
-            to: message.to,
-            from: message.from,
-            body: message.body,
-            status: message.status,
-            sid: message.sid,
-          };
+        // save text to database
+        for (let i = 0; i < args.leadIds.length; i++) {
+          const lead = await Lead.findById(args.leadIds[i]);
           const newText = new Text({
-            body: twilioMSG.body,
-            to: twilioMSG.to,
-            from: twilioMSG.from,
-            dateCreated: twilioMSG.date_Updated,
+            body: args.msg,
+            date: new Date(args.date).toLocaleDateString(),
+            isSent: false,
+            to: lead.phone,
             leadId: lead._id,
-            sid: twilioMSG.sid,
           });
-          newText.save();
-          result.push(twilioMSG);
+          await newText.save();
         }
-        return result;
+        return { message: "SMS sent" };
       },
     },
 
