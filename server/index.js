@@ -24,10 +24,8 @@ app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
 
 //Connect to database
 connectDB();
+// enable cors for all type of routes and all type of methods and all type of headers and credentials and origin
 app.use(cors());
-// still cors error in production mode so use cors
-app.use(cors({ origin: "https://recrm.herokuapp.com" }));
-app.use(cors({ origin: "https://crm-server-v1.herokuapp.com" }));
 
 // rest api for test route
 app.get("/lead", (req, res) => {
@@ -121,48 +119,46 @@ app.post("/sendSms", async (req, res) => {
   const authToken = process.env.TWILIO_AUTH_TOKEN;
   const client = require("twilio")(accountSid, authToken);
 
-  const text = await Text.find({
+  const texts = await Text.find({
     date: new Date().toLocaleDateString(),
+    isSent: false,
   });
-  console.log("text------------------------- ", text);
-  // filter the texts and add 5 hours to time
-  const filteredTexts = text.filter((text) => {
-    const currentTime = new Date();
-    const timeDiff = text.date - currentTime.getTime();
-    // add 5 hours to time
-    const diffMins = Math.round(timeDiff / 60000) - 300;
-    console.log("diffMins------------------------- ", diffMins);
-    if (!text.isSent) {
-      return text;
-    }
-  });
+  console.log("text------------------------- ", texts);
+  // const filteredTexts = text?.filter((text) => {
+  //   // const currentTime = new Date();
+  //   // const timeDiff = text.date - currentTime.getTime();
+  //   // // add 5 hours to time
+  //   // const diffMins = Math.round(timeDiff / 60000) - 300;
+  //   // console.log("diffMins------------------------- ", diffMins);
+  //   if (!text.isSent) {
+  //     return text;
+  //   }
+  // });
 
-  console.log("filteredTexts------------------------- ", filteredTexts);
-
-  if (!filteredTexts?.length) return res.send(200, "No text found");
-
-  for (let i = 0; i < filteredTexts.length; i++) {
-    const text = filteredTexts[i];
-    const tono = text.to.replace(/\D/g, "");
+  if (!texts?.length) return res.send(200, "No text found");
+  for (let i = 0; i < texts.length; i++) {
+    const text = texts[i];
+    const tonumber = text.to.replace(/\D/g, "");
     const message = await client.messages.create({
       body: text.body,
-      to: tono, // number passed at row.
+      to: tonumber, // number passed at row.
       from: process.env.SENDER_PHONE_NUMBER, // From a valid Twilio number
     });
     console.log("message------------------------- ", message);
-    await Text.findByIdAndUpdate(
+    const response = await Text.findByIdAndUpdate(
       {
         _id: text._id,
       },
       {
         isSent: true,
         sid: message.accountSid,
-        sentDate: message.dateSent,
+        sentDate: message.dateCreated,
         from: message.from,
         to: message.to,
         body: message.body,
       }
     );
+    console.log("response------------------------- ", response);
   }
   res.send(200, "success");
 });
