@@ -29,6 +29,7 @@ const Task = require("../models/Task");
 const TaskType = require("../models/TaskType");
 const VoiceCall = require("../models/VocieCall");
 const Filter = require("../models/Filter");
+const Email = require("../models/Email");
 
 function fDateTime(date, newFormat) {
   const fm = newFormat || "dd MMM yyyy p";
@@ -1792,40 +1793,26 @@ const mutation = new GraphQLObjectType({
         ids: {
           type: GraphQLList(GraphQLID),
         },
-        subject: { type: GraphQLNonNull(GraphQLString) },
-        body: { type: GraphQLNonNull(GraphQLString) },
+        subject: { type: GraphQLString },
+        body: { type: GraphQLString },
+        date: { type: GraphQLString },
       },
 
       async resolve(parent, args) {
         const leads = await Lead.find({ _id: { $in: args.ids } });
-        const emails = [];
-        const emailsList = leads.map((lead) => lead.email);
+        let emails = [];
 
-        const transporter = nodemailer.createTransport({
-          host: "smtp.porkbun.com",
-          port: 587,
-          secure: false,
-          auth: {
-            user: process.env.EMAIL,
-            pass: process.env.PASSWORD,
-          },
-        });
-
-        const mailOptions = {
-          from: process.env.EMAIL,
-          to: emailsList,
-          subject: args.subject,
-          text: args.body,
-          html: `<p>${args.body}</p>`,
-        };
-
-        transporter.sendMail(mailOptions, function (err, info) {
-          if (err) {
-            console.log("Error--:", err);
-          } else {
-            console.log("Email sent--: " + info.response);
-          }
-        });
+        for (let i = 0; i < leads.length; i++) {
+          const email = new Email({
+            body: args.body,
+            subject: args.subject,
+            date: new Date(args.date).toLocaleDateString(),
+            to: leads[i].email,
+            leadId: leads[i]._id,
+          });
+          await email.save();
+          emails.push(email);
+        }
 
         return emails;
       },

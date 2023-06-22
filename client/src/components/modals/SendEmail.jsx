@@ -13,6 +13,7 @@ const SendEmail = ({ emailOpen, setEmailOpen, id, ids }) => {
   // send email mutation
   const [sendEmailToLead, { loading }] = useMutation(SEND_EMAIL);
   const [sendEmails, { loading: bulkLoading }] = useMutation(SEND_EMAILS);
+  const [date, setDate] = useState(new Date());
 
   const [formData, setFormData] = useState({
     subject: '',
@@ -36,6 +37,7 @@ const SendEmail = ({ emailOpen, setEmailOpen, id, ids }) => {
             ids: ids,
             subject: formData.subject,
             body: formData.body,
+            date: date,
           },
         });
       } else {
@@ -74,7 +76,7 @@ const SendEmail = ({ emailOpen, setEmailOpen, id, ids }) => {
         id="alert-dialog-title"
         sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
       >
-        Send Email <EditNoteIcon />
+        Send Email
       </DialogTitle>
       <DialogContent sx={{ overflowY: 'unset' }}>
         <Grid container spacing={2}>
@@ -103,6 +105,23 @@ const SendEmail = ({ emailOpen, setEmailOpen, id, ids }) => {
               onChange={(e) => handleChange(e)}
             />
           </Grid>
+          {ids.length && (
+            <Grid item xs={6}>
+              <TextField
+                label="Date"
+                type="datetime-local"
+                variant="outlined"
+                fullWidth
+                size="small"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                name="date"
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+              />
+            </Grid>
+          )}
         </Grid>
       </DialogContent>
       <DialogActions sx={{ justifyContent: 'right', gap: '5px' }}>

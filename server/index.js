@@ -11,6 +11,7 @@ const Lead = require("./models/Lead");
 const Task = require("./models/Task");
 const User = require("./models/User");
 const Text = require("./models/Text");
+const Email = require("./models/Email");
 
 // DEVELOPMENT
 // require("dotenv").config();
@@ -107,6 +108,54 @@ app.post("/notification", async (req, res) => {
         console.log("Error---!", error);
       } else {
         console.log("Email sent: " + info.response);
+        res.send(200, info.response);
+      }
+    });
+  }
+});
+
+// send email to leads and update isSent to true in email model and send email to user
+app.post("/sendEmail", async (req, res) => {
+  const emails = await Email.find({
+    date: new Date().toLocaleDateString(),
+    isSent: false,
+  });
+  if (!emails?.length) return res.send(200, "No email found");
+  for (let i = 0; i < emails.length; i++) {
+    const email = emails[i];
+    const transporter = nodemailer.createTransport({
+      host: "smtp.porkbun.com",
+      port: 587,
+      secure: false,
+      auth: {
+        user: process.env.EMAIL,
+        pass: process.env.PASSWORD,
+      },
+    });
+
+    const mailOptions = {
+      from: process.env.EMAIL,
+      to: email.to,
+      subject: email.subject,
+      text: email.body,
+      html: `<h1>${email.subject}</h1>
+      <p>${email.body}</p>
+      <p>Thanks</p>`,
+    };
+
+    transporter.sendMail(mailOptions, async function (error, info) {
+      if (error) {
+        console.log("Error---!", error);
+      } else {
+        console.log("Email sent: " + info.response);
+        const response = await Email.findByIdAndUpdate(
+          {
+            _id: email._id,
+          },
+          {
+            isSent: true,
+          }
+        );
         res.send(200, info.response);
       }
     });
