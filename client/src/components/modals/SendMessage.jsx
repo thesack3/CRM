@@ -23,7 +23,7 @@ const SendMessage = ({ leadIds, open, close }) => {
         const start = i * batchSize;
         const end = start + batchSize;
         const batch = leadIds.slice(start, end);
-        let response = await sendSMSToLeads({
+        await sendSMSToLeads({
           variables: {
             leadIds: batch,
             msg: message,
@@ -31,9 +31,7 @@ const SendMessage = ({ leadIds, open, close }) => {
           },
         });
       }
-      if (response) {
-        dispatch(setAlert({ type: 'success', message: 'Messages sent successfully' }));
-      }
+      dispatch(setAlert({ type: 'success', message: 'Messages sent successfully' }));
     } catch (error) {
       dispatch(setAlert({ type: 'error', message: error.message }));
     } finally {

@@ -27,9 +27,7 @@ export const UPDATE_TEXT_IS_READ = gql`
 export const SEND_MESSAGE_TO_LEADS = gql`
   mutation SendSMSToLeads($leadIds: [ID], $msg: String, $date: String) {
     sendSMSToLeads(leadIds: $leadIds, msg: $msg, date: $date) {
-      id
-      to
-      from
+      message
     }
   }
 `;
