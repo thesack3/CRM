@@ -13,7 +13,7 @@ const User = require("./models/User");
 const Text = require("./models/Text");
 
 // DEVELOPMENT
-require("dotenv").config();
+// require("dotenv").config();
 
 const port = process.env.PORT || 4000;
 
@@ -25,6 +25,9 @@ app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
 //Connect to database
 connectDB();
 app.use(cors());
+// still cors error in production mode so use cors
+app.use(cors({ origin: "https://recrm.herokuapp.com" }));
+app.use(cors({ origin: "https://crm-server-v1.herokuapp.com" }));
 
 // rest api for test route
 app.get("/lead", (req, res) => {
@@ -140,10 +143,10 @@ app.post("/sendSms", async (req, res) => {
 
   for (let i = 0; i < filteredTexts.length; i++) {
     const text = filteredTexts[i];
-    const to = text.to.replace(/\D/g, "");
+    const tono = text.to.replace(/\D/g, "");
     const message = await client.messages.create({
       body: text.body,
-      to: "9099945730", // number passed at row.
+      to: tono, // number passed at row.
       from: process.env.SENDER_PHONE_NUMBER, // From a valid Twilio number
     });
     console.log("message------------------------- ", message);
