@@ -1135,7 +1135,9 @@ const FilterLeads = ({
                         sx={{
                           color: '#000',
                           border: `1px solid ${category?.color || '#e3e3e3'}`,
-                          backgroundColor: `${selectedCategories.includes(category.title) ? category?.color : ''}`,
+                          backgroundColor: `${
+                            selectedCategories.includes(category.title) ? category?.color || '#0ae7b6' : ''
+                          }`,
                         }}
                       >
                         {category.title}
