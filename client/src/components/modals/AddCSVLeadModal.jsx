@@ -14,7 +14,7 @@ import DataGridCSV from '../dataGrid/DataGridCSV';
 import styles from './AddCSVLeadsModal.module.css';
 import { ADD_LEAD, ADD_LEADS_CSV } from '../../mutations/leadMutations';
 
-export default function AddCSVLeadModal({ callback }) {
+export default function AddCSVLeadModal({ callback, refetchCategories }) {
   const [open, setOpen] = React.useState(false);
   const [data, setData] = React.useState([]);
   const [openSnack, setOpenSnack] = useState(false);
@@ -41,16 +41,18 @@ export default function AddCSVLeadModal({ callback }) {
             leads: JSON.stringify(batch),
           },
         });
-        
+
         findCount = findCount + response.data.addLeadsCsv.count;
       }
 
-      if (response) setCount(findCount);
-
-      setOpenSnack(true);
-      // setCount(findCount);
-      handleClose();
-      callback();
+      if (response) {
+        setCount(findCount);
+        // setCount(findCount);
+        await callback();
+        await refetchCategories();
+        setOpenSnack(true);
+        handleClose();
+      }
     } catch (error) {
       console.log(error);
       handleClose();

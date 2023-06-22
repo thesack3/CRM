@@ -985,7 +985,7 @@ export default function DataGridProCSV2() {
         <Box sx={{ display: 'flex', flexDirection: 'row', gap: '16px' }}>
           <AddLeadModal handleRefetch={handleRefetch} title="Add Lead" />
           {/* // TODO PUT BACK */}
-          <AddCSVLeadModal callback={handleRefetch} />
+          <AddCSVLeadModal callback={handleRefetch} refetchCategories={() => handleRefetchCategories()} />
           <AddTagModal callback={() => setRefetchTag(new Date().getTime())} />
           <Button variant="outlined" onClick={() => setIsCategoryModalOpen(true)}>
             Add Category

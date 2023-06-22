@@ -1603,19 +1603,38 @@ const mutation = new GraphQLObjectType({
         if (!leads.length) {
           return { count: 0 };
         }
-        const categories = await Category.find();
+
+        // filter BuyerAgentCategory and ListingAgentCategory from leads array with set to avoid duplicate categories
+        const categories = [
+          ...new Set(leads.map((lead) => lead?.BuyerAgentCategory || lead?.ListingAgentCategory)),
+        ];
+
+        // if these categories are not present in database then save them to database
+        for (let i = 0; i < categories.length; i++) {
+          const category = categories[i];
+          const existingCategory = await Category.findOne({
+            title: { $regex: new RegExp(category, "i") },
+          });
+          if (!existingCategory) {
+            const newCategory = await Category.create({
+              title: category,
+            });
+          }
+        }
+
+        const findAllCategories = await Category.find();
         const bulkWrite = leads?.map((lead) => {
-          let category = null;
-          if (leads.category) {
-            category = categories.find(
-              (category) => category?.title?.toLowerCase() === lead?.category?.toLowerCase()
-            );
-          }
-          // if category not found then add new category to database
-          if (!category && lead.category) {
-            category = new Category({ title: lead.category });
-            category.save();
-          }
+          const category = findAllCategories.find(
+            (category) =>
+              category?.title?.toLowerCase() ===
+              (lead?.BuyerAgentCategory || lead?.ListingAgentCategory)?.toLowerCase()
+          );
+
+          // console.log(
+          //   "tags with &------------",
+          //   lead?.Tags?.split("&")?.map((tag) => tag?.trim())
+          // );
+          // console.log("tags-------------------------", lead?.Tags);
 
           return {
             updateOne: {
@@ -1636,6 +1655,11 @@ const mutation = new GraphQLObjectType({
                 GloballyOptedOutOfListingAgentEmail: lead.OptedOutOfListingAgentEmail,
                 GloballyOptedOutOfLenderEmail: lead.OptedOutOfLenderEmail,
                 GloballyOptedOutOfAlerts: lead.OptedOutOfeAlerts,
+                // listTags: lead?.Tags?.split("&")?.map((tag) => tag?.trim()),
+                // listTags: lead?.Tags,
+                // tags: lead?.Tags?.split("&")?.map((tag) => tag?.trim()),
+                // tags: [lead?.Tags],
+                // listTags: [lead?.Tags],
                 category: category?._id || null,
               },
               upsert: true,
@@ -1646,38 +1670,6 @@ const mutation = new GraphQLObjectType({
         // return upserted leads count
         const response = await (await Lead.bulkWrite(bulkWrite)).result.nUpserted;
         return { count: response };
-
-        // if (leads.length) {
-        //   // use upsert data to save leads to database but upsertMany is not supported in mongoose
-        //   // so we need to use bulkWrite to save leads to database
-        //   const bulkWrite = leads.map((lead) => ({
-        //     updateOne: {
-        //       filter: {
-        //         email: lead.Emails,
-        //         phone: lead.Phones,
-        //       },
-        //       update: {
-        //         ...lead,
-        //         firstName: lead.FirstName,
-        //         lastName: lead.LastName,
-        //         email: lead.Emails,
-        //         phone: lead.Phones,
-        //         phoneStatus: lead.PhoneStatus,
-        //         description: lead.Description,
-        //         emailInvalid: lead.EmailInvalid,
-        //         GloballyOptedOutOfBuyerAgentEmail: lead.OptedOutOfBuyerAgentEmail,
-        //         GloballyOptedOutOfListingAgentEmail: lead.OptedOutOfListingAgentEmail,
-        //         GloballyOptedOutOfLenderEmail: lead.OptedOutOfLenderEmail,
-        //         GloballyOptedOutOfAlerts: lead.OptedOutOfeAlerts,
-        //       },
-        //       upsert: true,
-        //     },
-        //   }));
-
-        //   // return upserted leads count
-        //   const response = await (await Lead.bulkWrite(bulkWrite)).result.nUpserted;
-        //   return { count: response };
-        // }
       },
     },
 
