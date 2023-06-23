@@ -61,6 +61,7 @@ const TwilioCallType = new GraphQLObjectType({
     from: { type: GraphQLString },
     body: { type: GraphQLString },
     status: { type: GraphQLString },
+    type: { type: GraphQLString },
     dateCreated: { type: GraphQLString },
     dateUpdated: { type: GraphQLString },
     dateSent: { type: GraphQLString },
@@ -1129,6 +1130,7 @@ const mutation = new GraphQLObjectType({
               body: twilioCall.body,
               to: twilioCall.to,
               from: twilioCall.from,
+              type: "outgoing",
               dateCreated: twilioCall.date_Updated,
               leadId: args.leadId,
             });
@@ -1594,6 +1596,21 @@ const mutation = new GraphQLObjectType({
           ...new Set(leads.map((lead) => lead?.BuyerAgentCategory || lead?.ListingAgentCategory)),
         ];
 
+        const tags = [...new Set(leads.map((lead) => lead?.Tags))];
+
+        // if these tags are not present in database then save them to database
+        for (let i = 0; i < tags.length; i++) {
+          const tag = tags[i];
+          const existingTag = await Tag.findOne({
+            title: { $regex: new RegExp(tag, "i") },
+          });
+          if (!existingTag) {
+            const newTag = await Tag.create({
+              title: tag,
+            });
+          }
+        }
+
         // if these categories are not present in database then save them to database
         for (let i = 0; i < categories.length; i++) {
           const category = categories[i];
@@ -1615,17 +1632,11 @@ const mutation = new GraphQLObjectType({
               (lead?.BuyerAgentCategory || lead?.ListingAgentCategory)?.toLowerCase()
           );
 
-          // console.log(
-          //   "tags with &------------",
-          //   lead?.Tags?.split("&")?.map((tag) => tag?.trim())
-          // );
-          // console.log("tags-------------------------", lead?.Tags);
-
-          return {
+          const response = {
             updateOne: {
               filter: {
-                email: lead.email,
-                phone: lead.phone,
+                email: lead.Emails,
+                phone: lead.Phones,
               },
               update: {
                 ...lead,
@@ -1640,16 +1651,14 @@ const mutation = new GraphQLObjectType({
                 GloballyOptedOutOfListingAgentEmail: lead.OptedOutOfListingAgentEmail,
                 GloballyOptedOutOfLenderEmail: lead.OptedOutOfLenderEmail,
                 GloballyOptedOutOfAlerts: lead.OptedOutOfeAlerts,
-                // listTags: lead?.Tags?.split("&")?.map((tag) => tag?.trim()),
-                // listTags: lead?.Tags,
-                // tags: lead?.Tags?.split("&")?.map((tag) => tag?.trim()),
-                // tags: [lead?.Tags],
-                // listTags: [lead?.Tags],
+
+                tagsList: lead?.Tags?.split("&")?.map((tag) => tag?.trim()),
                 category: category?._id || null,
               },
               upsert: true,
             },
           };
+          return response;
         });
 
         // return upserted leads count

@@ -12,9 +12,10 @@ const Task = require("./models/Task");
 const User = require("./models/User");
 const Text = require("./models/Text");
 const Email = require("./models/Email");
+const VoiceCall = require("./models/VocieCall");
 
 // DEVELOPMENT
-require("dotenv").config();
+// require("dotenv").config();
 
 const port = process.env.PORT || 4000;
 
@@ -190,6 +191,7 @@ app.post("/sendSms", async (req, res) => {
   for (let i = 0; i < texts.length; i++) {
     const text = texts[i];
     const tonumber = text.to.replace(/\D/g, "");
+    console.log("tonumber-------------------", tonumber);
     try {
       const message = await client.messages.create({
         body: text.body,
@@ -210,7 +212,9 @@ app.post("/sendSms", async (req, res) => {
         }
       );
     } catch (error) {
-      return res.status(400).send(error.message);
+      if (error) {
+        continue;
+      }
     }
   }
   return res.status(200).send("Text sent successfully");
@@ -295,6 +299,10 @@ app.post("/sms", async (req, res) => {
 
 // webhook for twilio voice call to get the call
 app.post("/call", async (req, res) => {
+  await VoiceCall.create({
+    type: "incoming",
+  });
+
   const twiml = new VoiceResponse();
   twiml.say("Hello, this is a test call.");
 

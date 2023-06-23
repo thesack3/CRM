@@ -10,6 +10,11 @@ const VoiceCallSchema = new mongoose.Schema({
   from: {
     type: String,
   },
+  type: {
+    // define enum for type incoming or outgoing
+    type: String,
+    enum: ["incoming", "outgoing"],
+  },
   dateCreated: {
     type: String,
   },

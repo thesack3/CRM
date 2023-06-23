@@ -8,7 +8,7 @@ const grayColors = ['#222'];
 
 export default function CategoryInput({ category, activeCategories, handleActiveCategory }) {
   const handleCategoryClick = (category) => {
-    handleActiveCategory(category.title);
+    handleActiveCategory && handleActiveCategory(category.title);
   };
 
   return (
