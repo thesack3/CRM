@@ -353,7 +353,7 @@ export default function DataGridProCSV2() {
       {
         field: 'NextCallDue',
         headerName: 'Next Call Due',
-        width: 120,
+        width: 160,
         editable: true,
 
         hide: true,
@@ -361,7 +361,7 @@ export default function DataGridProCSV2() {
       {
         field: 'LastAgentCalDate',
         headerName: 'LastAgentCalDate',
-        width: 120,
+        width: 160,
         editable: true,
 
         hide: true,
@@ -369,7 +369,7 @@ export default function DataGridProCSV2() {
       {
         field: 'LastLenderCallDate',
         headerName: 'LastLenderCallDate',
-        width: 120,
+        width: 160,
         editable: true,
 
         hide: true,
@@ -377,24 +377,29 @@ export default function DataGridProCSV2() {
       {
         field: 'FirstVisitDate',
         headerName: 'First tVisit Date',
-        width: 120,
+        width: 160,
         editable: true,
         hide: true,
       },
       {
         field: 'LastVisitDate',
         headerName: 'Last Visit Date',
-        width: 120,
+        width: 160,
         editable: true,
-
         hide: true,
       },
       {
         field: 'RegisterDate',
         headerName: 'RegisterDate',
-        width: 120,
+        width: 160,
         editable: true,
-
+        hide: true,
+      },
+      {
+        field: 'updatedAt',
+        headerName: 'Updated At',
+        width: 160,
+        editable: true,
         hide: true,
       },
       {
