@@ -947,7 +947,7 @@ export default function DataGridProCSV2() {
     setTags([]);
     setSkip(0);
     setPage(0);
-    setPageSize(10);
+    // setPageSize(10);
     setSearchQuery('');
   };
 
