@@ -23,6 +23,9 @@ const FilterLeads = ({
   handleActiveCategory,
   tags,
   handleActiveTag,
+  isFilterReset,
+  resetFilters,
+  handleResetFilterModal,
 }) => {
   const [label, setLable] = useState('Address');
   const [fieldValue, setFieldValue] = useState('Address');
@@ -48,10 +51,24 @@ const FilterLeads = ({
       setFieldsListData(fieldsList);
       return;
     }
-
+    if (isFilterReset) {
+      from && setFrom('');
+      to && setTo('');
+      startDate && setStartDate('');
+      endDate && setEndDate('');
+      selectedCategories.length && setSelectedCategories([]);
+      selectedTags.length && setSelectedTags([]);
+      setFilterValue('');
+      setLable('Address');
+      setFieldValue('Address');
+      setFieldListValue('');
+      setFieldsListData(fieldsList);
+      handleResetFilterModal();
+      return;
+    }
     const filteredFields = fieldsListData.filter((item) => item.label.toLowerCase().includes(fieldListValue));
     setFieldsListData(filteredFields);
-  }, [fieldListValue]);
+  }, [fieldListValue, isFilterReset]);
 
   const handleFilter = ({ label, value }) => {
     setLable(label);
@@ -59,33 +76,39 @@ const FilterLeads = ({
     setFilterValue('');
     setFrom('');
     setTo('');
+    handleResetFilterModal();
   };
 
   const handleOnChange = (e, value) => {
     setFilterValue(value);
     callback({ label: fieldValue, value });
     setFilterLeadModal(false);
+    handleResetFilterModal();
   };
 
   const handleSubmit = () => {
     if (from && to) {
       callback({ label: fieldValue, value: filterValue, from, to });
+      handleResetFilterModal();
       setFilterLeadModal(false);
       return;
     }
     if (startDate && endDate) {
       callback({ label: fieldValue, value: filterValue, from: startDate, to: endDate });
+      handleResetFilterModal();
       setFilterLeadModal(false);
       return;
     }
     if (selectedCategories.length) {
       handleActiveCategory(selectedCategories);
       setFilterLeadModal(false);
+      handleResetFilterModal();
       return;
     }
     if (selectedTags.length) {
       handleActiveTag(selectedTags);
       setFilterLeadModal(false);
+      handleResetFilterModal();
       return;
     }
   };
@@ -93,18 +116,22 @@ const FilterLeads = ({
   const handleCategoryClick = (value) => {
     if (selectedCategories.includes(value)) {
       setSelectedCategories(selectedCategories.filter((item) => item !== value));
+      handleResetFilterModal();
       return;
     } else {
       setSelectedCategories([...selectedCategories, value]);
+      handleResetFilterModal();
     }
   };
 
   const handleTagClick = (value) => {
     if (selectedTags.includes(value)) {
       setSelectedTags(selectedTags.filter((item) => item !== value));
+      handleResetFilterModal();
       return;
     } else {
       setSelectedTags([...selectedTags, value]);
+      handleResetFilterModal();
     }
   };
 
@@ -1244,7 +1271,14 @@ const FilterLeads = ({
         </Box>
       </DialogContent>
       <DialogActions sx={{ justifyContent: 'right', gap: '5px' }}>
-        <Button onClick={() => setFilterLeadModal(false)} variant="outlined" sx={{ padding: '5px 16px' }}>
+        <Button
+          onClick={() => {
+            setFilterLeadModal(false);
+            handleResetFilterModal();
+          }}
+          variant="outlined"
+          sx={{ padding: '5px 16px' }}
+        >
           Cancel
         </Button>
         <Button variant="contained" sx={{ padding: '6px 26px', color: '#fff' }} onClick={handleSubmit}>

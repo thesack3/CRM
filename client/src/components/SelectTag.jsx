@@ -47,9 +47,10 @@ export default function SelectTag({ data, label, type, handleUpdate, defaultValu
       <div {...getRootProps()}>
         <Label {...getInputLabelProps()}>{label}</Label>
         <InputWrapper ref={setAnchorEl} className={focused ? 'focused' : ''}>
-          {value.map((option, index) => (
-            <StyledTag label={option.title} {...getTagProps({ index })} />
-          ))}
+          {value.map((option, index) => {
+            if (!option.title) return;
+            return <StyledTag label={option.title} {...getTagProps({ index })} />;
+          })}
 
           <input {...getInputProps()} />
         </InputWrapper>

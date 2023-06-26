@@ -63,6 +63,7 @@ export default function DataGridProCSV2() {
   const [isSendMessageModalOpen, setIsSendMessageModalOpen] = useState(false);
   const [selectedIds, setSelectedIds] = useState([]);
   const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
+  const [filterModalReset, setFilterModalReset] = useState(false);
 
   const { data: categoriesList, refetch: refetchCategories, loading: loadingCategories } = useQuery(GET_CATEGORIES);
   const { data: tagList } = useQuery(GET_TAGS);
@@ -955,6 +956,11 @@ export default function DataGridProCSV2() {
     setPage(0);
     // setPageSize(10);
     setSearchQuery('');
+    setFilterModalReset(new Date().getTime());
+  };
+
+  const handleResetFilterModal = () => {
+    setFilterModalReset(false);
   };
 
   const handleSendMessageModal = () => {
@@ -977,6 +983,9 @@ export default function DataGridProCSV2() {
         handleActiveCategory={(value) => filterCategories(value)}
         tags={tagList && tagList?.tags}
         handleActiveTag={(value) => handleTagClick(value)}
+        resetFilters={() => setFilterModalReset(true)}
+        handleResetFilterModal={() => handleResetFilterModal()}
+        isFilterReset={filterModalReset}
       />
       {currentParam && (
         <LeadDetails
