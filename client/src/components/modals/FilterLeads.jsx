@@ -9,6 +9,7 @@ import {
   DialogContent,
   DialogActions,
   Autocomplete,
+  CircularProgress,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { useQuery } from '@apollo/client';
@@ -23,8 +24,8 @@ const FilterLeads = ({
   tags,
   handleActiveTag,
 }) => {
-  const [label, setLable] = useState('FirstName');
-  const [fieldValue, setFieldValue] = useState('firstName');
+  const [label, setLable] = useState('Address');
+  const [fieldValue, setFieldValue] = useState('Address');
   const [filterValue, setFilterValue] = useState('');
   const [from, setFrom] = useState('');
   const [to, setTo] = useState('');
@@ -38,7 +39,7 @@ const FilterLeads = ({
   const { data, loading } = useQuery(GET_LEADS_VALUES, {
     variables: {
       label: filterValue || '',
-      value: fieldValue || 'firstName',
+      value: fieldValue || 'Address',
     },
   });
 
@@ -1223,6 +1224,10 @@ const FilterLeads = ({
                   );
                 })}
               </Box>
+            </Box>
+          ) : loading ? (
+            <Box flex=".7" padding="20px">
+              <CircularProgress />
             </Box>
           ) : (
             <Box flex=".7" padding="20px">
