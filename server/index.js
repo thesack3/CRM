@@ -56,7 +56,6 @@ app.post("/notification", async (req, res) => {
     const timeDiff = task.time - currentTime.getTime();
     // add 5 hours to time
     const diffMins3 = Math.round(timeDiff / 60000) - 300;
-
     console.log("diffMins------------------------- ", diffMins3);
     if (diffMins3 <= 15 && diffMins3 >= 0 && !task.isEmailSend) {
       return task;
@@ -190,8 +189,15 @@ app.post("/sendSms", async (req, res) => {
   }
   for (let i = 0; i < texts.length; i++) {
     const text = texts[i];
-    const tonumber = text.to.replace(/\D/g, "");
+    let tonumber = text.to.replace(/\D/g, "");
     console.log("tonumber-------------------", tonumber);
+    // if text.to has | then split it and send to multiple numbers
+    if (text?.to?.includes("|")) {
+      let numbers = text?.to?.split("|");
+      // get first number and remove non numeric from phone number
+      tonumber = numbers[0].replace(/\D/g, "");
+    }
+
     try {
       const message = await client.messages.create({
         body: text.body,
@@ -209,6 +215,7 @@ app.post("/sendSms", async (req, res) => {
           from: message.from,
           to: message.to,
           body: message.body,
+          type: "incoming",
         }
       );
     } catch (error) {
@@ -289,6 +296,7 @@ app.post("/sms", async (req, res) => {
       from: req.body.From,
       dateCreated: new Date(),
       leadId: lead?.[0]?._id,
+      type: "incoming",
     });
   }
   // twiml.message(

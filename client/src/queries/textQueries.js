@@ -7,6 +7,7 @@ export const GET_SMS_TEXT = gql`
       body
       to
       from
+      type
       createdAt
     }
   }
@@ -20,6 +21,7 @@ export const GET_UNREAD_TEXT = gql`
         id
         to
         from
+        type
         body
         createdAt
         lead {

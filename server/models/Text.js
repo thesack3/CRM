@@ -10,6 +10,10 @@ const TextSchema = new mongoose.Schema({
   from: {
     type: String,
   },
+  type: {
+    type: String,
+    enum: ["incoming", "outgoing"],
+  },
   isRead: {
     type: Boolean,
     default: false,

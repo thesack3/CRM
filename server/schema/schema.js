@@ -217,6 +217,7 @@ const TextType = new GraphQLObjectType({
     id: { type: GraphQLID },
     to: { type: GraphQLString },
     from: { type: GraphQLString },
+    type: { type: GraphQLString },
     body: { type: GraphQLString },
     status: { type: GraphQLString },
     dateCreated: { type: GraphQLString },
@@ -1152,7 +1153,7 @@ const mutation = new GraphQLObjectType({
         return client.calls
           .create({
             twiml: "<Response><Say>Bryan Hossack real estate at your service!</Say></Response>",
-            to: "+923038861205", // number passed at row.
+            to: args.toNumber, // number passed at row.
             from: process.env.SENDER_PHONE_NUMBER, // From a valid Twilio number
             // url: "https://242e-103-151-42-15.ngrok-free.app",
           })
@@ -1214,6 +1215,7 @@ const mutation = new GraphQLObjectType({
               from: twilioMSG.from,
               dateCreated: twilioMSG.date_Updated,
               leadId: args.leadId,
+              type: "outgoing",
             });
             newText.save();
             return twilioMSG;
@@ -1245,6 +1247,7 @@ const mutation = new GraphQLObjectType({
             isSent: false,
             to: lead.phone,
             leadId: lead._id,
+            type: "outgoing",
           });
           await newText.save();
         }
