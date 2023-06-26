@@ -1080,7 +1080,13 @@ const Card = ({ data, getItem, type, leadName }) => {
               {/* {data?.note || data?.message || data?.text || data?.description} */}
               {data?.createdAt && data.createdAt}
             </Typography>
-            <Typography>{data?.type == 'incoming' ? 'Incoming' : 'Outgoing'}</Typography>
+            <Typography>
+              {data?.type == 'outgoing' ? (
+                <span style={{ color: 'blue', fontSize: '12px', fontWeight: '500' }}>Outgoing</span>
+              ) : (
+                <span style={{ color: 'green', fontSize: '12px', fontWeight: '500' }}>Incoming</span>
+              )}
+            </Typography>
           </Box>
         </Box>
       </Box>
