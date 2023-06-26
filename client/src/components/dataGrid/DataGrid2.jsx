@@ -729,7 +729,7 @@ export default function DataGridProCSV2() {
     if (!input) {
       setFilter('');
       setTake('10');
-      // setFilterModel({});
+      setFilterModel({});
     }
   };
 
@@ -738,6 +738,7 @@ export default function DataGridProCSV2() {
       setFilter(searchQuery);
       setCategories([]);
       setTags([]);
+      setFilterModel({});
     }
   };
 
