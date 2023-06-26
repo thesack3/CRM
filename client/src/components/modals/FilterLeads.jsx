@@ -32,6 +32,8 @@ const FilterLeads = ({
   const [endDate, setEndDate] = useState('');
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [selectedTags, setSelectedTags] = useState([]);
+  const [fieldListValue, setFieldListValue] = useState('');
+  const [fieldsListData, setFieldsListData] = useState(fieldsList);
 
   const { data, loading } = useQuery(GET_LEADS_VALUES, {
     variables: {
@@ -39,6 +41,16 @@ const FilterLeads = ({
       value: fieldValue || 'firstName',
     },
   });
+
+  useEffect(() => {
+    if (!fieldListValue) {
+      setFieldsListData(fieldsList);
+      return;
+    }
+
+    const filteredFields = fieldsListData.filter((item) => item.label.toLowerCase().includes(fieldListValue));
+    setFieldsListData(filteredFields);
+  }, [fieldListValue]);
 
   const handleFilter = ({ label, value }) => {
     setLable(label);
@@ -127,7 +139,47 @@ const FilterLeads = ({
             }}
           >
             <Box display="flex" flexDirection="column" gap="15px">
-              <Button
+              {/* add search field for the fieldsList */}
+              <TextField
+                id="outlined-basic"
+                variant="outlined"
+                size="small"
+                sx={{ width: '100%' }}
+                placeholder="Search"
+                value={fieldListValue}
+                onChange={(e) => {
+                  // filter fields then set the filtered fields to the fieldsList
+                  setFieldListValue(e.target.value);
+                }}
+              />
+
+              {
+                // map the fieldsList and sort them alphabetically
+                fieldsListData
+                  .sort((a, b) => a.label.localeCompare(b.label))
+                  .map((item) => (
+                    <Button
+                      sx={{
+                        fontWeight: '500',
+                        borderRadius: '0',
+                        justifyContent: 'start',
+                        padding: '1px',
+                        color: 'gray',
+                        textAlign: 'left!important',
+                      }}
+                      onClick={() =>
+                        handleFilter({
+                          label: item.label,
+                          value: item.value,
+                        })
+                      }
+                    >
+                      {item.label}
+                    </Button>
+                  ))
+              }
+              <Box>
+                {/* <Button
                 sx={{
                   fontWeight: '500',
                   borderRadius: '0',
@@ -1027,7 +1079,8 @@ const FilterLeads = ({
                 }
               >
                 Updated At
-              </Button>
+              </Button> */}
+              </Box>
             </Box>
           </Box>
           {/* aside content */}
@@ -1198,3 +1251,207 @@ const FilterLeads = ({
 };
 
 export default FilterLeads;
+
+const fieldsList = [
+  {
+    label: 'First Name',
+    value: 'firstName',
+  },
+  {
+    label: 'Last Name',
+    value: 'lastName',
+  },
+  {
+    label: 'Email',
+    value: 'email',
+  },
+  {
+    label: 'Address',
+    value: 'Address',
+  },
+  {
+    label: 'Agent Selected',
+    value: 'AgentSelected',
+  },
+  {
+    label: 'Avg Listing Price',
+    value: 'AvgListingPrice',
+  },
+  {
+    label: 'Birthday',
+    value: 'Birthday',
+  },
+  {
+    label: 'Buyer Agent',
+    value: 'BuyerAgent',
+  },
+  {
+    label: 'Buyer Agent Category',
+    value: 'BuyerAgentCategory',
+  },
+  {
+    label: 'City',
+    value: 'City',
+  },
+  {
+    label: 'First Visit Date',
+    value: 'FirstVisitDate',
+  },
+  {
+    label: 'Globally Opted Out Of Alerts',
+    value: 'GloballyOptedOutOfAlerts',
+  },
+  {
+    label: 'Globally Opted Out Of Buyer Agent Email',
+    value: 'GloballyOptedOutOfBuyerAgentEmail',
+  },
+  {
+    label: 'Globally Opted Out Of Email',
+    value: 'GloballyOptedOutOfEmail',
+  },
+  {
+    label: 'Globally Opted Out Of Lender Email',
+    value: 'GloballyOptedOutOfLenderEmail',
+  },
+  {
+    label: 'Globally Opted Out Of Listing Agent Email',
+    value: 'GloballyOptedOutOfListingAgentEmail',
+  },
+  {
+    label: 'Home Closing Date',
+    value: 'HomeClosingDate',
+  },
+  {
+    label: 'Last Agent Call Date',
+    value: 'LastAgentCallDate',
+  },
+  {
+    label: 'Last Agent Note',
+    value: 'LastAgentNote',
+  },
+  {
+    label: 'Last Lender Call Date',
+    value: 'LastLenderCallDate',
+  },
+  {
+    label: 'Last Visit Date',
+    value: 'LastVisitDate',
+  },
+  {
+    label: 'Lead Type',
+    value: 'LeadType',
+  },
+  {
+    label: 'Lender',
+    value: 'Lender',
+  },
+  {
+    label: 'Lender Category',
+    value: 'LenderCategory',
+  },
+  {
+    label: 'Lender Opt In',
+    value: 'LenderOptIn',
+  },
+  {
+    label: 'Link',
+    value: 'Link',
+  },
+  {
+    label: 'Listing Agent',
+    value: 'ListingAgent',
+  },
+  {
+    label: 'Listing Agent Category',
+    value: 'ListingAgentCategory',
+  },
+  {
+    label: 'Next Call Due',
+    value: 'NextCallDue',
+  },
+  {
+    label: 'Opt In Date',
+    value: 'OptInDate',
+  },
+  {
+    label: 'Original Campaign',
+    value: 'OriginalCampaign',
+  },
+  {
+    label: 'Original Source',
+    value: 'OriginalSource',
+  },
+  {
+    label: 'Register Date',
+    value: 'RegisterDate',
+  },
+  {
+    label: 'State',
+    value: 'State',
+  },
+  {
+    label: 'Visit Total',
+    value: 'VisitTotal',
+  },
+  {
+    label: 'Zip Code',
+    value: 'ZipCode',
+  },
+  {
+    label: 'Description',
+    value: 'description',
+  },
+  {
+    label: 'eAlerts',
+    value: 'eAlerts',
+  },
+  {
+    label: 'Email Invalid',
+    value: 'emailInvalid',
+  },
+
+  {
+    label: 'Listing View Count',
+    value: 'listingviewcount',
+  },
+  {
+    label: 'Phone',
+    value: 'phone',
+  },
+  {
+    label: 'Phone Status',
+    value: 'phoneStatus',
+  },
+  {
+    label: 'Did Leave Review',
+    value: 'didLeaveReviews',
+  },
+  {
+    label: 'Did Closing Gift',
+    value: 'didClosingGift',
+  },
+  {
+    label: 'Did Social Media Friends',
+    value: 'didsocialMediaFriends',
+  },
+  {
+    label: 'Did Post Card Drip',
+    value: 'didPostCardDrip',
+  },
+  {
+    label: 'Did Anniversary Drip',
+    value: 'didAnniversaryDrip',
+  },
+  {
+    label: 'Category',
+    value: 'category',
+  },
+  {
+    label: 'Tags',
+    value: 'tags',
+  },
+  {
+    label: 'Updated At',
+    value: 'updatedAt',
+  },
+];
