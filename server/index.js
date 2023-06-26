@@ -15,7 +15,7 @@ const Email = require("./models/Email");
 const VoiceCall = require("./models/VocieCall");
 
 // DEVELOPMENT
-// require("dotenv").config();
+require("dotenv").config();
 
 const port = process.env.PORT || 4000;
 

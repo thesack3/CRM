@@ -1,24 +1,24 @@
 import React, { useState } from 'react';
 import { useMutation } from '@apollo/client';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Box, Button, Grid, TextField, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
-import EditNoteIcon from '@mui/icons-material/EditNote';
 import { CircularProgress } from '@mui/material';
 import { SEND_EMAIL, SEND_EMAILS } from '../../mutations/bulkEmail';
 import { setAlert } from '../../redux/slice/alertSlice';
+import AutoSelect from '../inputs/AutoSelect';
 
-const SendEmail = ({ emailOpen, setEmailOpen, id, ids }) => {
+const SendEmail = ({ emailOpen, setEmailOpen, id, ids, activeLeads }) => {
   const dispatch = useDispatch();
 
-  // send email mutation
-  const [sendEmailToLead, { loading }] = useMutation(SEND_EMAIL);
-  const [sendEmails, { loading: bulkLoading }] = useMutation(SEND_EMAILS);
   const [date, setDate] = useState(new Date());
-
+  const [emails, setEmails] = useState([]);
   const [formData, setFormData] = useState({
     subject: '',
     body: '',
   });
+
+  const [sendEmailToLead, { loading }] = useMutation(SEND_EMAIL);
+  const [sendEmails, { loading: bulkLoading }] = useMutation(SEND_EMAILS);
 
   // handle change
   const handleChange = (e) => {
@@ -31,10 +31,15 @@ const SendEmail = ({ emailOpen, setEmailOpen, id, ids }) => {
   // handle email submit
   const handleSubmit = async () => {
     try {
-      if (ids.length) {
+      const filteredEmails = activeLeads?.filter((lead) => emails?.includes(lead.email));
+      let updatedIds = ids;
+      if (filteredEmails?.length) {
+        updatedIds = filteredEmails?.map((lead) => lead.id);
+      }
+      if (updatedIds?.length) {
         await sendEmails({
           variables: {
-            ids: ids,
+            ids: updatedIds,
             subject: formData.subject,
             body: formData.body,
             date: date,
@@ -49,12 +54,10 @@ const SendEmail = ({ emailOpen, setEmailOpen, id, ids }) => {
           },
         });
       }
-
       setFormData({
         subject: '',
         body: '',
       });
-
       dispatch(setAlert({ type: 'success', message: 'Email sent successfully' }));
       // await refetch();
     } catch (error) {
@@ -80,6 +83,18 @@ const SendEmail = ({ emailOpen, setEmailOpen, id, ids }) => {
       </DialogTitle>
       <DialogContent sx={{ overflowY: 'unset' }}>
         <Grid container spacing={2}>
+          {ids?.length && (
+            <Grid item xs={12}>
+              <AutoSelect
+                title={'Emails'}
+                data={activeLeads?.map((x) => x.email)}
+                defaultValues={activeLeads?.filter((lead) => ids?.includes(lead.id))?.map((x) => x.email)}
+                callback={(selectedValue) => {
+                  setEmails(selectedValue);
+                }}
+              />
+            </Grid>
+          )}
           <Grid item xs={12}>
             <TextField
               label="Subject"

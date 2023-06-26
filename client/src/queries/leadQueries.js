@@ -189,3 +189,12 @@ export const GET_LEADS_VALUES = gql`
     leadFilter(label: $label, value: $value)
   }
 `;
+
+export const GET_LEADS_EMAILS_PHONES = gql`
+  query LeadEmailPhone($leadIds: [ID]) {
+    leadEmailPhone(leadIds: $leadIds) {
+      email
+      phone
+    }
+  }
+`;

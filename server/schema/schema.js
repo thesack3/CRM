@@ -36,6 +36,15 @@ function fDateTime(date, newFormat) {
 
   return date ? format(new Date(date), fm) : "";
 }
+// fDateTime did not display time correctly, so I created this function to display time correctly
+function fDateTime2(date, newFormat) {
+  // display local date and time in 12 hour format with AM/PM
+  const fm2 = newFormat || "dd MMM yyyy p";
+  // minus the 5 hours to get the correct time
+  const date2 = new Date(date);
+  date2.setHours(date2.getHours() - 6);
+  return date ? format(new Date(date2), fm2) : "";
+}
 
 const TwilioMSGType = new GraphQLObjectType({
   name: "TwilioMSG",
@@ -591,7 +600,7 @@ const RootQuery = new GraphQLObjectType({
             const leadUp = {
               ...lead._doc,
               id: lead._id,
-              updatedAt: fDateTime(lead.updatedAt),
+              updatedAt: fDateTime2(lead.updatedAt),
               LastVisitDate: fDateTime(lead.LastVisitDate),
               FirstVisitDate: fDateTime(lead.FirstVisitDate),
               LastLenderCallDate: fDateTime(lead.LastLenderCallDate),
@@ -615,7 +624,7 @@ const RootQuery = new GraphQLObjectType({
             const leadUp = {
               ...lead._doc,
               id: lead._id,
-              updatedAt: fDateTime(lead.updatedAt),
+              updatedAt: fDateTime2(lead.updatedAt),
               LastVisitDate: fDateTime(lead.LastVisitDate),
               FirstVisitDate: fDateTime(lead.FirstVisitDate),
               LastLenderCallDate: fDateTime(lead.LastLenderCallDate),
@@ -644,7 +653,14 @@ const RootQuery = new GraphQLObjectType({
             .exec();
 
           const result = response.map((lead) => {
-            const leadUp = { ...lead._doc, id: lead._id, category };
+            const leadUp = {
+              ...lead._doc,
+              id: lead._id,
+              category,
+              updatedAt: fDateTime2(lead.updatedAt),
+              HomeClosingDate: fDateTime(lead.HomeClosingDate),
+              RegisterDate: fDateTime(lead.RegisterDate),
+            };
             return leadUp;
           });
           return { count: totalCount, rows: result };
@@ -686,7 +702,7 @@ const RootQuery = new GraphQLObjectType({
             const leadUp = {
               ...lead._doc,
               id: lead._id,
-              updatedAt: fDateTime(lead.updatedAt),
+              updatedAt: fDateTime2(lead.updatedAt),
               LastVisitDate: fDateTime(lead.LastVisitDate),
               FirstVisitDate: fDateTime(lead.FirstVisitDate),
               LastLenderCallDate: fDateTime(lead.LastLenderCallDate),
@@ -719,7 +735,7 @@ const RootQuery = new GraphQLObjectType({
             const leadUp = {
               ...lead._doc,
               id: lead._id,
-              updatedAt: fDateTime(lead.updatedAt),
+              updatedAt: fDateTime2(lead.updatedAt),
               LastVisitDate: fDateTime(lead.LastVisitDate),
               FirstVisitDate: fDateTime(lead.FirstVisitDate),
               LastLenderCallDate: fDateTime(lead.LastLenderCallDate),
@@ -794,7 +810,7 @@ const RootQuery = new GraphQLObjectType({
             const leadUp = {
               ...lead._doc,
               id: lead._id,
-              updatedAt: fDateTime(lead.updatedAt),
+              updatedAt: fDateTime2(lead.updatedAt),
               LastVisitDate: fDateTime(lead.LastVisitDate),
               FirstVisitDate: fDateTime(lead.FirstVisitDate),
               LastLenderCallDate: fDateTime(lead.LastLenderCallDate),
@@ -828,7 +844,7 @@ const RootQuery = new GraphQLObjectType({
             const leadUp = {
               ...lead._doc,
               id: lead._id,
-              updatedAt: fDateTime(lead.updatedAt),
+              updatedAt: fDateTime2(lead.updatedAt),
               LastVisitDate: fDateTime(lead.LastVisitDate),
               FirstVisitDate: fDateTime(lead.FirstVisitDate),
               LastLenderCallDate: fDateTime(lead.LastLenderCallDate),
@@ -866,7 +882,7 @@ const RootQuery = new GraphQLObjectType({
             const leadUp = {
               ...lead._doc,
               id: lead._id,
-              updatedAt: fDateTime(lead.updatedAt),
+              updatedAt: fDateTime2(lead.updatedAt),
               LastVisitDate: fDateTime(lead.LastVisitDate),
               FirstVisitDate: fDateTime(lead.FirstVisitDate),
               LastLenderCallDate: fDateTime(lead.LastLenderCallDate),
@@ -896,7 +912,7 @@ const RootQuery = new GraphQLObjectType({
           const leadUp = {
             ...lead._doc,
             id: lead._id,
-            updatedAt: fDateTime(lead.updatedAt),
+            updatedAt: fDateTime2(lead.updatedAt),
             LastVisitDate: fDateTime(lead.LastVisitDate),
             FirstVisitDate: fDateTime(lead.FirstVisitDate),
             LastLenderCallDate: fDateTime(lead.LastLenderCallDate),
@@ -910,6 +926,31 @@ const RootQuery = new GraphQLObjectType({
           return leadUp;
         });
         return { count: totalCount, rows: result };
+      },
+    },
+
+    // get email and phone from lead by ids
+    leadEmailPhone: {
+      type: new GraphQLObjectType({
+        name: "LeadEmailPhone",
+        fields: () => ({
+          email: { type: GraphQLString },
+          phone: { type: GraphQLString },
+        }),
+      }),
+      args: {
+        leadIds: { type: GraphQLList(GraphQLID) },
+      },
+      async resolve(parent, args) {
+        const leads = await Lead.find({ _id: { $in: args.leadIds } });
+        const result = leads.map((lead) => {
+          const leadUp = {
+            email: lead.email,
+            phone: lead.phone,
+          };
+          return leadUp;
+        });
+        return result;
       },
     },
 
@@ -954,7 +995,7 @@ const RootQuery = new GraphQLObjectType({
             const resultUp = {
               ...result._doc,
               id: result._id,
-              updatedAt: fDateTime(result.updatedAt),
+              updatedAt: fDateTime2(result.updatedAt),
               LastVisitDate: fDateTime(result.LastVisitDate),
               FirstVisitDate: fDateTime(result.FirstVisitDate),
               LastLenderCallDate: fDateTime(result.LastLenderCallDate),
@@ -1116,7 +1157,6 @@ const mutation = new GraphQLObjectType({
             // url: "https://242e-103-151-42-15.ngrok-free.app",
           })
           .then((message) => {
-            console.log("message-----------------/", message);
             const twilioCall = {
               date_Updated: message.dateUpdated,
               date_Sent: message.dateSent,
@@ -1197,7 +1237,7 @@ const mutation = new GraphQLObjectType({
       },
       async resolve(parent, args) {
         // save text to database
-        for (let i = 0; i < args.leadIds.length; i++) {
+        for (let i = 0; i < args?.leadIds?.length; i++) {
           const lead = await Lead.findById(args.leadIds[i]);
           const newText = new Text({
             body: args.msg,
@@ -1208,7 +1248,7 @@ const mutation = new GraphQLObjectType({
           });
           await newText.save();
         }
-        return { message: "SMS sent" };
+        return { message: "SMS scheduled successfully" };
       },
     },
 
@@ -1685,6 +1725,8 @@ const mutation = new GraphQLObjectType({
         if (!leadsCount) throw new Error("No leads found");
         try {
           await Lead.deleteMany(query);
+          // delete all tags
+          if (args.deleteAll) await Tag.deleteMany();
           return {
             message: `${
               args.deleteAll
@@ -1777,7 +1819,7 @@ const mutation = new GraphQLObjectType({
           const resultUp = {
             ...update._doc,
             id: update._id,
-            updatedAt: fDateTime(update.updatedAt),
+            updatedAt: fDateTime2(update.updatedAt),
             createdAt: fDateTime(update.createdAt),
             OptInDate: fDateTime(update.OptInDate),
             HomeClosingDate: fDateTime(update.HomeClosingDate),
@@ -1797,7 +1839,13 @@ const mutation = new GraphQLObjectType({
     },
 
     sendEmails: {
-      type: new GraphQLList(EmailType),
+      type: new GraphQLObjectType({
+        name: "sendEmails",
+        fields: () => ({
+          message: { type: GraphQLString },
+        }),
+      }),
+
       args: {
         ids: {
           type: GraphQLList(GraphQLID),
@@ -1822,8 +1870,7 @@ const mutation = new GraphQLObjectType({
           await email.save();
           emails.push(email);
         }
-
-        return emails;
+        return { message: "Emails scheduled successfully" };
       },
     },
 

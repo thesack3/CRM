@@ -5,33 +5,42 @@ import { Box, Button, Grid, TextField, Dialog, DialogTitle, DialogContent, Dialo
 import { CircularProgress } from '@mui/material';
 import { setAlert } from '../../redux/slice/alertSlice';
 import { SEND_MESSAGE_TO_LEADS } from '../../mutations/sendSms';
+import AutoSelect from '../inputs/AutoSelect';
 
-const SendMessage = ({ leadIds, open, close }) => {
+const SendMessage = ({ leadIds, open, close, activeLeads }) => {
   const dispatch = useDispatch();
   const [message, setMessage] = useState('');
   const [date, setDate] = useState(new Date());
+  const [phones, setPhones] = useState([]);
 
   const [sendSMSToLeads, { loading }] = useMutation(SEND_MESSAGE_TO_LEADS);
 
   // handle email submit
   const handleSubmit = async () => {
     try {
-      // send 5 lead ids per request
-      const batchSize = 5;
-      const numBatches = Math.ceil(leadIds.length / batchSize);
-      for (let i = 0; i < numBatches; i++) {
-        const start = i * batchSize;
-        const end = start + batchSize;
-        const batch = leadIds.slice(start, end);
-        await sendSMSToLeads({
-          variables: {
-            leadIds: batch,
-            msg: message,
-            date,
-          },
-        });
+      // filter the phone numbers from active leads
+      const filteredPhones = activeLeads?.filter((lead) => phones?.includes(lead.phone));
+      let updatedIds = leadIds;
+      if (filteredPhones?.length) {
+        updatedIds = filteredPhones?.map((lead) => lead.id);
       }
-      dispatch(setAlert({ type: 'success', message: 'Messages sent successfully' }));
+      if (updatedIds?.length) {
+        const batchSize = 200;
+        const numBatches = Math.ceil(updatedIds.length / batchSize);
+        for (let i = 0; i < numBatches; i++) {
+          const start = i * batchSize;
+          const end = start + batchSize;
+          const batch = updatedIds.slice(start, end);
+          await sendSMSToLeads({
+            variables: {
+              leadIds: batch,
+              msg: message,
+              date,
+            },
+          });
+        }
+        dispatch(setAlert({ type: 'success', message: 'Messages sent successfully' }));
+      }
     } catch (error) {
       dispatch(setAlert({ type: 'error', message: error.message }));
     } finally {
@@ -55,6 +64,16 @@ const SendMessage = ({ leadIds, open, close }) => {
       </DialogTitle>
       <DialogContent sx={{ overflowY: 'unset' }}>
         <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <AutoSelect
+              title={'Phone Numbers'}
+              data={activeLeads?.map((x) => x.phone)}
+              defaultValues={activeLeads?.filter((lead) => leadIds?.includes(lead.id))?.map((x) => x.phone)}
+              callback={(selectedValue) => {
+                setPhones(selectedValue);
+              }}
+            />
+          </Grid>
           <Grid item xs={12}>
             <TextField
               label="Message"

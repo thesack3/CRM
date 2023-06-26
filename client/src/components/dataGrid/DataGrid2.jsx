@@ -1030,7 +1030,12 @@ export default function DataGridProCSV2() {
           >
             Send Email
           </Button>
-          <SendEmail emailOpen={isEmailModalOpen} setEmailOpen={() => setIsEmailModalOpen(false)} ids={selectedIds} />
+          <SendEmail
+            emailOpen={isEmailModalOpen}
+            setEmailOpen={() => setIsEmailModalOpen(false)}
+            ids={selectedIds}
+            activeLeads={leadsRows}
+          />
         </Box>
       </div>
       <Box sx={{ marginTop: '1rem' }}>
@@ -1039,6 +1044,7 @@ export default function DataGridProCSV2() {
             leadIds={selectedIds}
             open={isSendMessageModalOpen}
             close={() => setIsSendMessageModalOpen(false)}
+            activeLeads={leadsRows}
           />
         )}
         <Button variant="outlined" onClick={() => handleSendMessageModal()}>
