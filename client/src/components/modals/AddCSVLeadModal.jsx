@@ -26,7 +26,7 @@ export default function AddCSVLeadModal({ callback, refetchCategories }) {
     try {
       if (!data.length) return;
       // send 200 leads per request
-      const batchSize = 200;
+      const batchSize = 100;
       const numBatches = Math.ceil(data.length / batchSize);
       let response;
       // eslint-disable-next-line no-plusplus

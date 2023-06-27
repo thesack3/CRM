@@ -1577,10 +1577,16 @@ const mutation = new GraphQLObjectType({
         }),
       }),
       args: {
-        id: { type: GraphQLNonNull(GraphQLID) },
+        id: { type: GraphQLID },
+        deleteAll: { type: GraphQLBoolean },
       },
       async resolve(parent, args) {
         try {
+          if (args.deleteAll) {
+            // delete all categories
+            await Category.deleteMany();
+            return { message: "All categories deleted" };
+          }
           const category = await Category.findByIdAndDelete(args.id);
           if (!category) throw new Error("Category not found");
           return { message: "Category deleted" };
@@ -1647,8 +1653,29 @@ const mutation = new GraphQLObjectType({
           const existingTag = await Tag.findOne({
             title: { $regex: new RegExp(tag, "i") },
           });
+          if (tag.includes("|")) {
+            const tag1 = tag.split("|")[0];
+            const tag2 = tag.split("|")[1];
+            // combine both tags and find category with both tags
+            const updatedTag = `${tag1}(${tag2})`;
+            const existingCategory = await Category.findOne({
+              title: { $regex: new RegExp(updatedTag, "i") },
+            });
+            console.log(
+              existingCategory,
+              updatedTag
+            );
+            if (!existingCategory) {
+              // upsert the category with updatedTag and save it to database to avoid duplicate categories
+              await Category.findOneAndUpdate(
+                { title: updatedTag },
+                { title: updatedTag },
+                { upsert: true }
+              );
+            }
+          }
           if (!existingTag) {
-            const newTag = await Tag.create({
+            await Tag.create({
               title: tag,
             });
           }
@@ -1661,7 +1688,7 @@ const mutation = new GraphQLObjectType({
             title: { $regex: new RegExp(category, "i") },
           });
           if (!existingCategory) {
-            const newCategory = await Category.create({
+            await Category.create({
               title: category,
             });
           }
@@ -1669,10 +1696,16 @@ const mutation = new GraphQLObjectType({
 
         const findAllCategories = await Category.find();
         const bulkWrite = leads?.map((lead) => {
+          let updatedTag = null;
+          if (lead?.Tags?.includes("|")) {
+            const tag1 = lead?.Tags?.split("|")[0];
+            const tag2 = lead?.Tags?.split("|")[1];
+            updatedTag = `${tag1}(${tag2})`;
+          }
           const category = findAllCategories.find(
             (category) =>
               category?.title?.toLowerCase() ===
-              (lead?.BuyerAgentCategory || lead?.ListingAgentCategory)?.toLowerCase()
+              (updatedTag || lead?.BuyerAgentCategory || lead?.ListingAgentCategory)?.toLowerCase()
           );
 
           const response = {
