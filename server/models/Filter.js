@@ -60,6 +60,20 @@ const FilterSchema = mongoose.Schema({
 
   closedColumns: {
     type: Array,
+    default: [
+      '__check__',
+      'FirstName',
+      'LastName',
+      'Email',
+      'RegisterDate',
+      'Address',
+      'HomeClosingDate',
+      'didLeaveReview',
+      'didClosingGift',
+      'didsocialMediaFriends',
+      'didPostCardDrip',
+      'didAnniversaryDrip',
+    ],
   },
   isClosed: {
     type: Boolean,

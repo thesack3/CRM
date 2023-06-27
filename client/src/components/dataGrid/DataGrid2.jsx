@@ -896,6 +896,9 @@ export default function DataGridProCSV2() {
       setFilter('closed');
       const closedColumns = [
         '__check__',
+        'FirstName',
+        'LastName',
+        'Email',
         'RegisterDate',
         'Address',
         'HomeClosingDate',

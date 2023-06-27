@@ -1653,7 +1653,7 @@ const mutation = new GraphQLObjectType({
           const existingTag = await Tag.findOne({
             title: { $regex: new RegExp(tag, "i") },
           });
-          if (tag.includes("|")) {
+          if (tag?.includes("|")) {
             const tag1 = tag.split("|")[0];
             const tag2 = tag.split("|")[1];
             // combine both tags and find category with both tags

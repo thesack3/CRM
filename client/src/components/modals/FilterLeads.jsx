@@ -27,8 +27,8 @@ const FilterLeads = ({
   resetFilters,
   handleResetFilterModal,
 }) => {
-  const [label, setLable] = useState('Address');
-  const [fieldValue, setFieldValue] = useState('Address');
+  const [label, setLable] = useState('Avg Listing Price');
+  const [fieldValue, setFieldValue] = useState('AvgListingPrice');
   const [filterValue, setFilterValue] = useState('');
   const [from, setFrom] = useState('');
   const [to, setTo] = useState('');
@@ -42,7 +42,7 @@ const FilterLeads = ({
   const { data, loading } = useQuery(GET_LEADS_VALUES, {
     variables: {
       label: filterValue || '',
-      value: fieldValue || 'Address',
+      value: fieldValue || 'AvgListingPrice',
     },
   });
 
@@ -59,8 +59,8 @@ const FilterLeads = ({
       selectedCategories.length && setSelectedCategories([]);
       selectedTags.length && setSelectedTags([]);
       setFilterValue('');
-      setLable('Address');
-      setFieldValue('Address');
+      setLable('Avg Listing Price');
+      setFieldValue('AvgListingPrice');
       setFieldListValue('');
       setFieldsListData(fieldsList);
       handleResetFilterModal();
@@ -1292,26 +1292,26 @@ const FilterLeads = ({
 export default FilterLeads;
 
 const fieldsList = [
-  {
-    label: 'First Name',
-    value: 'firstName',
-  },
-  {
-    label: 'Last Name',
-    value: 'lastName',
-  },
-  {
-    label: 'Email',
-    value: 'email',
-  },
-  {
-    label: 'Address',
-    value: 'Address',
-  },
-  {
-    label: 'Agent Selected',
-    value: 'AgentSelected',
-  },
+  // {
+  //   label: 'First Name',
+  //   value: 'firstName',
+  // },
+  // {
+  //   label: 'Last Name',
+  //   value: 'lastName',
+  // },
+  // {
+  //   label: 'Email',
+  //   value: 'email',
+  // },
+  // {
+  //   label: 'Address',
+  //   value: 'Address',
+  // },
+  // {
+  //   label: 'Agent Selected',
+  //   value: 'AgentSelected',
+  // },
   {
     label: 'Avg Listing Price',
     value: 'AvgListingPrice',
@@ -1328,50 +1328,50 @@ const fieldsList = [
     label: 'Buyer Agent Category',
     value: 'BuyerAgentCategory',
   },
-  {
-    label: 'City',
-    value: 'City',
-  },
+  // {
+  //   label: 'City',
+  //   value: 'City',
+  // },
   {
     label: 'First Visit Date',
     value: 'FirstVisitDate',
   },
-  {
-    label: 'Globally Opted Out Of Alerts',
-    value: 'GloballyOptedOutOfAlerts',
-  },
-  {
-    label: 'Globally Opted Out Of Buyer Agent Email',
-    value: 'GloballyOptedOutOfBuyerAgentEmail',
-  },
-  {
-    label: 'Globally Opted Out Of Email',
-    value: 'GloballyOptedOutOfEmail',
-  },
-  {
-    label: 'Globally Opted Out Of Lender Email',
-    value: 'GloballyOptedOutOfLenderEmail',
-  },
-  {
-    label: 'Globally Opted Out Of Listing Agent Email',
-    value: 'GloballyOptedOutOfListingAgentEmail',
-  },
+  // {
+  //   label: 'Globally Opted Out Of Alerts',
+  //   value: 'GloballyOptedOutOfAlerts',
+  // },
+  // {
+  //   label: 'Globally Opted Out Of Buyer Agent Email',
+  //   value: 'GloballyOptedOutOfBuyerAgentEmail',
+  // },
+  // {
+  //   label: 'Globally Opted Out Of Email',
+  //   value: 'GloballyOptedOutOfEmail',
+  // },
+  // {
+  //   label: 'Globally Opted Out Of Lender Email',
+  //   value: 'GloballyOptedOutOfLenderEmail',
+  // },
+  // {
+  //   label: 'Globally Opted Out Of Listing Agent Email',
+  //   value: 'GloballyOptedOutOfListingAgentEmail',
+  // },
   {
     label: 'Home Closing Date',
     value: 'HomeClosingDate',
   },
-  {
-    label: 'Last Agent Call Date',
-    value: 'LastAgentCallDate',
-  },
-  {
-    label: 'Last Agent Note',
-    value: 'LastAgentNote',
-  },
-  {
-    label: 'Last Lender Call Date',
-    value: 'LastLenderCallDate',
-  },
+  // {
+  //   label: 'Last Agent Call Date',
+  //   value: 'LastAgentCallDate',
+  // },
+  // {
+  //   label: 'Last Agent Note',
+  //   value: 'LastAgentNote',
+  // },
+  // {
+  //   label: 'Last Lender Call Date',
+  //   value: 'LastLenderCallDate',
+  // },
   {
     label: 'Last Visit Date',
     value: 'LastVisitDate',
@@ -1404,18 +1404,18 @@ const fieldsList = [
     label: 'Listing Agent Category',
     value: 'ListingAgentCategory',
   },
-  {
-    label: 'Next Call Due',
-    value: 'NextCallDue',
-  },
-  {
-    label: 'Opt In Date',
-    value: 'OptInDate',
-  },
-  {
-    label: 'Original Campaign',
-    value: 'OriginalCampaign',
-  },
+  // {
+  //   label: 'Next Call Due',
+  //   value: 'NextCallDue',
+  // },
+  // {
+  //   label: 'Opt In Date',
+  //   value: 'OptInDate',
+  // },
+  // {
+  //   label: 'Original Campaign',
+  //   value: 'OriginalCampaign',
+  // },
   {
     label: 'Original Source',
     value: 'OriginalSource',
@@ -1424,26 +1424,26 @@ const fieldsList = [
     label: 'Register Date',
     value: 'RegisterDate',
   },
-  {
-    label: 'State',
-    value: 'State',
-  },
+  // {
+  //   label: 'State',
+  //   value: 'State',
+  // },
   {
     label: 'Visit Total',
     value: 'VisitTotal',
   },
-  {
-    label: 'Zip Code',
-    value: 'ZipCode',
-  },
-  {
-    label: 'Description',
-    value: 'description',
-  },
-  {
-    label: 'eAlerts',
-    value: 'eAlerts',
-  },
+  // {
+  //   label: 'Zip Code',
+  //   value: 'ZipCode',
+  // },
+  // {
+  //   label: 'Description',
+  //   value: 'description',
+  // },
+  // {
+  //   label: 'eAlerts',
+  //   value: 'eAlerts',
+  // },
   {
     label: 'Email Invalid',
     value: 'emailInvalid',
@@ -1453,34 +1453,34 @@ const fieldsList = [
     label: 'Listing View Count',
     value: 'listingviewcount',
   },
-  {
-    label: 'Phone',
-    value: 'phone',
-  },
+  // {
+  //   label: 'Phone',
+  //   value: 'phone',
+  // },
   {
     label: 'Phone Status',
     value: 'phoneStatus',
   },
-  {
-    label: 'Did Leave Review',
-    value: 'didLeaveReviews',
-  },
-  {
-    label: 'Did Closing Gift',
-    value: 'didClosingGift',
-  },
-  {
-    label: 'Did Social Media Friends',
-    value: 'didsocialMediaFriends',
-  },
-  {
-    label: 'Did Post Card Drip',
-    value: 'didPostCardDrip',
-  },
-  {
-    label: 'Did Anniversary Drip',
-    value: 'didAnniversaryDrip',
-  },
+  // {
+  //   label: 'Did Leave Review',
+  //   value: 'didLeaveReviews',
+  // },
+  // {
+  //   label: 'Did Closing Gift',
+  //   value: 'didClosingGift',
+  // },
+  // {
+  //   label: 'Did Social Media Friends',
+  //   value: 'didsocialMediaFriends',
+  // },
+  // {
+  //   label: 'Did Post Card Drip',
+  //   value: 'didPostCardDrip',
+  // },
+  // {
+  //   label: 'Did Anniversary Drip',
+  //   value: 'didAnniversaryDrip',
+  // },
   {
     label: 'Category',
     value: 'category',
