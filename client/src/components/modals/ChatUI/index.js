@@ -97,9 +97,8 @@ const ChatUI = ({ handleProfile, lead, setConfirmCall }) => {
           {textData &&
             textData?.texts?.map((item) => (
               <>
-               
                 {/* {item.to.slice(-10) === lead?.phone.slice(-10) ? ( */}
-                {item.type=='outgoing' ? (
+                {item.type == 'outgoing' ? (
                   <Grid
                     key={item.dateCreated}
                     xs={12}
@@ -113,7 +112,7 @@ const ChatUI = ({ handleProfile, lead, setConfirmCall }) => {
                   <Box
                     key={item.dateCreated}
                     xs={12}
-                    display={'inline-flex'}
+                    display={'block'}
                     flexDirection={{ xs: 'column', sm: 'row' }}
                     justifyContent={'flex-start'}
                     maxWidth={'275px'}
